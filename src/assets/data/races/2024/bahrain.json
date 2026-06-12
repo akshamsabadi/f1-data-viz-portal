@@ -1,0 +1,132 @@
+{
+  "race_info": {
+    "year": 2024,
+    "gp": "Bahrain Grand Prix",
+    "total_laps": 0,
+    "winner": "VER"
+  },
+  "drivers": [
+    {
+      "code": "VER",
+      "name": "Max Verstappen",
+      "team": "Red Bull",
+      "color": "#ffffff"
+    },
+    {
+      "code": "PER",
+      "name": "Sergio P\u00e9rez",
+      "team": "Red Bull",
+      "color": "#ffffff"
+    },
+    {
+      "code": "SAI",
+      "name": "Carlos Sainz",
+      "team": "Ferrari",
+      "color": "#ffffff"
+    },
+    {
+      "code": "LEC",
+      "name": "Charles Leclerc",
+      "team": "Ferrari",
+      "color": "#ffffff"
+    },
+    {
+      "code": "RUS",
+      "name": "George Russell",
+      "team": "Mercedes",
+      "color": "#ffffff"
+    },
+    {
+      "code": "NOR",
+      "name": "Lando Norris",
+      "team": "McLaren",
+      "color": "#ffffff"
+    },
+    {
+      "code": "HAM",
+      "name": "Lewis Hamilton",
+      "team": "Mercedes",
+      "color": "#ffffff"
+    },
+    {
+      "code": "PIA",
+      "name": "Oscar Piastri",
+      "team": "McLaren",
+      "color": "#ffffff"
+    },
+    {
+      "code": "ALO",
+      "name": "Fernando Alonso",
+      "team": "Aston Martin",
+      "color": "#ffffff"
+    },
+    {
+      "code": "STR",
+      "name": "Lance Stroll",
+      "team": "Aston Martin",
+      "color": "#ffffff"
+    },
+    {
+      "code": "ZHO",
+      "name": "Guanyu Zhou",
+      "team": "Sauber",
+      "color": "#ffffff"
+    },
+    {
+      "code": "MAG",
+      "name": "Kevin Magnussen",
+      "team": "Haas F1 Team",
+      "color": "#ffffff"
+    },
+    {
+      "code": "RIC",
+      "name": "Daniel Ricciardo",
+      "team": "RB F1 Team",
+      "color": "#ffffff"
+    },
+    {
+      "code": "TSU",
+      "name": "Yuki Tsunoda",
+      "team": "RB F1 Team",
+      "color": "#ffffff"
+    },
+    {
+      "code": "ALB",
+      "name": "Alexander Albon",
+      "team": "Williams",
+      "color": "#ffffff"
+    },
+    {
+      "code": "HUL",
+      "name": "Nico H\u00fclkenberg",
+      "team": "Haas F1 Team",
+      "color": "#ffffff"
+    },
+    {
+      "code": "OCO",
+      "name": "Esteban Ocon",
+      "team": "Alpine F1 Team",
+      "color": "#ffffff"
+    },
+    {
+      "code": "GAS",
+      "name": "Pierre Gasly",
+      "team": "Alpine F1 Team",
+      "color": "#ffffff"
+    },
+    {
+      "code": "BOT",
+      "name": "Valtteri Bottas",
+      "team": "Sauber",
+      "color": "#ffffff"
+    },
+    {
+      "code": "SAR",
+      "name": "Logan Sargeant",
+      "team": "Williams",
+      "color": "#ffffff"
+    }
+  ],
+  "session_events": [],
+  "laps": []
+}

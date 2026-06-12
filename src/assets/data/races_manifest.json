@@ -1,0 +1,10 @@
+{
+  "races": [
+    {
+      "year": 2024,
+      "id": "bahrain",
+      "name": "Bahrain Grand Prix",
+      "file": "races/2024/bahrain.json"
+    }
+  ]
+}

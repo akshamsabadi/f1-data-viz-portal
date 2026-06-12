@@ -1,0 +1,5 @@
+.venv/
+data-pipeline/cache/
+__pycache__/
+*.pyc
+.DS_Store
