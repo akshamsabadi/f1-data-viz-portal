@@ -71,7 +71,8 @@ export function renderBeeswarm(data) {
     // X Axis
     const xAxisGroup = svg.append('g')
         .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(xScale));
+        .call(d3.axisBottom(xScale).tickSize(0))
+        .call(g => g.select(".domain").remove());
 
     xAxisGroup.selectAll('.tick text')
         .style('fill', d => driverColorMap[d] || 'var(--text-muted)')
@@ -90,7 +91,8 @@ export function renderBeeswarm(data) {
 
     // Y Axis
     svg.append('g')
-        .call(d3.axisLeft(yScale).ticks(10))
+        .call(d3.axisLeft(yScale).ticks(10).tickSize(0))
+        .call(g => g.select(".domain").remove())
         .append('text')
         .attr('transform', 'rotate(-90)')
         .attr('y', -45)

@@ -9,7 +9,7 @@ export function renderBump(data) {
         return;
     }
 
-    const margin = { top: 20, right: 30, bottom: 40, left: 40 };
+    const margin = { top: 20, right: 50, bottom: 40, left: 40 };
     const width = container.clientWidth - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
@@ -116,11 +116,26 @@ export function renderBump(data) {
         .attr('stroke', 'var(--bg-dark)')
         .attr('stroke-width', 1);
 
+    const endLabels = endNodesGroup.selectAll('.end-label')
+        .data(driverLaps)
+        .enter()
+        .append('text')
+        .attr('class', 'end-label')
+        .attr('x', d => xScale(d[1][d[1].length - 1].lap) + 8)
+        .attr('y', d => yScale(d[1][d[1].length - 1].position))
+        .attr('dy', '0.35em')
+        .attr('fill', d => driverColors[d[0]] || '#ccc')
+        .style('font-family', 'Titillium Web, sans-serif')
+        .style('font-size', '11px')
+        .style('font-weight', '700')
+        .text(d => d[0]);
+
     // Focus state interaction
     const handleMouseOver = (event, d) => {
         paths.attr('opacity', p => p[0] === d[0] ? 1 : 0.1);
         startNodes.attr('opacity', p => p[0] === d[0] ? 1 : 0.1);
         endNodes.attr('opacity', p => p[0] === d[0] ? 1 : 0.1);
+        endLabels.attr('opacity', p => p[0] === d[0] ? 1 : 0.1);
         d3.select(event.currentTarget).attr('stroke-width', 4);
     };
 
@@ -128,6 +143,7 @@ export function renderBump(data) {
         paths.attr('opacity', 1).attr('stroke-width', 2);
         startNodes.attr('opacity', 1);
         endNodes.attr('opacity', 1);
+        endLabels.attr('opacity', 1);
     };
 
     paths.on('mouseover', handleMouseOver).on('mouseout', handleMouseOut);

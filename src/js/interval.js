@@ -41,11 +41,8 @@ export function renderInterval(data) {
         .domain([1, maxLap])
         .range([0, width]);
 
-    // For gaps, 0 is at the top (leader), larger gap goes down
-    const yMax = d3.max(gapData, d => d.gap) || 100;
-
     const yScale = d3.scaleLinear()
-        .domain([0, yMax * 1.05])
+        .domain([0, 300])
         .range([0, height]); // Inverted range: 0 gap is at the top (y=0)
 
     // Gridlines
@@ -100,8 +97,14 @@ export function renderInterval(data) {
     const driverGaps = d3.group(gapData, d => d.driver);
     const driverColors = Object.fromEntries(data.drivers.map(d => [d.code, d.color]));
 
+    svg.append('defs').append('clipPath')
+        .attr('id', 'clip-interval')
+        .append('rect')
+        .attr('width', width)
+        .attr('height', height);
+
     // Draw lines
-    const pathGroup = svg.append('g');
+    const pathGroup = svg.append('g').attr('clip-path', 'url(#clip-interval)');
     
     pathGroup.selectAll('.line')
         .data(driverGaps)
