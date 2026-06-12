@@ -21,7 +21,7 @@ export function renderBump(data) {
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
     const maxLap = d3.max(validLaps, d => d.lap);
-    const maxPos = d3.max(validLaps, d => d.position) || 20;
+    const maxPos = data.drivers.length || 22;
 
     const xScale = d3.scaleLinear()
         .domain([1, maxLap])

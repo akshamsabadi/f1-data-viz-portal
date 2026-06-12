@@ -43,11 +43,9 @@ export function renderInterval(data) {
 
     // For gaps, 0 is at the top (leader), larger gap goes down
     const yMax = d3.max(gapData, d => d.gap) || 100;
-    // Cap yMax at 120 seconds to prevent massive outliers from squishing the chart
-    const cappedYMax = Math.min(yMax, 120);
 
     const yScale = d3.scaleLinear()
-        .domain([0, cappedYMax])
+        .domain([0, yMax * 1.05])
         .range([0, height]); // Inverted range: 0 gap is at the top (y=0)
 
     // Gridlines

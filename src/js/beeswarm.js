@@ -48,8 +48,11 @@ export function renderBeeswarm(data) {
         .range([0, width])
         .padding(1);
 
+    const timeExtent = d3.extent(filteredLaps, d => d.time);
+    const timePadding = (timeExtent[1] - timeExtent[0]) * 0.05;
+
     const yScale = d3.scaleLinear()
-        .domain(d3.extent(filteredLaps, d => d.time))
+        .domain([timeExtent[0] - timePadding, timeExtent[1] + timePadding])
         .range([height, 0]);
 
     const colorScale = d3.scaleOrdinal()

@@ -2,7 +2,7 @@ import { renderBeeswarm } from './beeswarm.js';
 import { renderInterval } from './interval.js';
 import { renderBump } from './bump.js';
 
-const APP_VERSION = 'v1.4.0';
+const APP_VERSION = 'v1.5.0';
 let currentData = null;
 
 async function init() {
@@ -50,8 +50,11 @@ async function loadRace(dataFile) {
 
 function updateDashboardHeader(data) {
     const { year, gp, total_laps, winner } = data.race_info;
+    const winnerDriver = data.drivers.find(d => d.code === winner);
+    const winnerColor = winnerDriver ? winnerDriver.color : 'var(--text-primary)';
+    
     document.getElementById('race-title').textContent = `${year} ${gp}`;
-    document.getElementById('race-stats').textContent = `Total Laps: ${total_laps} | Winner: ${winner || 'N/A'}`;
+    document.getElementById('race-stats').innerHTML = `Total Laps: ${total_laps} | Winner: <span style="color: ${winnerColor}; font-weight: bold;">${winner || 'N/A'}</span>`;
 }
 
 document.addEventListener('DOMContentLoaded', init);
