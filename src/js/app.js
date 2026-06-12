@@ -2,7 +2,7 @@ import { renderBeeswarm } from './beeswarm.js';
 import { renderInterval } from './interval.js';
 import { renderBump } from './bump.js';
 
-const APP_VERSION = 'v1.2.0';
+const APP_VERSION = 'v1.3.0';
 let currentData = null;
 
 async function init() {

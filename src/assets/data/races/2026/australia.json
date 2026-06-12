@@ -1,0 +1,9145 @@
+{
+  "race_info": {
+    "year": 2026,
+    "gp": "Australian Grand Prix",
+    "total_laps": 58,
+    "winner": "RUS"
+  },
+  "drivers": [
+    {
+      "code": "RUS",
+      "name": "George Russell",
+      "team": "Mercedes",
+      "color": "#00D7B6"
+    },
+    {
+      "code": "ANT",
+      "name": "Kimi Antonelli",
+      "team": "Mercedes",
+      "color": "#00D7B6"
+    },
+    {
+      "code": "LEC",
+      "name": "Charles Leclerc",
+      "team": "Ferrari",
+      "color": "#ED1131"
+    },
+    {
+      "code": "HAM",
+      "name": "Lewis Hamilton",
+      "team": "Ferrari",
+      "color": "#ED1131"
+    },
+    {
+      "code": "NOR",
+      "name": "Lando Norris",
+      "team": "McLaren",
+      "color": "#F47600"
+    },
+    {
+      "code": "VER",
+      "name": "Max Verstappen",
+      "team": "Red Bull Racing",
+      "color": "#4781D7"
+    },
+    {
+      "code": "BEA",
+      "name": "Oliver Bearman",
+      "team": "Haas F1 Team",
+      "color": "#9C9FA2"
+    },
+    {
+      "code": "LIN",
+      "name": "Arvid Lindblad",
+      "team": "Racing Bulls",
+      "color": "#6C98FF"
+    },
+    {
+      "code": "BOR",
+      "name": "Gabriel Bortoleto",
+      "team": "Audi",
+      "color": "#F50537"
+    },
+    {
+      "code": "GAS",
+      "name": "Pierre Gasly",
+      "team": "Alpine",
+      "color": "#00A1E8"
+    },
+    {
+      "code": "OCO",
+      "name": "Esteban Ocon",
+      "team": "Haas F1 Team",
+      "color": "#9C9FA2"
+    },
+    {
+      "code": "ALB",
+      "name": "Alexander Albon",
+      "team": "Williams",
+      "color": "#1868DB"
+    },
+    {
+      "code": "LAW",
+      "name": "Liam Lawson",
+      "team": "Racing Bulls",
+      "color": "#6C98FF"
+    },
+    {
+      "code": "COL",
+      "name": "Franco Colapinto",
+      "team": "Alpine",
+      "color": "#00A1E8"
+    },
+    {
+      "code": "SAI",
+      "name": "Carlos Sainz",
+      "team": "Williams",
+      "color": "#1868DB"
+    },
+    {
+      "code": "PER",
+      "name": "Sergio Perez",
+      "team": "Cadillac",
+      "color": "#909090"
+    },
+    {
+      "code": "STR",
+      "name": "Lance Stroll",
+      "team": "Aston Martin",
+      "color": "#229971"
+    },
+    {
+      "code": "ALO",
+      "name": "Fernando Alonso",
+      "team": "Aston Martin",
+      "color": "#229971"
+    },
+    {
+      "code": "BOT",
+      "name": "Valtteri Bottas",
+      "team": "Cadillac",
+      "color": "#909090"
+    },
+    {
+      "code": "HAD",
+      "name": "Isack Hadjar",
+      "team": "Red Bull Racing",
+      "color": "#4781D7"
+    },
+    {
+      "code": "PIA",
+      "name": "Oscar Piastri",
+      "team": "McLaren",
+      "color": "#F47600"
+    },
+    {
+      "code": "HUL",
+      "name": "Nico Hulkenberg",
+      "team": "Audi",
+      "color": "#F50537"
+    }
+  ],
+  "session_events": [],
+  "laps": [
+    {
+      "driver": "NOR",
+      "lap": 1,
+      "time": 96.458,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 6,
+      "session_time": 3836.437
+    },
+    {
+      "driver": "NOR",
+      "lap": 2,
+      "time": 87.344,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 6,
+      "session_time": 3923.781
+    },
+    {
+      "driver": "NOR",
+      "lap": 3,
+      "time": 86.863,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 7,
+      "session_time": 4010.644
+    },
+    {
+      "driver": "NOR",
+      "lap": 4,
+      "time": 85.857,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 7,
+      "session_time": 4096.501
+    },
+    {
+      "driver": "NOR",
+      "lap": 5,
+      "time": 85.573,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 7,
+      "session_time": 4182.074
+    },
+    {
+      "driver": "NOR",
+      "lap": 6,
+      "time": 85.036,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 7,
+      "session_time": 4267.11
+    },
+    {
+      "driver": "NOR",
+      "lap": 7,
+      "time": 84.978,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 7,
+      "session_time": 4352.088
+    },
+    {
+      "driver": "NOR",
+      "lap": 8,
+      "time": 85.299,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 7,
+      "session_time": 4437.387
+    },
+    {
+      "driver": "NOR",
+      "lap": 9,
+      "time": 85.639,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 7,
+      "session_time": 4523.026
+    },
+    {
+      "driver": "NOR",
+      "lap": 10,
+      "time": 85.295,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 7,
+      "session_time": 4608.321
+    },
+    {
+      "driver": "NOR",
+      "lap": 11,
+      "time": 103.391,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 9,
+      "session_time": 4711.712
+    },
+    {
+      "driver": "NOR",
+      "lap": 12,
+      "time": 118.075,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 9,
+      "session_time": 4829.787
+    },
+    {
+      "driver": "NOR",
+      "lap": 13,
+      "time": 111.932,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 9,
+      "session_time": 4941.719
+    },
+    {
+      "driver": "NOR",
+      "lap": 14,
+      "time": 84.233,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 9,
+      "session_time": 5025.952
+    },
+    {
+      "driver": "NOR",
+      "lap": 15,
+      "time": 83.784,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 9,
+      "session_time": 5109.736
+    },
+    {
+      "driver": "NOR",
+      "lap": 16,
+      "time": 83.912,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 9,
+      "session_time": 5193.648
+    },
+    {
+      "driver": "NOR",
+      "lap": 17,
+      "time": 84.053,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 9,
+      "session_time": 5277.701
+    },
+    {
+      "driver": "NOR",
+      "lap": 18,
+      "time": 95.404,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 5,
+      "session_time": 5373.105
+    },
+    {
+      "driver": "NOR",
+      "lap": 19,
+      "time": 116.07,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 5,
+      "session_time": 5489.175
+    },
+    {
+      "driver": "NOR",
+      "lap": 20,
+      "time": 85.774,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 5,
+      "session_time": 5574.949
+    },
+    {
+      "driver": "NOR",
+      "lap": 21,
+      "time": 83.972,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 5,
+      "session_time": 5658.921
+    },
+    {
+      "driver": "NOR",
+      "lap": 22,
+      "time": 83.687,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 5,
+      "session_time": 5742.608
+    },
+    {
+      "driver": "NOR",
+      "lap": 23,
+      "time": 83.534,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 5,
+      "session_time": 5826.142
+    },
+    {
+      "driver": "NOR",
+      "lap": 24,
+      "time": 83.394,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 5,
+      "session_time": 5909.536
+    },
+    {
+      "driver": "NOR",
+      "lap": 25,
+      "time": 83.5,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 5,
+      "session_time": 5993.036
+    },
+    {
+      "driver": "NOR",
+      "lap": 26,
+      "time": 83.403,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 5,
+      "session_time": 6076.439
+    },
+    {
+      "driver": "NOR",
+      "lap": 27,
+      "time": 83.896,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 5,
+      "session_time": 6160.335
+    },
+    {
+      "driver": "NOR",
+      "lap": 28,
+      "time": 84.04,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 5,
+      "session_time": 6244.375
+    },
+    {
+      "driver": "NOR",
+      "lap": 29,
+      "time": 84.08,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 5,
+      "session_time": 6328.455
+    },
+    {
+      "driver": "NOR",
+      "lap": 30,
+      "time": 83.961,
+      "compound": "HARD",
+      "tyre_life": 19,
+      "position": 5,
+      "session_time": 6412.416
+    },
+    {
+      "driver": "NOR",
+      "lap": 31,
+      "time": 84.094,
+      "compound": "HARD",
+      "tyre_life": 20,
+      "position": 5,
+      "session_time": 6496.51
+    },
+    {
+      "driver": "NOR",
+      "lap": 32,
+      "time": 84.075,
+      "compound": "HARD",
+      "tyre_life": 21,
+      "position": 5,
+      "session_time": 6580.585
+    },
+    {
+      "driver": "NOR",
+      "lap": 33,
+      "time": 84.79,
+      "compound": "HARD",
+      "tyre_life": 22,
+      "position": 5,
+      "session_time": 6665.375
+    },
+    {
+      "driver": "NOR",
+      "lap": 34,
+      "time": 112.732,
+      "compound": "HARD",
+      "tyre_life": 23,
+      "position": 6,
+      "session_time": 6778.107
+    },
+    {
+      "driver": "NOR",
+      "lap": 35,
+      "time": 89.434,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 8,
+      "session_time": 6867.541
+    },
+    {
+      "driver": "NOR",
+      "lap": 36,
+      "time": 83.324,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 8,
+      "session_time": 6950.865
+    },
+    {
+      "driver": "NOR",
+      "lap": 37,
+      "time": 83.448,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 8,
+      "session_time": 7034.313
+    },
+    {
+      "driver": "NOR",
+      "lap": 38,
+      "time": 83.423,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 7,
+      "session_time": 7117.736
+    },
+    {
+      "driver": "NOR",
+      "lap": 39,
+      "time": 84.001,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 6,
+      "session_time": 7201.737
+    },
+    {
+      "driver": "NOR",
+      "lap": 40,
+      "time": 83.397,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 6,
+      "session_time": 7285.134
+    },
+    {
+      "driver": "NOR",
+      "lap": 41,
+      "time": 83.762,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 6,
+      "session_time": 7368.896
+    },
+    {
+      "driver": "NOR",
+      "lap": 42,
+      "time": 83.347,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 5,
+      "session_time": 7452.243
+    },
+    {
+      "driver": "NOR",
+      "lap": 43,
+      "time": 83.286,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 5,
+      "session_time": 7535.529
+    },
+    {
+      "driver": "NOR",
+      "lap": 44,
+      "time": 83.192,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 5,
+      "session_time": 7618.721
+    },
+    {
+      "driver": "NOR",
+      "lap": 45,
+      "time": 82.886,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 5,
+      "session_time": 7701.607
+    },
+    {
+      "driver": "NOR",
+      "lap": 46,
+      "time": 82.908,
+      "compound": "MEDIUM",
+      "tyre_life": 12,
+      "position": 5,
+      "session_time": 7784.515
+    },
+    {
+      "driver": "NOR",
+      "lap": 47,
+      "time": 82.778,
+      "compound": "MEDIUM",
+      "tyre_life": 13,
+      "position": 5,
+      "session_time": 7867.293
+    },
+    {
+      "driver": "NOR",
+      "lap": 48,
+      "time": 82.953,
+      "compound": "MEDIUM",
+      "tyre_life": 14,
+      "position": 5,
+      "session_time": 7950.246
+    },
+    {
+      "driver": "NOR",
+      "lap": 49,
+      "time": 82.804,
+      "compound": "MEDIUM",
+      "tyre_life": 15,
+      "position": 5,
+      "session_time": 8033.05
+    },
+    {
+      "driver": "NOR",
+      "lap": 50,
+      "time": 82.763,
+      "compound": "MEDIUM",
+      "tyre_life": 16,
+      "position": 5,
+      "session_time": 8115.813
+    },
+    {
+      "driver": "NOR",
+      "lap": 51,
+      "time": 82.598,
+      "compound": "MEDIUM",
+      "tyre_life": 17,
+      "position": 5,
+      "session_time": 8198.411
+    },
+    {
+      "driver": "NOR",
+      "lap": 52,
+      "time": 82.784,
+      "compound": "MEDIUM",
+      "tyre_life": 18,
+      "position": 5,
+      "session_time": 8281.195
+    },
+    {
+      "driver": "NOR",
+      "lap": 53,
+      "time": 82.358,
+      "compound": "MEDIUM",
+      "tyre_life": 19,
+      "position": 5,
+      "session_time": 8363.553
+    },
+    {
+      "driver": "NOR",
+      "lap": 54,
+      "time": 82.796,
+      "compound": "MEDIUM",
+      "tyre_life": 20,
+      "position": 5,
+      "session_time": 8446.349
+    },
+    {
+      "driver": "NOR",
+      "lap": 55,
+      "time": 82.867,
+      "compound": "MEDIUM",
+      "tyre_life": 21,
+      "position": 5,
+      "session_time": 8529.216
+    },
+    {
+      "driver": "NOR",
+      "lap": 56,
+      "time": 82.843,
+      "compound": "MEDIUM",
+      "tyre_life": 22,
+      "position": 5,
+      "session_time": 8612.059
+    },
+    {
+      "driver": "NOR",
+      "lap": 57,
+      "time": 83.416,
+      "compound": "MEDIUM",
+      "tyre_life": 23,
+      "position": 5,
+      "session_time": 8695.475
+    },
+    {
+      "driver": "NOR",
+      "lap": 58,
+      "time": 83.046,
+      "compound": "MEDIUM",
+      "tyre_life": 24,
+      "position": 5,
+      "session_time": 8778.521
+    },
+    {
+      "driver": "GAS",
+      "lap": 1,
+      "time": 97.98,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 9,
+      "session_time": 3837.959
+    },
+    {
+      "driver": "GAS",
+      "lap": 2,
+      "time": 87.281,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 9,
+      "session_time": 3925.24
+    },
+    {
+      "driver": "GAS",
+      "lap": 3,
+      "time": 86.371,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 9,
+      "session_time": 4011.611
+    },
+    {
+      "driver": "GAS",
+      "lap": 4,
+      "time": 85.894,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 9,
+      "session_time": 4097.505
+    },
+    {
+      "driver": "GAS",
+      "lap": 5,
+      "time": 87.04,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 9,
+      "session_time": 4184.545
+    },
+    {
+      "driver": "GAS",
+      "lap": 6,
+      "time": 85.989,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 9,
+      "session_time": 4270.534
+    },
+    {
+      "driver": "GAS",
+      "lap": 7,
+      "time": 85.079,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 9,
+      "session_time": 4355.613
+    },
+    {
+      "driver": "GAS",
+      "lap": 8,
+      "time": 84.964,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 9,
+      "session_time": 4440.577
+    },
+    {
+      "driver": "GAS",
+      "lap": 9,
+      "time": 85.441,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 9,
+      "session_time": 4526.018
+    },
+    {
+      "driver": "GAS",
+      "lap": 10,
+      "time": 86.669,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 10,
+      "session_time": 4612.687
+    },
+    {
+      "driver": "GAS",
+      "lap": 11,
+      "time": 104.821,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 12,
+      "session_time": 4717.508
+    },
+    {
+      "driver": "GAS",
+      "lap": 12,
+      "time": 118.072,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 11,
+      "session_time": 4835.58
+    },
+    {
+      "driver": "GAS",
+      "lap": 13,
+      "time": 111.634,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 11,
+      "session_time": 4947.214
+    },
+    {
+      "driver": "GAS",
+      "lap": 14,
+      "time": 85.748,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 11,
+      "session_time": 5032.962
+    },
+    {
+      "driver": "GAS",
+      "lap": 15,
+      "time": 84.823,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 11,
+      "session_time": 5117.785
+    },
+    {
+      "driver": "GAS",
+      "lap": 16,
+      "time": 84.69,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 11,
+      "session_time": 5202.475
+    },
+    {
+      "driver": "GAS",
+      "lap": 17,
+      "time": 85.203,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 11,
+      "session_time": 5287.678
+    },
+    {
+      "driver": "GAS",
+      "lap": 18,
+      "time": 101.225,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 11,
+      "session_time": 5388.903
+    },
+    {
+      "driver": "GAS",
+      "lap": 19,
+      "time": 112.95,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 10,
+      "session_time": 5501.853
+    },
+    {
+      "driver": "GAS",
+      "lap": 20,
+      "time": 86.578,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 11,
+      "session_time": 5588.431
+    },
+    {
+      "driver": "GAS",
+      "lap": 21,
+      "time": 85.678,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 10,
+      "session_time": 5674.109
+    },
+    {
+      "driver": "GAS",
+      "lap": 22,
+      "time": 84.586,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 10,
+      "session_time": 5758.695
+    },
+    {
+      "driver": "GAS",
+      "lap": 23,
+      "time": 84.499,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 10,
+      "session_time": 5843.194
+    },
+    {
+      "driver": "GAS",
+      "lap": 24,
+      "time": 84.852,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 10,
+      "session_time": 5928.046
+    },
+    {
+      "driver": "GAS",
+      "lap": 25,
+      "time": 84.54,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 10,
+      "session_time": 6012.586
+    },
+    {
+      "driver": "GAS",
+      "lap": 26,
+      "time": 84.771,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 10,
+      "session_time": 6097.357
+    },
+    {
+      "driver": "GAS",
+      "lap": 27,
+      "time": 84.661,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 10,
+      "session_time": 6182.018
+    },
+    {
+      "driver": "GAS",
+      "lap": 28,
+      "time": 84.795,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 10,
+      "session_time": 6266.813
+    },
+    {
+      "driver": "GAS",
+      "lap": 29,
+      "time": 85.096,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 10,
+      "session_time": 6351.909
+    },
+    {
+      "driver": "GAS",
+      "lap": 30,
+      "time": 85.242,
+      "compound": "HARD",
+      "tyre_life": 19,
+      "position": 10,
+      "session_time": 6437.151
+    },
+    {
+      "driver": "GAS",
+      "lap": 31,
+      "time": 85.271,
+      "compound": "HARD",
+      "tyre_life": 20,
+      "position": 10,
+      "session_time": 6522.422
+    },
+    {
+      "driver": "GAS",
+      "lap": 32,
+      "time": 85.202,
+      "compound": "HARD",
+      "tyre_life": 21,
+      "position": 10,
+      "session_time": 6607.624
+    },
+    {
+      "driver": "GAS",
+      "lap": 33,
+      "time": 92.276,
+      "compound": "HARD",
+      "tyre_life": 22,
+      "position": 9,
+      "session_time": 6699.9
+    },
+    {
+      "driver": "GAS",
+      "lap": 34,
+      "time": 91.244,
+      "compound": "HARD",
+      "tyre_life": 23,
+      "position": 9,
+      "session_time": 6791.144
+    },
+    {
+      "driver": "GAS",
+      "lap": 35,
+      "time": 85.029,
+      "compound": "HARD",
+      "tyre_life": 24,
+      "position": 9,
+      "session_time": 6876.173
+    },
+    {
+      "driver": "GAS",
+      "lap": 36,
+      "time": 85.177,
+      "compound": "HARD",
+      "tyre_life": 25,
+      "position": 9,
+      "session_time": 6961.35
+    },
+    {
+      "driver": "GAS",
+      "lap": 37,
+      "time": 86.333,
+      "compound": "HARD",
+      "tyre_life": 26,
+      "position": 10,
+      "session_time": 7047.683
+    },
+    {
+      "driver": "GAS",
+      "lap": 38,
+      "time": 86.094,
+      "compound": "HARD",
+      "tyre_life": 27,
+      "position": 9,
+      "session_time": 7133.777
+    },
+    {
+      "driver": "GAS",
+      "lap": 39,
+      "time": 85.265,
+      "compound": "HARD",
+      "tyre_life": 28,
+      "position": 9,
+      "session_time": 7219.042
+    },
+    {
+      "driver": "GAS",
+      "lap": 40,
+      "time": 86.132,
+      "compound": "HARD",
+      "tyre_life": 29,
+      "position": 10,
+      "session_time": 7305.174
+    },
+    {
+      "driver": "GAS",
+      "lap": 41,
+      "time": 85.319,
+      "compound": "HARD",
+      "tyre_life": 30,
+      "position": 10,
+      "session_time": 7390.493
+    },
+    {
+      "driver": "GAS",
+      "lap": 42,
+      "time": 84.879,
+      "compound": "HARD",
+      "tyre_life": 31,
+      "position": 10,
+      "session_time": 7475.372
+    },
+    {
+      "driver": "GAS",
+      "lap": 43,
+      "time": 84.977,
+      "compound": "HARD",
+      "tyre_life": 32,
+      "position": 10,
+      "session_time": 7560.349
+    },
+    {
+      "driver": "GAS",
+      "lap": 44,
+      "time": 85.028,
+      "compound": "HARD",
+      "tyre_life": 33,
+      "position": 10,
+      "session_time": 7645.377
+    },
+    {
+      "driver": "GAS",
+      "lap": 45,
+      "time": 87.175,
+      "compound": "HARD",
+      "tyre_life": 34,
+      "position": 10,
+      "session_time": 7732.552
+    },
+    {
+      "driver": "GAS",
+      "lap": 46,
+      "time": 85.353,
+      "compound": "HARD",
+      "tyre_life": 35,
+      "position": 10,
+      "session_time": 7817.905
+    },
+    {
+      "driver": "GAS",
+      "lap": 47,
+      "time": 86.497,
+      "compound": "HARD",
+      "tyre_life": 36,
+      "position": 10,
+      "session_time": 7904.402
+    },
+    {
+      "driver": "GAS",
+      "lap": 48,
+      "time": 84.982,
+      "compound": "HARD",
+      "tyre_life": 37,
+      "position": 10,
+      "session_time": 7989.384
+    },
+    {
+      "driver": "GAS",
+      "lap": 49,
+      "time": 85.281,
+      "compound": "HARD",
+      "tyre_life": 38,
+      "position": 10,
+      "session_time": 8074.665
+    },
+    {
+      "driver": "GAS",
+      "lap": 50,
+      "time": 84.927,
+      "compound": "HARD",
+      "tyre_life": 39,
+      "position": 10,
+      "session_time": 8159.592
+    },
+    {
+      "driver": "GAS",
+      "lap": 51,
+      "time": 86.46,
+      "compound": "HARD",
+      "tyre_life": 40,
+      "position": 10,
+      "session_time": 8246.052
+    },
+    {
+      "driver": "GAS",
+      "lap": 52,
+      "time": 86.527,
+      "compound": "HARD",
+      "tyre_life": 41,
+      "position": 10,
+      "session_time": 8332.579
+    },
+    {
+      "driver": "GAS",
+      "lap": 53,
+      "time": 84.79,
+      "compound": "HARD",
+      "tyre_life": 42,
+      "position": 10,
+      "session_time": 8417.369
+    },
+    {
+      "driver": "GAS",
+      "lap": 54,
+      "time": 84.52,
+      "compound": "HARD",
+      "tyre_life": 43,
+      "position": 10,
+      "session_time": 8501.889
+    },
+    {
+      "driver": "GAS",
+      "lap": 55,
+      "time": 84.595,
+      "compound": "HARD",
+      "tyre_life": 44,
+      "position": 10,
+      "session_time": 8586.484
+    },
+    {
+      "driver": "GAS",
+      "lap": 56,
+      "time": 84.486,
+      "compound": "HARD",
+      "tyre_life": 45,
+      "position": 10,
+      "session_time": 8670.97
+    },
+    {
+      "driver": "GAS",
+      "lap": 57,
+      "time": 84.837,
+      "compound": "HARD",
+      "tyre_life": 46,
+      "position": 10,
+      "session_time": 8755.807
+    },
+    {
+      "driver": "PER",
+      "lap": 1,
+      "time": 102.557,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 19,
+      "session_time": 3842.536
+    },
+    {
+      "driver": "PER",
+      "lap": 2,
+      "time": 88.763,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 19,
+      "session_time": 3931.299
+    },
+    {
+      "driver": "PER",
+      "lap": 3,
+      "time": 88.094,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 18,
+      "session_time": 4019.393
+    },
+    {
+      "driver": "PER",
+      "lap": 4,
+      "time": 87.222,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 18,
+      "session_time": 4106.615
+    },
+    {
+      "driver": "PER",
+      "lap": 5,
+      "time": 88.025,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 18,
+      "session_time": 4194.64
+    },
+    {
+      "driver": "PER",
+      "lap": 6,
+      "time": 87.595,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 18,
+      "session_time": 4282.235
+    },
+    {
+      "driver": "PER",
+      "lap": 7,
+      "time": 87.625,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 18,
+      "session_time": 4369.86
+    },
+    {
+      "driver": "PER",
+      "lap": 8,
+      "time": 87.184,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 18,
+      "session_time": 4457.044
+    },
+    {
+      "driver": "PER",
+      "lap": 9,
+      "time": 87.05,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 17,
+      "session_time": 4544.094
+    },
+    {
+      "driver": "PER",
+      "lap": 10,
+      "time": 87.595,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 17,
+      "session_time": 4631.689
+    },
+    {
+      "driver": "PER",
+      "lap": 11,
+      "time": 97.875,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 14,
+      "session_time": 4729.564
+    },
+    {
+      "driver": "PER",
+      "lap": 12,
+      "time": 116.537,
+      "compound": "MEDIUM",
+      "tyre_life": 12,
+      "position": 14,
+      "session_time": 4846.101
+    },
+    {
+      "driver": "PER",
+      "lap": 13,
+      "time": 110.001,
+      "compound": "MEDIUM",
+      "tyre_life": 13,
+      "position": 14,
+      "session_time": 4956.102
+    },
+    {
+      "driver": "PER",
+      "lap": 14,
+      "time": 87.084,
+      "compound": "MEDIUM",
+      "tyre_life": 14,
+      "position": 14,
+      "session_time": 5043.186
+    },
+    {
+      "driver": "PER",
+      "lap": 15,
+      "time": 88.137,
+      "compound": "MEDIUM",
+      "tyre_life": 15,
+      "position": 14,
+      "session_time": 5131.323
+    },
+    {
+      "driver": "PER",
+      "lap": 16,
+      "time": 91.277,
+      "compound": "MEDIUM",
+      "tyre_life": 16,
+      "position": 15,
+      "session_time": 5222.6
+    },
+    {
+      "driver": "PER",
+      "lap": 17,
+      "time": 88.615,
+      "compound": "MEDIUM",
+      "tyre_life": 17,
+      "position": 15,
+      "session_time": 5311.215
+    },
+    {
+      "driver": "PER",
+      "lap": 18,
+      "time": 126.084,
+      "compound": "MEDIUM",
+      "tyre_life": 18,
+      "position": 16,
+      "session_time": 5437.299
+    },
+    {
+      "driver": "PER",
+      "lap": 19,
+      "time": 103.359,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 16,
+      "session_time": 5540.658
+    },
+    {
+      "driver": "PER",
+      "lap": 20,
+      "time": 86.49,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 16,
+      "session_time": 5627.148
+    },
+    {
+      "driver": "PER",
+      "lap": 21,
+      "time": 87.262,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 16,
+      "session_time": 5714.41
+    },
+    {
+      "driver": "PER",
+      "lap": 22,
+      "time": 89.083,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 16,
+      "session_time": 5803.493
+    },
+    {
+      "driver": "PER",
+      "lap": 23,
+      "time": 87.457,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 16,
+      "session_time": 5890.95
+    },
+    {
+      "driver": "PER",
+      "lap": 24,
+      "time": 89.284,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 16,
+      "session_time": 5980.234
+    },
+    {
+      "driver": "PER",
+      "lap": 25,
+      "time": 87.093,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 16,
+      "session_time": 6067.327
+    },
+    {
+      "driver": "PER",
+      "lap": 26,
+      "time": 88.588,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 16,
+      "session_time": 6155.915
+    },
+    {
+      "driver": "PER",
+      "lap": 27,
+      "time": 88.352,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 16,
+      "session_time": 6244.267
+    },
+    {
+      "driver": "PER",
+      "lap": 28,
+      "time": 89.249,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 16,
+      "session_time": 6333.516
+    },
+    {
+      "driver": "PER",
+      "lap": 29,
+      "time": 86.934,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 16,
+      "session_time": 6420.45
+    },
+    {
+      "driver": "PER",
+      "lap": 30,
+      "time": 87.419,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 16,
+      "session_time": 6507.869
+    },
+    {
+      "driver": "PER",
+      "lap": 31,
+      "time": 90.506,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 16,
+      "session_time": 6598.375
+    },
+    {
+      "driver": "PER",
+      "lap": 32,
+      "time": 94.972,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 16,
+      "session_time": 6693.347
+    },
+    {
+      "driver": "PER",
+      "lap": 33,
+      "time": 93.478,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 16,
+      "session_time": 6786.825
+    },
+    {
+      "driver": "PER",
+      "lap": 34,
+      "time": 87.151,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 16,
+      "session_time": 6873.976
+    },
+    {
+      "driver": "PER",
+      "lap": 35,
+      "time": 89.226,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 16,
+      "session_time": 6963.202
+    },
+    {
+      "driver": "PER",
+      "lap": 36,
+      "time": 88.891,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 16,
+      "session_time": 7052.093
+    },
+    {
+      "driver": "PER",
+      "lap": 37,
+      "time": 87.081,
+      "compound": "HARD",
+      "tyre_life": 19,
+      "position": 16,
+      "session_time": 7139.174
+    },
+    {
+      "driver": "PER",
+      "lap": 38,
+      "time": 86.93,
+      "compound": "HARD",
+      "tyre_life": 20,
+      "position": 16,
+      "session_time": 7226.104
+    },
+    {
+      "driver": "PER",
+      "lap": 39,
+      "time": 87.099,
+      "compound": "HARD",
+      "tyre_life": 21,
+      "position": 16,
+      "session_time": 7313.203
+    },
+    {
+      "driver": "PER",
+      "lap": 40,
+      "time": 89.198,
+      "compound": "HARD",
+      "tyre_life": 22,
+      "position": 16,
+      "session_time": 7402.401
+    },
+    {
+      "driver": "PER",
+      "lap": 41,
+      "time": 89.219,
+      "compound": "HARD",
+      "tyre_life": 23,
+      "position": 16,
+      "session_time": 7491.62
+    },
+    {
+      "driver": "PER",
+      "lap": 42,
+      "time": 87.956,
+      "compound": "HARD",
+      "tyre_life": 24,
+      "position": 16,
+      "session_time": 7579.576
+    },
+    {
+      "driver": "PER",
+      "lap": 43,
+      "time": 105.049,
+      "compound": "HARD",
+      "tyre_life": 25,
+      "position": 16,
+      "session_time": 7684.625
+    },
+    {
+      "driver": "PER",
+      "lap": 44,
+      "time": 93.422,
+      "compound": "SOFT",
+      "tyre_life": 1,
+      "position": 16,
+      "session_time": 7778.047
+    },
+    {
+      "driver": "PER",
+      "lap": 45,
+      "time": 86.314,
+      "compound": "SOFT",
+      "tyre_life": 2,
+      "position": 16,
+      "session_time": 7864.361
+    },
+    {
+      "driver": "PER",
+      "lap": 46,
+      "time": 88.095,
+      "compound": "SOFT",
+      "tyre_life": 3,
+      "position": 16,
+      "session_time": 7952.456
+    },
+    {
+      "driver": "PER",
+      "lap": 47,
+      "time": 86.07,
+      "compound": "SOFT",
+      "tyre_life": 4,
+      "position": 16,
+      "session_time": 8038.526
+    },
+    {
+      "driver": "PER",
+      "lap": 48,
+      "time": 86.151,
+      "compound": "SOFT",
+      "tyre_life": 5,
+      "position": 16,
+      "session_time": 8124.677
+    },
+    {
+      "driver": "PER",
+      "lap": 49,
+      "time": 86.21,
+      "compound": "SOFT",
+      "tyre_life": 6,
+      "position": 16,
+      "session_time": 8210.887
+    },
+    {
+      "driver": "PER",
+      "lap": 50,
+      "time": 86.085,
+      "compound": "SOFT",
+      "tyre_life": 7,
+      "position": 16,
+      "session_time": 8296.972
+    },
+    {
+      "driver": "PER",
+      "lap": 51,
+      "time": 86.2,
+      "compound": "SOFT",
+      "tyre_life": 8,
+      "position": 16,
+      "session_time": 8383.172
+    },
+    {
+      "driver": "PER",
+      "lap": 52,
+      "time": 86.412,
+      "compound": "SOFT",
+      "tyre_life": 9,
+      "position": 16,
+      "session_time": 8469.584
+    },
+    {
+      "driver": "PER",
+      "lap": 53,
+      "time": 86.13,
+      "compound": "SOFT",
+      "tyre_life": 10,
+      "position": 16,
+      "session_time": 8555.714
+    },
+    {
+      "driver": "PER",
+      "lap": 54,
+      "time": 89.959,
+      "compound": "SOFT",
+      "tyre_life": 11,
+      "position": 16,
+      "session_time": 8645.673
+    },
+    {
+      "driver": "PER",
+      "lap": 55,
+      "time": 88.957,
+      "compound": "SOFT",
+      "tyre_life": 12,
+      "position": 16,
+      "session_time": 8734.63
+    },
+    {
+      "driver": "ANT",
+      "lap": 1,
+      "time": 96.966,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 7,
+      "session_time": 3836.945
+    },
+    {
+      "driver": "ANT",
+      "lap": 2,
+      "time": 87.129,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 7,
+      "session_time": 3924.074
+    },
+    {
+      "driver": "ANT",
+      "lap": 3,
+      "time": 85.463,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 6,
+      "session_time": 4009.537
+    },
+    {
+      "driver": "ANT",
+      "lap": 4,
+      "time": 85.411,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 6,
+      "session_time": 4094.948
+    },
+    {
+      "driver": "ANT",
+      "lap": 5,
+      "time": 84.499,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 5,
+      "session_time": 4179.447
+    },
+    {
+      "driver": "ANT",
+      "lap": 6,
+      "time": 84.024,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 4,
+      "session_time": 4263.471
+    },
+    {
+      "driver": "ANT",
+      "lap": 7,
+      "time": 83.835,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 4,
+      "session_time": 4347.306
+    },
+    {
+      "driver": "ANT",
+      "lap": 8,
+      "time": 83.683,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 4,
+      "session_time": 4430.989
+    },
+    {
+      "driver": "ANT",
+      "lap": 9,
+      "time": 83.908,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 4,
+      "session_time": 4514.897
+    },
+    {
+      "driver": "ANT",
+      "lap": 10,
+      "time": 84.037,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 4,
+      "session_time": 4598.934
+    },
+    {
+      "driver": "ANT",
+      "lap": 11,
+      "time": 83.89,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 4,
+      "session_time": 4682.824
+    },
+    {
+      "driver": "ANT",
+      "lap": 12,
+      "time": 129.682,
+      "compound": "MEDIUM",
+      "tyre_life": 12,
+      "position": 5,
+      "session_time": 4812.506
+    },
+    {
+      "driver": "ANT",
+      "lap": 13,
+      "time": 117.691,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 5,
+      "session_time": 4930.197
+    },
+    {
+      "driver": "ANT",
+      "lap": 14,
+      "time": 86.679,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 5,
+      "session_time": 5016.876
+    },
+    {
+      "driver": "ANT",
+      "lap": 15,
+      "time": 83.287,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 5,
+      "session_time": 5100.163
+    },
+    {
+      "driver": "ANT",
+      "lap": 16,
+      "time": 83.618,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 4,
+      "session_time": 5183.781
+    },
+    {
+      "driver": "ANT",
+      "lap": 17,
+      "time": 83.26,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 4,
+      "session_time": 5267.041
+    },
+    {
+      "driver": "ANT",
+      "lap": 18,
+      "time": 90.982,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 4,
+      "session_time": 5358.023
+    },
+    {
+      "driver": "ANT",
+      "lap": 19,
+      "time": 115.334,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 4,
+      "session_time": 5473.357
+    },
+    {
+      "driver": "ANT",
+      "lap": 20,
+      "time": 88.479,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 4,
+      "session_time": 5561.836
+    },
+    {
+      "driver": "ANT",
+      "lap": 21,
+      "time": 82.781,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 4,
+      "session_time": 5644.617
+    },
+    {
+      "driver": "ANT",
+      "lap": 22,
+      "time": 82.862,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 4,
+      "session_time": 5727.479
+    },
+    {
+      "driver": "ANT",
+      "lap": 23,
+      "time": 82.582,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 4,
+      "session_time": 5810.061
+    },
+    {
+      "driver": "ANT",
+      "lap": 24,
+      "time": 83.222,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 4,
+      "session_time": 5893.283
+    },
+    {
+      "driver": "ANT",
+      "lap": 25,
+      "time": 84.545,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 3,
+      "session_time": 5977.828
+    },
+    {
+      "driver": "ANT",
+      "lap": 26,
+      "time": 83.138,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 3,
+      "session_time": 6060.966
+    },
+    {
+      "driver": "ANT",
+      "lap": 27,
+      "time": 83.103,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 3,
+      "session_time": 6144.069
+    },
+    {
+      "driver": "ANT",
+      "lap": 28,
+      "time": 83.03,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 2,
+      "session_time": 6227.099
+    },
+    {
+      "driver": "ANT",
+      "lap": 29,
+      "time": 82.968,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 2,
+      "session_time": 6310.067
+    },
+    {
+      "driver": "ANT",
+      "lap": 30,
+      "time": 82.889,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 2,
+      "session_time": 6392.956
+    },
+    {
+      "driver": "ANT",
+      "lap": 31,
+      "time": 82.88,
+      "compound": "HARD",
+      "tyre_life": 19,
+      "position": 2,
+      "session_time": 6475.836
+    },
+    {
+      "driver": "ANT",
+      "lap": 32,
+      "time": 83.239,
+      "compound": "HARD",
+      "tyre_life": 20,
+      "position": 2,
+      "session_time": 6559.075
+    },
+    {
+      "driver": "ANT",
+      "lap": 33,
+      "time": 83.017,
+      "compound": "HARD",
+      "tyre_life": 21,
+      "position": 2,
+      "session_time": 6642.092
+    },
+    {
+      "driver": "ANT",
+      "lap": 34,
+      "time": 98.387,
+      "compound": "HARD",
+      "tyre_life": 22,
+      "position": 2,
+      "session_time": 6740.479
+    },
+    {
+      "driver": "ANT",
+      "lap": 35,
+      "time": 83.292,
+      "compound": "HARD",
+      "tyre_life": 23,
+      "position": 2,
+      "session_time": 6823.771
+    },
+    {
+      "driver": "ANT",
+      "lap": 36,
+      "time": 82.865,
+      "compound": "HARD",
+      "tyre_life": 24,
+      "position": 2,
+      "session_time": 6906.636
+    },
+    {
+      "driver": "ANT",
+      "lap": 37,
+      "time": 82.966,
+      "compound": "HARD",
+      "tyre_life": 25,
+      "position": 2,
+      "session_time": 6989.602
+    },
+    {
+      "driver": "ANT",
+      "lap": 38,
+      "time": 82.989,
+      "compound": "HARD",
+      "tyre_life": 26,
+      "position": 2,
+      "session_time": 7072.591
+    },
+    {
+      "driver": "ANT",
+      "lap": 39,
+      "time": 82.921,
+      "compound": "HARD",
+      "tyre_life": 27,
+      "position": 2,
+      "session_time": 7155.512
+    },
+    {
+      "driver": "ANT",
+      "lap": 40,
+      "time": 82.672,
+      "compound": "HARD",
+      "tyre_life": 28,
+      "position": 2,
+      "session_time": 7238.184
+    },
+    {
+      "driver": "ANT",
+      "lap": 41,
+      "time": 82.928,
+      "compound": "HARD",
+      "tyre_life": 29,
+      "position": 2,
+      "session_time": 7321.112
+    },
+    {
+      "driver": "ANT",
+      "lap": 42,
+      "time": 82.942,
+      "compound": "HARD",
+      "tyre_life": 30,
+      "position": 2,
+      "session_time": 7404.054
+    },
+    {
+      "driver": "ANT",
+      "lap": 43,
+      "time": 83.015,
+      "compound": "HARD",
+      "tyre_life": 31,
+      "position": 2,
+      "session_time": 7487.069
+    },
+    {
+      "driver": "ANT",
+      "lap": 44,
+      "time": 83.079,
+      "compound": "HARD",
+      "tyre_life": 32,
+      "position": 2,
+      "session_time": 7570.148
+    },
+    {
+      "driver": "ANT",
+      "lap": 45,
+      "time": 83.123,
+      "compound": "HARD",
+      "tyre_life": 33,
+      "position": 2,
+      "session_time": 7653.271
+    },
+    {
+      "driver": "ANT",
+      "lap": 46,
+      "time": 83.038,
+      "compound": "HARD",
+      "tyre_life": 34,
+      "position": 2,
+      "session_time": 7736.309
+    },
+    {
+      "driver": "ANT",
+      "lap": 47,
+      "time": 83.066,
+      "compound": "HARD",
+      "tyre_life": 35,
+      "position": 2,
+      "session_time": 7819.375
+    },
+    {
+      "driver": "ANT",
+      "lap": 48,
+      "time": 82.992,
+      "compound": "HARD",
+      "tyre_life": 36,
+      "position": 2,
+      "session_time": 7902.367
+    },
+    {
+      "driver": "ANT",
+      "lap": 49,
+      "time": 83.245,
+      "compound": "HARD",
+      "tyre_life": 37,
+      "position": 2,
+      "session_time": 7985.612
+    },
+    {
+      "driver": "ANT",
+      "lap": 50,
+      "time": 82.903,
+      "compound": "HARD",
+      "tyre_life": 38,
+      "position": 2,
+      "session_time": 8068.515
+    },
+    {
+      "driver": "ANT",
+      "lap": 51,
+      "time": 82.625,
+      "compound": "HARD",
+      "tyre_life": 39,
+      "position": 2,
+      "session_time": 8151.14
+    },
+    {
+      "driver": "ANT",
+      "lap": 52,
+      "time": 82.558,
+      "compound": "HARD",
+      "tyre_life": 40,
+      "position": 2,
+      "session_time": 8233.698
+    },
+    {
+      "driver": "ANT",
+      "lap": 53,
+      "time": 82.613,
+      "compound": "HARD",
+      "tyre_life": 41,
+      "position": 2,
+      "session_time": 8316.311
+    },
+    {
+      "driver": "ANT",
+      "lap": 54,
+      "time": 82.842,
+      "compound": "HARD",
+      "tyre_life": 42,
+      "position": 2,
+      "session_time": 8399.153
+    },
+    {
+      "driver": "ANT",
+      "lap": 55,
+      "time": 82.928,
+      "compound": "HARD",
+      "tyre_life": 43,
+      "position": 2,
+      "session_time": 8482.081
+    },
+    {
+      "driver": "ANT",
+      "lap": 56,
+      "time": 82.603,
+      "compound": "HARD",
+      "tyre_life": 44,
+      "position": 2,
+      "session_time": 8564.684
+    },
+    {
+      "driver": "ANT",
+      "lap": 57,
+      "time": 82.417,
+      "compound": "HARD",
+      "tyre_life": 45,
+      "position": 2,
+      "session_time": 8647.101
+    },
+    {
+      "driver": "ANT",
+      "lap": 58,
+      "time": 82.653,
+      "compound": "HARD",
+      "tyre_life": 46,
+      "position": 2,
+      "session_time": 8729.754
+    },
+    {
+      "driver": "ALO",
+      "lap": 1,
+      "time": 98.271,
+      "compound": "SOFT",
+      "tyre_life": 1,
+      "position": 10,
+      "session_time": 3838.25
+    },
+    {
+      "driver": "ALO",
+      "lap": 2,
+      "time": 87.598,
+      "compound": "SOFT",
+      "tyre_life": 2,
+      "position": 10,
+      "session_time": 3925.848
+    },
+    {
+      "driver": "ALO",
+      "lap": 3,
+      "time": 88.035,
+      "compound": "SOFT",
+      "tyre_life": 3,
+      "position": 12,
+      "session_time": 4013.883
+    },
+    {
+      "driver": "ALO",
+      "lap": 4,
+      "time": 87.424,
+      "compound": "SOFT",
+      "tyre_life": 4,
+      "position": 12,
+      "session_time": 4101.307
+    },
+    {
+      "driver": "ALO",
+      "lap": 5,
+      "time": 88.835,
+      "compound": "SOFT",
+      "tyre_life": 5,
+      "position": 14,
+      "session_time": 4190.142
+    },
+    {
+      "driver": "ALO",
+      "lap": 6,
+      "time": 88.763,
+      "compound": "SOFT",
+      "tyre_life": 6,
+      "position": 16,
+      "session_time": 4278.905
+    },
+    {
+      "driver": "ALO",
+      "lap": 7,
+      "time": 87.876,
+      "compound": "SOFT",
+      "tyre_life": 7,
+      "position": 17,
+      "session_time": 4366.781
+    },
+    {
+      "driver": "ALO",
+      "lap": 8,
+      "time": 86.792,
+      "compound": "SOFT",
+      "tyre_life": 8,
+      "position": 17,
+      "session_time": 4453.573
+    },
+    {
+      "driver": "ALO",
+      "lap": 9,
+      "time": 87.04,
+      "compound": "SOFT",
+      "tyre_life": 9,
+      "position": 16,
+      "session_time": 4540.613
+    },
+    {
+      "driver": "ALO",
+      "lap": 10,
+      "time": 87.475,
+      "compound": "SOFT",
+      "tyre_life": 10,
+      "position": 16,
+      "session_time": 4628.088
+    },
+    {
+      "driver": "ALO",
+      "lap": 11,
+      "time": 119.99,
+      "compound": "SOFT",
+      "tyre_life": 11,
+      "position": 17,
+      "session_time": 4748.078
+    },
+    {
+      "driver": "ALO",
+      "lap": 12,
+      "time": 122.34,
+      "compound": "SOFT",
+      "tyre_life": 1,
+      "position": 16,
+      "session_time": 4870.418
+    },
+    {
+      "driver": "ALO",
+      "lap": 14,
+      "time": 98.828,
+      "compound": "SOFT",
+      "tyre_life": 3,
+      "position": 19,
+      "session_time": 6038.78
+    },
+    {
+      "driver": "ALO",
+      "lap": 15,
+      "time": 85.713,
+      "compound": "SOFT",
+      "tyre_life": 4,
+      "position": 19,
+      "session_time": 6124.493
+    },
+    {
+      "driver": "ALO",
+      "lap": 16,
+      "time": 86.131,
+      "compound": "SOFT",
+      "tyre_life": 5,
+      "position": 18,
+      "session_time": 6210.624
+    },
+    {
+      "driver": "ALO",
+      "lap": 17,
+      "time": 86.376,
+      "compound": "SOFT",
+      "tyre_life": 6,
+      "position": 18,
+      "session_time": 6297.0
+    },
+    {
+      "driver": "ALO",
+      "lap": 18,
+      "time": 85.908,
+      "compound": "SOFT",
+      "tyre_life": 7,
+      "position": 18,
+      "session_time": 6382.908
+    },
+    {
+      "driver": "ALO",
+      "lap": 19,
+      "time": 88.14,
+      "compound": "SOFT",
+      "tyre_life": 8,
+      "position": 18,
+      "session_time": 6471.048
+    },
+    {
+      "driver": "ALO",
+      "lap": 20,
+      "time": 86.641,
+      "compound": "SOFT",
+      "tyre_life": 9,
+      "position": 18,
+      "session_time": 6557.689
+    },
+    {
+      "driver": "ALO",
+      "lap": 21,
+      "time": 88.082,
+      "compound": "SOFT",
+      "tyre_life": 10,
+      "position": 18,
+      "session_time": 6645.771
+    },
+    {
+      "driver": "LEC",
+      "lap": 1,
+      "time": 91.929,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 1,
+      "session_time": 3831.908
+    },
+    {
+      "driver": "LEC",
+      "lap": 2,
+      "time": 86.212,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 2,
+      "session_time": 3918.12
+    },
+    {
+      "driver": "LEC",
+      "lap": 3,
+      "time": 85.453,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 1,
+      "session_time": 4003.573
+    },
+    {
+      "driver": "LEC",
+      "lap": 4,
+      "time": 84.553,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 1,
+      "session_time": 4088.126
+    },
+    {
+      "driver": "LEC",
+      "lap": 5,
+      "time": 83.981,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 1,
+      "session_time": 4172.107
+    },
+    {
+      "driver": "LEC",
+      "lap": 6,
+      "time": 84.822,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 1,
+      "session_time": 4256.929
+    },
+    {
+      "driver": "LEC",
+      "lap": 7,
+      "time": 84.034,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 1,
+      "session_time": 4340.963
+    },
+    {
+      "driver": "LEC",
+      "lap": 8,
+      "time": 85.563,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 1,
+      "session_time": 4426.526
+    },
+    {
+      "driver": "LEC",
+      "lap": 9,
+      "time": 85.602,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 1,
+      "session_time": 4512.128
+    },
+    {
+      "driver": "LEC",
+      "lap": 10,
+      "time": 83.977,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 1,
+      "session_time": 4596.105
+    },
+    {
+      "driver": "LEC",
+      "lap": 11,
+      "time": 83.798,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 1,
+      "session_time": 4679.903
+    },
+    {
+      "driver": "LEC",
+      "lap": 12,
+      "time": 114.008,
+      "compound": "MEDIUM",
+      "tyre_life": 12,
+      "position": 1,
+      "session_time": 4793.911
+    },
+    {
+      "driver": "LEC",
+      "lap": 13,
+      "time": 115.178,
+      "compound": "MEDIUM",
+      "tyre_life": 13,
+      "position": 1,
+      "session_time": 4909.089
+    },
+    {
+      "driver": "LEC",
+      "lap": 14,
+      "time": 90.489,
+      "compound": "MEDIUM",
+      "tyre_life": 14,
+      "position": 1,
+      "session_time": 4999.578
+    },
+    {
+      "driver": "LEC",
+      "lap": 15,
+      "time": 83.765,
+      "compound": "MEDIUM",
+      "tyre_life": 15,
+      "position": 1,
+      "session_time": 5083.343
+    },
+    {
+      "driver": "LEC",
+      "lap": 16,
+      "time": 83.511,
+      "compound": "MEDIUM",
+      "tyre_life": 16,
+      "position": 1,
+      "session_time": 5166.854
+    },
+    {
+      "driver": "LEC",
+      "lap": 17,
+      "time": 84.356,
+      "compound": "MEDIUM",
+      "tyre_life": 17,
+      "position": 1,
+      "session_time": 5251.21
+    },
+    {
+      "driver": "LEC",
+      "lap": 18,
+      "time": 89.602,
+      "compound": "MEDIUM",
+      "tyre_life": 18,
+      "position": 1,
+      "session_time": 5340.812
+    },
+    {
+      "driver": "LEC",
+      "lap": 19,
+      "time": 113.653,
+      "compound": "MEDIUM",
+      "tyre_life": 19,
+      "position": 1,
+      "session_time": 5454.465
+    },
+    {
+      "driver": "LEC",
+      "lap": 20,
+      "time": 93.183,
+      "compound": "MEDIUM",
+      "tyre_life": 20,
+      "position": 1,
+      "session_time": 5547.648
+    },
+    {
+      "driver": "LEC",
+      "lap": 21,
+      "time": 83.322,
+      "compound": "MEDIUM",
+      "tyre_life": 21,
+      "position": 1,
+      "session_time": 5630.97
+    },
+    {
+      "driver": "LEC",
+      "lap": 22,
+      "time": 83.416,
+      "compound": "MEDIUM",
+      "tyre_life": 22,
+      "position": 1,
+      "session_time": 5714.386
+    },
+    {
+      "driver": "LEC",
+      "lap": 23,
+      "time": 83.476,
+      "compound": "MEDIUM",
+      "tyre_life": 23,
+      "position": 1,
+      "session_time": 5797.862
+    },
+    {
+      "driver": "LEC",
+      "lap": 24,
+      "time": 83.66,
+      "compound": "MEDIUM",
+      "tyre_life": 24,
+      "position": 1,
+      "session_time": 5881.522
+    },
+    {
+      "driver": "LEC",
+      "lap": 25,
+      "time": 97.834,
+      "compound": "MEDIUM",
+      "tyre_life": 25,
+      "position": 4,
+      "session_time": 5979.356
+    },
+    {
+      "driver": "LEC",
+      "lap": 26,
+      "time": 89.317,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 4,
+      "session_time": 6068.673
+    },
+    {
+      "driver": "LEC",
+      "lap": 27,
+      "time": 83.106,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 4,
+      "session_time": 6151.779
+    },
+    {
+      "driver": "LEC",
+      "lap": 28,
+      "time": 83.089,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 3,
+      "session_time": 6234.868
+    },
+    {
+      "driver": "LEC",
+      "lap": 29,
+      "time": 82.987,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 3,
+      "session_time": 6317.855
+    },
+    {
+      "driver": "LEC",
+      "lap": 30,
+      "time": 83.026,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 3,
+      "session_time": 6400.881
+    },
+    {
+      "driver": "LEC",
+      "lap": 31,
+      "time": 82.934,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 3,
+      "session_time": 6483.815
+    },
+    {
+      "driver": "LEC",
+      "lap": 32,
+      "time": 82.947,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 3,
+      "session_time": 6566.762
+    },
+    {
+      "driver": "LEC",
+      "lap": 33,
+      "time": 83.174,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 3,
+      "session_time": 6649.936
+    },
+    {
+      "driver": "LEC",
+      "lap": 34,
+      "time": 98.516,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 3,
+      "session_time": 6748.452
+    },
+    {
+      "driver": "LEC",
+      "lap": 35,
+      "time": 83.542,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 3,
+      "session_time": 6831.994
+    },
+    {
+      "driver": "LEC",
+      "lap": 36,
+      "time": 84.376,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 3,
+      "session_time": 6916.37
+    },
+    {
+      "driver": "LEC",
+      "lap": 37,
+      "time": 83.236,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 3,
+      "session_time": 6999.606
+    },
+    {
+      "driver": "LEC",
+      "lap": 38,
+      "time": 82.579,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 3,
+      "session_time": 7082.185
+    },
+    {
+      "driver": "LEC",
+      "lap": 39,
+      "time": 82.728,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 3,
+      "session_time": 7164.913
+    },
+    {
+      "driver": "LEC",
+      "lap": 40,
+      "time": 82.93,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 3,
+      "session_time": 7247.843
+    },
+    {
+      "driver": "LEC",
+      "lap": 41,
+      "time": 82.995,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 3,
+      "session_time": 7330.838
+    },
+    {
+      "driver": "LEC",
+      "lap": 42,
+      "time": 82.846,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 3,
+      "session_time": 7413.684
+    },
+    {
+      "driver": "LEC",
+      "lap": 43,
+      "time": 82.75,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 3,
+      "session_time": 7496.434
+    },
+    {
+      "driver": "LEC",
+      "lap": 44,
+      "time": 83.094,
+      "compound": "HARD",
+      "tyre_life": 19,
+      "position": 3,
+      "session_time": 7579.528
+    },
+    {
+      "driver": "LEC",
+      "lap": 45,
+      "time": 83.16,
+      "compound": "HARD",
+      "tyre_life": 20,
+      "position": 3,
+      "session_time": 7662.688
+    },
+    {
+      "driver": "LEC",
+      "lap": 46,
+      "time": 82.894,
+      "compound": "HARD",
+      "tyre_life": 21,
+      "position": 3,
+      "session_time": 7745.582
+    },
+    {
+      "driver": "LEC",
+      "lap": 47,
+      "time": 82.952,
+      "compound": "HARD",
+      "tyre_life": 22,
+      "position": 3,
+      "session_time": 7828.534
+    },
+    {
+      "driver": "LEC",
+      "lap": 48,
+      "time": 82.899,
+      "compound": "HARD",
+      "tyre_life": 23,
+      "position": 3,
+      "session_time": 7911.433
+    },
+    {
+      "driver": "LEC",
+      "lap": 49,
+      "time": 83.364,
+      "compound": "HARD",
+      "tyre_life": 24,
+      "position": 3,
+      "session_time": 7994.797
+    },
+    {
+      "driver": "LEC",
+      "lap": 50,
+      "time": 83.2,
+      "compound": "HARD",
+      "tyre_life": 25,
+      "position": 3,
+      "session_time": 8077.997
+    },
+    {
+      "driver": "LEC",
+      "lap": 51,
+      "time": 82.989,
+      "compound": "HARD",
+      "tyre_life": 26,
+      "position": 3,
+      "session_time": 8160.986
+    },
+    {
+      "driver": "LEC",
+      "lap": 52,
+      "time": 83.049,
+      "compound": "HARD",
+      "tyre_life": 27,
+      "position": 3,
+      "session_time": 8244.035
+    },
+    {
+      "driver": "LEC",
+      "lap": 53,
+      "time": 83.014,
+      "compound": "HARD",
+      "tyre_life": 28,
+      "position": 3,
+      "session_time": 8327.049
+    },
+    {
+      "driver": "LEC",
+      "lap": 54,
+      "time": 83.045,
+      "compound": "HARD",
+      "tyre_life": 29,
+      "position": 3,
+      "session_time": 8410.094
+    },
+    {
+      "driver": "LEC",
+      "lap": 55,
+      "time": 82.825,
+      "compound": "HARD",
+      "tyre_life": 30,
+      "position": 3,
+      "session_time": 8492.919
+    },
+    {
+      "driver": "LEC",
+      "lap": 56,
+      "time": 82.965,
+      "compound": "HARD",
+      "tyre_life": 31,
+      "position": 3,
+      "session_time": 8575.884
+    },
+    {
+      "driver": "LEC",
+      "lap": 57,
+      "time": 83.098,
+      "compound": "HARD",
+      "tyre_life": 32,
+      "position": 3,
+      "session_time": 8658.982
+    },
+    {
+      "driver": "LEC",
+      "lap": 58,
+      "time": 83.317,
+      "compound": "HARD",
+      "tyre_life": 33,
+      "position": 3,
+      "session_time": 8742.299
+    },
+    {
+      "driver": "STR",
+      "lap": 1,
+      "time": 103.37,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 20,
+      "session_time": 3843.349
+    },
+    {
+      "driver": "STR",
+      "lap": 2,
+      "time": 88.773,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 20,
+      "session_time": 3932.122
+    },
+    {
+      "driver": "STR",
+      "lap": 3,
+      "time": 88.58,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 20,
+      "session_time": 4020.702
+    },
+    {
+      "driver": "STR",
+      "lap": 4,
+      "time": 88.079,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 20,
+      "session_time": 4108.781
+    },
+    {
+      "driver": "STR",
+      "lap": 5,
+      "time": 88.185,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 20,
+      "session_time": 4196.966
+    },
+    {
+      "driver": "STR",
+      "lap": 6,
+      "time": 88.202,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 20,
+      "session_time": 4285.168
+    },
+    {
+      "driver": "STR",
+      "lap": 7,
+      "time": 87.987,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 20,
+      "session_time": 4373.155
+    },
+    {
+      "driver": "STR",
+      "lap": 8,
+      "time": 87.644,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 20,
+      "session_time": 4460.799
+    },
+    {
+      "driver": "STR",
+      "lap": 9,
+      "time": 88.072,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 19,
+      "session_time": 4548.871
+    },
+    {
+      "driver": "STR",
+      "lap": 10,
+      "time": 87.614,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 19,
+      "session_time": 4636.485
+    },
+    {
+      "driver": "STR",
+      "lap": 11,
+      "time": 132.251,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 19,
+      "session_time": 4768.736
+    },
+    {
+      "driver": "STR",
+      "lap": 12,
+      "time": 118.206,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 18,
+      "session_time": 4886.942
+    },
+    {
+      "driver": "STR",
+      "lap": 13,
+      "time": 98.945,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 17,
+      "session_time": 4985.887
+    },
+    {
+      "driver": "STR",
+      "lap": 14,
+      "time": 87.008,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 17,
+      "session_time": 5072.895
+    },
+    {
+      "driver": "STR",
+      "lap": 15,
+      "time": 86.872,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 17,
+      "session_time": 5159.767
+    },
+    {
+      "driver": "STR",
+      "lap": 16,
+      "time": 87.37,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 17,
+      "session_time": 5247.137
+    },
+    {
+      "driver": "STR",
+      "lap": 17,
+      "time": 90.502,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 17,
+      "session_time": 5337.639
+    },
+    {
+      "driver": "STR",
+      "lap": 18,
+      "time": 114.0,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 17,
+      "session_time": 5451.639
+    },
+    {
+      "driver": "STR",
+      "lap": 19,
+      "time": 99.887,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 17,
+      "session_time": 5551.526
+    },
+    {
+      "driver": "STR",
+      "lap": 20,
+      "time": 88.097,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 17,
+      "session_time": 5639.623
+    },
+    {
+      "driver": "STR",
+      "lap": 21,
+      "time": 87.915,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 17,
+      "session_time": 5727.538
+    },
+    {
+      "driver": "STR",
+      "lap": 22,
+      "time": 87.48,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 17,
+      "session_time": 5815.018
+    },
+    {
+      "driver": "STR",
+      "lap": 23,
+      "time": 87.511,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 17,
+      "session_time": 5902.529
+    },
+    {
+      "driver": "STR",
+      "lap": 24,
+      "time": 87.122,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 17,
+      "session_time": 5989.651
+    },
+    {
+      "driver": "STR",
+      "lap": 25,
+      "time": 89.033,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 17,
+      "session_time": 6078.684
+    },
+    {
+      "driver": "STR",
+      "lap": 26,
+      "time": 118.866,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 17,
+      "session_time": 6197.55
+    },
+    {
+      "driver": "STR",
+      "lap": 27,
+      "time": 97.514,
+      "compound": "SOFT",
+      "tyre_life": 1,
+      "position": 17,
+      "session_time": 6295.064
+    },
+    {
+      "driver": "STR",
+      "lap": 28,
+      "time": 86.074,
+      "compound": "SOFT",
+      "tyre_life": 2,
+      "position": 17,
+      "session_time": 6381.138
+    },
+    {
+      "driver": "STR",
+      "lap": 29,
+      "time": 86.064,
+      "compound": "SOFT",
+      "tyre_life": 3,
+      "position": 17,
+      "session_time": 6467.202
+    },
+    {
+      "driver": "STR",
+      "lap": 30,
+      "time": 87.416,
+      "compound": "SOFT",
+      "tyre_life": 4,
+      "position": 17,
+      "session_time": 6554.618
+    },
+    {
+      "driver": "STR",
+      "lap": 31,
+      "time": 86.387,
+      "compound": "SOFT",
+      "tyre_life": 5,
+      "position": 17,
+      "session_time": 6641.005
+    },
+    {
+      "driver": "STR",
+      "lap": 32,
+      "time": 102.468,
+      "compound": "SOFT",
+      "tyre_life": 6,
+      "position": 17,
+      "session_time": 6743.473
+    },
+    {
+      "driver": "STR",
+      "lap": 33,
+      "time": 86.528,
+      "compound": "SOFT",
+      "tyre_life": 7,
+      "position": 17,
+      "session_time": 6830.001
+    },
+    {
+      "driver": "STR",
+      "lap": 35,
+      "time": 95.637,
+      "compound": "SOFT",
+      "tyre_life": 1,
+      "position": 17,
+      "session_time": 8093.884
+    },
+    {
+      "driver": "STR",
+      "lap": 36,
+      "time": 85.41,
+      "compound": "SOFT",
+      "tyre_life": 2,
+      "position": 17,
+      "session_time": 8179.294
+    },
+    {
+      "driver": "STR",
+      "lap": 37,
+      "time": 86.32,
+      "compound": "SOFT",
+      "tyre_life": 3,
+      "position": 17,
+      "session_time": 8265.614
+    },
+    {
+      "driver": "STR",
+      "lap": 38,
+      "time": 86.37,
+      "compound": "SOFT",
+      "tyre_life": 4,
+      "position": 17,
+      "session_time": 8351.984
+    },
+    {
+      "driver": "STR",
+      "lap": 39,
+      "time": 105.889,
+      "compound": "SOFT",
+      "tyre_life": 5,
+      "position": 17,
+      "session_time": 8457.873
+    },
+    {
+      "driver": "STR",
+      "lap": 40,
+      "time": 92.972,
+      "compound": "SOFT",
+      "tyre_life": 1,
+      "position": 17,
+      "session_time": 8550.845
+    },
+    {
+      "driver": "STR",
+      "lap": 41,
+      "time": 85.444,
+      "compound": "SOFT",
+      "tyre_life": 2,
+      "position": 17,
+      "session_time": 8636.289
+    },
+    {
+      "driver": "STR",
+      "lap": 42,
+      "time": 85.707,
+      "compound": "SOFT",
+      "tyre_life": 3,
+      "position": 17,
+      "session_time": 8721.996
+    },
+    {
+      "driver": "STR",
+      "lap": 43,
+      "time": 85.919,
+      "compound": "SOFT",
+      "tyre_life": 4,
+      "position": 17,
+      "session_time": 8807.915
+    },
+    {
+      "driver": "ALB",
+      "lap": 1,
+      "time": 99.376,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 12,
+      "session_time": 3839.355
+    },
+    {
+      "driver": "ALB",
+      "lap": 2,
+      "time": 87.78,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 13,
+      "session_time": 3927.135
+    },
+    {
+      "driver": "ALB",
+      "lap": 3,
+      "time": 87.512,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 13,
+      "session_time": 4014.647
+    },
+    {
+      "driver": "ALB",
+      "lap": 4,
+      "time": 87.911,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 14,
+      "session_time": 4102.558
+    },
+    {
+      "driver": "ALB",
+      "lap": 5,
+      "time": 87.176,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 13,
+      "session_time": 4189.734
+    },
+    {
+      "driver": "ALB",
+      "lap": 6,
+      "time": 86.436,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 13,
+      "session_time": 4276.17
+    },
+    {
+      "driver": "ALB",
+      "lap": 7,
+      "time": 85.688,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 13,
+      "session_time": 4361.858
+    },
+    {
+      "driver": "ALB",
+      "lap": 8,
+      "time": 85.558,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 13,
+      "session_time": 4447.416
+    },
+    {
+      "driver": "ALB",
+      "lap": 9,
+      "time": 85.728,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 13,
+      "session_time": 4533.144
+    },
+    {
+      "driver": "ALB",
+      "lap": 10,
+      "time": 86.03,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 13,
+      "session_time": 4619.174
+    },
+    {
+      "driver": "ALB",
+      "lap": 11,
+      "time": 93.98,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 10,
+      "session_time": 4713.154
+    },
+    {
+      "driver": "ALB",
+      "lap": 12,
+      "time": 125.578,
+      "compound": "MEDIUM",
+      "tyre_life": 12,
+      "position": 12,
+      "session_time": 4838.732
+    },
+    {
+      "driver": "ALB",
+      "lap": 13,
+      "time": 112.348,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 12,
+      "session_time": 4951.08
+    },
+    {
+      "driver": "ALB",
+      "lap": 14,
+      "time": 85.379,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 12,
+      "session_time": 5036.459
+    },
+    {
+      "driver": "ALB",
+      "lap": 15,
+      "time": 85.035,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 12,
+      "session_time": 5121.494
+    },
+    {
+      "driver": "ALB",
+      "lap": 16,
+      "time": 88.434,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 13,
+      "session_time": 5209.928
+    },
+    {
+      "driver": "ALB",
+      "lap": 17,
+      "time": 85.662,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 13,
+      "session_time": 5295.59
+    },
+    {
+      "driver": "ALB",
+      "lap": 18,
+      "time": 104.028,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 13,
+      "session_time": 5399.618
+    },
+    {
+      "driver": "ALB",
+      "lap": 19,
+      "time": 109.476,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 13,
+      "session_time": 5509.094
+    },
+    {
+      "driver": "ALB",
+      "lap": 20,
+      "time": 85.041,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 13,
+      "session_time": 5594.135
+    },
+    {
+      "driver": "ALB",
+      "lap": 21,
+      "time": 85.065,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 13,
+      "session_time": 5679.2
+    },
+    {
+      "driver": "ALB",
+      "lap": 22,
+      "time": 85.297,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 13,
+      "session_time": 5764.497
+    },
+    {
+      "driver": "ALB",
+      "lap": 23,
+      "time": 85.258,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 13,
+      "session_time": 5849.755
+    },
+    {
+      "driver": "ALB",
+      "lap": 24,
+      "time": 85.334,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 13,
+      "session_time": 5935.089
+    },
+    {
+      "driver": "ALB",
+      "lap": 25,
+      "time": 85.569,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 13,
+      "session_time": 6020.658
+    },
+    {
+      "driver": "ALB",
+      "lap": 26,
+      "time": 85.782,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 13,
+      "session_time": 6106.44
+    },
+    {
+      "driver": "ALB",
+      "lap": 27,
+      "time": 85.734,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 13,
+      "session_time": 6192.174
+    },
+    {
+      "driver": "ALB",
+      "lap": 28,
+      "time": 86.642,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 13,
+      "session_time": 6278.816
+    },
+    {
+      "driver": "ALB",
+      "lap": 29,
+      "time": 86.614,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 12,
+      "session_time": 6365.43
+    },
+    {
+      "driver": "ALB",
+      "lap": 30,
+      "time": 86.472,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 12,
+      "session_time": 6451.902
+    },
+    {
+      "driver": "ALB",
+      "lap": 31,
+      "time": 86.523,
+      "compound": "HARD",
+      "tyre_life": 19,
+      "position": 12,
+      "session_time": 6538.425
+    },
+    {
+      "driver": "ALB",
+      "lap": 32,
+      "time": 86.459,
+      "compound": "HARD",
+      "tyre_life": 20,
+      "position": 12,
+      "session_time": 6624.884
+    },
+    {
+      "driver": "ALB",
+      "lap": 33,
+      "time": 110.03,
+      "compound": "HARD",
+      "tyre_life": 21,
+      "position": 12,
+      "session_time": 6734.914
+    },
+    {
+      "driver": "ALB",
+      "lap": 34,
+      "time": 90.918,
+      "compound": "SOFT",
+      "tyre_life": 1,
+      "position": 12,
+      "session_time": 6825.832
+    },
+    {
+      "driver": "ALB",
+      "lap": 35,
+      "time": 84.446,
+      "compound": "SOFT",
+      "tyre_life": 2,
+      "position": 12,
+      "session_time": 6910.278
+    },
+    {
+      "driver": "ALB",
+      "lap": 36,
+      "time": 84.375,
+      "compound": "SOFT",
+      "tyre_life": 3,
+      "position": 12,
+      "session_time": 6994.653
+    },
+    {
+      "driver": "ALB",
+      "lap": 37,
+      "time": 85.052,
+      "compound": "SOFT",
+      "tyre_life": 4,
+      "position": 12,
+      "session_time": 7079.705
+    },
+    {
+      "driver": "ALB",
+      "lap": 38,
+      "time": 86.338,
+      "compound": "SOFT",
+      "tyre_life": 5,
+      "position": 12,
+      "session_time": 7166.043
+    },
+    {
+      "driver": "ALB",
+      "lap": 39,
+      "time": 84.858,
+      "compound": "SOFT",
+      "tyre_life": 6,
+      "position": 12,
+      "session_time": 7250.901
+    },
+    {
+      "driver": "ALB",
+      "lap": 40,
+      "time": 86.672,
+      "compound": "SOFT",
+      "tyre_life": 7,
+      "position": 12,
+      "session_time": 7337.573
+    },
+    {
+      "driver": "ALB",
+      "lap": 41,
+      "time": 84.876,
+      "compound": "SOFT",
+      "tyre_life": 8,
+      "position": 12,
+      "session_time": 7422.449
+    },
+    {
+      "driver": "ALB",
+      "lap": 42,
+      "time": 84.858,
+      "compound": "SOFT",
+      "tyre_life": 9,
+      "position": 12,
+      "session_time": 7507.307
+    },
+    {
+      "driver": "ALB",
+      "lap": 43,
+      "time": 84.956,
+      "compound": "SOFT",
+      "tyre_life": 10,
+      "position": 12,
+      "session_time": 7592.263
+    },
+    {
+      "driver": "ALB",
+      "lap": 44,
+      "time": 84.841,
+      "compound": "SOFT",
+      "tyre_life": 11,
+      "position": 12,
+      "session_time": 7677.104
+    },
+    {
+      "driver": "ALB",
+      "lap": 45,
+      "time": 84.702,
+      "compound": "SOFT",
+      "tyre_life": 12,
+      "position": 12,
+      "session_time": 7761.806
+    },
+    {
+      "driver": "ALB",
+      "lap": 46,
+      "time": 84.777,
+      "compound": "SOFT",
+      "tyre_life": 13,
+      "position": 12,
+      "session_time": 7846.583
+    },
+    {
+      "driver": "ALB",
+      "lap": 47,
+      "time": 84.815,
+      "compound": "SOFT",
+      "tyre_life": 14,
+      "position": 12,
+      "session_time": 7931.398
+    },
+    {
+      "driver": "ALB",
+      "lap": 48,
+      "time": 84.773,
+      "compound": "SOFT",
+      "tyre_life": 15,
+      "position": 12,
+      "session_time": 8016.171
+    },
+    {
+      "driver": "ALB",
+      "lap": 49,
+      "time": 84.785,
+      "compound": "SOFT",
+      "tyre_life": 16,
+      "position": 12,
+      "session_time": 8100.956
+    },
+    {
+      "driver": "ALB",
+      "lap": 50,
+      "time": 84.856,
+      "compound": "SOFT",
+      "tyre_life": 17,
+      "position": 12,
+      "session_time": 8185.812
+    },
+    {
+      "driver": "ALB",
+      "lap": 51,
+      "time": 84.749,
+      "compound": "SOFT",
+      "tyre_life": 18,
+      "position": 12,
+      "session_time": 8270.561
+    },
+    {
+      "driver": "ALB",
+      "lap": 52,
+      "time": 84.764,
+      "compound": "SOFT",
+      "tyre_life": 19,
+      "position": 12,
+      "session_time": 8355.325
+    },
+    {
+      "driver": "ALB",
+      "lap": 53,
+      "time": 85.019,
+      "compound": "SOFT",
+      "tyre_life": 20,
+      "position": 12,
+      "session_time": 8440.344
+    },
+    {
+      "driver": "ALB",
+      "lap": 54,
+      "time": 84.861,
+      "compound": "SOFT",
+      "tyre_life": 21,
+      "position": 12,
+      "session_time": 8525.205
+    },
+    {
+      "driver": "ALB",
+      "lap": 55,
+      "time": 84.995,
+      "compound": "SOFT",
+      "tyre_life": 22,
+      "position": 12,
+      "session_time": 8610.2
+    },
+    {
+      "driver": "ALB",
+      "lap": 56,
+      "time": 86.387,
+      "compound": "SOFT",
+      "tyre_life": 23,
+      "position": 12,
+      "session_time": 8696.587
+    },
+    {
+      "driver": "ALB",
+      "lap": 57,
+      "time": 86.268,
+      "compound": "SOFT",
+      "tyre_life": 24,
+      "position": 12,
+      "session_time": 8782.855
+    },
+    {
+      "driver": "VER",
+      "lap": 1,
+      "time": 101.333,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 16,
+      "session_time": 3841.312
+    },
+    {
+      "driver": "VER",
+      "lap": 2,
+      "time": 86.828,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 15,
+      "session_time": 3928.14
+    },
+    {
+      "driver": "VER",
+      "lap": 3,
+      "time": 87.096,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 14,
+      "session_time": 4015.236
+    },
+    {
+      "driver": "VER",
+      "lap": 4,
+      "time": 86.571,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 13,
+      "session_time": 4101.807
+    },
+    {
+      "driver": "VER",
+      "lap": 5,
+      "time": 84.879,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 12,
+      "session_time": 4186.686
+    },
+    {
+      "driver": "VER",
+      "lap": 6,
+      "time": 84.968,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 11,
+      "session_time": 4271.654
+    },
+    {
+      "driver": "VER",
+      "lap": 7,
+      "time": 85.384,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 11,
+      "session_time": 4357.038
+    },
+    {
+      "driver": "VER",
+      "lap": 8,
+      "time": 84.707,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 10,
+      "session_time": 4441.745
+    },
+    {
+      "driver": "VER",
+      "lap": 9,
+      "time": 85.071,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 10,
+      "session_time": 4526.816
+    },
+    {
+      "driver": "VER",
+      "lap": 10,
+      "time": 85.133,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 9,
+      "session_time": 4611.949
+    },
+    {
+      "driver": "VER",
+      "lap": 11,
+      "time": 91.029,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 6,
+      "session_time": 4702.978
+    },
+    {
+      "driver": "VER",
+      "lap": 12,
+      "time": 114.214,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 6,
+      "session_time": 4817.192
+    },
+    {
+      "driver": "VER",
+      "lap": 13,
+      "time": 114.861,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 6,
+      "session_time": 4932.053
+    },
+    {
+      "driver": "VER",
+      "lap": 14,
+      "time": 86.13,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 6,
+      "session_time": 5018.183
+    },
+    {
+      "driver": "VER",
+      "lap": 15,
+      "time": 84.098,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 6,
+      "session_time": 5102.281
+    },
+    {
+      "driver": "VER",
+      "lap": 16,
+      "time": 84.606,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 6,
+      "session_time": 5186.887
+    },
+    {
+      "driver": "VER",
+      "lap": 17,
+      "time": 84.757,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 6,
+      "session_time": 5271.644
+    },
+    {
+      "driver": "VER",
+      "lap": 18,
+      "time": 108.547,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 7,
+      "session_time": 5380.191
+    },
+    {
+      "driver": "VER",
+      "lap": 19,
+      "time": 116.349,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 7,
+      "session_time": 5496.54
+    },
+    {
+      "driver": "VER",
+      "lap": 20,
+      "time": 83.566,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 6,
+      "session_time": 5580.106
+    },
+    {
+      "driver": "VER",
+      "lap": 21,
+      "time": 83.536,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 6,
+      "session_time": 5663.642
+    },
+    {
+      "driver": "VER",
+      "lap": 22,
+      "time": 83.458,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 6,
+      "session_time": 5747.1
+    },
+    {
+      "driver": "VER",
+      "lap": 23,
+      "time": 83.516,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 6,
+      "session_time": 5830.616
+    },
+    {
+      "driver": "VER",
+      "lap": 24,
+      "time": 83.472,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 6,
+      "session_time": 5914.088
+    },
+    {
+      "driver": "VER",
+      "lap": 25,
+      "time": 83.554,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 6,
+      "session_time": 5997.642
+    },
+    {
+      "driver": "VER",
+      "lap": 26,
+      "time": 83.363,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 6,
+      "session_time": 6081.005
+    },
+    {
+      "driver": "VER",
+      "lap": 27,
+      "time": 83.74,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 6,
+      "session_time": 6164.745
+    },
+    {
+      "driver": "VER",
+      "lap": 28,
+      "time": 83.463,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 6,
+      "session_time": 6248.208
+    },
+    {
+      "driver": "VER",
+      "lap": 29,
+      "time": 83.439,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 6,
+      "session_time": 6331.647
+    },
+    {
+      "driver": "VER",
+      "lap": 30,
+      "time": 83.39,
+      "compound": "MEDIUM",
+      "tyre_life": 12,
+      "position": 6,
+      "session_time": 6415.037
+    },
+    {
+      "driver": "VER",
+      "lap": 31,
+      "time": 83.51,
+      "compound": "MEDIUM",
+      "tyre_life": 13,
+      "position": 6,
+      "session_time": 6498.547
+    },
+    {
+      "driver": "VER",
+      "lap": 32,
+      "time": 83.587,
+      "compound": "MEDIUM",
+      "tyre_life": 14,
+      "position": 6,
+      "session_time": 6582.134
+    },
+    {
+      "driver": "VER",
+      "lap": 33,
+      "time": 83.93,
+      "compound": "MEDIUM",
+      "tyre_life": 15,
+      "position": 6,
+      "session_time": 6666.064
+    },
+    {
+      "driver": "VER",
+      "lap": 34,
+      "time": 98.216,
+      "compound": "MEDIUM",
+      "tyre_life": 16,
+      "position": 5,
+      "session_time": 6764.28
+    },
+    {
+      "driver": "VER",
+      "lap": 35,
+      "time": 84.556,
+      "compound": "MEDIUM",
+      "tyre_life": 17,
+      "position": 5,
+      "session_time": 6848.836
+    },
+    {
+      "driver": "VER",
+      "lap": 36,
+      "time": 83.967,
+      "compound": "MEDIUM",
+      "tyre_life": 18,
+      "position": 5,
+      "session_time": 6932.803
+    },
+    {
+      "driver": "VER",
+      "lap": 37,
+      "time": 83.675,
+      "compound": "MEDIUM",
+      "tyre_life": 19,
+      "position": 5,
+      "session_time": 7016.478
+    },
+    {
+      "driver": "VER",
+      "lap": 38,
+      "time": 83.912,
+      "compound": "MEDIUM",
+      "tyre_life": 20,
+      "position": 5,
+      "session_time": 7100.39
+    },
+    {
+      "driver": "VER",
+      "lap": 39,
+      "time": 83.715,
+      "compound": "MEDIUM",
+      "tyre_life": 21,
+      "position": 5,
+      "session_time": 7184.105
+    },
+    {
+      "driver": "VER",
+      "lap": 40,
+      "time": 84.595,
+      "compound": "MEDIUM",
+      "tyre_life": 22,
+      "position": 5,
+      "session_time": 7268.7
+    },
+    {
+      "driver": "VER",
+      "lap": 41,
+      "time": 98.866,
+      "compound": "MEDIUM",
+      "tyre_life": 23,
+      "position": 5,
+      "session_time": 7367.566
+    },
+    {
+      "driver": "VER",
+      "lap": 42,
+      "time": 87.991,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 6,
+      "session_time": 7455.557
+    },
+    {
+      "driver": "VER",
+      "lap": 43,
+      "time": 82.091,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 6,
+      "session_time": 7537.648
+    },
+    {
+      "driver": "VER",
+      "lap": 44,
+      "time": 82.52,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 6,
+      "session_time": 7620.168
+    },
+    {
+      "driver": "VER",
+      "lap": 45,
+      "time": 82.453,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 6,
+      "session_time": 7702.621
+    },
+    {
+      "driver": "VER",
+      "lap": 46,
+      "time": 82.81,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 6,
+      "session_time": 7785.431
+    },
+    {
+      "driver": "VER",
+      "lap": 47,
+      "time": 82.489,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 6,
+      "session_time": 7867.92
+    },
+    {
+      "driver": "VER",
+      "lap": 48,
+      "time": 82.906,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 6,
+      "session_time": 7950.826
+    },
+    {
+      "driver": "VER",
+      "lap": 49,
+      "time": 82.939,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 6,
+      "session_time": 8033.765
+    },
+    {
+      "driver": "VER",
+      "lap": 50,
+      "time": 82.738,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 6,
+      "session_time": 8116.503
+    },
+    {
+      "driver": "VER",
+      "lap": 51,
+      "time": 82.69,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 6,
+      "session_time": 8199.193
+    },
+    {
+      "driver": "VER",
+      "lap": 52,
+      "time": 82.683,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 6,
+      "session_time": 8281.876
+    },
+    {
+      "driver": "VER",
+      "lap": 53,
+      "time": 83.109,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 6,
+      "session_time": 8364.985
+    },
+    {
+      "driver": "VER",
+      "lap": 54,
+      "time": 83.09,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 6,
+      "session_time": 8448.075
+    },
+    {
+      "driver": "VER",
+      "lap": 55,
+      "time": 83.211,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 6,
+      "session_time": 8531.286
+    },
+    {
+      "driver": "VER",
+      "lap": 56,
+      "time": 83.109,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 6,
+      "session_time": 8614.395
+    },
+    {
+      "driver": "VER",
+      "lap": 57,
+      "time": 83.469,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 6,
+      "session_time": 8697.864
+    },
+    {
+      "driver": "VER",
+      "lap": 58,
+      "time": 83.533,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 6,
+      "session_time": 8781.397
+    },
+    {
+      "driver": "LAW",
+      "lap": 1,
+      "time": 102.188,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 18,
+      "session_time": 3842.167
+    },
+    {
+      "driver": "LAW",
+      "lap": 2,
+      "time": 88.537,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 17,
+      "session_time": 3930.704
+    },
+    {
+      "driver": "LAW",
+      "lap": 3,
+      "time": 86.869,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 17,
+      "session_time": 4017.573
+    },
+    {
+      "driver": "LAW",
+      "lap": 4,
+      "time": 86.661,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 17,
+      "session_time": 4104.234
+    },
+    {
+      "driver": "LAW",
+      "lap": 5,
+      "time": 87.142,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 17,
+      "session_time": 4191.376
+    },
+    {
+      "driver": "LAW",
+      "lap": 6,
+      "time": 87.96,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 17,
+      "session_time": 4279.336
+    },
+    {
+      "driver": "LAW",
+      "lap": 7,
+      "time": 86.644,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 16,
+      "session_time": 4365.98
+    },
+    {
+      "driver": "LAW",
+      "lap": 8,
+      "time": 85.888,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 16,
+      "session_time": 4451.868
+    },
+    {
+      "driver": "LAW",
+      "lap": 9,
+      "time": 86.025,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 15,
+      "session_time": 4537.893
+    },
+    {
+      "driver": "LAW",
+      "lap": 10,
+      "time": 85.751,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 15,
+      "session_time": 4623.644
+    },
+    {
+      "driver": "LAW",
+      "lap": 11,
+      "time": 110.026,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 16,
+      "session_time": 4733.67
+    },
+    {
+      "driver": "LAW",
+      "lap": 12,
+      "time": 130.384,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 15,
+      "session_time": 4864.054
+    },
+    {
+      "driver": "LAW",
+      "lap": 13,
+      "time": 95.45,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 15,
+      "session_time": 4959.504
+    },
+    {
+      "driver": "LAW",
+      "lap": 14,
+      "time": 85.233,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 15,
+      "session_time": 5044.737
+    },
+    {
+      "driver": "LAW",
+      "lap": 15,
+      "time": 86.791,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 15,
+      "session_time": 5131.528
+    },
+    {
+      "driver": "LAW",
+      "lap": 16,
+      "time": 89.919,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 14,
+      "session_time": 5221.447
+    },
+    {
+      "driver": "LAW",
+      "lap": 17,
+      "time": 85.839,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 14,
+      "session_time": 5307.286
+    },
+    {
+      "driver": "LAW",
+      "lap": 18,
+      "time": 108.965,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 14,
+      "session_time": 5416.251
+    },
+    {
+      "driver": "LAW",
+      "lap": 19,
+      "time": 105.808,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 14,
+      "session_time": 5522.059
+    },
+    {
+      "driver": "LAW",
+      "lap": 20,
+      "time": 85.068,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 14,
+      "session_time": 5607.127
+    },
+    {
+      "driver": "LAW",
+      "lap": 21,
+      "time": 84.91,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 14,
+      "session_time": 5692.037
+    },
+    {
+      "driver": "LAW",
+      "lap": 22,
+      "time": 85.041,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 14,
+      "session_time": 5777.078
+    },
+    {
+      "driver": "LAW",
+      "lap": 23,
+      "time": 85.074,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 14,
+      "session_time": 5862.152
+    },
+    {
+      "driver": "LAW",
+      "lap": 24,
+      "time": 86.526,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 14,
+      "session_time": 5948.678
+    },
+    {
+      "driver": "LAW",
+      "lap": 25,
+      "time": 85.255,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 14,
+      "session_time": 6033.933
+    },
+    {
+      "driver": "LAW",
+      "lap": 26,
+      "time": 84.972,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 14,
+      "session_time": 6118.905
+    },
+    {
+      "driver": "LAW",
+      "lap": 27,
+      "time": 85.173,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 14,
+      "session_time": 6204.078
+    },
+    {
+      "driver": "LAW",
+      "lap": 28,
+      "time": 85.377,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 14,
+      "session_time": 6289.455
+    },
+    {
+      "driver": "LAW",
+      "lap": 29,
+      "time": 85.253,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 14,
+      "session_time": 6374.708
+    },
+    {
+      "driver": "LAW",
+      "lap": 30,
+      "time": 85.65,
+      "compound": "HARD",
+      "tyre_life": 19,
+      "position": 14,
+      "session_time": 6460.358
+    },
+    {
+      "driver": "LAW",
+      "lap": 31,
+      "time": 85.792,
+      "compound": "HARD",
+      "tyre_life": 20,
+      "position": 14,
+      "session_time": 6546.15
+    },
+    {
+      "driver": "LAW",
+      "lap": 32,
+      "time": 85.867,
+      "compound": "HARD",
+      "tyre_life": 21,
+      "position": 14,
+      "session_time": 6632.017
+    },
+    {
+      "driver": "LAW",
+      "lap": 33,
+      "time": 114.107,
+      "compound": "HARD",
+      "tyre_life": 22,
+      "position": 13,
+      "session_time": 6746.124
+    },
+    {
+      "driver": "LAW",
+      "lap": 34,
+      "time": 90.927,
+      "compound": "SOFT",
+      "tyre_life": 1,
+      "position": 14,
+      "session_time": 6837.051
+    },
+    {
+      "driver": "LAW",
+      "lap": 35,
+      "time": 84.21,
+      "compound": "SOFT",
+      "tyre_life": 2,
+      "position": 14,
+      "session_time": 6921.261
+    },
+    {
+      "driver": "LAW",
+      "lap": 36,
+      "time": 86.728,
+      "compound": "SOFT",
+      "tyre_life": 3,
+      "position": 14,
+      "session_time": 7007.989
+    },
+    {
+      "driver": "LAW",
+      "lap": 37,
+      "time": 85.74,
+      "compound": "SOFT",
+      "tyre_life": 4,
+      "position": 13,
+      "session_time": 7093.729
+    },
+    {
+      "driver": "LAW",
+      "lap": 38,
+      "time": 84.423,
+      "compound": "SOFT",
+      "tyre_life": 5,
+      "position": 13,
+      "session_time": 7178.152
+    },
+    {
+      "driver": "LAW",
+      "lap": 39,
+      "time": 84.124,
+      "compound": "SOFT",
+      "tyre_life": 6,
+      "position": 13,
+      "session_time": 7262.276
+    },
+    {
+      "driver": "LAW",
+      "lap": 40,
+      "time": 84.077,
+      "compound": "SOFT",
+      "tyre_life": 7,
+      "position": 13,
+      "session_time": 7346.353
+    },
+    {
+      "driver": "LAW",
+      "lap": 41,
+      "time": 83.92,
+      "compound": "SOFT",
+      "tyre_life": 8,
+      "position": 13,
+      "session_time": 7430.273
+    },
+    {
+      "driver": "LAW",
+      "lap": 42,
+      "time": 84.048,
+      "compound": "SOFT",
+      "tyre_life": 9,
+      "position": 13,
+      "session_time": 7514.321
+    },
+    {
+      "driver": "LAW",
+      "lap": 43,
+      "time": 84.232,
+      "compound": "SOFT",
+      "tyre_life": 10,
+      "position": 13,
+      "session_time": 7598.553
+    },
+    {
+      "driver": "LAW",
+      "lap": 44,
+      "time": 84.071,
+      "compound": "SOFT",
+      "tyre_life": 11,
+      "position": 13,
+      "session_time": 7682.624
+    },
+    {
+      "driver": "LAW",
+      "lap": 45,
+      "time": 84.31,
+      "compound": "SOFT",
+      "tyre_life": 12,
+      "position": 13,
+      "session_time": 7766.934
+    },
+    {
+      "driver": "LAW",
+      "lap": 46,
+      "time": 84.023,
+      "compound": "SOFT",
+      "tyre_life": 13,
+      "position": 13,
+      "session_time": 7850.957
+    },
+    {
+      "driver": "LAW",
+      "lap": 47,
+      "time": 83.783,
+      "compound": "SOFT",
+      "tyre_life": 14,
+      "position": 13,
+      "session_time": 7934.74
+    },
+    {
+      "driver": "LAW",
+      "lap": 48,
+      "time": 84.222,
+      "compound": "SOFT",
+      "tyre_life": 15,
+      "position": 13,
+      "session_time": 8018.962
+    },
+    {
+      "driver": "LAW",
+      "lap": 49,
+      "time": 83.932,
+      "compound": "SOFT",
+      "tyre_life": 16,
+      "position": 13,
+      "session_time": 8102.894
+    },
+    {
+      "driver": "LAW",
+      "lap": 50,
+      "time": 83.912,
+      "compound": "SOFT",
+      "tyre_life": 17,
+      "position": 13,
+      "session_time": 8186.806
+    },
+    {
+      "driver": "LAW",
+      "lap": 51,
+      "time": 84.46,
+      "compound": "SOFT",
+      "tyre_life": 18,
+      "position": 13,
+      "session_time": 8271.266
+    },
+    {
+      "driver": "LAW",
+      "lap": 52,
+      "time": 84.665,
+      "compound": "SOFT",
+      "tyre_life": 19,
+      "position": 13,
+      "session_time": 8355.931
+    },
+    {
+      "driver": "LAW",
+      "lap": 53,
+      "time": 85.162,
+      "compound": "SOFT",
+      "tyre_life": 20,
+      "position": 13,
+      "session_time": 8441.093
+    },
+    {
+      "driver": "LAW",
+      "lap": 54,
+      "time": 84.525,
+      "compound": "SOFT",
+      "tyre_life": 21,
+      "position": 13,
+      "session_time": 8525.618
+    },
+    {
+      "driver": "LAW",
+      "lap": 55,
+      "time": 85.123,
+      "compound": "SOFT",
+      "tyre_life": 22,
+      "position": 13,
+      "session_time": 8610.741
+    },
+    {
+      "driver": "LAW",
+      "lap": 56,
+      "time": 86.895,
+      "compound": "SOFT",
+      "tyre_life": 23,
+      "position": 13,
+      "session_time": 8697.636
+    },
+    {
+      "driver": "LAW",
+      "lap": 57,
+      "time": 86.317,
+      "compound": "SOFT",
+      "tyre_life": 24,
+      "position": 13,
+      "session_time": 8783.953
+    },
+    {
+      "driver": "OCO",
+      "lap": 1,
+      "time": 97.5,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 8,
+      "session_time": 3837.479
+    },
+    {
+      "driver": "OCO",
+      "lap": 2,
+      "time": 87.035,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 8,
+      "session_time": 3924.514
+    },
+    {
+      "driver": "OCO",
+      "lap": 3,
+      "time": 86.567,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 8,
+      "session_time": 4011.081
+    },
+    {
+      "driver": "OCO",
+      "lap": 4,
+      "time": 86.186,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 8,
+      "session_time": 4097.267
+    },
+    {
+      "driver": "OCO",
+      "lap": 5,
+      "time": 86.808,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 8,
+      "session_time": 4184.075
+    },
+    {
+      "driver": "OCO",
+      "lap": 6,
+      "time": 85.569,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 8,
+      "session_time": 4269.644
+    },
+    {
+      "driver": "OCO",
+      "lap": 7,
+      "time": 85.087,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 8,
+      "session_time": 4354.731
+    },
+    {
+      "driver": "OCO",
+      "lap": 8,
+      "time": 85.029,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 8,
+      "session_time": 4439.76
+    },
+    {
+      "driver": "OCO",
+      "lap": 9,
+      "time": 85.552,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 8,
+      "session_time": 4525.312
+    },
+    {
+      "driver": "OCO",
+      "lap": 10,
+      "time": 85.632,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 8,
+      "session_time": 4610.944
+    },
+    {
+      "driver": "OCO",
+      "lap": 11,
+      "time": 105.949,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 11,
+      "session_time": 4716.893
+    },
+    {
+      "driver": "OCO",
+      "lap": 12,
+      "time": 116.405,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 10,
+      "session_time": 4833.298
+    },
+    {
+      "driver": "OCO",
+      "lap": 13,
+      "time": 112.218,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 10,
+      "session_time": 4945.516
+    },
+    {
+      "driver": "OCO",
+      "lap": 14,
+      "time": 85.303,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 10,
+      "session_time": 5030.819
+    },
+    {
+      "driver": "OCO",
+      "lap": 15,
+      "time": 85.36,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 10,
+      "session_time": 5116.179
+    },
+    {
+      "driver": "OCO",
+      "lap": 16,
+      "time": 85.43,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 10,
+      "session_time": 5201.609
+    },
+    {
+      "driver": "OCO",
+      "lap": 17,
+      "time": 85.716,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 10,
+      "session_time": 5287.325
+    },
+    {
+      "driver": "OCO",
+      "lap": 18,
+      "time": 101.381,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 10,
+      "session_time": 5388.706
+    },
+    {
+      "driver": "OCO",
+      "lap": 19,
+      "time": 112.711,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 9,
+      "session_time": 5501.417
+    },
+    {
+      "driver": "OCO",
+      "lap": 20,
+      "time": 86.713,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 10,
+      "session_time": 5588.13
+    },
+    {
+      "driver": "OCO",
+      "lap": 21,
+      "time": 86.571,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 11,
+      "session_time": 5674.701
+    },
+    {
+      "driver": "OCO",
+      "lap": 22,
+      "time": 84.821,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 11,
+      "session_time": 5759.522
+    },
+    {
+      "driver": "OCO",
+      "lap": 23,
+      "time": 84.65,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 11,
+      "session_time": 5844.172
+    },
+    {
+      "driver": "OCO",
+      "lap": 24,
+      "time": 85.255,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 11,
+      "session_time": 5929.427
+    },
+    {
+      "driver": "OCO",
+      "lap": 25,
+      "time": 84.424,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 11,
+      "session_time": 6013.851
+    },
+    {
+      "driver": "OCO",
+      "lap": 26,
+      "time": 84.696,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 11,
+      "session_time": 6098.547
+    },
+    {
+      "driver": "OCO",
+      "lap": 27,
+      "time": 84.801,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 11,
+      "session_time": 6183.348
+    },
+    {
+      "driver": "OCO",
+      "lap": 28,
+      "time": 84.737,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 11,
+      "session_time": 6268.085
+    },
+    {
+      "driver": "OCO",
+      "lap": 29,
+      "time": 84.769,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 11,
+      "session_time": 6352.854
+    },
+    {
+      "driver": "OCO",
+      "lap": 30,
+      "time": 84.966,
+      "compound": "HARD",
+      "tyre_life": 19,
+      "position": 11,
+      "session_time": 6437.82
+    },
+    {
+      "driver": "OCO",
+      "lap": 31,
+      "time": 85.307,
+      "compound": "HARD",
+      "tyre_life": 20,
+      "position": 11,
+      "session_time": 6523.127
+    },
+    {
+      "driver": "OCO",
+      "lap": 32,
+      "time": 85.045,
+      "compound": "HARD",
+      "tyre_life": 21,
+      "position": 11,
+      "session_time": 6608.172
+    },
+    {
+      "driver": "OCO",
+      "lap": 33,
+      "time": 93.284,
+      "compound": "HARD",
+      "tyre_life": 22,
+      "position": 10,
+      "session_time": 6701.456
+    },
+    {
+      "driver": "OCO",
+      "lap": 34,
+      "time": 90.235,
+      "compound": "HARD",
+      "tyre_life": 23,
+      "position": 10,
+      "session_time": 6791.691
+    },
+    {
+      "driver": "OCO",
+      "lap": 35,
+      "time": 85.199,
+      "compound": "HARD",
+      "tyre_life": 24,
+      "position": 10,
+      "session_time": 6876.89
+    },
+    {
+      "driver": "OCO",
+      "lap": 36,
+      "time": 85.018,
+      "compound": "HARD",
+      "tyre_life": 25,
+      "position": 10,
+      "session_time": 6961.908
+    },
+    {
+      "driver": "OCO",
+      "lap": 37,
+      "time": 85.462,
+      "compound": "HARD",
+      "tyre_life": 26,
+      "position": 9,
+      "session_time": 7047.37
+    },
+    {
+      "driver": "OCO",
+      "lap": 38,
+      "time": 86.972,
+      "compound": "HARD",
+      "tyre_life": 27,
+      "position": 10,
+      "session_time": 7134.342
+    },
+    {
+      "driver": "OCO",
+      "lap": 39,
+      "time": 85.913,
+      "compound": "HARD",
+      "tyre_life": 28,
+      "position": 11,
+      "session_time": 7220.255
+    },
+    {
+      "driver": "OCO",
+      "lap": 40,
+      "time": 85.433,
+      "compound": "HARD",
+      "tyre_life": 29,
+      "position": 11,
+      "session_time": 7305.688
+    },
+    {
+      "driver": "OCO",
+      "lap": 41,
+      "time": 85.164,
+      "compound": "HARD",
+      "tyre_life": 30,
+      "position": 11,
+      "session_time": 7390.852
+    },
+    {
+      "driver": "OCO",
+      "lap": 42,
+      "time": 85.249,
+      "compound": "HARD",
+      "tyre_life": 31,
+      "position": 11,
+      "session_time": 7476.101
+    },
+    {
+      "driver": "OCO",
+      "lap": 43,
+      "time": 85.106,
+      "compound": "HARD",
+      "tyre_life": 32,
+      "position": 11,
+      "session_time": 7561.207
+    },
+    {
+      "driver": "OCO",
+      "lap": 44,
+      "time": 86.597,
+      "compound": "HARD",
+      "tyre_life": 33,
+      "position": 11,
+      "session_time": 7647.804
+    },
+    {
+      "driver": "OCO",
+      "lap": 45,
+      "time": 85.228,
+      "compound": "HARD",
+      "tyre_life": 34,
+      "position": 11,
+      "session_time": 7733.032
+    },
+    {
+      "driver": "OCO",
+      "lap": 46,
+      "time": 86.221,
+      "compound": "HARD",
+      "tyre_life": 35,
+      "position": 11,
+      "session_time": 7819.253
+    },
+    {
+      "driver": "OCO",
+      "lap": 47,
+      "time": 86.334,
+      "compound": "HARD",
+      "tyre_life": 36,
+      "position": 11,
+      "session_time": 7905.587
+    },
+    {
+      "driver": "OCO",
+      "lap": 48,
+      "time": 85.019,
+      "compound": "HARD",
+      "tyre_life": 37,
+      "position": 11,
+      "session_time": 7990.606
+    },
+    {
+      "driver": "OCO",
+      "lap": 49,
+      "time": 85.115,
+      "compound": "HARD",
+      "tyre_life": 38,
+      "position": 11,
+      "session_time": 8075.721
+    },
+    {
+      "driver": "OCO",
+      "lap": 50,
+      "time": 86.815,
+      "compound": "HARD",
+      "tyre_life": 39,
+      "position": 11,
+      "session_time": 8162.536
+    },
+    {
+      "driver": "OCO",
+      "lap": 51,
+      "time": 86.297,
+      "compound": "HARD",
+      "tyre_life": 40,
+      "position": 11,
+      "session_time": 8248.833
+    },
+    {
+      "driver": "OCO",
+      "lap": 52,
+      "time": 84.584,
+      "compound": "HARD",
+      "tyre_life": 41,
+      "position": 11,
+      "session_time": 8333.417
+    },
+    {
+      "driver": "OCO",
+      "lap": 53,
+      "time": 84.622,
+      "compound": "HARD",
+      "tyre_life": 42,
+      "position": 11,
+      "session_time": 8418.039
+    },
+    {
+      "driver": "OCO",
+      "lap": 54,
+      "time": 84.908,
+      "compound": "HARD",
+      "tyre_life": 43,
+      "position": 11,
+      "session_time": 8502.947
+    },
+    {
+      "driver": "OCO",
+      "lap": 55,
+      "time": 84.577,
+      "compound": "HARD",
+      "tyre_life": 44,
+      "position": 11,
+      "session_time": 8587.524
+    },
+    {
+      "driver": "OCO",
+      "lap": 56,
+      "time": 84.533,
+      "compound": "HARD",
+      "tyre_life": 45,
+      "position": 11,
+      "session_time": 8672.057
+    },
+    {
+      "driver": "OCO",
+      "lap": 57,
+      "time": 84.573,
+      "compound": "HARD",
+      "tyre_life": 46,
+      "position": 11,
+      "session_time": 8756.63
+    },
+    {
+      "driver": "LIN",
+      "lap": 1,
+      "time": 96.081,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 5,
+      "session_time": 3836.06
+    },
+    {
+      "driver": "LIN",
+      "lap": 2,
+      "time": 87.218,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 5,
+      "session_time": 3923.278
+    },
+    {
+      "driver": "LIN",
+      "lap": 3,
+      "time": 85.497,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 5,
+      "session_time": 4008.775
+    },
+    {
+      "driver": "LIN",
+      "lap": 4,
+      "time": 86.072,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 5,
+      "session_time": 4094.847
+    },
+    {
+      "driver": "LIN",
+      "lap": 5,
+      "time": 86.235,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 6,
+      "session_time": 4181.082
+    },
+    {
+      "driver": "LIN",
+      "lap": 6,
+      "time": 85.392,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 6,
+      "session_time": 4266.474
+    },
+    {
+      "driver": "LIN",
+      "lap": 7,
+      "time": 85.194,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 6,
+      "session_time": 4351.668
+    },
+    {
+      "driver": "LIN",
+      "lap": 8,
+      "time": 85.26,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 6,
+      "session_time": 4436.928
+    },
+    {
+      "driver": "LIN",
+      "lap": 9,
+      "time": 85.337,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 6,
+      "session_time": 4522.265
+    },
+    {
+      "driver": "LIN",
+      "lap": 10,
+      "time": 85.565,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 6,
+      "session_time": 4607.83
+    },
+    {
+      "driver": "LIN",
+      "lap": 11,
+      "time": 92.238,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 5,
+      "session_time": 4700.068
+    },
+    {
+      "driver": "LIN",
+      "lap": 12,
+      "time": 112.0,
+      "compound": "MEDIUM",
+      "tyre_life": 12,
+      "position": 4,
+      "session_time": 4812.068
+    },
+    {
+      "driver": "LIN",
+      "lap": 13,
+      "time": 114.878,
+      "compound": "MEDIUM",
+      "tyre_life": 13,
+      "position": 4,
+      "session_time": 4926.946
+    },
+    {
+      "driver": "LIN",
+      "lap": 14,
+      "time": 88.161,
+      "compound": "MEDIUM",
+      "tyre_life": 14,
+      "position": 4,
+      "session_time": 5015.107
+    },
+    {
+      "driver": "LIN",
+      "lap": 15,
+      "time": 84.877,
+      "compound": "MEDIUM",
+      "tyre_life": 15,
+      "position": 4,
+      "session_time": 5099.984
+    },
+    {
+      "driver": "LIN",
+      "lap": 16,
+      "time": 85.898,
+      "compound": "MEDIUM",
+      "tyre_life": 16,
+      "position": 5,
+      "session_time": 5185.882
+    },
+    {
+      "driver": "LIN",
+      "lap": 17,
+      "time": 85.096,
+      "compound": "MEDIUM",
+      "tyre_life": 17,
+      "position": 5,
+      "session_time": 5270.978
+    },
+    {
+      "driver": "LIN",
+      "lap": 18,
+      "time": 108.224,
+      "compound": "MEDIUM",
+      "tyre_life": 18,
+      "position": 6,
+      "session_time": 5379.202
+    },
+    {
+      "driver": "LIN",
+      "lap": 19,
+      "time": 117.225,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 6,
+      "session_time": 5496.427
+    },
+    {
+      "driver": "LIN",
+      "lap": 20,
+      "time": 85.424,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 7,
+      "session_time": 5581.851
+    },
+    {
+      "driver": "LIN",
+      "lap": 21,
+      "time": 84.182,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 7,
+      "session_time": 5666.033
+    },
+    {
+      "driver": "LIN",
+      "lap": 22,
+      "time": 84.29,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 7,
+      "session_time": 5750.323
+    },
+    {
+      "driver": "LIN",
+      "lap": 23,
+      "time": 84.909,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 7,
+      "session_time": 5835.232
+    },
+    {
+      "driver": "LIN",
+      "lap": 24,
+      "time": 84.554,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 7,
+      "session_time": 5919.786
+    },
+    {
+      "driver": "LIN",
+      "lap": 25,
+      "time": 84.263,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 7,
+      "session_time": 6004.049
+    },
+    {
+      "driver": "LIN",
+      "lap": 26,
+      "time": 84.205,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 7,
+      "session_time": 6088.254
+    },
+    {
+      "driver": "LIN",
+      "lap": 27,
+      "time": 84.361,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 7,
+      "session_time": 6172.615
+    },
+    {
+      "driver": "LIN",
+      "lap": 28,
+      "time": 84.475,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 7,
+      "session_time": 6257.09
+    },
+    {
+      "driver": "LIN",
+      "lap": 29,
+      "time": 84.916,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 7,
+      "session_time": 6342.006
+    },
+    {
+      "driver": "LIN",
+      "lap": 30,
+      "time": 84.282,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 7,
+      "session_time": 6426.288
+    },
+    {
+      "driver": "LIN",
+      "lap": 31,
+      "time": 84.876,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 7,
+      "session_time": 6511.164
+    },
+    {
+      "driver": "LIN",
+      "lap": 32,
+      "time": 84.671,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 7,
+      "session_time": 6595.835
+    },
+    {
+      "driver": "LIN",
+      "lap": 33,
+      "time": 89.426,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 7,
+      "session_time": 6685.261
+    },
+    {
+      "driver": "LIN",
+      "lap": 34,
+      "time": 93.812,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 7,
+      "session_time": 6779.073
+    },
+    {
+      "driver": "LIN",
+      "lap": 35,
+      "time": 84.536,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 6,
+      "session_time": 6863.609
+    },
+    {
+      "driver": "LIN",
+      "lap": 36,
+      "time": 84.698,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 6,
+      "session_time": 6948.307
+    },
+    {
+      "driver": "LIN",
+      "lap": 37,
+      "time": 84.523,
+      "compound": "HARD",
+      "tyre_life": 19,
+      "position": 6,
+      "session_time": 7032.83
+    },
+    {
+      "driver": "LIN",
+      "lap": 38,
+      "time": 84.797,
+      "compound": "HARD",
+      "tyre_life": 20,
+      "position": 6,
+      "session_time": 7117.627
+    },
+    {
+      "driver": "LIN",
+      "lap": 39,
+      "time": 85.955,
+      "compound": "HARD",
+      "tyre_life": 21,
+      "position": 7,
+      "session_time": 7203.582
+    },
+    {
+      "driver": "LIN",
+      "lap": 40,
+      "time": 88.242,
+      "compound": "HARD",
+      "tyre_life": 22,
+      "position": 8,
+      "session_time": 7291.824
+    },
+    {
+      "driver": "LIN",
+      "lap": 41,
+      "time": 85.406,
+      "compound": "HARD",
+      "tyre_life": 23,
+      "position": 8,
+      "session_time": 7377.23
+    },
+    {
+      "driver": "LIN",
+      "lap": 42,
+      "time": 85.409,
+      "compound": "HARD",
+      "tyre_life": 24,
+      "position": 8,
+      "session_time": 7462.639
+    },
+    {
+      "driver": "LIN",
+      "lap": 43,
+      "time": 84.862,
+      "compound": "HARD",
+      "tyre_life": 25,
+      "position": 8,
+      "session_time": 7547.501
+    },
+    {
+      "driver": "LIN",
+      "lap": 44,
+      "time": 84.747,
+      "compound": "HARD",
+      "tyre_life": 26,
+      "position": 8,
+      "session_time": 7632.248
+    },
+    {
+      "driver": "LIN",
+      "lap": 45,
+      "time": 84.645,
+      "compound": "HARD",
+      "tyre_life": 27,
+      "position": 8,
+      "session_time": 7716.893
+    },
+    {
+      "driver": "LIN",
+      "lap": 46,
+      "time": 84.688,
+      "compound": "HARD",
+      "tyre_life": 28,
+      "position": 8,
+      "session_time": 7801.581
+    },
+    {
+      "driver": "LIN",
+      "lap": 47,
+      "time": 84.773,
+      "compound": "HARD",
+      "tyre_life": 29,
+      "position": 8,
+      "session_time": 7886.354
+    },
+    {
+      "driver": "LIN",
+      "lap": 48,
+      "time": 84.863,
+      "compound": "HARD",
+      "tyre_life": 30,
+      "position": 8,
+      "session_time": 7971.217
+    },
+    {
+      "driver": "LIN",
+      "lap": 49,
+      "time": 84.774,
+      "compound": "HARD",
+      "tyre_life": 31,
+      "position": 8,
+      "session_time": 8055.991
+    },
+    {
+      "driver": "LIN",
+      "lap": 50,
+      "time": 84.715,
+      "compound": "HARD",
+      "tyre_life": 32,
+      "position": 8,
+      "session_time": 8140.706
+    },
+    {
+      "driver": "LIN",
+      "lap": 51,
+      "time": 84.374,
+      "compound": "HARD",
+      "tyre_life": 33,
+      "position": 8,
+      "session_time": 8225.08
+    },
+    {
+      "driver": "LIN",
+      "lap": 52,
+      "time": 85.21,
+      "compound": "HARD",
+      "tyre_life": 34,
+      "position": 8,
+      "session_time": 8310.29
+    },
+    {
+      "driver": "LIN",
+      "lap": 53,
+      "time": 86.148,
+      "compound": "HARD",
+      "tyre_life": 35,
+      "position": 8,
+      "session_time": 8396.438
+    },
+    {
+      "driver": "LIN",
+      "lap": 54,
+      "time": 88.167,
+      "compound": "HARD",
+      "tyre_life": 36,
+      "position": 8,
+      "session_time": 8484.605
+    },
+    {
+      "driver": "LIN",
+      "lap": 55,
+      "time": 84.614,
+      "compound": "HARD",
+      "tyre_life": 37,
+      "position": 8,
+      "session_time": 8569.219
+    },
+    {
+      "driver": "LIN",
+      "lap": 56,
+      "time": 84.688,
+      "compound": "HARD",
+      "tyre_life": 38,
+      "position": 8,
+      "session_time": 8653.907
+    },
+    {
+      "driver": "LIN",
+      "lap": 57,
+      "time": 84.689,
+      "compound": "HARD",
+      "tyre_life": 39,
+      "position": 8,
+      "session_time": 8738.596
+    },
+    {
+      "driver": "COL",
+      "lap": 1,
+      "time": 101.613,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 17,
+      "session_time": 3841.592
+    },
+    {
+      "driver": "COL",
+      "lap": 2,
+      "time": 88.166,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 16,
+      "session_time": 3929.758
+    },
+    {
+      "driver": "COL",
+      "lap": 3,
+      "time": 86.935,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 16,
+      "session_time": 4016.693
+    },
+    {
+      "driver": "COL",
+      "lap": 4,
+      "time": 86.812,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 16,
+      "session_time": 4103.505
+    },
+    {
+      "driver": "COL",
+      "lap": 5,
+      "time": 87.512,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 16,
+      "session_time": 4191.017
+    },
+    {
+      "driver": "COL",
+      "lap": 6,
+      "time": 87.513,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 15,
+      "session_time": 4278.53
+    },
+    {
+      "driver": "COL",
+      "lap": 7,
+      "time": 86.068,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 15,
+      "session_time": 4364.598
+    },
+    {
+      "driver": "COL",
+      "lap": 8,
+      "time": 85.818,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 15,
+      "session_time": 4450.416
+    },
+    {
+      "driver": "COL",
+      "lap": 9,
+      "time": 109.931,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 20,
+      "session_time": 4560.347
+    },
+    {
+      "driver": "COL",
+      "lap": 10,
+      "time": 92.762,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 20,
+      "session_time": 4653.109
+    },
+    {
+      "driver": "COL",
+      "lap": 11,
+      "time": 105.807,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 18,
+      "session_time": 4758.916
+    },
+    {
+      "driver": "COL",
+      "lap": 12,
+      "time": 123.67,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 17,
+      "session_time": 4882.586
+    },
+    {
+      "driver": "COL",
+      "lap": 13,
+      "time": 93.872,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 16,
+      "session_time": 4976.458
+    },
+    {
+      "driver": "COL",
+      "lap": 14,
+      "time": 86.663,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 16,
+      "session_time": 5063.121
+    },
+    {
+      "driver": "COL",
+      "lap": 15,
+      "time": 85.6,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 16,
+      "session_time": 5148.721
+    },
+    {
+      "driver": "COL",
+      "lap": 16,
+      "time": 85.911,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 16,
+      "session_time": 5234.632
+    },
+    {
+      "driver": "COL",
+      "lap": 17,
+      "time": 85.708,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 16,
+      "session_time": 5320.34
+    },
+    {
+      "driver": "COL",
+      "lap": 18,
+      "time": 112.961,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 15,
+      "session_time": 5433.301
+    },
+    {
+      "driver": "COL",
+      "lap": 19,
+      "time": 101.676,
+      "compound": "HARD",
+      "tyre_life": 19,
+      "position": 15,
+      "session_time": 5534.977
+    },
+    {
+      "driver": "COL",
+      "lap": 20,
+      "time": 85.331,
+      "compound": "HARD",
+      "tyre_life": 20,
+      "position": 15,
+      "session_time": 5620.308
+    },
+    {
+      "driver": "COL",
+      "lap": 21,
+      "time": 84.932,
+      "compound": "HARD",
+      "tyre_life": 21,
+      "position": 15,
+      "session_time": 5705.24
+    },
+    {
+      "driver": "COL",
+      "lap": 22,
+      "time": 85.011,
+      "compound": "HARD",
+      "tyre_life": 22,
+      "position": 15,
+      "session_time": 5790.251
+    },
+    {
+      "driver": "COL",
+      "lap": 23,
+      "time": 85.136,
+      "compound": "HARD",
+      "tyre_life": 23,
+      "position": 15,
+      "session_time": 5875.387
+    },
+    {
+      "driver": "COL",
+      "lap": 24,
+      "time": 85.449,
+      "compound": "HARD",
+      "tyre_life": 24,
+      "position": 15,
+      "session_time": 5960.836
+    },
+    {
+      "driver": "COL",
+      "lap": 25,
+      "time": 85.225,
+      "compound": "HARD",
+      "tyre_life": 25,
+      "position": 15,
+      "session_time": 6046.061
+    },
+    {
+      "driver": "COL",
+      "lap": 26,
+      "time": 85.174,
+      "compound": "HARD",
+      "tyre_life": 26,
+      "position": 15,
+      "session_time": 6131.235
+    },
+    {
+      "driver": "COL",
+      "lap": 27,
+      "time": 85.626,
+      "compound": "HARD",
+      "tyre_life": 27,
+      "position": 15,
+      "session_time": 6216.861
+    },
+    {
+      "driver": "COL",
+      "lap": 28,
+      "time": 86.172,
+      "compound": "HARD",
+      "tyre_life": 28,
+      "position": 15,
+      "session_time": 6303.033
+    },
+    {
+      "driver": "COL",
+      "lap": 29,
+      "time": 86.483,
+      "compound": "HARD",
+      "tyre_life": 29,
+      "position": 15,
+      "session_time": 6389.516
+    },
+    {
+      "driver": "COL",
+      "lap": 30,
+      "time": 85.566,
+      "compound": "HARD",
+      "tyre_life": 30,
+      "position": 15,
+      "session_time": 6475.082
+    },
+    {
+      "driver": "COL",
+      "lap": 31,
+      "time": 87.26,
+      "compound": "HARD",
+      "tyre_life": 31,
+      "position": 15,
+      "session_time": 6562.342
+    },
+    {
+      "driver": "COL",
+      "lap": 32,
+      "time": 85.707,
+      "compound": "HARD",
+      "tyre_life": 32,
+      "position": 15,
+      "session_time": 6648.049
+    },
+    {
+      "driver": "COL",
+      "lap": 33,
+      "time": 100.541,
+      "compound": "HARD",
+      "tyre_life": 33,
+      "position": 15,
+      "session_time": 6748.59
+    },
+    {
+      "driver": "COL",
+      "lap": 34,
+      "time": 86.067,
+      "compound": "HARD",
+      "tyre_life": 34,
+      "position": 13,
+      "session_time": 6834.657
+    },
+    {
+      "driver": "COL",
+      "lap": 35,
+      "time": 85.633,
+      "compound": "HARD",
+      "tyre_life": 35,
+      "position": 13,
+      "session_time": 6920.29
+    },
+    {
+      "driver": "COL",
+      "lap": 36,
+      "time": 87.434,
+      "compound": "HARD",
+      "tyre_life": 36,
+      "position": 13,
+      "session_time": 7007.724
+    },
+    {
+      "driver": "COL",
+      "lap": 37,
+      "time": 87.047,
+      "compound": "HARD",
+      "tyre_life": 37,
+      "position": 14,
+      "session_time": 7094.771
+    },
+    {
+      "driver": "COL",
+      "lap": 38,
+      "time": 87.012,
+      "compound": "HARD",
+      "tyre_life": 38,
+      "position": 14,
+      "session_time": 7181.783
+    },
+    {
+      "driver": "COL",
+      "lap": 39,
+      "time": 86.964,
+      "compound": "HARD",
+      "tyre_life": 39,
+      "position": 14,
+      "session_time": 7268.747
+    },
+    {
+      "driver": "COL",
+      "lap": 40,
+      "time": 86.665,
+      "compound": "HARD",
+      "tyre_life": 40,
+      "position": 14,
+      "session_time": 7355.412
+    },
+    {
+      "driver": "COL",
+      "lap": 41,
+      "time": 86.469,
+      "compound": "HARD",
+      "tyre_life": 41,
+      "position": 14,
+      "session_time": 7441.881
+    },
+    {
+      "driver": "COL",
+      "lap": 42,
+      "time": 85.275,
+      "compound": "HARD",
+      "tyre_life": 42,
+      "position": 14,
+      "session_time": 7527.156
+    },
+    {
+      "driver": "COL",
+      "lap": 43,
+      "time": 85.381,
+      "compound": "HARD",
+      "tyre_life": 43,
+      "position": 14,
+      "session_time": 7612.537
+    },
+    {
+      "driver": "COL",
+      "lap": 44,
+      "time": 85.24,
+      "compound": "HARD",
+      "tyre_life": 44,
+      "position": 14,
+      "session_time": 7697.777
+    },
+    {
+      "driver": "COL",
+      "lap": 45,
+      "time": 84.939,
+      "compound": "HARD",
+      "tyre_life": 45,
+      "position": 14,
+      "session_time": 7782.716
+    },
+    {
+      "driver": "COL",
+      "lap": 46,
+      "time": 102.911,
+      "compound": "HARD",
+      "tyre_life": 46,
+      "position": 14,
+      "session_time": 7885.627
+    },
+    {
+      "driver": "COL",
+      "lap": 47,
+      "time": 90.309,
+      "compound": "SOFT",
+      "tyre_life": 1,
+      "position": 14,
+      "session_time": 7975.936
+    },
+    {
+      "driver": "COL",
+      "lap": 48,
+      "time": 82.926,
+      "compound": "SOFT",
+      "tyre_life": 2,
+      "position": 14,
+      "session_time": 8058.862
+    },
+    {
+      "driver": "COL",
+      "lap": 49,
+      "time": 83.259,
+      "compound": "SOFT",
+      "tyre_life": 3,
+      "position": 14,
+      "session_time": 8142.121
+    },
+    {
+      "driver": "COL",
+      "lap": 50,
+      "time": 83.721,
+      "compound": "SOFT",
+      "tyre_life": 4,
+      "position": 14,
+      "session_time": 8225.842
+    },
+    {
+      "driver": "COL",
+      "lap": 51,
+      "time": 85.633,
+      "compound": "SOFT",
+      "tyre_life": 5,
+      "position": 14,
+      "session_time": 8311.475
+    },
+    {
+      "driver": "COL",
+      "lap": 52,
+      "time": 85.151,
+      "compound": "SOFT",
+      "tyre_life": 6,
+      "position": 14,
+      "session_time": 8396.626
+    },
+    {
+      "driver": "COL",
+      "lap": 53,
+      "time": 87.12,
+      "compound": "SOFT",
+      "tyre_life": 7,
+      "position": 14,
+      "session_time": 8483.746
+    },
+    {
+      "driver": "COL",
+      "lap": 54,
+      "time": 83.988,
+      "compound": "SOFT",
+      "tyre_life": 8,
+      "position": 14,
+      "session_time": 8567.734
+    },
+    {
+      "driver": "COL",
+      "lap": 55,
+      "time": 83.912,
+      "compound": "SOFT",
+      "tyre_life": 9,
+      "position": 14,
+      "session_time": 8651.646
+    },
+    {
+      "driver": "COL",
+      "lap": 56,
+      "time": 83.621,
+      "compound": "SOFT",
+      "tyre_life": 10,
+      "position": 14,
+      "session_time": 8735.267
+    },
+    {
+      "driver": "HAM",
+      "lap": 1,
+      "time": 95.261,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 3,
+      "session_time": 3835.24
+    },
+    {
+      "driver": "HAM",
+      "lap": 2,
+      "time": 84.626,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 3,
+      "session_time": 3919.866
+    },
+    {
+      "driver": "HAM",
+      "lap": 3,
+      "time": 84.874,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 3,
+      "session_time": 4004.74
+    },
+    {
+      "driver": "HAM",
+      "lap": 4,
+      "time": 85.066,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 3,
+      "session_time": 4089.806
+    },
+    {
+      "driver": "HAM",
+      "lap": 5,
+      "time": 84.502,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 3,
+      "session_time": 4174.308
+    },
+    {
+      "driver": "HAM",
+      "lap": 6,
+      "time": 84.703,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 3,
+      "session_time": 4259.011
+    },
+    {
+      "driver": "HAM",
+      "lap": 7,
+      "time": 84.365,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 3,
+      "session_time": 4343.376
+    },
+    {
+      "driver": "HAM",
+      "lap": 8,
+      "time": 84.408,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 3,
+      "session_time": 4427.784
+    },
+    {
+      "driver": "HAM",
+      "lap": 9,
+      "time": 85.844,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 3,
+      "session_time": 4513.628
+    },
+    {
+      "driver": "HAM",
+      "lap": 10,
+      "time": 84.255,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 3,
+      "session_time": 4597.883
+    },
+    {
+      "driver": "HAM",
+      "lap": 11,
+      "time": 84.073,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 3,
+      "session_time": 4681.956
+    },
+    {
+      "driver": "HAM",
+      "lap": 12,
+      "time": 114.958,
+      "compound": "MEDIUM",
+      "tyre_life": 12,
+      "position": 2,
+      "session_time": 4796.914
+    },
+    {
+      "driver": "HAM",
+      "lap": 13,
+      "time": 116.315,
+      "compound": "MEDIUM",
+      "tyre_life": 13,
+      "position": 2,
+      "session_time": 4913.229
+    },
+    {
+      "driver": "HAM",
+      "lap": 14,
+      "time": 88.327,
+      "compound": "MEDIUM",
+      "tyre_life": 14,
+      "position": 2,
+      "session_time": 5001.556
+    },
+    {
+      "driver": "HAM",
+      "lap": 15,
+      "time": 83.703,
+      "compound": "MEDIUM",
+      "tyre_life": 15,
+      "position": 2,
+      "session_time": 5085.259
+    },
+    {
+      "driver": "HAM",
+      "lap": 16,
+      "time": 83.412,
+      "compound": "MEDIUM",
+      "tyre_life": 16,
+      "position": 2,
+      "session_time": 5168.671
+    },
+    {
+      "driver": "HAM",
+      "lap": 17,
+      "time": 84.045,
+      "compound": "MEDIUM",
+      "tyre_life": 17,
+      "position": 2,
+      "session_time": 5252.716
+    },
+    {
+      "driver": "HAM",
+      "lap": 18,
+      "time": 91.597,
+      "compound": "MEDIUM",
+      "tyre_life": 18,
+      "position": 2,
+      "session_time": 5344.313
+    },
+    {
+      "driver": "HAM",
+      "lap": 19,
+      "time": 113.1,
+      "compound": "MEDIUM",
+      "tyre_life": 19,
+      "position": 2,
+      "session_time": 5457.413
+    },
+    {
+      "driver": "HAM",
+      "lap": 20,
+      "time": 91.637,
+      "compound": "MEDIUM",
+      "tyre_life": 20,
+      "position": 2,
+      "session_time": 5549.05
+    },
+    {
+      "driver": "HAM",
+      "lap": 21,
+      "time": 83.617,
+      "compound": "MEDIUM",
+      "tyre_life": 21,
+      "position": 2,
+      "session_time": 5632.667
+    },
+    {
+      "driver": "HAM",
+      "lap": 22,
+      "time": 83.509,
+      "compound": "MEDIUM",
+      "tyre_life": 22,
+      "position": 2,
+      "session_time": 5716.176
+    },
+    {
+      "driver": "HAM",
+      "lap": 23,
+      "time": 83.382,
+      "compound": "MEDIUM",
+      "tyre_life": 23,
+      "position": 2,
+      "session_time": 5799.558
+    },
+    {
+      "driver": "HAM",
+      "lap": 24,
+      "time": 84.329,
+      "compound": "MEDIUM",
+      "tyre_life": 24,
+      "position": 2,
+      "session_time": 5883.887
+    },
+    {
+      "driver": "HAM",
+      "lap": 25,
+      "time": 83.66,
+      "compound": "MEDIUM",
+      "tyre_life": 25,
+      "position": 1,
+      "session_time": 5967.547
+    },
+    {
+      "driver": "HAM",
+      "lap": 26,
+      "time": 84.085,
+      "compound": "MEDIUM",
+      "tyre_life": 26,
+      "position": 1,
+      "session_time": 6051.632
+    },
+    {
+      "driver": "HAM",
+      "lap": 27,
+      "time": 83.76,
+      "compound": "MEDIUM",
+      "tyre_life": 27,
+      "position": 1,
+      "session_time": 6135.392
+    },
+    {
+      "driver": "HAM",
+      "lap": 28,
+      "time": 99.578,
+      "compound": "MEDIUM",
+      "tyre_life": 28,
+      "position": 4,
+      "session_time": 6234.97
+    },
+    {
+      "driver": "HAM",
+      "lap": 29,
+      "time": 89.135,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 4,
+      "session_time": 6324.105
+    },
+    {
+      "driver": "HAM",
+      "lap": 30,
+      "time": 83.474,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 4,
+      "session_time": 6407.579
+    },
+    {
+      "driver": "HAM",
+      "lap": 31,
+      "time": 83.129,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 4,
+      "session_time": 6490.708
+    },
+    {
+      "driver": "HAM",
+      "lap": 32,
+      "time": 83.185,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 4,
+      "session_time": 6573.893
+    },
+    {
+      "driver": "HAM",
+      "lap": 33,
+      "time": 83.775,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 4,
+      "session_time": 6657.668
+    },
+    {
+      "driver": "HAM",
+      "lap": 34,
+      "time": 98.315,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 4,
+      "session_time": 6755.983
+    },
+    {
+      "driver": "HAM",
+      "lap": 35,
+      "time": 83.317,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 4,
+      "session_time": 6839.3
+    },
+    {
+      "driver": "HAM",
+      "lap": 36,
+      "time": 83.338,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 4,
+      "session_time": 6922.638
+    },
+    {
+      "driver": "HAM",
+      "lap": 37,
+      "time": 83.086,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 4,
+      "session_time": 7005.724
+    },
+    {
+      "driver": "HAM",
+      "lap": 38,
+      "time": 82.688,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 4,
+      "session_time": 7088.412
+    },
+    {
+      "driver": "HAM",
+      "lap": 39,
+      "time": 82.536,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 4,
+      "session_time": 7170.948
+    },
+    {
+      "driver": "HAM",
+      "lap": 40,
+      "time": 82.55,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 4,
+      "session_time": 7253.498
+    },
+    {
+      "driver": "HAM",
+      "lap": 41,
+      "time": 82.648,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 4,
+      "session_time": 7336.146
+    },
+    {
+      "driver": "HAM",
+      "lap": 42,
+      "time": 82.636,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 4,
+      "session_time": 7418.782
+    },
+    {
+      "driver": "HAM",
+      "lap": 43,
+      "time": 82.559,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 4,
+      "session_time": 7501.341
+    },
+    {
+      "driver": "HAM",
+      "lap": 44,
+      "time": 82.837,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 4,
+      "session_time": 7584.178
+    },
+    {
+      "driver": "HAM",
+      "lap": 45,
+      "time": 82.529,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 4,
+      "session_time": 7666.707
+    },
+    {
+      "driver": "HAM",
+      "lap": 46,
+      "time": 82.945,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 4,
+      "session_time": 7749.652
+    },
+    {
+      "driver": "HAM",
+      "lap": 47,
+      "time": 82.677,
+      "compound": "HARD",
+      "tyre_life": 19,
+      "position": 4,
+      "session_time": 7832.329
+    },
+    {
+      "driver": "HAM",
+      "lap": 48,
+      "time": 82.764,
+      "compound": "HARD",
+      "tyre_life": 20,
+      "position": 4,
+      "session_time": 7915.093
+    },
+    {
+      "driver": "HAM",
+      "lap": 49,
+      "time": 82.835,
+      "compound": "HARD",
+      "tyre_life": 21,
+      "position": 4,
+      "session_time": 7997.928
+    },
+    {
+      "driver": "HAM",
+      "lap": 50,
+      "time": 83.31,
+      "compound": "HARD",
+      "tyre_life": 22,
+      "position": 4,
+      "session_time": 8081.238
+    },
+    {
+      "driver": "HAM",
+      "lap": 51,
+      "time": 82.683,
+      "compound": "HARD",
+      "tyre_life": 23,
+      "position": 4,
+      "session_time": 8163.921
+    },
+    {
+      "driver": "HAM",
+      "lap": 52,
+      "time": 83.008,
+      "compound": "HARD",
+      "tyre_life": 24,
+      "position": 4,
+      "session_time": 8246.929
+    },
+    {
+      "driver": "HAM",
+      "lap": 53,
+      "time": 83.165,
+      "compound": "HARD",
+      "tyre_life": 25,
+      "position": 4,
+      "session_time": 8330.094
+    },
+    {
+      "driver": "HAM",
+      "lap": 54,
+      "time": 82.554,
+      "compound": "HARD",
+      "tyre_life": 26,
+      "position": 4,
+      "session_time": 8412.648
+    },
+    {
+      "driver": "HAM",
+      "lap": 55,
+      "time": 82.423,
+      "compound": "HARD",
+      "tyre_life": 27,
+      "position": 4,
+      "session_time": 8495.071
+    },
+    {
+      "driver": "HAM",
+      "lap": 56,
+      "time": 82.5,
+      "compound": "HARD",
+      "tyre_life": 28,
+      "position": 4,
+      "session_time": 8577.571
+    },
+    {
+      "driver": "HAM",
+      "lap": 57,
+      "time": 82.716,
+      "compound": "HARD",
+      "tyre_life": 29,
+      "position": 4,
+      "session_time": 8660.287
+    },
+    {
+      "driver": "HAM",
+      "lap": 58,
+      "time": 82.637,
+      "compound": "HARD",
+      "tyre_life": 30,
+      "position": 4,
+      "session_time": 8742.924
+    },
+    {
+      "driver": "BOR",
+      "lap": 1,
+      "time": 98.755,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 11,
+      "session_time": 3838.734
+    },
+    {
+      "driver": "BOR",
+      "lap": 2,
+      "time": 87.538,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 11,
+      "session_time": 3926.272
+    },
+    {
+      "driver": "BOR",
+      "lap": 3,
+      "time": 86.324,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 10,
+      "session_time": 4012.596
+    },
+    {
+      "driver": "BOR",
+      "lap": 4,
+      "time": 86.032,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 10,
+      "session_time": 4098.628
+    },
+    {
+      "driver": "BOR",
+      "lap": 5,
+      "time": 86.327,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 10,
+      "session_time": 4184.955
+    },
+    {
+      "driver": "BOR",
+      "lap": 6,
+      "time": 87.463,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 12,
+      "session_time": 4272.418
+    },
+    {
+      "driver": "BOR",
+      "lap": 7,
+      "time": 85.785,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 12,
+      "session_time": 4358.203
+    },
+    {
+      "driver": "BOR",
+      "lap": 8,
+      "time": 85.47,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 12,
+      "session_time": 4443.673
+    },
+    {
+      "driver": "BOR",
+      "lap": 9,
+      "time": 85.224,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 12,
+      "session_time": 4528.897
+    },
+    {
+      "driver": "BOR",
+      "lap": 10,
+      "time": 85.561,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 12,
+      "session_time": 4614.458
+    },
+    {
+      "driver": "BOR",
+      "lap": 11,
+      "time": 91.862,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 8,
+      "session_time": 4706.32
+    },
+    {
+      "driver": "BOR",
+      "lap": 12,
+      "time": 114.364,
+      "compound": "MEDIUM",
+      "tyre_life": 12,
+      "position": 8,
+      "session_time": 4820.684
+    },
+    {
+      "driver": "BOR",
+      "lap": 13,
+      "time": 114.445,
+      "compound": "MEDIUM",
+      "tyre_life": 13,
+      "position": 8,
+      "session_time": 4935.129
+    },
+    {
+      "driver": "BOR",
+      "lap": 14,
+      "time": 85.958,
+      "compound": "MEDIUM",
+      "tyre_life": 14,
+      "position": 8,
+      "session_time": 5021.087
+    },
+    {
+      "driver": "BOR",
+      "lap": 15,
+      "time": 84.819,
+      "compound": "MEDIUM",
+      "tyre_life": 15,
+      "position": 8,
+      "session_time": 5105.906
+    },
+    {
+      "driver": "BOR",
+      "lap": 16,
+      "time": 84.98,
+      "compound": "MEDIUM",
+      "tyre_life": 16,
+      "position": 8,
+      "session_time": 5190.886
+    },
+    {
+      "driver": "BOR",
+      "lap": 17,
+      "time": 85.061,
+      "compound": "MEDIUM",
+      "tyre_life": 17,
+      "position": 8,
+      "session_time": 5275.947
+    },
+    {
+      "driver": "BOR",
+      "lap": 18,
+      "time": 110.359,
+      "compound": "MEDIUM",
+      "tyre_life": 18,
+      "position": 9,
+      "session_time": 5386.306
+    },
+    {
+      "driver": "BOR",
+      "lap": 19,
+      "time": 115.679,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 11,
+      "session_time": 5501.985
+    },
+    {
+      "driver": "BOR",
+      "lap": 20,
+      "time": 85.201,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 9,
+      "session_time": 5587.186
+    },
+    {
+      "driver": "BOR",
+      "lap": 21,
+      "time": 85.044,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 9,
+      "session_time": 5672.23
+    },
+    {
+      "driver": "BOR",
+      "lap": 22,
+      "time": 84.428,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 9,
+      "session_time": 5756.658
+    },
+    {
+      "driver": "BOR",
+      "lap": 23,
+      "time": 84.335,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 9,
+      "session_time": 5840.993
+    },
+    {
+      "driver": "BOR",
+      "lap": 24,
+      "time": 84.327,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 9,
+      "session_time": 5925.32
+    },
+    {
+      "driver": "BOR",
+      "lap": 25,
+      "time": 84.37,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 9,
+      "session_time": 6009.69
+    },
+    {
+      "driver": "BOR",
+      "lap": 26,
+      "time": 84.533,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 9,
+      "session_time": 6094.223
+    },
+    {
+      "driver": "BOR",
+      "lap": 27,
+      "time": 84.535,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 9,
+      "session_time": 6178.758
+    },
+    {
+      "driver": "BOR",
+      "lap": 28,
+      "time": 84.44,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 9,
+      "session_time": 6263.198
+    },
+    {
+      "driver": "BOR",
+      "lap": 29,
+      "time": 84.694,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 9,
+      "session_time": 6347.892
+    },
+    {
+      "driver": "BOR",
+      "lap": 30,
+      "time": 84.364,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 9,
+      "session_time": 6432.256
+    },
+    {
+      "driver": "BOR",
+      "lap": 31,
+      "time": 84.153,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 9,
+      "session_time": 6516.409
+    },
+    {
+      "driver": "BOR",
+      "lap": 32,
+      "time": 83.978,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 9,
+      "session_time": 6600.387
+    },
+    {
+      "driver": "BOR",
+      "lap": 33,
+      "time": 104.235,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 11,
+      "session_time": 6704.622
+    },
+    {
+      "driver": "BOR",
+      "lap": 34,
+      "time": 93.286,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 11,
+      "session_time": 6797.908
+    },
+    {
+      "driver": "BOR",
+      "lap": 35,
+      "time": 83.954,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 11,
+      "session_time": 6881.862
+    },
+    {
+      "driver": "BOR",
+      "lap": 36,
+      "time": 83.655,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 11,
+      "session_time": 6965.517
+    },
+    {
+      "driver": "BOR",
+      "lap": 37,
+      "time": 83.732,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 11,
+      "session_time": 7049.249
+    },
+    {
+      "driver": "BOR",
+      "lap": 38,
+      "time": 85.119,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 11,
+      "session_time": 7134.368
+    },
+    {
+      "driver": "BOR",
+      "lap": 39,
+      "time": 84.83,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 10,
+      "session_time": 7219.198
+    },
+    {
+      "driver": "BOR",
+      "lap": 40,
+      "time": 84.696,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 9,
+      "session_time": 7303.894
+    },
+    {
+      "driver": "BOR",
+      "lap": 41,
+      "time": 84.47,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 9,
+      "session_time": 7388.364
+    },
+    {
+      "driver": "BOR",
+      "lap": 42,
+      "time": 83.803,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 9,
+      "session_time": 7472.167
+    },
+    {
+      "driver": "BOR",
+      "lap": 43,
+      "time": 83.643,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 9,
+      "session_time": 7555.81
+    },
+    {
+      "driver": "BOR",
+      "lap": 44,
+      "time": 83.736,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 9,
+      "session_time": 7639.546
+    },
+    {
+      "driver": "BOR",
+      "lap": 45,
+      "time": 83.257,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 9,
+      "session_time": 7722.803
+    },
+    {
+      "driver": "BOR",
+      "lap": 46,
+      "time": 83.346,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 9,
+      "session_time": 7806.149
+    },
+    {
+      "driver": "BOR",
+      "lap": 47,
+      "time": 83.976,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 9,
+      "session_time": 7890.125
+    },
+    {
+      "driver": "BOR",
+      "lap": 48,
+      "time": 85.008,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 9,
+      "session_time": 7975.133
+    },
+    {
+      "driver": "BOR",
+      "lap": 49,
+      "time": 84.889,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 9,
+      "session_time": 8060.022
+    },
+    {
+      "driver": "BOR",
+      "lap": 50,
+      "time": 84.324,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 9,
+      "session_time": 8144.346
+    },
+    {
+      "driver": "BOR",
+      "lap": 51,
+      "time": 85.635,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 9,
+      "session_time": 8229.981
+    },
+    {
+      "driver": "BOR",
+      "lap": 52,
+      "time": 84.359,
+      "compound": "HARD",
+      "tyre_life": 19,
+      "position": 9,
+      "session_time": 8314.34
+    },
+    {
+      "driver": "BOR",
+      "lap": 53,
+      "time": 86.063,
+      "compound": "HARD",
+      "tyre_life": 20,
+      "position": 9,
+      "session_time": 8400.403
+    },
+    {
+      "driver": "BOR",
+      "lap": 54,
+      "time": 84.548,
+      "compound": "HARD",
+      "tyre_life": 21,
+      "position": 9,
+      "session_time": 8484.951
+    },
+    {
+      "driver": "BOR",
+      "lap": 55,
+      "time": 85.268,
+      "compound": "HARD",
+      "tyre_life": 22,
+      "position": 9,
+      "session_time": 8570.219
+    },
+    {
+      "driver": "BOR",
+      "lap": 56,
+      "time": 84.515,
+      "compound": "HARD",
+      "tyre_life": 23,
+      "position": 9,
+      "session_time": 8654.734
+    },
+    {
+      "driver": "BOR",
+      "lap": 57,
+      "time": 84.821,
+      "compound": "HARD",
+      "tyre_life": 24,
+      "position": 9,
+      "session_time": 8739.555
+    },
+    {
+      "driver": "SAI",
+      "lap": 1,
+      "time": 99.815,
+      "compound": "SOFT",
+      "tyre_life": 1,
+      "position": 13,
+      "session_time": 3839.794
+    },
+    {
+      "driver": "SAI",
+      "lap": 2,
+      "time": 87.98,
+      "compound": "SOFT",
+      "tyre_life": 2,
+      "position": 14,
+      "session_time": 3927.774
+    },
+    {
+      "driver": "SAI",
+      "lap": 3,
+      "time": 88.093,
+      "compound": "SOFT",
+      "tyre_life": 3,
+      "position": 15,
+      "session_time": 4015.867
+    },
+    {
+      "driver": "SAI",
+      "lap": 4,
+      "time": 87.216,
+      "compound": "SOFT",
+      "tyre_life": 4,
+      "position": 15,
+      "session_time": 4103.083
+    },
+    {
+      "driver": "SAI",
+      "lap": 5,
+      "time": 87.511,
+      "compound": "SOFT",
+      "tyre_life": 5,
+      "position": 15,
+      "session_time": 4190.594
+    },
+    {
+      "driver": "SAI",
+      "lap": 6,
+      "time": 86.872,
+      "compound": "SOFT",
+      "tyre_life": 6,
+      "position": 14,
+      "session_time": 4277.466
+    },
+    {
+      "driver": "SAI",
+      "lap": 7,
+      "time": 85.698,
+      "compound": "SOFT",
+      "tyre_life": 7,
+      "position": 14,
+      "session_time": 4363.164
+    },
+    {
+      "driver": "SAI",
+      "lap": 8,
+      "time": 85.433,
+      "compound": "SOFT",
+      "tyre_life": 8,
+      "position": 14,
+      "session_time": 4448.597
+    },
+    {
+      "driver": "SAI",
+      "lap": 9,
+      "time": 85.826,
+      "compound": "SOFT",
+      "tyre_life": 9,
+      "position": 14,
+      "session_time": 4534.423
+    },
+    {
+      "driver": "SAI",
+      "lap": 10,
+      "time": 86.202,
+      "compound": "SOFT",
+      "tyre_life": 10,
+      "position": 14,
+      "session_time": 4620.625
+    },
+    {
+      "driver": "SAI",
+      "lap": 11,
+      "time": 106.912,
+      "compound": "SOFT",
+      "tyre_life": 11,
+      "position": 13,
+      "session_time": 4727.537
+    },
+    {
+      "driver": "SAI",
+      "lap": 12,
+      "time": 116.846,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 13,
+      "session_time": 4844.383
+    },
+    {
+      "driver": "SAI",
+      "lap": 13,
+      "time": 108.341,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 13,
+      "session_time": 4952.724
+    },
+    {
+      "driver": "SAI",
+      "lap": 14,
+      "time": 84.927,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 13,
+      "session_time": 5037.651
+    },
+    {
+      "driver": "SAI",
+      "lap": 15,
+      "time": 84.824,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 13,
+      "session_time": 5122.475
+    },
+    {
+      "driver": "SAI",
+      "lap": 16,
+      "time": 84.94,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 12,
+      "session_time": 5207.415
+    },
+    {
+      "driver": "SAI",
+      "lap": 17,
+      "time": 85.151,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 12,
+      "session_time": 5292.566
+    },
+    {
+      "driver": "SAI",
+      "lap": 18,
+      "time": 102.82,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 12,
+      "session_time": 5395.386
+    },
+    {
+      "driver": "SAI",
+      "lap": 19,
+      "time": 110.08,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 12,
+      "session_time": 5505.466
+    },
+    {
+      "driver": "SAI",
+      "lap": 20,
+      "time": 85.394,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 12,
+      "session_time": 5590.86
+    },
+    {
+      "driver": "SAI",
+      "lap": 21,
+      "time": 85.409,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 12,
+      "session_time": 5676.269
+    },
+    {
+      "driver": "SAI",
+      "lap": 22,
+      "time": 85.37,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 12,
+      "session_time": 5761.639
+    },
+    {
+      "driver": "SAI",
+      "lap": 23,
+      "time": 85.6,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 12,
+      "session_time": 5847.239
+    },
+    {
+      "driver": "SAI",
+      "lap": 24,
+      "time": 85.704,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 12,
+      "session_time": 5932.943
+    },
+    {
+      "driver": "SAI",
+      "lap": 25,
+      "time": 86.122,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 12,
+      "session_time": 6019.065
+    },
+    {
+      "driver": "SAI",
+      "lap": 26,
+      "time": 86.141,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 12,
+      "session_time": 6105.206
+    },
+    {
+      "driver": "SAI",
+      "lap": 27,
+      "time": 86.124,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 12,
+      "session_time": 6191.33
+    },
+    {
+      "driver": "SAI",
+      "lap": 28,
+      "time": 86.796,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 12,
+      "session_time": 6278.126
+    },
+    {
+      "driver": "SAI",
+      "lap": 29,
+      "time": 88.049,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 13,
+      "session_time": 6366.175
+    },
+    {
+      "driver": "SAI",
+      "lap": 30,
+      "time": 87.095,
+      "compound": "HARD",
+      "tyre_life": 19,
+      "position": 13,
+      "session_time": 6453.27
+    },
+    {
+      "driver": "SAI",
+      "lap": 31,
+      "time": 86.639,
+      "compound": "HARD",
+      "tyre_life": 20,
+      "position": 13,
+      "session_time": 6539.909
+    },
+    {
+      "driver": "SAI",
+      "lap": 32,
+      "time": 87.386,
+      "compound": "HARD",
+      "tyre_life": 21,
+      "position": 13,
+      "session_time": 6627.295
+    },
+    {
+      "driver": "SAI",
+      "lap": 33,
+      "time": 119.861,
+      "compound": "HARD",
+      "tyre_life": 22,
+      "position": 14,
+      "session_time": 6747.156
+    },
+    {
+      "driver": "SAI",
+      "lap": 34,
+      "time": 93.021,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 15,
+      "session_time": 6840.177
+    },
+    {
+      "driver": "SAI",
+      "lap": 35,
+      "time": 84.881,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 15,
+      "session_time": 6925.058
+    },
+    {
+      "driver": "SAI",
+      "lap": 36,
+      "time": 84.804,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 15,
+      "session_time": 7009.862
+    },
+    {
+      "driver": "SAI",
+      "lap": 37,
+      "time": 85.21,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 15,
+      "session_time": 7095.072
+    },
+    {
+      "driver": "SAI",
+      "lap": 38,
+      "time": 87.205,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 15,
+      "session_time": 7182.277
+    },
+    {
+      "driver": "SAI",
+      "lap": 39,
+      "time": 87.266,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 15,
+      "session_time": 7269.543
+    },
+    {
+      "driver": "SAI",
+      "lap": 40,
+      "time": 86.222,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 15,
+      "session_time": 7355.765
+    },
+    {
+      "driver": "SAI",
+      "lap": 41,
+      "time": 86.717,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 15,
+      "session_time": 7442.482
+    },
+    {
+      "driver": "SAI",
+      "lap": 42,
+      "time": 85.361,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 15,
+      "session_time": 7527.843
+    },
+    {
+      "driver": "SAI",
+      "lap": 43,
+      "time": 85.287,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 15,
+      "session_time": 7613.13
+    },
+    {
+      "driver": "SAI",
+      "lap": 44,
+      "time": 85.529,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 15,
+      "session_time": 7698.659
+    },
+    {
+      "driver": "SAI",
+      "lap": 45,
+      "time": 116.391,
+      "compound": "MEDIUM",
+      "tyre_life": 12,
+      "position": 15,
+      "session_time": 7815.05
+    },
+    {
+      "driver": "SAI",
+      "lap": 46,
+      "time": 91.589,
+      "compound": "SOFT",
+      "tyre_life": 1,
+      "position": 15,
+      "session_time": 7906.639
+    },
+    {
+      "driver": "SAI",
+      "lap": 47,
+      "time": 96.209,
+      "compound": "SOFT",
+      "tyre_life": 2,
+      "position": 15,
+      "session_time": 8002.848
+    },
+    {
+      "driver": "SAI",
+      "lap": 48,
+      "time": 84.977,
+      "compound": "SOFT",
+      "tyre_life": 3,
+      "position": 15,
+      "session_time": 8087.825
+    },
+    {
+      "driver": "SAI",
+      "lap": 49,
+      "time": 83.922,
+      "compound": "SOFT",
+      "tyre_life": 4,
+      "position": 15,
+      "session_time": 8171.747
+    },
+    {
+      "driver": "SAI",
+      "lap": 50,
+      "time": 83.6,
+      "compound": "SOFT",
+      "tyre_life": 5,
+      "position": 15,
+      "session_time": 8255.347
+    },
+    {
+      "driver": "SAI",
+      "lap": 51,
+      "time": 83.87,
+      "compound": "SOFT",
+      "tyre_life": 6,
+      "position": 15,
+      "session_time": 8339.217
+    },
+    {
+      "driver": "SAI",
+      "lap": 52,
+      "time": 83.59,
+      "compound": "SOFT",
+      "tyre_life": 7,
+      "position": 15,
+      "session_time": 8422.807
+    },
+    {
+      "driver": "SAI",
+      "lap": 53,
+      "time": 87.961,
+      "compound": "SOFT",
+      "tyre_life": 8,
+      "position": 15,
+      "session_time": 8510.768
+    },
+    {
+      "driver": "SAI",
+      "lap": 54,
+      "time": 84.266,
+      "compound": "SOFT",
+      "tyre_life": 9,
+      "position": 15,
+      "session_time": 8595.034
+    },
+    {
+      "driver": "SAI",
+      "lap": 55,
+      "time": 83.809,
+      "compound": "SOFT",
+      "tyre_life": 10,
+      "position": 15,
+      "session_time": 8678.843
+    },
+    {
+      "driver": "SAI",
+      "lap": 56,
+      "time": 84.823,
+      "compound": "SOFT",
+      "tyre_life": 11,
+      "position": 15,
+      "session_time": 8763.666
+    },
+    {
+      "driver": "HAD",
+      "lap": 1,
+      "time": 96.046,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 4,
+      "session_time": 3836.025
+    },
+    {
+      "driver": "HAD",
+      "lap": 2,
+      "time": 85.987,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 4,
+      "session_time": 3922.012
+    },
+    {
+      "driver": "HAD",
+      "lap": 3,
+      "time": 85.556,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 4,
+      "session_time": 4007.568
+    },
+    {
+      "driver": "HAD",
+      "lap": 4,
+      "time": 85.342,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 4,
+      "session_time": 4092.91
+    },
+    {
+      "driver": "HAD",
+      "lap": 5,
+      "time": 85.355,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 4,
+      "session_time": 4178.265
+    },
+    {
+      "driver": "HAD",
+      "lap": 6,
+      "time": 85.879,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 5,
+      "session_time": 4264.144
+    },
+    {
+      "driver": "HAD",
+      "lap": 7,
+      "time": 85.445,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 5,
+      "session_time": 4349.589
+    },
+    {
+      "driver": "HAD",
+      "lap": 8,
+      "time": 85.313,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 5,
+      "session_time": 4434.902
+    },
+    {
+      "driver": "HAD",
+      "lap": 9,
+      "time": 85.239,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 5,
+      "session_time": 4520.141
+    },
+    {
+      "driver": "HAD",
+      "lap": 10,
+      "time": 85.363,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 5,
+      "session_time": 4605.504
+    },
+    {
+      "driver": "RUS",
+      "lap": 1,
+      "time": 92.694,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 2,
+      "session_time": 3832.673
+    },
+    {
+      "driver": "RUS",
+      "lap": 2,
+      "time": 85.007,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 1,
+      "session_time": 3917.68
+    },
+    {
+      "driver": "RUS",
+      "lap": 3,
+      "time": 86.444,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 2,
+      "session_time": 4004.124
+    },
+    {
+      "driver": "RUS",
+      "lap": 4,
+      "time": 84.789,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 2,
+      "session_time": 4088.913
+    },
+    {
+      "driver": "RUS",
+      "lap": 5,
+      "time": 84.017,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 2,
+      "session_time": 4172.93
+    },
+    {
+      "driver": "RUS",
+      "lap": 6,
+      "time": 84.639,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 2,
+      "session_time": 4257.569
+    },
+    {
+      "driver": "RUS",
+      "lap": 7,
+      "time": 84.099,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 2,
+      "session_time": 4341.668
+    },
+    {
+      "driver": "RUS",
+      "lap": 8,
+      "time": 85.19,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 2,
+      "session_time": 4426.858
+    },
+    {
+      "driver": "RUS",
+      "lap": 9,
+      "time": 85.978,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 2,
+      "session_time": 4512.836
+    },
+    {
+      "driver": "RUS",
+      "lap": 10,
+      "time": 84.112,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 2,
+      "session_time": 4596.948
+    },
+    {
+      "driver": "RUS",
+      "lap": 11,
+      "time": 83.967,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 2,
+      "session_time": 4680.915
+    },
+    {
+      "driver": "RUS",
+      "lap": 12,
+      "time": 125.94,
+      "compound": "MEDIUM",
+      "tyre_life": 12,
+      "position": 3,
+      "session_time": 4806.855
+    },
+    {
+      "driver": "RUS",
+      "lap": 13,
+      "time": 117.659,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 3,
+      "session_time": 4924.514
+    },
+    {
+      "driver": "RUS",
+      "lap": 14,
+      "time": 87.094,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 3,
+      "session_time": 5011.608
+    },
+    {
+      "driver": "RUS",
+      "lap": 15,
+      "time": 82.825,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 3,
+      "session_time": 5094.433
+    },
+    {
+      "driver": "RUS",
+      "lap": 16,
+      "time": 82.923,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 3,
+      "session_time": 5177.356
+    },
+    {
+      "driver": "RUS",
+      "lap": 17,
+      "time": 82.765,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 3,
+      "session_time": 5260.121
+    },
+    {
+      "driver": "RUS",
+      "lap": 18,
+      "time": 88.979,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 3,
+      "session_time": 5349.1
+    },
+    {
+      "driver": "RUS",
+      "lap": 19,
+      "time": 115.257,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 3,
+      "session_time": 5464.357
+    },
+    {
+      "driver": "RUS",
+      "lap": 20,
+      "time": 90.936,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 3,
+      "session_time": 5555.293
+    },
+    {
+      "driver": "RUS",
+      "lap": 21,
+      "time": 82.67,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 3,
+      "session_time": 5637.963
+    },
+    {
+      "driver": "RUS",
+      "lap": 22,
+      "time": 82.892,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 3,
+      "session_time": 5720.855
+    },
+    {
+      "driver": "RUS",
+      "lap": 23,
+      "time": 82.828,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 3,
+      "session_time": 5803.683
+    },
+    {
+      "driver": "RUS",
+      "lap": 24,
+      "time": 83.466,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 3,
+      "session_time": 5887.149
+    },
+    {
+      "driver": "RUS",
+      "lap": 25,
+      "time": 82.879,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 2,
+      "session_time": 5970.028
+    },
+    {
+      "driver": "RUS",
+      "lap": 26,
+      "time": 83.093,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 2,
+      "session_time": 6053.121
+    },
+    {
+      "driver": "RUS",
+      "lap": 27,
+      "time": 83.188,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 2,
+      "session_time": 6136.309
+    },
+    {
+      "driver": "RUS",
+      "lap": 28,
+      "time": 83.39,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 1,
+      "session_time": 6219.699
+    },
+    {
+      "driver": "RUS",
+      "lap": 29,
+      "time": 83.486,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 1,
+      "session_time": 6303.185
+    },
+    {
+      "driver": "RUS",
+      "lap": 30,
+      "time": 83.272,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 1,
+      "session_time": 6386.457
+    },
+    {
+      "driver": "RUS",
+      "lap": 31,
+      "time": 83.147,
+      "compound": "HARD",
+      "tyre_life": 19,
+      "position": 1,
+      "session_time": 6469.604
+    },
+    {
+      "driver": "RUS",
+      "lap": 32,
+      "time": 83.54,
+      "compound": "HARD",
+      "tyre_life": 20,
+      "position": 1,
+      "session_time": 6553.144
+    },
+    {
+      "driver": "RUS",
+      "lap": 33,
+      "time": 83.838,
+      "compound": "HARD",
+      "tyre_life": 21,
+      "position": 1,
+      "session_time": 6636.982
+    },
+    {
+      "driver": "RUS",
+      "lap": 34,
+      "time": 97.592,
+      "compound": "HARD",
+      "tyre_life": 22,
+      "position": 1,
+      "session_time": 6734.574
+    },
+    {
+      "driver": "RUS",
+      "lap": 35,
+      "time": 83.017,
+      "compound": "HARD",
+      "tyre_life": 23,
+      "position": 1,
+      "session_time": 6817.591
+    },
+    {
+      "driver": "RUS",
+      "lap": 36,
+      "time": 82.729,
+      "compound": "HARD",
+      "tyre_life": 24,
+      "position": 1,
+      "session_time": 6900.32
+    },
+    {
+      "driver": "RUS",
+      "lap": 37,
+      "time": 82.839,
+      "compound": "HARD",
+      "tyre_life": 25,
+      "position": 1,
+      "session_time": 6983.159
+    },
+    {
+      "driver": "RUS",
+      "lap": 38,
+      "time": 82.863,
+      "compound": "HARD",
+      "tyre_life": 26,
+      "position": 1,
+      "session_time": 7066.022
+    },
+    {
+      "driver": "RUS",
+      "lap": 39,
+      "time": 82.738,
+      "compound": "HARD",
+      "tyre_life": 27,
+      "position": 1,
+      "session_time": 7148.76
+    },
+    {
+      "driver": "RUS",
+      "lap": 40,
+      "time": 82.915,
+      "compound": "HARD",
+      "tyre_life": 28,
+      "position": 1,
+      "session_time": 7231.675
+    },
+    {
+      "driver": "RUS",
+      "lap": 41,
+      "time": 83.073,
+      "compound": "HARD",
+      "tyre_life": 29,
+      "position": 1,
+      "session_time": 7314.748
+    },
+    {
+      "driver": "RUS",
+      "lap": 42,
+      "time": 83.054,
+      "compound": "HARD",
+      "tyre_life": 30,
+      "position": 1,
+      "session_time": 7397.802
+    },
+    {
+      "driver": "RUS",
+      "lap": 43,
+      "time": 82.893,
+      "compound": "HARD",
+      "tyre_life": 31,
+      "position": 1,
+      "session_time": 7480.695
+    },
+    {
+      "driver": "RUS",
+      "lap": 44,
+      "time": 82.856,
+      "compound": "HARD",
+      "tyre_life": 32,
+      "position": 1,
+      "session_time": 7563.551
+    },
+    {
+      "driver": "RUS",
+      "lap": 45,
+      "time": 83.477,
+      "compound": "HARD",
+      "tyre_life": 33,
+      "position": 1,
+      "session_time": 7647.028
+    },
+    {
+      "driver": "RUS",
+      "lap": 46,
+      "time": 83.751,
+      "compound": "HARD",
+      "tyre_life": 34,
+      "position": 1,
+      "session_time": 7730.779
+    },
+    {
+      "driver": "RUS",
+      "lap": 47,
+      "time": 83.033,
+      "compound": "HARD",
+      "tyre_life": 35,
+      "position": 1,
+      "session_time": 7813.812
+    },
+    {
+      "driver": "RUS",
+      "lap": 48,
+      "time": 83.034,
+      "compound": "HARD",
+      "tyre_life": 36,
+      "position": 1,
+      "session_time": 7896.846
+    },
+    {
+      "driver": "RUS",
+      "lap": 49,
+      "time": 82.844,
+      "compound": "HARD",
+      "tyre_life": 37,
+      "position": 1,
+      "session_time": 7979.69
+    },
+    {
+      "driver": "RUS",
+      "lap": 50,
+      "time": 83.087,
+      "compound": "HARD",
+      "tyre_life": 38,
+      "position": 1,
+      "session_time": 8062.777
+    },
+    {
+      "driver": "RUS",
+      "lap": 51,
+      "time": 82.762,
+      "compound": "HARD",
+      "tyre_life": 39,
+      "position": 1,
+      "session_time": 8145.539
+    },
+    {
+      "driver": "RUS",
+      "lap": 52,
+      "time": 83.106,
+      "compound": "HARD",
+      "tyre_life": 40,
+      "position": 1,
+      "session_time": 8228.645
+    },
+    {
+      "driver": "RUS",
+      "lap": 53,
+      "time": 83.069,
+      "compound": "HARD",
+      "tyre_life": 41,
+      "position": 1,
+      "session_time": 8311.714
+    },
+    {
+      "driver": "RUS",
+      "lap": 54,
+      "time": 83.1,
+      "compound": "HARD",
+      "tyre_life": 42,
+      "position": 1,
+      "session_time": 8394.814
+    },
+    {
+      "driver": "RUS",
+      "lap": 55,
+      "time": 82.67,
+      "compound": "HARD",
+      "tyre_life": 43,
+      "position": 1,
+      "session_time": 8477.484
+    },
+    {
+      "driver": "RUS",
+      "lap": 56,
+      "time": 82.757,
+      "compound": "HARD",
+      "tyre_life": 44,
+      "position": 1,
+      "session_time": 8560.241
+    },
+    {
+      "driver": "RUS",
+      "lap": 57,
+      "time": 83.188,
+      "compound": "HARD",
+      "tyre_life": 45,
+      "position": 1,
+      "session_time": 8643.429
+    },
+    {
+      "driver": "RUS",
+      "lap": 58,
+      "time": 83.351,
+      "compound": "HARD",
+      "tyre_life": 46,
+      "position": 1,
+      "session_time": 8726.78
+    },
+    {
+      "driver": "BOT",
+      "lap": 1,
+      "time": 100.85,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 15,
+      "session_time": 3840.829
+    },
+    {
+      "driver": "BOT",
+      "lap": 2,
+      "time": 90.152,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 18,
+      "session_time": 3930.981
+    },
+    {
+      "driver": "BOT",
+      "lap": 3,
+      "time": 89.219,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 19,
+      "session_time": 4020.2
+    },
+    {
+      "driver": "BOT",
+      "lap": 4,
+      "time": 88.057,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 19,
+      "session_time": 4108.257
+    },
+    {
+      "driver": "BOT",
+      "lap": 5,
+      "time": 87.738,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 19,
+      "session_time": 4195.995
+    },
+    {
+      "driver": "BOT",
+      "lap": 6,
+      "time": 87.804,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 19,
+      "session_time": 4283.799
+    },
+    {
+      "driver": "BOT",
+      "lap": 7,
+      "time": 87.457,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 19,
+      "session_time": 4371.256
+    },
+    {
+      "driver": "BOT",
+      "lap": 8,
+      "time": 87.364,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 19,
+      "session_time": 4458.62
+    },
+    {
+      "driver": "BOT",
+      "lap": 9,
+      "time": 87.679,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 18,
+      "session_time": 4546.299
+    },
+    {
+      "driver": "BOT",
+      "lap": 10,
+      "time": 87.661,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 18,
+      "session_time": 4633.96
+    },
+    {
+      "driver": "BOT",
+      "lap": 11,
+      "time": 99.058,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 15,
+      "session_time": 4733.018
+    },
+    {
+      "driver": "BOT",
+      "lap": 13,
+      "time": 104.111,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 18,
+      "session_time": 5029.179
+    },
+    {
+      "driver": "BOT",
+      "lap": 14,
+      "time": 91.389,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 18,
+      "session_time": 5120.568
+    },
+    {
+      "driver": "BOT",
+      "lap": 15,
+      "time": 91.33,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 18,
+      "session_time": 5211.898
+    },
+    {
+      "driver": "BEA",
+      "lap": 1,
+      "time": 99.765,
+      "compound": "MEDIUM",
+      "tyre_life": 1,
+      "position": 14,
+      "session_time": 3839.81
+    },
+    {
+      "driver": "BEA",
+      "lap": 2,
+      "time": 87.321,
+      "compound": "MEDIUM",
+      "tyre_life": 2,
+      "position": 12,
+      "session_time": 3927.131
+    },
+    {
+      "driver": "BEA",
+      "lap": 3,
+      "time": 86.384,
+      "compound": "MEDIUM",
+      "tyre_life": 3,
+      "position": 11,
+      "session_time": 4013.515
+    },
+    {
+      "driver": "BEA",
+      "lap": 4,
+      "time": 85.92,
+      "compound": "MEDIUM",
+      "tyre_life": 4,
+      "position": 11,
+      "session_time": 4099.435
+    },
+    {
+      "driver": "BEA",
+      "lap": 5,
+      "time": 86.003,
+      "compound": "MEDIUM",
+      "tyre_life": 5,
+      "position": 11,
+      "session_time": 4185.438
+    },
+    {
+      "driver": "BEA",
+      "lap": 6,
+      "time": 85.969,
+      "compound": "MEDIUM",
+      "tyre_life": 6,
+      "position": 10,
+      "session_time": 4271.407
+    },
+    {
+      "driver": "BEA",
+      "lap": 7,
+      "time": 85.195,
+      "compound": "MEDIUM",
+      "tyre_life": 7,
+      "position": 10,
+      "session_time": 4356.602
+    },
+    {
+      "driver": "BEA",
+      "lap": 8,
+      "time": 86.046,
+      "compound": "MEDIUM",
+      "tyre_life": 8,
+      "position": 11,
+      "session_time": 4442.648
+    },
+    {
+      "driver": "BEA",
+      "lap": 9,
+      "time": 85.397,
+      "compound": "MEDIUM",
+      "tyre_life": 9,
+      "position": 11,
+      "session_time": 4528.045
+    },
+    {
+      "driver": "BEA",
+      "lap": 10,
+      "time": 85.668,
+      "compound": "MEDIUM",
+      "tyre_life": 10,
+      "position": 11,
+      "session_time": 4613.713
+    },
+    {
+      "driver": "BEA",
+      "lap": 11,
+      "time": 91.403,
+      "compound": "MEDIUM",
+      "tyre_life": 11,
+      "position": 7,
+      "session_time": 4705.116
+    },
+    {
+      "driver": "BEA",
+      "lap": 12,
+      "time": 115.039,
+      "compound": "MEDIUM",
+      "tyre_life": 12,
+      "position": 7,
+      "session_time": 4820.155
+    },
+    {
+      "driver": "BEA",
+      "lap": 13,
+      "time": 113.783,
+      "compound": "MEDIUM",
+      "tyre_life": 13,
+      "position": 7,
+      "session_time": 4933.938
+    },
+    {
+      "driver": "BEA",
+      "lap": 14,
+      "time": 85.628,
+      "compound": "MEDIUM",
+      "tyre_life": 14,
+      "position": 7,
+      "session_time": 5019.566
+    },
+    {
+      "driver": "BEA",
+      "lap": 15,
+      "time": 84.562,
+      "compound": "MEDIUM",
+      "tyre_life": 15,
+      "position": 7,
+      "session_time": 5104.128
+    },
+    {
+      "driver": "BEA",
+      "lap": 16,
+      "time": 84.563,
+      "compound": "MEDIUM",
+      "tyre_life": 16,
+      "position": 7,
+      "session_time": 5188.691
+    },
+    {
+      "driver": "BEA",
+      "lap": 17,
+      "time": 84.807,
+      "compound": "MEDIUM",
+      "tyre_life": 17,
+      "position": 7,
+      "session_time": 5273.498
+    },
+    {
+      "driver": "BEA",
+      "lap": 18,
+      "time": 107.604,
+      "compound": "MEDIUM",
+      "tyre_life": 18,
+      "position": 8,
+      "session_time": 5381.102
+    },
+    {
+      "driver": "BEA",
+      "lap": 19,
+      "time": 116.677,
+      "compound": "HARD",
+      "tyre_life": 1,
+      "position": 8,
+      "session_time": 5497.779
+    },
+    {
+      "driver": "BEA",
+      "lap": 20,
+      "time": 85.186,
+      "compound": "HARD",
+      "tyre_life": 2,
+      "position": 8,
+      "session_time": 5582.965
+    },
+    {
+      "driver": "BEA",
+      "lap": 21,
+      "time": 84.203,
+      "compound": "HARD",
+      "tyre_life": 3,
+      "position": 8,
+      "session_time": 5667.168
+    },
+    {
+      "driver": "BEA",
+      "lap": 22,
+      "time": 84.02,
+      "compound": "HARD",
+      "tyre_life": 4,
+      "position": 8,
+      "session_time": 5751.188
+    },
+    {
+      "driver": "BEA",
+      "lap": 23,
+      "time": 84.968,
+      "compound": "HARD",
+      "tyre_life": 5,
+      "position": 8,
+      "session_time": 5836.156
+    },
+    {
+      "driver": "BEA",
+      "lap": 24,
+      "time": 84.692,
+      "compound": "HARD",
+      "tyre_life": 6,
+      "position": 8,
+      "session_time": 5920.848
+    },
+    {
+      "driver": "BEA",
+      "lap": 25,
+      "time": 84.058,
+      "compound": "HARD",
+      "tyre_life": 7,
+      "position": 8,
+      "session_time": 6004.906
+    },
+    {
+      "driver": "BEA",
+      "lap": 26,
+      "time": 84.155,
+      "compound": "HARD",
+      "tyre_life": 8,
+      "position": 8,
+      "session_time": 6089.061
+    },
+    {
+      "driver": "BEA",
+      "lap": 27,
+      "time": 84.284,
+      "compound": "HARD",
+      "tyre_life": 9,
+      "position": 8,
+      "session_time": 6173.345
+    },
+    {
+      "driver": "BEA",
+      "lap": 28,
+      "time": 84.216,
+      "compound": "HARD",
+      "tyre_life": 10,
+      "position": 8,
+      "session_time": 6257.561
+    },
+    {
+      "driver": "BEA",
+      "lap": 29,
+      "time": 85.315,
+      "compound": "HARD",
+      "tyre_life": 11,
+      "position": 8,
+      "session_time": 6342.876
+    },
+    {
+      "driver": "BEA",
+      "lap": 30,
+      "time": 84.509,
+      "compound": "HARD",
+      "tyre_life": 12,
+      "position": 8,
+      "session_time": 6427.385
+    },
+    {
+      "driver": "BEA",
+      "lap": 31,
+      "time": 84.627,
+      "compound": "HARD",
+      "tyre_life": 13,
+      "position": 8,
+      "session_time": 6512.012
+    },
+    {
+      "driver": "BEA",
+      "lap": 32,
+      "time": 85.006,
+      "compound": "HARD",
+      "tyre_life": 14,
+      "position": 8,
+      "session_time": 6597.018
+    },
+    {
+      "driver": "BEA",
+      "lap": 33,
+      "time": 90.647,
+      "compound": "HARD",
+      "tyre_life": 15,
+      "position": 8,
+      "session_time": 6687.665
+    },
+    {
+      "driver": "BEA",
+      "lap": 34,
+      "time": 92.31,
+      "compound": "HARD",
+      "tyre_life": 16,
+      "position": 8,
+      "session_time": 6779.975
+    },
+    {
+      "driver": "BEA",
+      "lap": 35,
+      "time": 84.914,
+      "compound": "HARD",
+      "tyre_life": 17,
+      "position": 7,
+      "session_time": 6864.889
+    },
+    {
+      "driver": "BEA",
+      "lap": 36,
+      "time": 84.598,
+      "compound": "HARD",
+      "tyre_life": 18,
+      "position": 7,
+      "session_time": 6949.487
+    },
+    {
+      "driver": "BEA",
+      "lap": 37,
+      "time": 84.5,
+      "compound": "HARD",
+      "tyre_life": 19,
+      "position": 7,
+      "session_time": 7033.987
+    },
+    {
+      "driver": "BEA",
+      "lap": 38,
+      "time": 85.093,
+      "compound": "HARD",
+      "tyre_life": 20,
+      "position": 8,
+      "session_time": 7119.08
+    },
+    {
+      "driver": "BEA",
+      "lap": 39,
+      "time": 84.756,
+      "compound": "HARD",
+      "tyre_life": 21,
+      "position": 8,
+      "session_time": 7203.836
+    },
+    {
+      "driver": "BEA",
+      "lap": 40,
+      "time": 86.988,
+      "compound": "HARD",
+      "tyre_life": 22,
+      "position": 7,
+      "session_time": 7290.824
+    },
+    {
+      "driver": "BEA",
+      "lap": 41,
+      "time": 85.049,
+      "compound": "HARD",
+      "tyre_life": 23,
+      "position": 7,
+      "session_time": 7375.873
+    },
+    {
+      "driver": "BEA",
+      "lap": 42,
+      "time": 84.503,
+      "compound": "HARD",
+      "tyre_life": 24,
+      "position": 7,
+      "session_time": 7460.376
+    },
+    {
+      "driver": "BEA",
+      "lap": 43,
+      "time": 84.549,
+      "compound": "HARD",
+      "tyre_life": 25,
+      "position": 7,
+      "session_time": 7544.925
+    },
+    {
+      "driver": "BEA",
+      "lap": 44,
+      "time": 84.612,
+      "compound": "HARD",
+      "tyre_life": 26,
+      "position": 7,
+      "session_time": 7629.537
+    },
+    {
+      "driver": "BEA",
+      "lap": 45,
+      "time": 84.13,
+      "compound": "HARD",
+      "tyre_life": 27,
+      "position": 7,
+      "session_time": 7713.667
+    },
+    {
+      "driver": "BEA",
+      "lap": 46,
+      "time": 84.55,
+      "compound": "HARD",
+      "tyre_life": 28,
+      "position": 7,
+      "session_time": 7798.217
+    },
+    {
+      "driver": "BEA",
+      "lap": 47,
+      "time": 84.76,
+      "compound": "HARD",
+      "tyre_life": 29,
+      "position": 7,
+      "session_time": 7882.977
+    },
+    {
+      "driver": "BEA",
+      "lap": 48,
+      "time": 84.404,
+      "compound": "HARD",
+      "tyre_life": 30,
+      "position": 7,
+      "session_time": 7967.381
+    },
+    {
+      "driver": "BEA",
+      "lap": 49,
+      "time": 84.281,
+      "compound": "HARD",
+      "tyre_life": 31,
+      "position": 7,
+      "session_time": 8051.662
+    },
+    {
+      "driver": "BEA",
+      "lap": 50,
+      "time": 84.467,
+      "compound": "HARD",
+      "tyre_life": 32,
+      "position": 7,
+      "session_time": 8136.129
+    },
+    {
+      "driver": "BEA",
+      "lap": 51,
+      "time": 84.233,
+      "compound": "HARD",
+      "tyre_life": 33,
+      "position": 7,
+      "session_time": 8220.362
+    },
+    {
+      "driver": "BEA",
+      "lap": 52,
+      "time": 84.264,
+      "compound": "HARD",
+      "tyre_life": 34,
+      "position": 7,
+      "session_time": 8304.626
+    },
+    {
+      "driver": "BEA",
+      "lap": 53,
+      "time": 84.615,
+      "compound": "HARD",
+      "tyre_life": 35,
+      "position": 7,
+      "session_time": 8389.241
+    },
+    {
+      "driver": "BEA",
+      "lap": 54,
+      "time": 84.61,
+      "compound": "HARD",
+      "tyre_life": 36,
+      "position": 7,
+      "session_time": 8473.851
+    },
+    {
+      "driver": "BEA",
+      "lap": 55,
+      "time": 84.5,
+      "compound": "HARD",
+      "tyre_life": 37,
+      "position": 7,
+      "session_time": 8558.351
+    },
+    {
+      "driver": "BEA",
+      "lap": 56,
+      "time": 86.439,
+      "compound": "HARD",
+      "tyre_life": 38,
+      "position": 7,
+      "session_time": 8644.79
+    },
+    {
+      "driver": "BEA",
+      "lap": 57,
+      "time": 86.649,
+      "compound": "HARD",
+      "tyre_life": 39,
+      "position": 7,
+      "session_time": 8731.439
+    }
+  ]
+}

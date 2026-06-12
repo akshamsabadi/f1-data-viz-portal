@@ -2,9 +2,15 @@
   "races": [
     {
       "year": 2026,
-      "id": "bahrain",
-      "name": "Bahrain Grand Prix",
-      "file": "races/2026/bahrain.json"
+      "id": "australia",
+      "name": "Australian Grand Prix",
+      "file": "races/2026/australia.json"
+    },
+    {
+      "year": 2026,
+      "id": "china",
+      "name": "Chinese Grand Prix",
+      "file": "races/2026/china.json"
     }
   ]
 }
