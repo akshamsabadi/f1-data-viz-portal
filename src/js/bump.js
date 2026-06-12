@@ -5,7 +5,7 @@ export function renderBump(data) {
     const validLaps = data.laps.filter(d => d.position !== null);
 
     if (!validLaps || validLaps.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding-top: 2rem;">No position data available.</p>';
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding-top: 2rem; font-family: Montserrat, sans-serif; text-transform: uppercase;">No position data available.</p>';
         return;
     }
 
@@ -31,25 +31,40 @@ export function renderBump(data) {
         .domain([1, maxPos])
         .range([0, height]); // inverted because 1st is at top
 
+    // Gridlines
+    svg.append('g')
+        .attr('class', 'gridline')
+        .call(d3.axisLeft(yScale)
+            .tickSize(-width)
+            .tickFormat('')
+            .ticks(maxPos)
+        );
+
+    // X Axis
     svg.append('g')
         .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(xScale).ticks(10))
+        .call(d3.axisBottom(xScale).ticks(10).tickFormat(d3.format('d')))
         .append('text')
         .attr('x', width)
         .attr('y', 35)
-        .attr('fill', 'currentColor')
+        .attr('fill', 'var(--text-muted)')
         .attr('text-anchor', 'end')
-        .text('Lap');
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-weight', '600')
+        .text('LAP');
 
+    // Y Axis
     svg.append('g')
         .call(d3.axisLeft(yScale).ticks(maxPos))
         .append('text')
         .attr('transform', 'rotate(-90)')
         .attr('y', -30)
-        .attr('x', -height/2)
-        .attr('fill', 'currentColor')
-        .attr('text-anchor', 'middle')
-        .text('Position');
+        .attr('x', 0)
+        .attr('fill', 'var(--text-muted)')
+        .attr('text-anchor', 'end')
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-weight', '600')
+        .text('POSITION');
 
     const line = d3.line()
         .x(d => xScale(d.lap))
@@ -59,20 +74,61 @@ export function renderBump(data) {
     const driverLaps = d3.group(validLaps, d => d.driver);
     const driverColors = Object.fromEntries(data.drivers.map(d => [d.code, d.color]));
 
-    svg.selectAll('.line')
+    const linesGroup = svg.append('g').attr('class', 'lines-group');
+
+    // Draw lines
+    const paths = linesGroup.selectAll('.bump-line')
         .data(driverLaps)
         .enter()
         .append('path')
-        .attr('class', 'line')
+        .attr('class', 'bump-line')
         .attr('fill', 'none')
         .attr('stroke', d => driverColors[d[0]] || '#ccc')
         .attr('stroke-width', 2)
-        .attr('opacity', 0.8)
-        .attr('d', d => line(d[1]))
-        .on('mouseover', function(event, d) {
-            d3.select(this).attr('stroke-width', 4).attr('opacity', 1);
-        })
-        .on('mouseout', function(event, d) {
-            d3.select(this).attr('stroke-width', 2).attr('opacity', 0.8);
-        });
+        .attr('opacity', 1)
+        .attr('d', d => line(d[1]));
+
+    // Start Nodes
+    const startNodesGroup = svg.append('g').attr('class', 'start-nodes');
+    const startNodes = startNodesGroup.selectAll('.start-node')
+        .data(driverLaps)
+        .enter()
+        .append('circle')
+        .attr('class', 'start-node')
+        .attr('cx', d => xScale(d[1][0].lap))
+        .attr('cy', d => yScale(d[1][0].position))
+        .attr('r', 4)
+        .attr('fill', d => driverColors[d[0]] || '#ccc')
+        .attr('stroke', 'var(--bg-dark)')
+        .attr('stroke-width', 1);
+
+    // End Nodes
+    const endNodesGroup = svg.append('g').attr('class', 'end-nodes');
+    const endNodes = endNodesGroup.selectAll('.end-node')
+        .data(driverLaps)
+        .enter()
+        .append('circle')
+        .attr('class', 'end-node')
+        .attr('cx', d => xScale(d[1][d[1].length - 1].lap))
+        .attr('cy', d => yScale(d[1][d[1].length - 1].position))
+        .attr('r', 4)
+        .attr('fill', d => driverColors[d[0]] || '#ccc')
+        .attr('stroke', 'var(--bg-dark)')
+        .attr('stroke-width', 1);
+
+    // Focus state interaction
+    const handleMouseOver = (event, d) => {
+        paths.attr('opacity', p => p[0] === d[0] ? 1 : 0.1);
+        startNodes.attr('opacity', p => p[0] === d[0] ? 1 : 0.1);
+        endNodes.attr('opacity', p => p[0] === d[0] ? 1 : 0.1);
+        d3.select(event.currentTarget).attr('stroke-width', 4);
+    };
+
+    const handleMouseOut = (event, d) => {
+        paths.attr('opacity', 1).attr('stroke-width', 2);
+        startNodes.attr('opacity', 1);
+        endNodes.attr('opacity', 1);
+    };
+
+    paths.on('mouseover', handleMouseOver).on('mouseout', handleMouseOut);
 }

@@ -1,10 +1,10 @@
 :root {
-    --bg-dark: #09090b;
-    --bg-card: #18181b;
-    --text-primary: #fafafa;
-    --text-muted: #a1a1aa;
-    --border-color: #27272a;
-    --accent: #ef4444;
+    --bg-dark: #15151E;
+    --bg-card: #1E1E28;
+    --text-primary: #ffffff;
+    --text-muted: #8b8b99;
+    --border-color: #383842;
+    --accent: #E10600;
 }
 
 * {
@@ -14,10 +14,16 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Titillium Web', sans-serif;
     background-color: var(--bg-dark);
     color: var(--text-primary);
     line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    font-weight: 700;
 }
 
 .navbar {
@@ -26,19 +32,24 @@ body {
     align-items: center;
     padding: 1rem 2rem;
     background-color: var(--bg-card);
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 2px solid var(--border-color);
 }
 
 .logo {
-    font-size: 1.25rem;
-    font-weight: 800;
+    font-size: 1.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
     color: var(--accent);
 }
 
 .controls label {
     margin-right: 0.5rem;
     font-size: 0.875rem;
+    font-family: 'Montserrat', sans-serif;
     color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
 }
 
 .controls select {
@@ -46,8 +57,10 @@ body {
     color: var(--text-primary);
     border: 1px solid var(--border-color);
     padding: 0.5rem;
-    border-radius: 4px;
-    font-family: inherit;
+    border-radius: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
 .dashboard {
@@ -58,21 +71,26 @@ body {
 
 .dashboard-header {
     margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
 }
 
 .dashboard-header h1 {
-    font-size: 2rem;
+    font-size: 2.5rem;
     margin-bottom: 0.25rem;
+    letter-spacing: 1px;
 }
 
 .dashboard-header p {
     color: var(--text-muted);
+    font-size: 1.125rem;
+    font-weight: 600;
 }
 
 .viz-container {
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 0;
     padding: 1.5rem;
     margin-bottom: 2rem;
 }
@@ -82,6 +100,7 @@ body {
     margin-bottom: 1rem;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 0.5rem;
+    letter-spacing: 1px;
 }
 
 .chart {
@@ -107,14 +126,17 @@ body {
 
 .tooltip {
     position: absolute;
-    background: var(--bg-dark);
+    background: var(--bg-card);
     border: 1px solid var(--border-color);
-    padding: 0.75rem;
-    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    border-radius: 0;
+    border-left: 4px solid var(--accent);
     pointer-events: none;
     font-size: 0.875rem;
     z-index: 1000;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+    font-family: 'Titillium Web', sans-serif;
+    color: var(--text-primary);
 }
 
 .tooltip.hidden {
@@ -127,5 +149,15 @@ body {
 }
 .tick text {
     fill: var(--text-muted);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Titillium Web', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+}
+.gridline line {
+    stroke: var(--border-color);
+    stroke-opacity: 0.3;
+    shape-rendering: crispEdges;
+}
+.gridline path {
+    stroke-width: 0;
 }
