@@ -2,11 +2,12 @@ import { renderBeeswarm } from './beeswarm.js';
 import { renderInterval } from './interval.js';
 import { renderBump } from './bump.js';
 
+const APP_VERSION = 'v1.0.1';
 let currentData = null;
 
 async function init() {
     try {
-        const response = await fetch('assets/data/races_manifest.json');
+        const response = await fetch(`assets/data/races_manifest.json?v=${APP_VERSION}`);
         const manifest = await response.json();
         
         const selector = document.getElementById('race-selector');
@@ -31,7 +32,7 @@ async function init() {
 async function loadRace(dataFile) {
     document.getElementById('race-title').textContent = "Loading...";
     try {
-        const response = await fetch(`assets/data/${dataFile}`);
+        const response = await fetch(`assets/data/${dataFile}?v=${APP_VERSION}`);
         currentData = await response.json();
         
         updateDashboardHeader(currentData);
