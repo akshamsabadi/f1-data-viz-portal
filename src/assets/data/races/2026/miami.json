@@ -9483,5 +9483,1657 @@
       "session_time": 5690.628,
       "position": 10
     }
+  ],
+  "corners": [
+    {
+      "turn": 1,
+      "driver": "NOR",
+      "speed": 213.4
+    },
+    {
+      "turn": 1,
+      "driver": "VER",
+      "speed": 207.4
+    },
+    {
+      "turn": 1,
+      "driver": "BOR",
+      "speed": 209.0
+    },
+    {
+      "turn": 1,
+      "driver": "HAD",
+      "speed": 193.6
+    },
+    {
+      "turn": 1,
+      "driver": "GAS",
+      "speed": 199.8
+    },
+    {
+      "turn": 1,
+      "driver": "PER",
+      "speed": 203.9
+    },
+    {
+      "turn": 1,
+      "driver": "ANT",
+      "speed": 212.5
+    },
+    {
+      "turn": 1,
+      "driver": "ALO",
+      "speed": 207.7
+    },
+    {
+      "turn": 1,
+      "driver": "LEC",
+      "speed": 209.1
+    },
+    {
+      "turn": 1,
+      "driver": "STR",
+      "speed": 202.3
+    },
+    {
+      "turn": 1,
+      "driver": "ALB",
+      "speed": 209.0
+    },
+    {
+      "turn": 1,
+      "driver": "HUL",
+      "speed": 184.0
+    },
+    {
+      "turn": 1,
+      "driver": "LAW",
+      "speed": 188.0
+    },
+    {
+      "turn": 1,
+      "driver": "OCO",
+      "speed": 207.2
+    },
+    {
+      "turn": 1,
+      "driver": "LIN",
+      "speed": 207.5
+    },
+    {
+      "turn": 1,
+      "driver": "COL",
+      "speed": 206.6
+    },
+    {
+      "turn": 1,
+      "driver": "HAM",
+      "speed": 211.5
+    },
+    {
+      "turn": 1,
+      "driver": "SAI",
+      "speed": 208.6
+    },
+    {
+      "turn": 1,
+      "driver": "RUS",
+      "speed": 209.8
+    },
+    {
+      "turn": 1,
+      "driver": "BOT",
+      "speed": 198.4
+    },
+    {
+      "turn": 1,
+      "driver": "PIA",
+      "speed": 209.2
+    },
+    {
+      "turn": 1,
+      "driver": "BEA",
+      "speed": 207.7
+    },
+    {
+      "turn": 2,
+      "driver": "NOR",
+      "speed": 217.2
+    },
+    {
+      "turn": 2,
+      "driver": "VER",
+      "speed": 209.2
+    },
+    {
+      "turn": 2,
+      "driver": "BOR",
+      "speed": 210.8
+    },
+    {
+      "turn": 2,
+      "driver": "HAD",
+      "speed": 199.4
+    },
+    {
+      "turn": 2,
+      "driver": "GAS",
+      "speed": 201.1
+    },
+    {
+      "turn": 2,
+      "driver": "PER",
+      "speed": 204.6
+    },
+    {
+      "turn": 2,
+      "driver": "ANT",
+      "speed": 214.4
+    },
+    {
+      "turn": 2,
+      "driver": "ALO",
+      "speed": 211.7
+    },
+    {
+      "turn": 2,
+      "driver": "LEC",
+      "speed": 210.3
+    },
+    {
+      "turn": 2,
+      "driver": "STR",
+      "speed": 208.1
+    },
+    {
+      "turn": 2,
+      "driver": "ALB",
+      "speed": 212.5
+    },
+    {
+      "turn": 2,
+      "driver": "HUL",
+      "speed": 186.4
+    },
+    {
+      "turn": 2,
+      "driver": "LAW",
+      "speed": 189.7
+    },
+    {
+      "turn": 2,
+      "driver": "OCO",
+      "speed": 207.9
+    },
+    {
+      "turn": 2,
+      "driver": "LIN",
+      "speed": 209.3
+    },
+    {
+      "turn": 2,
+      "driver": "COL",
+      "speed": 210.6
+    },
+    {
+      "turn": 2,
+      "driver": "HAM",
+      "speed": 214.9
+    },
+    {
+      "turn": 2,
+      "driver": "SAI",
+      "speed": 209.5
+    },
+    {
+      "turn": 2,
+      "driver": "RUS",
+      "speed": 210.4
+    },
+    {
+      "turn": 2,
+      "driver": "BOT",
+      "speed": 207.4
+    },
+    {
+      "turn": 2,
+      "driver": "PIA",
+      "speed": 211.9
+    },
+    {
+      "turn": 2,
+      "driver": "BEA",
+      "speed": 208.7
+    },
+    {
+      "turn": 3,
+      "driver": "NOR",
+      "speed": 170.7
+    },
+    {
+      "turn": 3,
+      "driver": "VER",
+      "speed": 168.0
+    },
+    {
+      "turn": 3,
+      "driver": "BOR",
+      "speed": 163.4
+    },
+    {
+      "turn": 3,
+      "driver": "HAD",
+      "speed": 158.8
+    },
+    {
+      "turn": 3,
+      "driver": "GAS",
+      "speed": 155.7
+    },
+    {
+      "turn": 3,
+      "driver": "PER",
+      "speed": 162.1
+    },
+    {
+      "turn": 3,
+      "driver": "ANT",
+      "speed": 166.2
+    },
+    {
+      "turn": 3,
+      "driver": "ALO",
+      "speed": 166.8
+    },
+    {
+      "turn": 3,
+      "driver": "LEC",
+      "speed": 168.0
+    },
+    {
+      "turn": 3,
+      "driver": "STR",
+      "speed": 165.9
+    },
+    {
+      "turn": 3,
+      "driver": "ALB",
+      "speed": 166.5
+    },
+    {
+      "turn": 3,
+      "driver": "HUL",
+      "speed": 145.2
+    },
+    {
+      "turn": 3,
+      "driver": "LAW",
+      "speed": 153.0
+    },
+    {
+      "turn": 3,
+      "driver": "OCO",
+      "speed": 162.2
+    },
+    {
+      "turn": 3,
+      "driver": "LIN",
+      "speed": 162.2
+    },
+    {
+      "turn": 3,
+      "driver": "COL",
+      "speed": 169.5
+    },
+    {
+      "turn": 3,
+      "driver": "HAM",
+      "speed": 168.3
+    },
+    {
+      "turn": 3,
+      "driver": "SAI",
+      "speed": 162.9
+    },
+    {
+      "turn": 3,
+      "driver": "RUS",
+      "speed": 165.3
+    },
+    {
+      "turn": 3,
+      "driver": "BOT",
+      "speed": 159.4
+    },
+    {
+      "turn": 3,
+      "driver": "PIA",
+      "speed": 170.8
+    },
+    {
+      "turn": 3,
+      "driver": "BEA",
+      "speed": 162.1
+    },
+    {
+      "turn": 4,
+      "driver": "NOR",
+      "speed": 116.3
+    },
+    {
+      "turn": 4,
+      "driver": "VER",
+      "speed": 115.4
+    },
+    {
+      "turn": 4,
+      "driver": "BOR",
+      "speed": 109.7
+    },
+    {
+      "turn": 4,
+      "driver": "HAD",
+      "speed": 103.5
+    },
+    {
+      "turn": 4,
+      "driver": "GAS",
+      "speed": 105.2
+    },
+    {
+      "turn": 4,
+      "driver": "PER",
+      "speed": 113.6
+    },
+    {
+      "turn": 4,
+      "driver": "ANT",
+      "speed": 111.6
+    },
+    {
+      "turn": 4,
+      "driver": "ALO",
+      "speed": 114.3
+    },
+    {
+      "turn": 4,
+      "driver": "LEC",
+      "speed": 116.8
+    },
+    {
+      "turn": 4,
+      "driver": "STR",
+      "speed": 108.3
+    },
+    {
+      "turn": 4,
+      "driver": "ALB",
+      "speed": 112.8
+    },
+    {
+      "turn": 4,
+      "driver": "HUL",
+      "speed": 97.3
+    },
+    {
+      "turn": 4,
+      "driver": "LAW",
+      "speed": 104.5
+    },
+    {
+      "turn": 4,
+      "driver": "OCO",
+      "speed": 112.4
+    },
+    {
+      "turn": 4,
+      "driver": "LIN",
+      "speed": 108.9
+    },
+    {
+      "turn": 4,
+      "driver": "COL",
+      "speed": 111.8
+    },
+    {
+      "turn": 4,
+      "driver": "HAM",
+      "speed": 113.9
+    },
+    {
+      "turn": 4,
+      "driver": "SAI",
+      "speed": 111.7
+    },
+    {
+      "turn": 4,
+      "driver": "RUS",
+      "speed": 115.5
+    },
+    {
+      "turn": 4,
+      "driver": "BOT",
+      "speed": 110.2
+    },
+    {
+      "turn": 4,
+      "driver": "PIA",
+      "speed": 115.0
+    },
+    {
+      "turn": 4,
+      "driver": "BEA",
+      "speed": 110.9
+    },
+    {
+      "turn": 5,
+      "driver": "NOR",
+      "speed": 103.6
+    },
+    {
+      "turn": 5,
+      "driver": "VER",
+      "speed": 98.8
+    },
+    {
+      "turn": 5,
+      "driver": "BOR",
+      "speed": 98.8
+    },
+    {
+      "turn": 5,
+      "driver": "HAD",
+      "speed": 97.3
+    },
+    {
+      "turn": 5,
+      "driver": "GAS",
+      "speed": 95.9
+    },
+    {
+      "turn": 5,
+      "driver": "PER",
+      "speed": 100.4
+    },
+    {
+      "turn": 5,
+      "driver": "ANT",
+      "speed": 100.5
+    },
+    {
+      "turn": 5,
+      "driver": "ALO",
+      "speed": 102.4
+    },
+    {
+      "turn": 5,
+      "driver": "LEC",
+      "speed": 101.0
+    },
+    {
+      "turn": 5,
+      "driver": "STR",
+      "speed": 101.3
+    },
+    {
+      "turn": 5,
+      "driver": "ALB",
+      "speed": 99.9
+    },
+    {
+      "turn": 5,
+      "driver": "HUL",
+      "speed": 85.7
+    },
+    {
+      "turn": 5,
+      "driver": "LAW",
+      "speed": 89.1
+    },
+    {
+      "turn": 5,
+      "driver": "OCO",
+      "speed": 103.2
+    },
+    {
+      "turn": 5,
+      "driver": "LIN",
+      "speed": 98.1
+    },
+    {
+      "turn": 5,
+      "driver": "COL",
+      "speed": 99.7
+    },
+    {
+      "turn": 5,
+      "driver": "HAM",
+      "speed": 100.7
+    },
+    {
+      "turn": 5,
+      "driver": "SAI",
+      "speed": 102.9
+    },
+    {
+      "turn": 5,
+      "driver": "RUS",
+      "speed": 104.6
+    },
+    {
+      "turn": 5,
+      "driver": "BOT",
+      "speed": 98.3
+    },
+    {
+      "turn": 5,
+      "driver": "PIA",
+      "speed": 99.3
+    },
+    {
+      "turn": 5,
+      "driver": "BEA",
+      "speed": 102.1
+    },
+    {
+      "turn": 6,
+      "driver": "NOR",
+      "speed": 143.6
+    },
+    {
+      "turn": 6,
+      "driver": "VER",
+      "speed": 140.2
+    },
+    {
+      "turn": 6,
+      "driver": "BOR",
+      "speed": 141.2
+    },
+    {
+      "turn": 6,
+      "driver": "HAD",
+      "speed": 133.4
+    },
+    {
+      "turn": 6,
+      "driver": "GAS",
+      "speed": 136.8
+    },
+    {
+      "turn": 6,
+      "driver": "PER",
+      "speed": 136.0
+    },
+    {
+      "turn": 6,
+      "driver": "ANT",
+      "speed": 143.6
+    },
+    {
+      "turn": 6,
+      "driver": "ALO",
+      "speed": 141.9
+    },
+    {
+      "turn": 6,
+      "driver": "LEC",
+      "speed": 139.6
+    },
+    {
+      "turn": 6,
+      "driver": "STR",
+      "speed": 139.6
+    },
+    {
+      "turn": 6,
+      "driver": "ALB",
+      "speed": 138.9
+    },
+    {
+      "turn": 6,
+      "driver": "HUL",
+      "speed": 120.4
+    },
+    {
+      "turn": 6,
+      "driver": "LAW",
+      "speed": 127.9
+    },
+    {
+      "turn": 6,
+      "driver": "OCO",
+      "speed": 142.1
+    },
+    {
+      "turn": 6,
+      "driver": "LIN",
+      "speed": 140.2
+    },
+    {
+      "turn": 6,
+      "driver": "COL",
+      "speed": 144.6
+    },
+    {
+      "turn": 6,
+      "driver": "HAM",
+      "speed": 140.2
+    },
+    {
+      "turn": 6,
+      "driver": "SAI",
+      "speed": 143.9
+    },
+    {
+      "turn": 6,
+      "driver": "RUS",
+      "speed": 141.9
+    },
+    {
+      "turn": 6,
+      "driver": "BOT",
+      "speed": 135.6
+    },
+    {
+      "turn": 6,
+      "driver": "PIA",
+      "speed": 144.4
+    },
+    {
+      "turn": 6,
+      "driver": "BEA",
+      "speed": 143.3
+    },
+    {
+      "turn": 7,
+      "driver": "NOR",
+      "speed": 199.1
+    },
+    {
+      "turn": 7,
+      "driver": "VER",
+      "speed": 199.9
+    },
+    {
+      "turn": 7,
+      "driver": "BOR",
+      "speed": 198.5
+    },
+    {
+      "turn": 7,
+      "driver": "HAD",
+      "speed": 183.1
+    },
+    {
+      "turn": 7,
+      "driver": "GAS",
+      "speed": 190.6
+    },
+    {
+      "turn": 7,
+      "driver": "PER",
+      "speed": 191.1
+    },
+    {
+      "turn": 7,
+      "driver": "ANT",
+      "speed": 201.8
+    },
+    {
+      "turn": 7,
+      "driver": "ALO",
+      "speed": 196.4
+    },
+    {
+      "turn": 7,
+      "driver": "LEC",
+      "speed": 199.4
+    },
+    {
+      "turn": 7,
+      "driver": "STR",
+      "speed": 191.1
+    },
+    {
+      "turn": 7,
+      "driver": "ALB",
+      "speed": 193.1
+    },
+    {
+      "turn": 7,
+      "driver": "HUL",
+      "speed": 169.2
+    },
+    {
+      "turn": 7,
+      "driver": "LAW",
+      "speed": 181.8
+    },
+    {
+      "turn": 7,
+      "driver": "OCO",
+      "speed": 193.8
+    },
+    {
+      "turn": 7,
+      "driver": "LIN",
+      "speed": 197.0
+    },
+    {
+      "turn": 7,
+      "driver": "COL",
+      "speed": 195.7
+    },
+    {
+      "turn": 7,
+      "driver": "HAM",
+      "speed": 195.1
+    },
+    {
+      "turn": 7,
+      "driver": "SAI",
+      "speed": 197.0
+    },
+    {
+      "turn": 7,
+      "driver": "RUS",
+      "speed": 195.1
+    },
+    {
+      "turn": 7,
+      "driver": "BOT",
+      "speed": 192.7
+    },
+    {
+      "turn": 7,
+      "driver": "PIA",
+      "speed": 201.2
+    },
+    {
+      "turn": 7,
+      "driver": "BEA",
+      "speed": 196.6
+    },
+    {
+      "turn": 8,
+      "driver": "NOR",
+      "speed": 218.4
+    },
+    {
+      "turn": 8,
+      "driver": "VER",
+      "speed": 216.8
+    },
+    {
+      "turn": 8,
+      "driver": "BOR",
+      "speed": 218.6
+    },
+    {
+      "turn": 8,
+      "driver": "HAD",
+      "speed": 206.9
+    },
+    {
+      "turn": 8,
+      "driver": "GAS",
+      "speed": 207.9
+    },
+    {
+      "turn": 8,
+      "driver": "PER",
+      "speed": 214.4
+    },
+    {
+      "turn": 8,
+      "driver": "ANT",
+      "speed": 222.3
+    },
+    {
+      "turn": 8,
+      "driver": "ALO",
+      "speed": 215.7
+    },
+    {
+      "turn": 8,
+      "driver": "LEC",
+      "speed": 220.8
+    },
+    {
+      "turn": 8,
+      "driver": "STR",
+      "speed": 215.9
+    },
+    {
+      "turn": 8,
+      "driver": "ALB",
+      "speed": 212.1
+    },
+    {
+      "turn": 8,
+      "driver": "HUL",
+      "speed": 187.5
+    },
+    {
+      "turn": 8,
+      "driver": "LAW",
+      "speed": 195.8
+    },
+    {
+      "turn": 8,
+      "driver": "OCO",
+      "speed": 211.8
+    },
+    {
+      "turn": 8,
+      "driver": "LIN",
+      "speed": 217.1
+    },
+    {
+      "turn": 8,
+      "driver": "COL",
+      "speed": 215.2
+    },
+    {
+      "turn": 8,
+      "driver": "HAM",
+      "speed": 214.5
+    },
+    {
+      "turn": 8,
+      "driver": "SAI",
+      "speed": 213.7
+    },
+    {
+      "turn": 8,
+      "driver": "RUS",
+      "speed": 216.7
+    },
+    {
+      "turn": 8,
+      "driver": "BOT",
+      "speed": 207.0
+    },
+    {
+      "turn": 8,
+      "driver": "PIA",
+      "speed": 216.3
+    },
+    {
+      "turn": 8,
+      "driver": "BEA",
+      "speed": 213.1
+    },
+    {
+      "turn": 9,
+      "driver": "NOR",
+      "speed": 183.1
+    },
+    {
+      "turn": 9,
+      "driver": "VER",
+      "speed": 179.5
+    },
+    {
+      "turn": 9,
+      "driver": "BOR",
+      "speed": 183.3
+    },
+    {
+      "turn": 9,
+      "driver": "HAD",
+      "speed": 169.8
+    },
+    {
+      "turn": 9,
+      "driver": "GAS",
+      "speed": 172.7
+    },
+    {
+      "turn": 9,
+      "driver": "PER",
+      "speed": 180.9
+    },
+    {
+      "turn": 9,
+      "driver": "ANT",
+      "speed": 186.4
+    },
+    {
+      "turn": 9,
+      "driver": "ALO",
+      "speed": 181.8
+    },
+    {
+      "turn": 9,
+      "driver": "LEC",
+      "speed": 182.2
+    },
+    {
+      "turn": 9,
+      "driver": "STR",
+      "speed": 177.8
+    },
+    {
+      "turn": 9,
+      "driver": "ALB",
+      "speed": 177.9
+    },
+    {
+      "turn": 9,
+      "driver": "HUL",
+      "speed": 159.2
+    },
+    {
+      "turn": 9,
+      "driver": "LAW",
+      "speed": 163.1
+    },
+    {
+      "turn": 9,
+      "driver": "OCO",
+      "speed": 180.1
+    },
+    {
+      "turn": 9,
+      "driver": "LIN",
+      "speed": 182.0
+    },
+    {
+      "turn": 9,
+      "driver": "COL",
+      "speed": 185.6
+    },
+    {
+      "turn": 9,
+      "driver": "HAM",
+      "speed": 180.2
+    },
+    {
+      "turn": 9,
+      "driver": "SAI",
+      "speed": 179.0
+    },
+    {
+      "turn": 9,
+      "driver": "RUS",
+      "speed": 185.9
+    },
+    {
+      "turn": 9,
+      "driver": "BOT",
+      "speed": 179.5
+    },
+    {
+      "turn": 9,
+      "driver": "PIA",
+      "speed": 184.2
+    },
+    {
+      "turn": 9,
+      "driver": "BEA",
+      "speed": 178.0
+    },
+    {
+      "turn": 10,
+      "driver": "NOR",
+      "speed": 125.2
+    },
+    {
+      "turn": 10,
+      "driver": "VER",
+      "speed": 126.8
+    },
+    {
+      "turn": 10,
+      "driver": "BOR",
+      "speed": 124.6
+    },
+    {
+      "turn": 10,
+      "driver": "HAD",
+      "speed": 118.1
+    },
+    {
+      "turn": 10,
+      "driver": "GAS",
+      "speed": 116.9
+    },
+    {
+      "turn": 10,
+      "driver": "PER",
+      "speed": 121.4
+    },
+    {
+      "turn": 10,
+      "driver": "ANT",
+      "speed": 126.7
+    },
+    {
+      "turn": 10,
+      "driver": "ALO",
+      "speed": 125.8
+    },
+    {
+      "turn": 10,
+      "driver": "LEC",
+      "speed": 124.1
+    },
+    {
+      "turn": 10,
+      "driver": "STR",
+      "speed": 122.8
+    },
+    {
+      "turn": 10,
+      "driver": "ALB",
+      "speed": 121.9
+    },
+    {
+      "turn": 10,
+      "driver": "HUL",
+      "speed": 111.2
+    },
+    {
+      "turn": 10,
+      "driver": "LAW",
+      "speed": 116.3
+    },
+    {
+      "turn": 10,
+      "driver": "OCO",
+      "speed": 127.1
+    },
+    {
+      "turn": 10,
+      "driver": "LIN",
+      "speed": 123.7
+    },
+    {
+      "turn": 10,
+      "driver": "COL",
+      "speed": 124.5
+    },
+    {
+      "turn": 10,
+      "driver": "HAM",
+      "speed": 123.8
+    },
+    {
+      "turn": 10,
+      "driver": "SAI",
+      "speed": 125.0
+    },
+    {
+      "turn": 10,
+      "driver": "RUS",
+      "speed": 128.8
+    },
+    {
+      "turn": 10,
+      "driver": "BOT",
+      "speed": 118.8
+    },
+    {
+      "turn": 10,
+      "driver": "PIA",
+      "speed": 130.1
+    },
+    {
+      "turn": 10,
+      "driver": "BEA",
+      "speed": 123.7
+    },
+    {
+      "turn": 11,
+      "driver": "NOR",
+      "speed": 97.4
+    },
+    {
+      "turn": 11,
+      "driver": "VER",
+      "speed": 101.4
+    },
+    {
+      "turn": 11,
+      "driver": "BOR",
+      "speed": 95.8
+    },
+    {
+      "turn": 11,
+      "driver": "HAD",
+      "speed": 95.3
+    },
+    {
+      "turn": 11,
+      "driver": "GAS",
+      "speed": 91.6
+    },
+    {
+      "turn": 11,
+      "driver": "PER",
+      "speed": 94.2
+    },
+    {
+      "turn": 11,
+      "driver": "ANT",
+      "speed": 97.4
+    },
+    {
+      "turn": 11,
+      "driver": "ALO",
+      "speed": 99.0
+    },
+    {
+      "turn": 11,
+      "driver": "LEC",
+      "speed": 101.2
+    },
+    {
+      "turn": 11,
+      "driver": "STR",
+      "speed": 99.8
+    },
+    {
+      "turn": 11,
+      "driver": "ALB",
+      "speed": 95.6
+    },
+    {
+      "turn": 11,
+      "driver": "HUL",
+      "speed": 88.8
+    },
+    {
+      "turn": 11,
+      "driver": "LAW",
+      "speed": 91.3
+    },
+    {
+      "turn": 11,
+      "driver": "OCO",
+      "speed": 100.4
+    },
+    {
+      "turn": 11,
+      "driver": "LIN",
+      "speed": 95.1
+    },
+    {
+      "turn": 11,
+      "driver": "COL",
+      "speed": 97.2
+    },
+    {
+      "turn": 11,
+      "driver": "HAM",
+      "speed": 97.4
+    },
+    {
+      "turn": 11,
+      "driver": "SAI",
+      "speed": 100.9
+    },
+    {
+      "turn": 11,
+      "driver": "RUS",
+      "speed": 98.0
+    },
+    {
+      "turn": 11,
+      "driver": "BOT",
+      "speed": 98.1
+    },
+    {
+      "turn": 11,
+      "driver": "PIA",
+      "speed": 98.1
+    },
+    {
+      "turn": 11,
+      "driver": "BEA",
+      "speed": 99.9
+    },
+    {
+      "turn": 12,
+      "driver": "NOR",
+      "speed": 124.9
+    },
+    {
+      "turn": 12,
+      "driver": "VER",
+      "speed": 124.3
+    },
+    {
+      "turn": 12,
+      "driver": "BOR",
+      "speed": 122.7
+    },
+    {
+      "turn": 12,
+      "driver": "HAD",
+      "speed": 115.8
+    },
+    {
+      "turn": 12,
+      "driver": "GAS",
+      "speed": 120.0
+    },
+    {
+      "turn": 12,
+      "driver": "PER",
+      "speed": 124.9
+    },
+    {
+      "turn": 12,
+      "driver": "ANT",
+      "speed": 124.9
+    },
+    {
+      "turn": 12,
+      "driver": "ALO",
+      "speed": 125.8
+    },
+    {
+      "turn": 12,
+      "driver": "LEC",
+      "speed": 129.4
+    },
+    {
+      "turn": 12,
+      "driver": "STR",
+      "speed": 121.3
+    },
+    {
+      "turn": 12,
+      "driver": "ALB",
+      "speed": 123.6
+    },
+    {
+      "turn": 12,
+      "driver": "HUL",
+      "speed": 113.1
+    },
+    {
+      "turn": 12,
+      "driver": "LAW",
+      "speed": 111.8
+    },
+    {
+      "turn": 12,
+      "driver": "OCO",
+      "speed": 124.5
+    },
+    {
+      "turn": 12,
+      "driver": "LIN",
+      "speed": 121.8
+    },
+    {
+      "turn": 12,
+      "driver": "COL",
+      "speed": 129.3
+    },
+    {
+      "turn": 12,
+      "driver": "HAM",
+      "speed": 126.0
+    },
+    {
+      "turn": 12,
+      "driver": "SAI",
+      "speed": 128.4
+    },
+    {
+      "turn": 12,
+      "driver": "RUS",
+      "speed": 124.0
+    },
+    {
+      "turn": 12,
+      "driver": "BOT",
+      "speed": 120.3
+    },
+    {
+      "turn": 12,
+      "driver": "PIA",
+      "speed": 125.9
+    },
+    {
+      "turn": 12,
+      "driver": "BEA",
+      "speed": 128.2
+    },
+    {
+      "turn": 13,
+      "driver": "NOR",
+      "speed": 182.2
+    },
+    {
+      "turn": 13,
+      "driver": "VER",
+      "speed": 181.1
+    },
+    {
+      "turn": 13,
+      "driver": "BOR",
+      "speed": 180.6
+    },
+    {
+      "turn": 13,
+      "driver": "HAD",
+      "speed": 174.0
+    },
+    {
+      "turn": 13,
+      "driver": "GAS",
+      "speed": 176.5
+    },
+    {
+      "turn": 13,
+      "driver": "PER",
+      "speed": 181.9
+    },
+    {
+      "turn": 13,
+      "driver": "ANT",
+      "speed": 183.7
+    },
+    {
+      "turn": 13,
+      "driver": "ALO",
+      "speed": 181.4
+    },
+    {
+      "turn": 13,
+      "driver": "LEC",
+      "speed": 182.1
+    },
+    {
+      "turn": 13,
+      "driver": "STR",
+      "speed": 181.0
+    },
+    {
+      "turn": 13,
+      "driver": "ALB",
+      "speed": 180.7
+    },
+    {
+      "turn": 13,
+      "driver": "HUL",
+      "speed": 162.2
+    },
+    {
+      "turn": 13,
+      "driver": "LAW",
+      "speed": 165.8
+    },
+    {
+      "turn": 13,
+      "driver": "OCO",
+      "speed": 178.4
+    },
+    {
+      "turn": 13,
+      "driver": "LIN",
+      "speed": 179.3
+    },
+    {
+      "turn": 13,
+      "driver": "COL",
+      "speed": 181.8
+    },
+    {
+      "turn": 13,
+      "driver": "HAM",
+      "speed": 184.0
+    },
+    {
+      "turn": 13,
+      "driver": "SAI",
+      "speed": 182.3
+    },
+    {
+      "turn": 13,
+      "driver": "RUS",
+      "speed": 183.9
+    },
+    {
+      "turn": 13,
+      "driver": "BOT",
+      "speed": 178.0
+    },
+    {
+      "turn": 13,
+      "driver": "PIA",
+      "speed": 187.8
+    },
+    {
+      "turn": 13,
+      "driver": "BEA",
+      "speed": 182.5
+    },
+    {
+      "turn": 14,
+      "driver": "NOR",
+      "speed": 216.5
+    },
+    {
+      "turn": 14,
+      "driver": "VER",
+      "speed": 219.4
+    },
+    {
+      "turn": 14,
+      "driver": "BOR",
+      "speed": 216.6
+    },
+    {
+      "turn": 14,
+      "driver": "HAD",
+      "speed": 204.5
+    },
+    {
+      "turn": 14,
+      "driver": "GAS",
+      "speed": 209.3
+    },
+    {
+      "turn": 14,
+      "driver": "PER",
+      "speed": 211.4
+    },
+    {
+      "turn": 14,
+      "driver": "ANT",
+      "speed": 220.2
+    },
+    {
+      "turn": 14,
+      "driver": "ALO",
+      "speed": 214.4
+    },
+    {
+      "turn": 14,
+      "driver": "LEC",
+      "speed": 216.1
+    },
+    {
+      "turn": 14,
+      "driver": "STR",
+      "speed": 214.2
+    },
+    {
+      "turn": 14,
+      "driver": "ALB",
+      "speed": 215.3
+    },
+    {
+      "turn": 14,
+      "driver": "HUL",
+      "speed": 190.7
+    },
+    {
+      "turn": 14,
+      "driver": "LAW",
+      "speed": 199.7
+    },
+    {
+      "turn": 14,
+      "driver": "OCO",
+      "speed": 213.2
+    },
+    {
+      "turn": 14,
+      "driver": "LIN",
+      "speed": 215.0
+    },
+    {
+      "turn": 14,
+      "driver": "COL",
+      "speed": 215.2
+    },
+    {
+      "turn": 14,
+      "driver": "HAM",
+      "speed": 219.0
+    },
+    {
+      "turn": 14,
+      "driver": "SAI",
+      "speed": 213.3
+    },
+    {
+      "turn": 14,
+      "driver": "RUS",
+      "speed": 220.8
+    },
+    {
+      "turn": 14,
+      "driver": "BOT",
+      "speed": 209.7
+    },
+    {
+      "turn": 14,
+      "driver": "PIA",
+      "speed": 218.9
+    },
+    {
+      "turn": 14,
+      "driver": "BEA",
+      "speed": 213.0
+    },
+    {
+      "turn": 15,
+      "driver": "NOR",
+      "speed": 196.3
+    },
+    {
+      "turn": 15,
+      "driver": "VER",
+      "speed": 197.5
+    },
+    {
+      "turn": 15,
+      "driver": "BOR",
+      "speed": 198.3
+    },
+    {
+      "turn": 15,
+      "driver": "HAD",
+      "speed": 182.6
+    },
+    {
+      "turn": 15,
+      "driver": "GAS",
+      "speed": 188.5
+    },
+    {
+      "turn": 15,
+      "driver": "PER",
+      "speed": 189.5
+    },
+    {
+      "turn": 15,
+      "driver": "ANT",
+      "speed": 201.6
+    },
+    {
+      "turn": 15,
+      "driver": "ALO",
+      "speed": 194.3
+    },
+    {
+      "turn": 15,
+      "driver": "LEC",
+      "speed": 200.1
+    },
+    {
+      "turn": 15,
+      "driver": "STR",
+      "speed": 190.4
+    },
+    {
+      "turn": 15,
+      "driver": "ALB",
+      "speed": 196.3
+    },
+    {
+      "turn": 15,
+      "driver": "HUL",
+      "speed": 171.6
+    },
+    {
+      "turn": 15,
+      "driver": "LAW",
+      "speed": 177.4
+    },
+    {
+      "turn": 15,
+      "driver": "OCO",
+      "speed": 196.6
+    },
+    {
+      "turn": 15,
+      "driver": "LIN",
+      "speed": 196.9
+    },
+    {
+      "turn": 15,
+      "driver": "COL",
+      "speed": 199.7
+    },
+    {
+      "turn": 15,
+      "driver": "HAM",
+      "speed": 199.6
+    },
+    {
+      "turn": 15,
+      "driver": "SAI",
+      "speed": 193.5
+    },
+    {
+      "turn": 15,
+      "driver": "RUS",
+      "speed": 199.1
+    },
+    {
+      "turn": 15,
+      "driver": "BOT",
+      "speed": 189.2
+    },
+    {
+      "turn": 15,
+      "driver": "PIA",
+      "speed": 195.9
+    },
+    {
+      "turn": 15,
+      "driver": "BEA",
+      "speed": 192.1
+    }
   ]
 }

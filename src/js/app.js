@@ -1,8 +1,8 @@
 import { renderBeeswarm } from './beeswarm.js';
-import { renderInterval } from './interval.js';
+import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
 
-const APP_VERSION = 'v1.9.0';
+const APP_VERSION = 'v1.10.0';
 let currentData = null;
 
 async function init() {
@@ -39,7 +39,7 @@ async function loadRace(dataFile) {
         
         // Render visualizations
         renderBeeswarm(currentData);
-        renderInterval(currentData);
+        renderCornerSpeed(currentData);
         renderBump(currentData);
         
     } catch (e) {
