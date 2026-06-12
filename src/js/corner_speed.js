@@ -73,8 +73,6 @@ export function renderCornerSpeed(data) {
         .style('font-weight', '600')
         .text('CORNER');
 
-    const driverColors = Object.fromEntries(data.drivers.map(d => [d.code, d.color]));
-
     // Draw the dots
     svg.selectAll('.corner-dot')
         .data(data.corners)
@@ -84,18 +82,18 @@ export function renderCornerSpeed(data) {
         .attr('cx', d => xScale(d.speed))
         .attr('cy', d => yScale(d.turn))
         .attr('r', 4)
-        .attr('fill', d => driverColors[d.driver] || 'var(--accent)')
+        .attr('fill', d => d.color || 'var(--accent)')
         .attr('stroke', 'var(--bg-dark)')
         .attr('stroke-width', 1)
         .attr('opacity', 0.85)
         .on('mouseover', (event, d) => {
-            const teamColor = driverColors[d.driver] || 'var(--accent)';
+            const teamColor = d.color || 'var(--accent)';
             
             tooltip.classed('hidden', false)
                 .style('border-left-color', teamColor)
                 .html(`
                     <div style="font-family: Montserrat, sans-serif; font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">
-                        ${d.driver} <span style="color: var(--text-muted); font-weight: 600; font-size: 0.75rem;">TURN ${d.turn}</span>
+                        ${d.team} <span style="color: var(--text-muted); font-weight: 600; font-size: 0.75rem;">TURN ${d.turn}</span>
                     </div>
                     <div style="font-size: 1rem; font-weight: 600;">
                         ${d.speed.toFixed(1)} km/h

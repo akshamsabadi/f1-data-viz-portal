@@ -9145,1403 +9145,927 @@
   "corners": [
     {
       "turn": 1,
-      "driver": "RUS",
-      "speed": 230.5
+      "team": "Mercedes",
+      "speed": 227.7,
+      "color": "#00D7B6"
     },
     {
       "turn": 1,
-      "driver": "ANT",
-      "speed": 232.3
+      "team": "Ferrari",
+      "speed": 231.2,
+      "color": "#ED1131"
     },
     {
       "turn": 1,
-      "driver": "LEC",
-      "speed": 229.5
+      "team": "McLaren",
+      "speed": 229.5,
+      "color": "#F47600"
     },
     {
       "turn": 1,
-      "driver": "HAM",
-      "speed": 233.1
+      "team": "Red Bull Racing",
+      "speed": 227.9,
+      "color": "#4781D7"
     },
     {
       "turn": 1,
-      "driver": "NOR",
-      "speed": 232.8
+      "team": "Haas F1 Team",
+      "speed": 228.9,
+      "color": "#9C9FA2"
     },
     {
       "turn": 1,
-      "driver": "VER",
-      "speed": 229.9
+      "team": "Racing Bulls",
+      "speed": 226.6,
+      "color": "#6C98FF"
     },
     {
       "turn": 1,
-      "driver": "BEA",
-      "speed": 227.4
+      "team": "Audi",
+      "speed": 225.0,
+      "color": "#F50537"
     },
     {
       "turn": 1,
-      "driver": "LIN",
-      "speed": 227.6
+      "team": "Alpine",
+      "speed": 225.9,
+      "color": "#00A1E8"
     },
     {
       "turn": 1,
-      "driver": "BOR",
-      "speed": 229.6
+      "team": "Williams",
+      "speed": 226.6,
+      "color": "#1868DB"
     },
     {
       "turn": 1,
-      "driver": "GAS",
-      "speed": 226.7
+      "team": "Cadillac",
+      "speed": 219.7,
+      "color": "#909090"
     },
     {
       "turn": 1,
-      "driver": "OCO",
-      "speed": 225.9
-    },
-    {
-      "turn": 1,
-      "driver": "ALB",
-      "speed": 227.4
-    },
-    {
-      "turn": 1,
-      "driver": "LAW",
-      "speed": 225.8
-    },
-    {
-      "turn": 1,
-      "driver": "COL",
-      "speed": 226.1
-    },
-    {
-      "turn": 1,
-      "driver": "SAI",
-      "speed": 228.3
-    },
-    {
-      "turn": 1,
-      "driver": "PER",
-      "speed": 220.9
-    },
-    {
-      "turn": 1,
-      "driver": "STR",
-      "speed": 219.7
-    },
-    {
-      "turn": 1,
-      "driver": "ALO",
-      "speed": 223.6
-    },
-    {
-      "turn": 1,
-      "driver": "BOT",
-      "speed": 214.1
-    },
-    {
-      "turn": 1,
-      "driver": "HAD",
-      "speed": 220.6
+      "team": "Aston Martin",
+      "speed": 224.3,
+      "color": "#229971"
     },
     {
       "turn": 2,
-      "driver": "RUS",
-      "speed": 231.2
+      "team": "Mercedes",
+      "speed": 235.3,
+      "color": "#00D7B6"
     },
     {
       "turn": 2,
-      "driver": "ANT",
-      "speed": 234.1
+      "team": "Ferrari",
+      "speed": 231.9,
+      "color": "#ED1131"
     },
     {
       "turn": 2,
-      "driver": "LEC",
-      "speed": 230.7
+      "team": "McLaren",
+      "speed": 231.1,
+      "color": "#F47600"
     },
     {
       "turn": 2,
-      "driver": "HAM",
-      "speed": 236.6
+      "team": "Red Bull Racing",
+      "speed": 236.0,
+      "color": "#4781D7"
     },
     {
       "turn": 2,
-      "driver": "NOR",
-      "speed": 236.6
+      "team": "Haas F1 Team",
+      "speed": 232.9,
+      "color": "#9C9FA2"
     },
     {
       "turn": 2,
-      "driver": "VER",
-      "speed": 231.8
+      "team": "Racing Bulls",
+      "speed": 227.5,
+      "color": "#6C98FF"
     },
     {
       "turn": 2,
-      "driver": "BEA",
-      "speed": 228.3
+      "team": "Audi",
+      "speed": 232.7,
+      "color": "#F50537"
     },
     {
       "turn": 2,
-      "driver": "LIN",
-      "speed": 229.4
+      "team": "Alpine",
+      "speed": 230.6,
+      "color": "#00A1E8"
     },
     {
       "turn": 2,
-      "driver": "BOR",
-      "speed": 231.4
+      "team": "Williams",
+      "speed": 227.9,
+      "color": "#1868DB"
     },
     {
       "turn": 2,
-      "driver": "GAS",
-      "speed": 228.0
+      "team": "Cadillac",
+      "speed": 222.1,
+      "color": "#909090"
     },
     {
       "turn": 2,
-      "driver": "OCO",
-      "speed": 226.6
-    },
-    {
-      "turn": 2,
-      "driver": "ALB",
-      "speed": 230.9
-    },
-    {
-      "turn": 2,
-      "driver": "LAW",
-      "speed": 227.8
-    },
-    {
-      "turn": 2,
-      "driver": "COL",
-      "speed": 230.1
-    },
-    {
-      "turn": 2,
-      "driver": "SAI",
-      "speed": 229.2
-    },
-    {
-      "turn": 2,
-      "driver": "PER",
-      "speed": 221.6
-    },
-    {
-      "turn": 2,
-      "driver": "STR",
-      "speed": 225.5
-    },
-    {
-      "turn": 2,
-      "driver": "ALO",
-      "speed": 227.4
-    },
-    {
-      "turn": 2,
-      "driver": "BOT",
-      "speed": 223.2
-    },
-    {
-      "turn": 2,
-      "driver": "HAD",
-      "speed": 226.6
+      "team": "Aston Martin",
+      "speed": 226.5,
+      "color": "#229971"
     },
     {
       "turn": 3,
-      "driver": "RUS",
-      "speed": 185.9
+      "team": "Mercedes",
+      "speed": 189.0,
+      "color": "#00D7B6"
     },
     {
       "turn": 3,
-      "driver": "ANT",
-      "speed": 186.0
+      "team": "Ferrari",
+      "speed": 186.0,
+      "color": "#ED1131"
     },
     {
       "turn": 3,
-      "driver": "LEC",
-      "speed": 188.3
+      "team": "McLaren",
+      "speed": 189.1,
+      "color": "#F47600"
     },
     {
       "turn": 3,
-      "driver": "HAM",
-      "speed": 189.6
+      "team": "Red Bull Racing",
+      "speed": 188.6,
+      "color": "#4781D7"
     },
     {
       "turn": 3,
-      "driver": "NOR",
-      "speed": 190.3
+      "team": "Haas F1 Team",
+      "speed": 187.7,
+      "color": "#9C9FA2"
     },
     {
       "turn": 3,
-      "driver": "VER",
-      "speed": 190.1
+      "team": "Racing Bulls",
+      "speed": 184.9,
+      "color": "#6C98FF"
     },
     {
       "turn": 3,
-      "driver": "BEA",
-      "speed": 181.7
+      "team": "Audi",
+      "speed": 186.6,
+      "color": "#F50537"
     },
     {
       "turn": 3,
-      "driver": "LIN",
-      "speed": 182.2
+      "team": "Alpine",
+      "speed": 189.0,
+      "color": "#00A1E8"
     },
     {
       "turn": 3,
-      "driver": "BOR",
-      "speed": 183.8
+      "team": "Williams",
+      "speed": 186.3,
+      "color": "#1868DB"
     },
     {
       "turn": 3,
-      "driver": "GAS",
-      "speed": 181.1
+      "team": "Cadillac",
+      "speed": 182.8,
+      "color": "#909090"
     },
     {
       "turn": 3,
-      "driver": "OCO",
-      "speed": 181.1
-    },
-    {
-      "turn": 3,
-      "driver": "ALB",
-      "speed": 185.2
-    },
-    {
-      "turn": 3,
-      "driver": "LAW",
-      "speed": 187.1
-    },
-    {
-      "turn": 3,
-      "driver": "COL",
-      "speed": 189.1
-    },
-    {
-      "turn": 3,
-      "driver": "SAI",
-      "speed": 182.5
-    },
-    {
-      "turn": 3,
-      "driver": "PER",
-      "speed": 179.6
-    },
-    {
-      "turn": 3,
-      "driver": "STR",
-      "speed": 183.6
-    },
-    {
-      "turn": 3,
-      "driver": "ALO",
-      "speed": 183.3
-    },
-    {
-      "turn": 3,
-      "driver": "BOT",
-      "speed": 175.8
-    },
-    {
-      "turn": 3,
-      "driver": "HAD",
-      "speed": 184.3
+      "team": "Aston Martin",
+      "speed": 180.2,
+      "color": "#229971"
     },
     {
       "turn": 4,
-      "driver": "RUS",
-      "speed": 135.8
+      "team": "Mercedes",
+      "speed": 132.1,
+      "color": "#00D7B6"
     },
     {
       "turn": 4,
-      "driver": "ANT",
-      "speed": 131.4
+      "team": "Ferrari",
+      "speed": 135.7,
+      "color": "#ED1131"
     },
     {
       "turn": 4,
-      "driver": "LEC",
-      "speed": 137.0
+      "team": "McLaren",
+      "speed": 136.9,
+      "color": "#F47600"
     },
     {
       "turn": 4,
-      "driver": "HAM",
-      "speed": 134.7
+      "team": "Red Bull Racing",
+      "speed": 132.9,
+      "color": "#4781D7"
     },
     {
       "turn": 4,
-      "driver": "NOR",
-      "speed": 136.0
+      "team": "Haas F1 Team",
+      "speed": 134.9,
+      "color": "#9C9FA2"
     },
     {
       "turn": 4,
-      "driver": "VER",
-      "speed": 136.8
+      "team": "Racing Bulls",
+      "speed": 135.2,
+      "color": "#6C98FF"
     },
     {
       "turn": 4,
-      "driver": "BEA",
-      "speed": 130.6
+      "team": "Audi",
+      "speed": 130.8,
+      "color": "#F50537"
     },
     {
       "turn": 4,
-      "driver": "LIN",
-      "speed": 128.7
+      "team": "Alpine",
+      "speed": 130.6,
+      "color": "#00A1E8"
     },
     {
       "turn": 4,
-      "driver": "BOR",
-      "speed": 129.9
+      "team": "Williams",
+      "speed": 135.3,
+      "color": "#1868DB"
     },
     {
       "turn": 4,
-      "driver": "GAS",
-      "speed": 128.7
+      "team": "Cadillac",
+      "speed": 129.8,
+      "color": "#909090"
     },
     {
       "turn": 4,
-      "driver": "OCO",
-      "speed": 131.5
-    },
-    {
-      "turn": 4,
-      "driver": "ALB",
-      "speed": 131.7
-    },
-    {
-      "turn": 4,
-      "driver": "LAW",
-      "speed": 134.0
-    },
-    {
-      "turn": 4,
-      "driver": "COL",
-      "speed": 131.5
-    },
-    {
-      "turn": 4,
-      "driver": "SAI",
-      "speed": 131.4
-    },
-    {
-      "turn": 4,
-      "driver": "PER",
-      "speed": 131.6
-    },
-    {
-      "turn": 4,
-      "driver": "STR",
-      "speed": 126.5
-    },
-    {
-      "turn": 4,
-      "driver": "ALO",
-      "speed": 131.6
-    },
-    {
-      "turn": 4,
-      "driver": "BOT",
-      "speed": 127.4
-    },
-    {
-      "turn": 4,
-      "driver": "HAD",
-      "speed": 127.1
+      "team": "Aston Martin",
+      "speed": 126.9,
+      "color": "#229971"
     },
     {
       "turn": 5,
-      "driver": "RUS",
-      "speed": 124.9
+      "team": "Mercedes",
+      "speed": 125.3,
+      "color": "#00D7B6"
     },
     {
       "turn": 5,
-      "driver": "ANT",
-      "speed": 120.4
+      "team": "Ferrari",
+      "speed": 125.3,
+      "color": "#ED1131"
     },
     {
       "turn": 5,
-      "driver": "LEC",
-      "speed": 121.2
+      "team": "McLaren",
+      "speed": 120.4,
+      "color": "#F47600"
     },
     {
       "turn": 5,
-      "driver": "HAM",
-      "speed": 121.5
+      "team": "Red Bull Racing",
+      "speed": 125.2,
+      "color": "#4781D7"
     },
     {
       "turn": 5,
-      "driver": "NOR",
-      "speed": 123.3
+      "team": "Haas F1 Team",
+      "speed": 123.0,
+      "color": "#9C9FA2"
     },
     {
       "turn": 5,
-      "driver": "VER",
-      "speed": 120.0
+      "team": "Racing Bulls",
+      "speed": 120.8,
+      "color": "#6C98FF"
     },
     {
       "turn": 5,
-      "driver": "BEA",
-      "speed": 121.7
+      "team": "Audi",
+      "speed": 123.8,
+      "color": "#F50537"
     },
     {
       "turn": 5,
-      "driver": "LIN",
-      "speed": 118.0
+      "team": "Alpine",
+      "speed": 120.7,
+      "color": "#00A1E8"
     },
     {
       "turn": 5,
-      "driver": "BOR",
-      "speed": 119.0
+      "team": "Williams",
+      "speed": 119.2,
+      "color": "#1868DB"
     },
     {
       "turn": 5,
-      "driver": "GAS",
-      "speed": 119.0
+      "team": "Cadillac",
+      "speed": 114.2,
+      "color": "#909090"
     },
     {
       "turn": 5,
-      "driver": "OCO",
-      "speed": 122.3
-    },
-    {
-      "turn": 5,
-      "driver": "ALB",
-      "speed": 118.9
-    },
-    {
-      "turn": 5,
-      "driver": "LAW",
-      "speed": 117.6
-    },
-    {
-      "turn": 5,
-      "driver": "COL",
-      "speed": 119.4
-    },
-    {
-      "turn": 5,
-      "driver": "SAI",
-      "speed": 122.5
-    },
-    {
-      "turn": 5,
-      "driver": "PER",
-      "speed": 118.6
-    },
-    {
-      "turn": 5,
-      "driver": "STR",
-      "speed": 119.6
-    },
-    {
-      "turn": 5,
-      "driver": "ALO",
-      "speed": 119.9
-    },
-    {
-      "turn": 5,
-      "driver": "BOT",
-      "speed": 115.6
-    },
-    {
-      "turn": 5,
-      "driver": "HAD",
-      "speed": 120.3
+      "team": "Aston Martin",
+      "speed": 115.0,
+      "color": "#229971"
     },
     {
       "turn": 6,
-      "driver": "RUS",
-      "speed": 162.4
+      "team": "Mercedes",
+      "speed": 160.4,
+      "color": "#00D7B6"
     },
     {
       "turn": 6,
-      "driver": "ANT",
-      "speed": 163.4
+      "team": "Ferrari",
+      "speed": 163.6,
+      "color": "#ED1131"
     },
     {
       "turn": 6,
-      "driver": "LEC",
-      "speed": 159.8
+      "team": "McLaren",
+      "speed": 160.7,
+      "color": "#F47600"
     },
     {
       "turn": 6,
-      "driver": "HAM",
-      "speed": 161.3
+      "team": "Red Bull Racing",
+      "speed": 160.2,
+      "color": "#4781D7"
     },
     {
       "turn": 6,
-      "driver": "NOR",
-      "speed": 163.2
+      "team": "Haas F1 Team",
+      "speed": 162.9,
+      "color": "#9C9FA2"
     },
     {
       "turn": 6,
-      "driver": "VER",
-      "speed": 162.0
+      "team": "Racing Bulls",
+      "speed": 157.4,
+      "color": "#6C98FF"
     },
     {
       "turn": 6,
-      "driver": "BEA",
-      "speed": 163.0
+      "team": "Audi",
+      "speed": 158.3,
+      "color": "#F50537"
     },
     {
       "turn": 6,
-      "driver": "LIN",
-      "speed": 160.1
+      "team": "Alpine",
+      "speed": 163.8,
+      "color": "#00A1E8"
     },
     {
       "turn": 6,
-      "driver": "BOR",
-      "speed": 161.5
+      "team": "Williams",
+      "speed": 158.1,
+      "color": "#1868DB"
     },
     {
       "turn": 6,
-      "driver": "GAS",
-      "speed": 161.3
+      "team": "Cadillac",
+      "speed": 157.2,
+      "color": "#909090"
     },
     {
       "turn": 6,
-      "driver": "OCO",
-      "speed": 161.1
-    },
-    {
-      "turn": 6,
-      "driver": "ALB",
-      "speed": 157.6
-    },
-    {
-      "turn": 6,
-      "driver": "LAW",
-      "speed": 159.9
-    },
-    {
-      "turn": 6,
-      "driver": "COL",
-      "speed": 164.2
-    },
-    {
-      "turn": 6,
-      "driver": "SAI",
-      "speed": 163.6
-    },
-    {
-      "turn": 6,
-      "driver": "PER",
-      "speed": 153.7
-    },
-    {
-      "turn": 6,
-      "driver": "STR",
-      "speed": 157.5
-    },
-    {
-      "turn": 6,
-      "driver": "ALO",
-      "speed": 158.8
-    },
-    {
-      "turn": 6,
-      "driver": "BOT",
-      "speed": 152.4
-    },
-    {
-      "turn": 6,
-      "driver": "HAD",
-      "speed": 157.9
+      "team": "Aston Martin",
+      "speed": 155.3,
+      "color": "#229971"
     },
     {
       "turn": 7,
-      "driver": "RUS",
-      "speed": 215.7
+      "team": "Mercedes",
+      "speed": 220.4,
+      "color": "#00D7B6"
     },
     {
       "turn": 7,
-      "driver": "ANT",
-      "speed": 221.5
+      "team": "Ferrari",
+      "speed": 216.5,
+      "color": "#ED1131"
     },
     {
       "turn": 7,
-      "driver": "LEC",
-      "speed": 219.8
+      "team": "McLaren",
+      "speed": 221.2,
+      "color": "#F47600"
     },
     {
       "turn": 7,
-      "driver": "HAM",
-      "speed": 216.7
+      "team": "Red Bull Racing",
+      "speed": 221.8,
+      "color": "#4781D7"
     },
     {
       "turn": 7,
-      "driver": "NOR",
-      "speed": 218.6
+      "team": "Haas F1 Team",
+      "speed": 217.9,
+      "color": "#9C9FA2"
     },
     {
       "turn": 7,
-      "driver": "VER",
-      "speed": 222.3
+      "team": "Racing Bulls",
+      "speed": 214.9,
+      "color": "#6C98FF"
     },
     {
       "turn": 7,
-      "driver": "BEA",
-      "speed": 216.3
+      "team": "Audi",
+      "speed": 218.3,
+      "color": "#F50537"
     },
     {
       "turn": 7,
-      "driver": "LIN",
-      "speed": 217.1
+      "team": "Alpine",
+      "speed": 213.9,
+      "color": "#00A1E8"
     },
     {
       "turn": 7,
-      "driver": "BOR",
-      "speed": 219.0
+      "team": "Williams",
+      "speed": 217.8,
+      "color": "#1868DB"
     },
     {
       "turn": 7,
-      "driver": "GAS",
-      "speed": 217.0
+      "team": "Cadillac",
+      "speed": 212.5,
+      "color": "#909090"
     },
     {
       "turn": 7,
-      "driver": "OCO",
-      "speed": 212.5
-    },
-    {
-      "turn": 7,
-      "driver": "ALB",
-      "speed": 211.6
-    },
-    {
-      "turn": 7,
-      "driver": "LAW",
-      "speed": 218.6
-    },
-    {
-      "turn": 7,
-      "driver": "COL",
-      "speed": 215.3
-    },
-    {
-      "turn": 7,
-      "driver": "SAI",
-      "speed": 216.7
-    },
-    {
-      "turn": 7,
-      "driver": "PER",
-      "speed": 208.2
-    },
-    {
-      "turn": 7,
-      "driver": "STR",
-      "speed": 208.6
-    },
-    {
-      "turn": 7,
-      "driver": "ALO",
-      "speed": 212.4
-    },
-    {
-      "turn": 7,
-      "driver": "BOT",
-      "speed": 208.7
-    },
-    {
-      "turn": 7,
-      "driver": "HAD",
-      "speed": 209.7
+      "team": "Aston Martin",
+      "speed": 211.2,
+      "color": "#229971"
     },
     {
       "turn": 8,
-      "driver": "RUS",
-      "speed": 237.5
+      "team": "Mercedes",
+      "speed": 239.6,
+      "color": "#00D7B6"
     },
     {
       "turn": 8,
-      "driver": "ANT",
-      "speed": 242.0
+      "team": "Ferrari",
+      "speed": 237.2,
+      "color": "#ED1131"
     },
     {
       "turn": 8,
-      "driver": "LEC",
-      "speed": 241.2
+      "team": "McLaren",
+      "speed": 240.3,
+      "color": "#F47600"
     },
     {
       "turn": 8,
-      "driver": "HAM",
-      "speed": 236.2
+      "team": "Red Bull Racing",
+      "speed": 238.2,
+      "color": "#4781D7"
     },
     {
       "turn": 8,
-      "driver": "NOR",
-      "speed": 237.8
+      "team": "Haas F1 Team",
+      "speed": 237.4,
+      "color": "#9C9FA2"
     },
     {
       "turn": 8,
-      "driver": "VER",
-      "speed": 239.5
+      "team": "Racing Bulls",
+      "speed": 238.1,
+      "color": "#6C98FF"
     },
     {
       "turn": 8,
-      "driver": "BEA",
-      "speed": 232.8
+      "team": "Audi",
+      "speed": 236.1,
+      "color": "#F50537"
     },
     {
       "turn": 8,
-      "driver": "LIN",
-      "speed": 237.2
+      "team": "Alpine",
+      "speed": 237.0,
+      "color": "#00A1E8"
     },
     {
       "turn": 8,
-      "driver": "BOR",
-      "speed": 239.2
+      "team": "Williams",
+      "speed": 237.8,
+      "color": "#1868DB"
     },
     {
       "turn": 8,
-      "driver": "GAS",
-      "speed": 235.1
+      "team": "Cadillac",
+      "speed": 226.7,
+      "color": "#909090"
     },
     {
       "turn": 8,
-      "driver": "OCO",
-      "speed": 230.5
-    },
-    {
-      "turn": 8,
-      "driver": "ALB",
-      "speed": 230.5
-    },
-    {
-      "turn": 8,
-      "driver": "LAW",
-      "speed": 234.3
-    },
-    {
-      "turn": 8,
-      "driver": "COL",
-      "speed": 234.8
-    },
-    {
-      "turn": 8,
-      "driver": "SAI",
-      "speed": 233.4
-    },
-    {
-      "turn": 8,
-      "driver": "PER",
-      "speed": 231.3
-    },
-    {
-      "turn": 8,
-      "driver": "STR",
-      "speed": 233.2
-    },
-    {
-      "turn": 8,
-      "driver": "ALO",
-      "speed": 231.3
-    },
-    {
-      "turn": 8,
-      "driver": "BOT",
-      "speed": 222.6
-    },
-    {
-      "turn": 8,
-      "driver": "HAD",
-      "speed": 234.3
+      "team": "Aston Martin",
+      "speed": 232.3,
+      "color": "#229971"
     },
     {
       "turn": 9,
-      "driver": "RUS",
-      "speed": 206.5
+      "team": "Mercedes",
+      "speed": 202.3,
+      "color": "#00D7B6"
     },
     {
       "turn": 9,
-      "driver": "ANT",
-      "speed": 206.2
+      "team": "Ferrari",
+      "speed": 206.2,
+      "color": "#ED1131"
     },
     {
       "turn": 9,
-      "driver": "LEC",
-      "speed": 202.5
+      "team": "McLaren",
+      "speed": 201.5,
+      "color": "#F47600"
     },
     {
       "turn": 9,
-      "driver": "HAM",
-      "speed": 201.6
+      "team": "Red Bull Racing",
+      "speed": 204.3,
+      "color": "#4781D7"
     },
     {
       "turn": 9,
-      "driver": "NOR",
-      "speed": 202.6
+      "team": "Haas F1 Team",
+      "speed": 203.4,
+      "color": "#9C9FA2"
     },
     {
       "turn": 9,
-      "driver": "VER",
-      "speed": 201.8
+      "team": "Racing Bulls",
+      "speed": 202.0,
+      "color": "#6C98FF"
     },
     {
       "turn": 9,
-      "driver": "BEA",
-      "speed": 197.7
+      "team": "Audi",
+      "speed": 200.5,
+      "color": "#F50537"
     },
     {
       "turn": 9,
-      "driver": "LIN",
-      "speed": 202.1
+      "team": "Alpine",
+      "speed": 204.2,
+      "color": "#00A1E8"
     },
     {
       "turn": 9,
-      "driver": "BOR",
-      "speed": 203.8
+      "team": "Williams",
+      "speed": 199.3,
+      "color": "#1868DB"
     },
     {
       "turn": 9,
-      "driver": "GAS",
-      "speed": 198.7
+      "team": "Cadillac",
+      "speed": 195.1,
+      "color": "#909090"
     },
     {
       "turn": 9,
-      "driver": "OCO",
-      "speed": 198.9
-    },
-    {
-      "turn": 9,
-      "driver": "ALB",
-      "speed": 196.5
-    },
-    {
-      "turn": 9,
-      "driver": "LAW",
-      "speed": 198.6
-    },
-    {
-      "turn": 9,
-      "driver": "COL",
-      "speed": 205.2
-    },
-    {
-      "turn": 9,
-      "driver": "SAI",
-      "speed": 198.7
-    },
-    {
-      "turn": 9,
-      "driver": "PER",
-      "speed": 198.2
-    },
-    {
-      "turn": 9,
-      "driver": "STR",
-      "speed": 195.4
-    },
-    {
-      "turn": 9,
-      "driver": "ALO",
-      "speed": 198.0
-    },
-    {
-      "turn": 9,
-      "driver": "BOT",
-      "speed": 195.7
-    },
-    {
-      "turn": 9,
-      "driver": "HAD",
-      "speed": 195.9
+      "team": "Aston Martin",
+      "speed": 200.0,
+      "color": "#229971"
     },
     {
       "turn": 10,
-      "driver": "RUS",
-      "speed": 149.2
+      "team": "Mercedes",
+      "speed": 150.1,
+      "color": "#00D7B6"
     },
     {
       "turn": 10,
-      "driver": "ANT",
-      "speed": 146.6
+      "team": "Ferrari",
+      "speed": 150.1,
+      "color": "#ED1131"
     },
     {
       "turn": 10,
-      "driver": "LEC",
-      "speed": 144.3
+      "team": "McLaren",
+      "speed": 146.1,
+      "color": "#F47600"
     },
     {
       "turn": 10,
-      "driver": "HAM",
-      "speed": 144.7
+      "team": "Red Bull Racing",
+      "speed": 149.3,
+      "color": "#4781D7"
     },
     {
       "turn": 10,
-      "driver": "NOR",
-      "speed": 144.8
+      "team": "Haas F1 Team",
+      "speed": 147.2,
+      "color": "#9C9FA2"
     },
     {
       "turn": 10,
-      "driver": "VER",
-      "speed": 148.3
+      "team": "Racing Bulls",
+      "speed": 141.9,
+      "color": "#6C98FF"
     },
     {
       "turn": 10,
-      "driver": "BEA",
-      "speed": 143.3
+      "team": "Audi",
+      "speed": 148.2,
+      "color": "#F50537"
     },
     {
       "turn": 10,
-      "driver": "LIN",
-      "speed": 143.6
+      "team": "Alpine",
+      "speed": 142.5,
+      "color": "#00A1E8"
     },
     {
       "turn": 10,
-      "driver": "BOR",
-      "speed": 144.9
+      "team": "Williams",
+      "speed": 143.3,
+      "color": "#1868DB"
     },
     {
       "turn": 10,
-      "driver": "GAS",
-      "speed": 140.9
+      "team": "Cadillac",
+      "speed": 144.1,
+      "color": "#909090"
     },
     {
       "turn": 10,
-      "driver": "OCO",
-      "speed": 146.2
-    },
-    {
-      "turn": 10,
-      "driver": "ALB",
-      "speed": 140.7
-    },
-    {
-      "turn": 10,
-      "driver": "LAW",
-      "speed": 146.9
-    },
-    {
-      "turn": 10,
-      "driver": "COL",
-      "speed": 144.2
-    },
-    {
-      "turn": 10,
-      "driver": "SAI",
-      "speed": 144.7
-    },
-    {
-      "turn": 10,
-      "driver": "PER",
-      "speed": 139.3
-    },
-    {
-      "turn": 10,
-      "driver": "STR",
-      "speed": 140.9
-    },
-    {
-      "turn": 10,
-      "driver": "ALO",
-      "speed": 142.9
-    },
-    {
-      "turn": 10,
-      "driver": "BOT",
-      "speed": 135.8
-    },
-    {
-      "turn": 10,
-      "driver": "HAD",
-      "speed": 142.1
+      "team": "Aston Martin",
+      "speed": 144.6,
+      "color": "#229971"
     },
     {
       "turn": 11,
-      "driver": "RUS",
-      "speed": 118.3
+      "team": "Mercedes",
+      "speed": 117.1,
+      "color": "#00D7B6"
     },
     {
       "turn": 11,
-      "driver": "ANT",
-      "speed": 117.3
+      "team": "Ferrari",
+      "speed": 120.0,
+      "color": "#ED1131"
     },
     {
       "turn": 11,
-      "driver": "LEC",
-      "speed": 121.3
+      "team": "McLaren",
+      "speed": 122.7,
+      "color": "#F47600"
     },
     {
       "turn": 11,
-      "driver": "HAM",
-      "speed": 118.2
+      "team": "Red Bull Racing",
+      "speed": 117.2,
+      "color": "#4781D7"
     },
     {
       "turn": 11,
-      "driver": "NOR",
-      "speed": 117.1
+      "team": "Haas F1 Team",
+      "speed": 120.3,
+      "color": "#9C9FA2"
     },
     {
       "turn": 11,
-      "driver": "VER",
-      "speed": 122.6
+      "team": "Racing Bulls",
+      "speed": 116.9,
+      "color": "#6C98FF"
     },
     {
       "turn": 11,
-      "driver": "BEA",
-      "speed": 119.5
+      "team": "Audi",
+      "speed": 115.5,
+      "color": "#F50537"
     },
     {
       "turn": 11,
-      "driver": "LIN",
-      "speed": 114.9
+      "team": "Alpine",
+      "speed": 119.9,
+      "color": "#00A1E8"
     },
     {
       "turn": 11,
-      "driver": "BOR",
-      "speed": 115.9
+      "team": "Williams",
+      "speed": 120.7,
+      "color": "#1868DB"
     },
     {
       "turn": 11,
-      "driver": "GAS",
-      "speed": 114.6
+      "team": "Cadillac",
+      "speed": 113.9,
+      "color": "#909090"
     },
     {
       "turn": 11,
-      "driver": "OCO",
-      "speed": 119.6
-    },
-    {
-      "turn": 11,
-      "driver": "ALB",
-      "speed": 114.6
-    },
-    {
-      "turn": 11,
-      "driver": "LAW",
-      "speed": 119.5
-    },
-    {
-      "turn": 11,
-      "driver": "COL",
-      "speed": 116.8
-    },
-    {
-      "turn": 11,
-      "driver": "SAI",
-      "speed": 120.6
-    },
-    {
-      "turn": 11,
-      "driver": "PER",
-      "speed": 112.3
-    },
-    {
-      "turn": 11,
-      "driver": "STR",
-      "speed": 118.1
-    },
-    {
-      "turn": 11,
-      "driver": "ALO",
-      "speed": 116.5
-    },
-    {
-      "turn": 11,
-      "driver": "BOT",
-      "speed": 115.5
-    },
-    {
-      "turn": 11,
-      "driver": "HAD",
-      "speed": 118.3
+      "team": "Aston Martin",
+      "speed": 116.9,
+      "color": "#229971"
     },
     {
       "turn": 12,
-      "driver": "RUS",
-      "speed": 144.4
+      "team": "Mercedes",
+      "speed": 149.1,
+      "color": "#00D7B6"
     },
     {
       "turn": 12,
-      "driver": "ANT",
-      "speed": 144.7
+      "team": "Ferrari",
+      "speed": 144.8,
+      "color": "#ED1131"
     },
     {
       "turn": 12,
-      "driver": "LEC",
-      "speed": 149.6
+      "team": "McLaren",
+      "speed": 147.5,
+      "color": "#F47600"
     },
     {
       "turn": 12,
-      "driver": "HAM",
-      "speed": 146.9
+      "team": "Red Bull Racing",
+      "speed": 150.7,
+      "color": "#4781D7"
     },
     {
       "turn": 12,
-      "driver": "NOR",
-      "speed": 144.5
+      "team": "Haas F1 Team",
+      "speed": 147.5,
+      "color": "#9C9FA2"
     },
     {
       "turn": 12,
-      "driver": "VER",
-      "speed": 145.8
+      "team": "Racing Bulls",
+      "speed": 148.0,
+      "color": "#6C98FF"
     },
     {
       "turn": 12,
-      "driver": "BEA",
-      "speed": 147.8
+      "team": "Audi",
+      "speed": 148.1,
+      "color": "#F50537"
     },
     {
       "turn": 12,
-      "driver": "LIN",
-      "speed": 141.7
+      "team": "Alpine",
+      "speed": 147.3,
+      "color": "#00A1E8"
     },
     {
       "turn": 12,
-      "driver": "BOR",
-      "speed": 143.0
+      "team": "Williams",
+      "speed": 146.8,
+      "color": "#1868DB"
     },
     {
       "turn": 12,
-      "driver": "GAS",
-      "speed": 144.0
+      "team": "Cadillac",
+      "speed": 139.1,
+      "color": "#909090"
     },
     {
       "turn": 12,
-      "driver": "OCO",
-      "speed": 143.6
-    },
-    {
-      "turn": 12,
-      "driver": "ALB",
-      "speed": 142.4
-    },
-    {
-      "turn": 12,
-      "driver": "LAW",
-      "speed": 142.4
-    },
-    {
-      "turn": 12,
-      "driver": "COL",
-      "speed": 149.0
-    },
-    {
-      "turn": 12,
-      "driver": "SAI",
-      "speed": 148.1
-    },
-    {
-      "turn": 12,
-      "driver": "PER",
-      "speed": 142.8
-    },
-    {
-      "turn": 12,
-      "driver": "STR",
-      "speed": 139.4
-    },
-    {
-      "turn": 12,
-      "driver": "ALO",
-      "speed": 142.9
-    },
-    {
-      "turn": 12,
-      "driver": "BOT",
-      "speed": 137.3
-    },
-    {
-      "turn": 12,
-      "driver": "HAD",
-      "speed": 139.9
+      "team": "Aston Martin",
+      "speed": 141.7,
+      "color": "#229971"
     },
     {
       "turn": 13,
-      "driver": "RUS",
-      "speed": 204.5
+      "team": "Mercedes",
+      "speed": 205.2,
+      "color": "#00D7B6"
     },
     {
       "turn": 13,
-      "driver": "ANT",
-      "speed": 203.4
+      "team": "Ferrari",
+      "speed": 203.4,
+      "color": "#ED1131"
     },
     {
       "turn": 13,
-      "driver": "LEC",
-      "speed": 202.4
+      "team": "McLaren",
+      "speed": 201.7,
+      "color": "#F47600"
     },
     {
       "turn": 13,
-      "driver": "HAM",
-      "speed": 205.4
+      "team": "Red Bull Racing",
+      "speed": 203.0,
+      "color": "#4781D7"
     },
     {
       "turn": 13,
-      "driver": "NOR",
-      "speed": 201.7
+      "team": "Haas F1 Team",
+      "speed": 203.7,
+      "color": "#9C9FA2"
     },
     {
       "turn": 13,
-      "driver": "VER",
-      "speed": 203.4
+      "team": "Racing Bulls",
+      "speed": 202.8,
+      "color": "#6C98FF"
     },
     {
       "turn": 13,
-      "driver": "BEA",
-      "speed": 202.1
+      "team": "Audi",
+      "speed": 201.8,
+      "color": "#F50537"
     },
     {
       "turn": 13,
-      "driver": "LIN",
-      "speed": 199.3
+      "team": "Alpine",
+      "speed": 199.7,
+      "color": "#00A1E8"
     },
     {
       "turn": 13,
-      "driver": "BOR",
-      "speed": 201.1
+      "team": "Williams",
+      "speed": 199.2,
+      "color": "#1868DB"
     },
     {
       "turn": 13,
-      "driver": "GAS",
-      "speed": 202.4
+      "team": "Cadillac",
+      "speed": 198.9,
+      "color": "#909090"
     },
     {
       "turn": 13,
-      "driver": "OCO",
-      "speed": 197.2
-    },
-    {
-      "turn": 13,
-      "driver": "ALB",
-      "speed": 199.3
-    },
-    {
-      "turn": 13,
-      "driver": "LAW",
-      "speed": 201.3
-    },
-    {
-      "turn": 13,
-      "driver": "COL",
-      "speed": 201.4
-    },
-    {
-      "turn": 13,
-      "driver": "SAI",
-      "speed": 202.0
-    },
-    {
-      "turn": 13,
-      "driver": "PER",
-      "speed": 199.2
-    },
-    {
-      "turn": 13,
-      "driver": "STR",
-      "speed": 198.6
-    },
-    {
-      "turn": 13,
-      "driver": "ALO",
-      "speed": 197.6
-    },
-    {
-      "turn": 13,
-      "driver": "BOT",
-      "speed": 194.2
-    },
-    {
-      "turn": 13,
-      "driver": "HAD",
-      "speed": 200.1
+      "team": "Aston Martin",
+      "speed": 195.2,
+      "color": "#229971"
     },
     {
       "turn": 14,
-      "driver": "RUS",
-      "speed": 241.6
+      "team": "Mercedes",
+      "speed": 237.2,
+      "color": "#00D7B6"
     },
     {
       "turn": 14,
-      "driver": "ANT",
-      "speed": 240.0
+      "team": "Ferrari",
+      "speed": 241.2,
+      "color": "#ED1131"
     },
     {
       "turn": 14,
-      "driver": "LEC",
-      "speed": 236.5
+      "team": "McLaren",
+      "speed": 239.5,
+      "color": "#F47600"
     },
     {
       "turn": 14,
-      "driver": "HAM",
-      "speed": 240.7
+      "team": "Red Bull Racing",
+      "speed": 240.3,
+      "color": "#4781D7"
     },
     {
       "turn": 14,
-      "driver": "NOR",
-      "speed": 235.9
+      "team": "Haas F1 Team",
+      "speed": 237.1,
+      "color": "#9C9FA2"
     },
     {
       "turn": 14,
-      "driver": "VER",
-      "speed": 242.1
+      "team": "Racing Bulls",
+      "speed": 232.5,
+      "color": "#6C98FF"
     },
     {
       "turn": 14,
-      "driver": "BEA",
-      "speed": 232.7
+      "team": "Audi",
+      "speed": 235.4,
+      "color": "#F50537"
     },
     {
       "turn": 14,
-      "driver": "LIN",
-      "speed": 235.2
+      "team": "Alpine",
+      "speed": 238.5,
+      "color": "#00A1E8"
     },
     {
       "turn": 14,
-      "driver": "BOR",
-      "speed": 237.2
+      "team": "Williams",
+      "speed": 234.9,
+      "color": "#1868DB"
     },
     {
       "turn": 14,
-      "driver": "GAS",
-      "speed": 236.5
+      "team": "Cadillac",
+      "speed": 230.1,
+      "color": "#909090"
     },
     {
       "turn": 14,
-      "driver": "OCO",
-      "speed": 231.9
-    },
-    {
-      "turn": 14,
-      "driver": "ALB",
-      "speed": 233.7
-    },
-    {
-      "turn": 14,
-      "driver": "LAW",
-      "speed": 238.2
-    },
-    {
-      "turn": 14,
-      "driver": "COL",
-      "speed": 234.7
-    },
-    {
-      "turn": 14,
-      "driver": "SAI",
-      "speed": 233.0
-    },
-    {
-      "turn": 14,
-      "driver": "PER",
-      "speed": 228.4
-    },
-    {
-      "turn": 14,
-      "driver": "STR",
-      "speed": 231.5
-    },
-    {
-      "turn": 14,
-      "driver": "ALO",
-      "speed": 230.1
-    },
-    {
-      "turn": 14,
-      "driver": "BOT",
-      "speed": 225.4
-    },
-    {
-      "turn": 14,
-      "driver": "HAD",
-      "speed": 231.8
+      "team": "Aston Martin",
+      "speed": 227.5,
+      "color": "#229971"
     }
   ]
 }
