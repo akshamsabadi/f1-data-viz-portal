@@ -1,11 +1,12 @@
 import json
 import random
 import os
+import sys
 
-def generate_mock_race():
+def generate_mock_race(gp_name, out_filename):
     race_info = {
         "year": 2026,
-        "gp": "Bahrain Grand Prix",
+        "gp": gp_name,
         "total_laps": 57,
         "winner": "VER"
     }
@@ -94,6 +95,16 @@ def generate_mock_race():
                 "session_time": round(res["total"], 3)
             })
 
+    # Pick a random winner from the first 5 drivers
+    winner = laps_data[-1]["driver"] # last lap leader
+    # Actually just set the winner to the one who is position 1 at lap 57
+    for ld in laps_data:
+        if ld["lap"] == 57 and ld["position"] == 1:
+            winner = ld["driver"]
+            break
+            
+    race_info["winner"] = winner
+
     payload = {
         "race_info": race_info,
         "drivers": drivers_list,
@@ -101,11 +112,14 @@ def generate_mock_race():
         "laps": laps_data
     }
 
-    out_path = os.path.join(os.path.dirname(__file__), "..", "src", "assets", "data", "races", "2026", "bahrain.json")
+    out_path = os.path.join(os.path.dirname(__file__), "..", "src", "assets", "data", "races", "2026", out_filename)
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, 'w') as f:
         json.dump(payload, f, indent=2)
-    print(f"Mock data saved to {out_path}")
+    print(f"Mock data for {gp_name} saved to {out_path}")
 
 if __name__ == "__main__":
-    generate_mock_race()
+    if len(sys.argv) < 3:
+        print("Usage: python generate_mock_race.py 'GP Name' filename.json")
+        sys.exit(1)
+    generate_mock_race(sys.argv[1], sys.argv[2])
