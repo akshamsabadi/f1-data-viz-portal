@@ -4,7 +4,7 @@ import os
 
 def generate_mock_race():
     race_info = {
-        "year": 2024,
+        "year": 2026,
         "gp": "Bahrain Grand Prix",
         "total_laps": 57,
         "winner": "VER"
@@ -20,7 +20,17 @@ def generate_mock_race():
         {"code": "HAM", "name": "Lewis Hamilton", "team": "Mercedes", "color": "#27F4D2"},
         {"code": "PIA", "name": "Oscar Piastri", "team": "McLaren", "color": "#FF8000"},
         {"code": "ALO", "name": "Fernando Alonso", "team": "Aston Martin", "color": "#229971"},
-        {"code": "STR", "name": "Lance Stroll", "team": "Aston Martin", "color": "#229971"}
+        {"code": "STR", "name": "Lance Stroll", "team": "Aston Martin", "color": "#229971"},
+        {"code": "ZHO", "name": "Guanyu Zhou", "team": "Sauber", "color": "#00E701"},
+        {"code": "MAG", "name": "Kevin Magnussen", "team": "Haas", "color": "#FFFFFF"},
+        {"code": "RIC", "name": "Daniel Ricciardo", "team": "RB", "color": "#6692FF"},
+        {"code": "TSU", "name": "Yuki Tsunoda", "team": "RB", "color": "#6692FF"},
+        {"code": "ALB", "name": "Alexander Albon", "team": "Williams", "color": "#005AFF"},
+        {"code": "HUL", "name": "Nico Hülkenberg", "team": "Haas", "color": "#FFFFFF"},
+        {"code": "OCO", "name": "Esteban Ocon", "team": "Alpine", "color": "#FF87BC"},
+        {"code": "GAS", "name": "Pierre Gasly", "team": "Alpine", "color": "#FF87BC"},
+        {"code": "BOT", "name": "Valtteri Bottas", "team": "Sauber", "color": "#00E701"},
+        {"code": "SAR", "name": "Logan Sargeant", "team": "Williams", "color": "#005AFF"}
     ]
 
     laps_data = []
@@ -33,7 +43,7 @@ def generate_mock_race():
         driver_states[d['code']] = {
             "compound": random.choice(compounds),
             "tyre_life": 1,
-            "base_pace": 95.0 + (i * 0.2), # VER is fastest
+            "base_pace": 95.0 + (i * 0.15), # VER is fastest, scale pace down slightly
             "total_time": 0
         }
 
@@ -91,7 +101,7 @@ def generate_mock_race():
         "laps": laps_data
     }
 
-    out_path = os.path.join(os.path.dirname(__file__), "..", "src", "assets", "data", "races", "2024", "bahrain.json")
+    out_path = os.path.join(os.path.dirname(__file__), "..", "src", "assets", "data", "races", "2026", "bahrain.json")
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, 'w') as f:
         json.dump(payload, f, indent=2)

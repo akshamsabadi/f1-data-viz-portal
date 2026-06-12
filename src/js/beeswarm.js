@@ -7,13 +7,31 @@ export function renderBeeswarm(data) {
         return;
     }
 
-    const margin = { top: 20, right: 30, bottom: 40, left: 60 };
+    const margin = { top: 20, right: 30, bottom: 60, left: 60 };
     const width = container.clientWidth - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
     
-    // Y-axis will be drivers. Get unique drivers sorted by position or original order.
-    const drivers = data.drivers.map(d => d.code);
-    const height = Math.max(400, drivers.length * 30); // Dynamic height based on driver count
+    // Sort drivers by finishing position
+    // Find the last lap of the race
+    const maxLap = d3.max(data.laps, d => d.lap);
+    const finalLapData = data.laps.filter(d => d.lap === maxLap);
+    finalLapData.sort((a, b) => a.position - b.position);
     
+    // Ordered list of driver codes
+    const orderedDrivers = finalLapData.map(d => d.driver);
+    // Add any drivers that didn't make it to the final lap at the end
+    data.drivers.forEach(d => {
+        if (!orderedDrivers.includes(d.code)) {
+            orderedDrivers.push(d.code);
+        }
+    });
+    
+    // Create a map for driver colors
+    const driverColorMap = {};
+    data.drivers.forEach(d => {
+        driverColorMap[d.code] = d.color;
+    });
+
     const svg = d3.select('#beeswarm-plot')
         .append('svg')
         .attr('width', width + margin.left + margin.right)
@@ -31,37 +49,59 @@ export function renderBeeswarm(data) {
     
     const filteredLaps = data.laps.filter(d => d.time <= maxAllowedTime);
 
-    const xScale = d3.scaleLinear()
-        .domain(d3.extent(filteredLaps, d => d.time))
-        .range([0, width]);
-
-    const yScale = d3.scalePoint()
-        .domain(drivers)
-        .range([0, height])
+    // X axis is now Drivers
+    const xScale = d3.scalePoint()
+        .domain(orderedDrivers)
+        .range([0, width])
         .padding(1);
+
+    // Y axis is now Time
+    const yScale = d3.scaleLinear()
+        .domain(d3.extent(filteredLaps, d => d.time))
+        .range([height, 0]);
 
     const colorScale = d3.scaleOrdinal()
         .domain(['SOFT', 'MEDIUM', 'HARD', 'INTERMEDIATE', 'WET', 'UNKNOWN'])
         .range(['#ef4444', '#eab308', '#fafafa', '#22c55e', '#3b82f6', '#a1a1aa']);
 
-    svg.append('g')
+    // X Axis
+    const xAxisGroup = svg.append('g')
         .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(xScale).ticks(10))
-        .append('text')
+        .call(d3.axisBottom(xScale));
+
+    // Color the tick labels by driver team color
+    xAxisGroup.selectAll('.tick text')
+        .style('fill', d => driverColorMap[d] || 'var(--text-muted)')
+        .style('font-weight', '600')
+        .style('font-size', '12px');
+
+    xAxisGroup.append('text')
         .attr('x', width)
-        .attr('y', 35)
-        .attr('fill', 'currentColor')
+        .attr('y', 40)
+        .attr('fill', 'var(--text-muted)')
+        .attr('text-anchor', 'end')
+        .text('Driver (Finishing Order)');
+
+    // Y Axis
+    svg.append('g')
+        .call(d3.axisLeft(yScale).ticks(10))
+        .append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', -45)
+        .attr('x', 0)
+        .attr('fill', 'var(--text-muted)')
         .attr('text-anchor', 'end')
         .text('Lap Time (s)');
 
-    svg.append('g')
-        .call(d3.axisLeft(yScale));
-
     const simulation = d3.forceSimulation(filteredLaps)
-        .force('x', d3.forceX(d => xScale(d.time)).strength(1))
-        .force('y', d3.forceY(d => yScale(d.driver)).strength(0.2))
+        .force('x', d3.forceX(d => xScale(d.driver)).strength(1))
+        .force('y', d3.forceY(d => yScale(d.time)).strength(0.2)) // Give Y some flex for the beeswarm effect, or swap strengths depending on desired effect
         .force('collide', d3.forceCollide(4))
         .stop();
+
+    // To ensure strict time representation, it's often better to strongly force Y and let X jitter for collision
+    simulation.force('y', d3.forceY(d => yScale(d.time)).strength(1))
+              .force('x', d3.forceX(d => xScale(d.driver)).strength(0.2));
 
     // Run simulation statically for performance
     for (let i = 0; i < 120; ++i) simulation.tick();
