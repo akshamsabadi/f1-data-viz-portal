@@ -10,7 +10,7 @@
 </head>
 <body>
     <header class="navbar">
-        <div class="logo">F1 Data Viz Portal <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 0.5rem; font-weight: normal;">v1.11.0</span></div>
+        <div class="logo">F1 Data Viz Portal <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 0.5rem; font-weight: normal;">v1.12.0</span></div>
         <div class="controls">
             <label for="race-selector">Select Race:</label>
             <select id="race-selector"></select>
@@ -28,17 +28,15 @@
             <div id="beeswarm-plot" class="chart"></div>
         </section>
 
-        <div class="grid-row">
-            <section class="viz-container" id="corner-speed-container">
-                <h2>Average Corner Speeds</h2>
-                <div id="corner-speed-chart" class="chart"></div>
-            </section>
-            
-            <section class="viz-container" id="bump-container">
-                <h2>Position Bump Chart</h2>
-                <div id="bump-chart" class="chart"></div>
-            </section>
-        </div>
+        <section class="viz-container" id="corner-speed-container">
+            <h2>Average Corner Speeds</h2>
+            <div id="corner-speed-chart" class="chart"></div>
+        </section>
+        
+        <section class="viz-container" id="bump-container">
+            <h2>Position Bump Chart</h2>
+            <div id="bump-chart" class="chart"></div>
+        </section>
     </main>
 
     <div id="tooltip" class="tooltip hidden"></div>
