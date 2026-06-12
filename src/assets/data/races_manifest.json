@@ -11,6 +11,30 @@
       "id": "china",
       "name": "Chinese Grand Prix",
       "file": "races/2026/china.json"
+    },
+    {
+      "year": 2026,
+      "id": "japan",
+      "name": "Japanese Grand Prix",
+      "file": "races/2026/japan.json"
+    },
+    {
+      "year": 2026,
+      "id": "miami",
+      "name": "Miami Grand Prix",
+      "file": "races/2026/miami.json"
+    },
+    {
+      "year": 2026,
+      "id": "canada",
+      "name": "Canadian Grand Prix",
+      "file": "races/2026/canada.json"
+    },
+    {
+      "year": 2026,
+      "id": "monaco",
+      "name": "Monaco Grand Prix",
+      "file": "races/2026/monaco.json"
     }
   ]
 }
