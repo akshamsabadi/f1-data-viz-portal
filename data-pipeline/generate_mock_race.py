@@ -12,25 +12,25 @@ def generate_mock_race():
 
     drivers_list = [
         {"code": "VER", "name": "Max Verstappen", "team": "Red Bull", "color": "#3671C6"},
-        {"code": "PER", "name": "Sergio Pérez", "team": "Red Bull", "color": "#3671C6"},
-        {"code": "SAI", "name": "Carlos Sainz", "team": "Ferrari", "color": "#E80020"},
+        {"code": "LAW", "name": "Liam Lawson", "team": "Red Bull", "color": "#3671C6"},
         {"code": "LEC", "name": "Charles Leclerc", "team": "Ferrari", "color": "#E80020"},
+        {"code": "HAM", "name": "Lewis Hamilton", "team": "Ferrari", "color": "#E80020"},
         {"code": "RUS", "name": "George Russell", "team": "Mercedes", "color": "#27F4D2"},
+        {"code": "ANT", "name": "Kimi Antonelli", "team": "Mercedes", "color": "#27F4D2"},
         {"code": "NOR", "name": "Lando Norris", "team": "McLaren", "color": "#FF8000"},
-        {"code": "HAM", "name": "Lewis Hamilton", "team": "Mercedes", "color": "#27F4D2"},
         {"code": "PIA", "name": "Oscar Piastri", "team": "McLaren", "color": "#FF8000"},
         {"code": "ALO", "name": "Fernando Alonso", "team": "Aston Martin", "color": "#229971"},
         {"code": "STR", "name": "Lance Stroll", "team": "Aston Martin", "color": "#229971"},
-        {"code": "ZHO", "name": "Guanyu Zhou", "team": "Sauber", "color": "#00E701"},
-        {"code": "MAG", "name": "Kevin Magnussen", "team": "Haas", "color": "#FFFFFF"},
-        {"code": "RIC", "name": "Daniel Ricciardo", "team": "RB", "color": "#6692FF"},
+        {"code": "HUL", "name": "Nico Hülkenberg", "team": "Audi", "color": "#00E701"},
+        {"code": "BOR", "name": "Gabriel Bortoleto", "team": "Audi", "color": "#00E701"},
         {"code": "TSU", "name": "Yuki Tsunoda", "team": "RB", "color": "#6692FF"},
+        {"code": "HAD", "name": "Isack Hadjar", "team": "RB", "color": "#6692FF"},
         {"code": "ALB", "name": "Alexander Albon", "team": "Williams", "color": "#005AFF"},
-        {"code": "HUL", "name": "Nico Hülkenberg", "team": "Haas", "color": "#FFFFFF"},
-        {"code": "OCO", "name": "Esteban Ocon", "team": "Alpine", "color": "#FF87BC"},
+        {"code": "SAI", "name": "Carlos Sainz", "team": "Williams", "color": "#005AFF"},
+        {"code": "OCO", "name": "Esteban Ocon", "team": "Haas", "color": "#FFFFFF"},
+        {"code": "BEA", "name": "Oliver Bearman", "team": "Haas", "color": "#FFFFFF"},
         {"code": "GAS", "name": "Pierre Gasly", "team": "Alpine", "color": "#FF87BC"},
-        {"code": "BOT", "name": "Valtteri Bottas", "team": "Sauber", "color": "#00E701"},
-        {"code": "SAR", "name": "Logan Sargeant", "team": "Williams", "color": "#005AFF"}
+        {"code": "DOO", "name": "Jack Doohan", "team": "Alpine", "color": "#FF87BC"}
     ]
 
     laps_data = []
