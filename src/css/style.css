@@ -203,6 +203,53 @@ circle.data-point:hover {
     filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.9));
 }
 
+#corner-speed-chart {
+    min-height: auto;
+}
+
+.speed-subplots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 1200px) {
+    .speed-subplots {
+        grid-template-columns: 1fr;
+    }
+}
+
+.subplot-container {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.subplot-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: var(--text-muted);
+}
+
+.team-logo {
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.2s;
+    filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.8));
+}
+
+.team-logo:hover {
+    filter: drop-shadow(0px 2px 5px rgba(255,255,255,0.3));
+    transform: scale(1.2);
+}
+
 .grid-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
