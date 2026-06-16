@@ -1,15 +1,15 @@
 const TEAM_LOGOS = {
-    "Mercedes": "https://commons.wikimedia.org/wiki/Special:FilePath/Mercedes-Benz_Star_2022.svg",
-    "McLaren": "https://commons.wikimedia.org/wiki/Special:FilePath/McLaren_Speedmark_logo.svg",
-    "Ferrari": "https://commons.wikimedia.org/wiki/Special:FilePath/Scuderia_Ferrari_logo.svg",
-    "Alpine F1 Team": "https://commons.wikimedia.org/wiki/Special:FilePath/Alpine_logo.svg",
-    "Red Bull": "https://commons.wikimedia.org/wiki/Special:FilePath/Red_Bull_logo.svg",
-    "RB F1 Team": "https://commons.wikimedia.org/wiki/Special:FilePath/Racing_Bulls_logo.svg",
-    "Haas F1 Team": "https://commons.wikimedia.org/wiki/Special:FilePath/Haas_F1_Team_logo.svg",
-    "Audi": "https://commons.wikimedia.org/wiki/Special:FilePath/Audi-Logo_2016.svg",
-    "Williams": "https://commons.wikimedia.org/wiki/Special:FilePath/Williams_Racing_2020_logo.svg",
-    "Cadillac F1 Team": "https://commons.wikimedia.org/wiki/Special:FilePath/Cadillac_emblem_2021.svg",
-    "Aston Martin": "https://commons.wikimedia.org/wiki/Special:FilePath/Aston_Martin_logo.svg"
+    "Mercedes": "assets/logos/mercedes.svg",
+    "McLaren": "assets/logos/mclaren.svg",
+    "Ferrari": "assets/logos/ferrari.svg",
+    "Alpine F1 Team": "assets/logos/alpine.svg",
+    "Red Bull": "assets/logos/redbull.svg",
+    "RB F1 Team": "assets/logos/rbf1.svg",
+    "Haas F1 Team": "assets/logos/haas.svg",
+    "Audi": "assets/logos/audi.svg",
+    "Williams": "assets/logos/williams.svg",
+    "Cadillac F1 Team": "assets/logos/cadillac.svg",
+    "Aston Martin": "assets/logos/astonmartin.svg"
 };
 
 export function renderCornerSpeed(data) {
