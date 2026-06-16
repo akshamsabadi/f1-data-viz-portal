@@ -43,7 +43,16 @@ export function renderBeeswarm(data) {
 
     // Build Interactive Legend
     if (legendContainer) {
-        const compoundsInRace = Array.from(new Set(data.laps.map(d => d.compound.toUpperCase())));
+        const predefinedOrder = ['SOFT', 'MEDIUM', 'HARD', 'INTERMEDIATE', 'WET', 'UNKNOWN'];
+        const compoundsInRace = Array.from(new Set(data.laps.map(d => d.compound.toUpperCase())))
+            .sort((a, b) => {
+                let idxA = predefinedOrder.indexOf(a);
+                let idxB = predefinedOrder.indexOf(b);
+                if (idxA === -1) idxA = 99;
+                if (idxB === -1) idxB = 99;
+                return idxA - idxB;
+            });
+
         compoundsInRace.forEach(comp => {
             const item = document.createElement('div');
             item.className = 'legend-item';
@@ -86,26 +95,16 @@ export function renderBeeswarm(data) {
         .append('svg')
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom);
-        
-    // Define a clip path to prevent zoomed elements from overlapping axes
-    svg.append("defs").append("clipPath")
-        .attr("id", "clip")
-        .append("rect")
-        .attr("width", width)
-        .attr("height", height);
 
     const mainGroup = svg.append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
-
-    const zoomGroup = mainGroup.append('g').attr("clip-path", "url(#clip)");
     
-    // Groups for layering
-    const gridGroup = zoomGroup.append('g').attr('class', 'gridline');
-    const mediansGroup = zoomGroup.append('g').attr('class', 'medians');
-    const pointsGroup = zoomGroup.append('g').attr('class', 'points');
+    // Groups for layering (order matters: items appended later appear on top)
+    const gridGroup = mainGroup.append('g').attr('class', 'gridline');
     const axesGroup = mainGroup.append('g').attr('class', 'axes');
+    const pointsGroup = mainGroup.append('g').attr('class', 'points');
+    const mediansGroup = mainGroup.append('g').attr('class', 'medians');
 
-    let currentZoomTransform = d3.zoomIdentity;
     let updateStyles;
 
     function drawChart() {
@@ -133,15 +132,6 @@ export function renderBeeswarm(data) {
         const yScale = d3.scaleLinear()
             .domain([timeExtent[0] - timePadding, timeExtent[1] + timePadding])
             .range([height, 0]);
-            
-        // Setup Zoom Behavior
-        const zoom = d3.zoom()
-            .scaleExtent([1, 8])
-            .translateExtent([[0, 0], [width, height]])
-            .extent([[0, 0], [width, height]])
-            .on("zoom", zoomed);
-
-        svg.call(zoom);
 
         // Gridlines
         gridGroup.call(d3.axisLeft(yScale)
@@ -196,7 +186,7 @@ export function renderBeeswarm(data) {
             .style('font-weight', '600')
             .text('LAP TIME (S)');
             
-        // Medians
+        // Medians (calculated now, rendered to mediansGroup which is ABOVE pointsGroup)
         const medians = orderedDrivers.map(driver => {
             const driverLaps = lapsToUse.filter(d => d.driver === driver).map(d => d.time).sort(d3.ascending);
             if (driverLaps.length === 0) return null;
@@ -226,18 +216,13 @@ export function renderBeeswarm(data) {
 
         for (let i = 0; i < 120; ++i) simulation.tick();
 
-        // Precalculate layout offsets to preserve collision layout during zoom
-        lapsToUse.forEach(d => {
-            d.yOffset = d.y - yScale(d.time);
-        });
-
         const points = pointsGroup.selectAll('circle.data-point')
             .data(lapsToUse)
             .enter()
             .append('circle')
             .attr('class', 'data-point')
             .attr('cx', d => d.x)
-            .attr('cy', d => yScale(d.time) + d.yOffset)
+            .attr('cy', d => d.y)
             .attr('r', 3.5)
             .attr('fill', d => colorScale(d.compound.toUpperCase()))
             .attr('stroke', 'var(--bg-dark)')
@@ -276,29 +261,6 @@ export function renderBeeswarm(data) {
                     .attr('r', 3.5);
             });
             
-        function zoomed(event) {
-            currentZoomTransform = event.transform;
-            const newY = currentZoomTransform.rescaleY(yScale);
-            
-            yAxisGroup.call(d3.axisLeft(newY).ticks(10).tickSize(0))
-                .call(g => g.select(".domain").remove());
-                
-            gridGroup.call(d3.axisLeft(newY)
-                .tickSize(-width)
-                .tickFormat('')
-                .ticks(10)
-            );
-
-            points.attr('cy', d => newY(d.time) + d.yOffset);
-                
-            medianLines
-                .attr('y1', d => newY(d.median))
-                .attr('y2', d => newY(d.median));
-        }
-            
-        // Reset zoom state
-        svg.call(zoom.transform, d3.zoomIdentity);
-        
         updateStyles = () => {
             points.style('opacity', d => {
                 const isCompoundActive = activeCompounds.has(d.compound.toUpperCase());
