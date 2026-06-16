@@ -239,15 +239,14 @@ circle.data-point:hover {
     color: var(--text-muted);
 }
 
-.team-logo {
-    cursor: pointer;
+.team-node {
     transition: filter 0.2s, transform 0.2s;
     filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.8));
 }
 
-.team-logo:hover {
+.team-node:hover {
     filter: drop-shadow(0px 2px 5px rgba(255,255,255,0.3));
-    transform: scale(1.2);
+    /* transform scale removed to prevent breaking SVG transform attribute, handled via d3 radius */
 }
 
 .grid-row {

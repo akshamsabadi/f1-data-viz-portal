@@ -123,38 +123,30 @@ export function renderCornerSpeed(data) {
             .style('font-weight', '700')
             .style('font-size', '12px');
 
+        const radius = 12;
+        const logoSize = 16;
+
         // Force Simulation to prevent logos overlapping
         const simulation = d3.forceSimulation(catData.corners)
             .force('x', d3.forceX(d => xScale(d.speed)).strength(1))
-            .force('y', d3.forceY(d => yScale(d.turn)).strength(1))
-            // Assuming logo is ~24x24, radius is 12 + some padding
-            .force('collide', d3.forceCollide(14))
+            .force('collide', d3.forceCollide(radius + 2))
+            .on('tick', () => {
+                // Strictly lock the Y-coordinate to prevent vertical bleeding across turns
+                catData.corners.forEach(d => {
+                    d.y = yScale(d.turn);
+                });
+            })
             .stop();
 
         for (let i = 0; i < 120; ++i) simulation.tick();
 
-        const logoSize = 24;
-
-        svg.selectAll('.team-logo')
+        const nodes = svg.selectAll('.team-node')
             .data(catData.corners)
             .enter()
-            .append('image')
-            .attr('class', 'team-logo')
-            .attr('xlink:href', d => TEAM_LOGOS[d.team] || '')
-            .attr('x', d => d.x - logoSize / 2)
-            .attr('y', d => d.y - logoSize / 2)
-            .attr('width', logoSize)
-            .attr('height', logoSize)
-            // Fallback for teams without a mapped logo URL
-            .on('error', function() {
-                d3.select(this).style('display', 'none');
-                d3.select(this.parentNode)
-                    .append('circle')
-                    .attr('cx', d3.select(this).attr('x'))
-                    .attr('cy', d3.select(this).attr('y'))
-                    .attr('r', 6)
-                    .attr('fill', d => d.color || 'var(--accent)');
-            })
+            .append('g')
+            .attr('class', 'team-node')
+            .attr('transform', d => `translate(${d.x},${d.y})`)
+            .style('cursor', 'pointer')
             .on('mouseover', (event, d) => {
                 const teamColor = d.color || 'var(--accent)';
                 
@@ -170,9 +162,34 @@ export function renderCornerSpeed(data) {
                     `)
                     .style('left', (event.pageX + 15) + 'px')
                     .style('top', (event.pageY - 30) + 'px');
+                
+                d3.select(event.currentTarget).select('circle')
+                    .attr('stroke', '#ffffff')
+                    .attr('stroke-width', 2)
+                    .attr('r', radius + 2);
             })
-            .on('mouseout', () => {
+            .on('mouseout', (event, d) => {
                 tooltip.classed('hidden', true);
+                d3.select(event.currentTarget).select('circle')
+                    .attr('stroke', 'var(--bg-dark)')
+                    .attr('stroke-width', 1)
+                    .attr('r', radius);
+            });
+
+        nodes.append('circle')
+            .attr('r', radius)
+            .attr('fill', d => d.color || 'var(--accent)')
+            .attr('stroke', 'var(--bg-dark)')
+            .attr('stroke-width', 1);
+
+        nodes.append('image')
+            .attr('xlink:href', d => TEAM_LOGOS[d.team] || '')
+            .attr('x', -logoSize / 2)
+            .attr('y', -logoSize / 2)
+            .attr('width', logoSize)
+            .attr('height', logoSize)
+            .on('error', function() {
+                d3.select(this).style('display', 'none');
             });
     });
 }
