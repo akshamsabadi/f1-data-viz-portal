@@ -1,15 +1,15 @@
 const TEAM_LOGOS = {
-    "Mercedes": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Mercedes_AMG_Petronas_F1_Logo.svg",
-    "McLaren": "https://upload.wikimedia.org/wikipedia/en/6/66/McLaren_Racing_logo.svg",
-    "Ferrari": "https://upload.wikimedia.org/wikipedia/en/d/d1/Ferrari-Logo.svg",
-    "Alpine F1 Team": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Alpine_F1_Team_Logo.svg",
-    "Red Bull": "https://upload.wikimedia.org/wikipedia/en/0/06/Red_Bull_Racing_logo.svg",
-    "RB F1 Team": "https://upload.wikimedia.org/wikipedia/en/4/41/Visa_Cash_App_RB_F1_Team_logo.svg",
-    "Haas F1 Team": "https://upload.wikimedia.org/wikipedia/commons/f/f9/MoneyGram_Haas_F1_Team_Logo.svg",
-    "Audi": "https://upload.wikimedia.org/wikipedia/commons/9/92/Audi-Logo_2016.svg",
-    "Williams": "https://upload.wikimedia.org/wikipedia/commons/0/05/Williams_Racing_2020_logo.svg",
-    "Cadillac F1 Team": "https://upload.wikimedia.org/wikipedia/commons/6/61/Cadillac_emblem_2021.svg",
-    "Aston Martin": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Aston_Martin_Aramco_Cognizant_F1.svg"
+    "Mercedes": "https://commons.wikimedia.org/wiki/Special:FilePath/Mercedes_AMG_Petronas_F1_Logo.svg",
+    "McLaren": "https://en.wikipedia.org/wiki/Special:FilePath/McLaren_Racing_logo.svg",
+    "Ferrari": "https://en.wikipedia.org/wiki/Special:FilePath/Ferrari-Logo.svg",
+    "Alpine F1 Team": "https://commons.wikimedia.org/wiki/Special:FilePath/Alpine_F1_Team_Logo.svg",
+    "Red Bull": "https://en.wikipedia.org/wiki/Special:FilePath/Red_Bull_Racing_logo.svg",
+    "RB F1 Team": "https://en.wikipedia.org/wiki/Special:FilePath/Visa_Cash_App_RB_F1_Team_logo.svg",
+    "Haas F1 Team": "https://commons.wikimedia.org/wiki/Special:FilePath/MoneyGram_Haas_F1_Team_Logo.svg",
+    "Audi": "https://commons.wikimedia.org/wiki/Special:FilePath/Audi-Logo_2016.svg",
+    "Williams": "https://commons.wikimedia.org/wiki/Special:FilePath/Williams_Racing_2020_logo.svg",
+    "Cadillac F1 Team": "https://commons.wikimedia.org/wiki/Special:FilePath/Cadillac_emblem_2021.svg",
+    "Aston Martin": "https://commons.wikimedia.org/wiki/Special:FilePath/Aston_Martin_Aramco_Cognizant_F1.svg"
 };
 
 export function renderCornerSpeed(data) {
@@ -126,16 +126,15 @@ export function renderCornerSpeed(data) {
         const radius = 12;
         const logoSize = 16;
 
+        // Strictly lock the Y-coordinate before simulation so they never bleed vertically
+        catData.corners.forEach(d => {
+            d.fy = yScale(d.turn);
+        });
+
         // Force Simulation to prevent logos overlapping
         const simulation = d3.forceSimulation(catData.corners)
             .force('x', d3.forceX(d => xScale(d.speed)).strength(1))
             .force('collide', d3.forceCollide(radius + 2))
-            .on('tick', () => {
-                // Strictly lock the Y-coordinate to prevent vertical bleeding across turns
-                catData.corners.forEach(d => {
-                    d.y = yScale(d.turn);
-                });
-            })
             .stop();
 
         for (let i = 0; i < 120; ++i) simulation.tick();
