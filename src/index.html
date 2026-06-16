@@ -24,7 +24,16 @@
         </div>
 
         <section class="viz-container" id="beeswarm-container">
-            <h2>Lap-Time Beeswarm</h2>
+            <div class="viz-header-controls">
+                <h2>Lap-Time Beeswarm</h2>
+                <div class="viz-controls">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="outlier-toggle">
+                        Show Outliers (e.g. Pit stops, VSC)
+                    </label>
+                    <div id="beeswarm-legend" class="legend-container"></div>
+                </div>
+            </div>
             <div id="beeswarm-plot" class="chart"></div>
         </section>
 
