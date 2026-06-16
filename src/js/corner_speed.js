@@ -1,15 +1,15 @@
 const TEAM_LOGOS = {
-    "Mercedes": "https://en.wikipedia.org/wiki/Special:FilePath/Mercedes-Benz_Star_2022.svg",
-    "McLaren": "https://en.wikipedia.org/wiki/Special:FilePath/McLaren_Speedmark_logo.svg",
-    "Ferrari": "https://en.wikipedia.org/wiki/Special:FilePath/Scuderia_Ferrari_logo.svg",
-    "Alpine F1 Team": "https://en.wikipedia.org/wiki/Special:FilePath/Alpine_logo.svg",
-    "Red Bull": "https://en.wikipedia.org/wiki/Special:FilePath/Red_Bull_logo.svg",
-    "RB F1 Team": "https://en.wikipedia.org/wiki/Special:FilePath/RB_Formula_One_Team_logo.svg",
-    "Haas F1 Team": "https://en.wikipedia.org/wiki/Special:FilePath/Haas_F1_Team_logo.svg",
-    "Audi": "https://commons.wikimedia.org/wiki/Special:FilePath/Audi-Logo_2016.svg",
-    "Williams": "https://commons.wikimedia.org/wiki/Special:FilePath/Williams_Racing_2020_logo.svg",
-    "Cadillac F1 Team": "https://commons.wikimedia.org/wiki/Special:FilePath/Cadillac_emblem_2021.svg",
-    "Aston Martin": "https://en.wikipedia.org/wiki/Special:FilePath/Aston_Martin_logo.svg"
+    "Mercedes": "assets/logos/mercedes.svg",
+    "McLaren": "assets/logos/mclaren.svg",
+    "Ferrari": "assets/logos/ferrari.svg",
+    "Alpine F1 Team": "assets/logos/alpine.svg",
+    "Red Bull": "assets/logos/redbull.svg",
+    "RB F1 Team": "assets/logos/rbf1.svg",
+    "Haas F1 Team": "assets/logos/haas.svg",
+    "Audi": "assets/logos/audi.svg",
+    "Williams": "assets/logos/williams.svg",
+    "Cadillac F1 Team": "assets/logos/cadillac.svg",
+    "Aston Martin": "assets/logos/astonmartin.svg"
 };
 
 export function renderCornerSpeed(data) {
@@ -147,7 +147,11 @@ export function renderCornerSpeed(data) {
             .enter()
             .append('g')
             .attr('class', 'team-node')
-            .attr('transform', d => `translate(${d.x},${d.y})`)
+            .attr('transform', d => {
+                // Clamp X to ensure logos don't fall off the edges of the SVG canvas
+                const clampedX = Math.max(logoSize, Math.min(width - logoSize, d.x));
+                return `translate(${clampedX},${d.y})`;
+            })
             .style('cursor', 'pointer')
             .on('mouseover', (event, d) => {
                 const teamColor = d.color || 'var(--accent)';
