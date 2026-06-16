@@ -1,1 +1,5 @@
-<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="12" fill="black"/><text x="12" y="19" font-family="sans-serif" font-weight="bold" font-size="18" fill="#E6002B" text-anchor="middle">H</text></svg>
+<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <g transform="skewX(-15) translate(4, 0)">
+    <path d="M 2 22 L 7 22 L 7 14 L 15 14 L 15 22 L 20 22 L 20 2 L 15 2 L 15 10 L 7 10 L 7 2 L 2 2 Z" fill="white"/>
+  </g>
+</svg>

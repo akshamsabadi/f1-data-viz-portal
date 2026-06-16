@@ -131,6 +131,7 @@ export function renderCornerSpeed(data) {
 
         // Strictly lock the Y-coordinate before simulation so they never bleed vertically
         catData.corners.forEach(d => {
+            d.x = xScale(d.speed); // Pre-initialize X so they don't clump at the left edge
             d.fy = yScale(d.turn);
         });
 
