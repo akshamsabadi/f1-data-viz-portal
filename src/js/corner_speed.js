@@ -1,15 +1,15 @@
 const TEAM_LOGOS = {
-    "Mercedes": "assets/logos/mercedes.svg",
-    "McLaren": "assets/logos/mclaren.svg",
-    "Ferrari": "assets/logos/ferrari.svg",
-    "Alpine F1 Team": "assets/logos/alpine.svg",
-    "Red Bull": "assets/logos/redbull.svg",
-    "RB F1 Team": "assets/logos/rbf1.svg",
-    "Haas F1 Team": "assets/logos/haas.svg",
-    "Audi": "assets/logos/audi.svg",
-    "Williams": "assets/logos/williams.svg",
-    "Cadillac F1 Team": "assets/logos/cadillac.svg",
-    "Aston Martin": "assets/logos/astonmartin.svg"
+    "Mercedes": "https://commons.wikimedia.org/wiki/Special:FilePath/Mercedes_AMG_Petronas_F1_Logo.svg",
+    "McLaren": "https://en.wikipedia.org/wiki/Special:FilePath/McLaren_Racing_logo.svg",
+    "Ferrari": "https://en.wikipedia.org/wiki/Special:FilePath/Scuderia_Ferrari_Logo.svg",
+    "Alpine F1 Team": "https://commons.wikimedia.org/wiki/Special:FilePath/Alpine_F1_Team_Logo.svg",
+    "Red Bull": "https://en.wikipedia.org/wiki/Special:FilePath/Red_Bull_Racing_logo.svg",
+    "RB F1 Team": "https://en.wikipedia.org/wiki/Special:FilePath/Visa_Cash_App_RB_F1_Team_logo.svg",
+    "Haas F1 Team": "https://commons.wikimedia.org/wiki/Special:FilePath/MoneyGram_Haas_F1_Team_Logo.svg",
+    "Audi": "https://commons.wikimedia.org/wiki/Special:FilePath/Audi-Logo_2016.svg",
+    "Williams": "https://commons.wikimedia.org/wiki/Special:FilePath/Williams_Racing_2020_logo.svg",
+    "Cadillac F1 Team": "https://commons.wikimedia.org/wiki/Special:FilePath/Cadillac_emblem_2021.svg",
+    "Aston Martin": "https://commons.wikimedia.org/wiki/Special:FilePath/Aston_Martin_Aramco_Cognizant_F1.svg"
 };
 
 export function renderCornerSpeed(data) {
@@ -127,7 +127,8 @@ export function renderCornerSpeed(data) {
             .style('font-size', '12px');
 
         const radius = 12;
-        const logoSize = 16;
+        const logoWidth = 48;
+        const logoHeight = 24;
 
         // Strictly lock the Y-coordinate before simulation so they never bleed vertically
         catData.corners.forEach(d => {
@@ -138,7 +139,7 @@ export function renderCornerSpeed(data) {
         // Force Simulation to prevent logos overlapping
         const simulation = d3.forceSimulation(catData.corners)
             .force('x', d3.forceX(d => xScale(d.speed)).strength(1))
-            .force('collide', d3.forceCollide(radius + 2))
+            .force('collide', d3.forceCollide(logoWidth / 2 + 2))
             .stop();
 
         for (let i = 0; i < 120; ++i) simulation.tick();
@@ -150,7 +151,7 @@ export function renderCornerSpeed(data) {
             .attr('class', 'team-node')
             .attr('transform', d => {
                 // Clamp X to ensure logos don't fall off the edges of the SVG canvas
-                const clampedX = Math.max(logoSize, Math.min(width - logoSize, d.x));
+                const clampedX = Math.max(logoWidth / 2, Math.min(width - logoWidth / 2, d.x));
                 return `translate(${clampedX},${d.y})`;
             })
             .style('cursor', 'pointer')
@@ -169,34 +170,33 @@ export function renderCornerSpeed(data) {
                     `)
                     .style('left', (event.pageX + 15) + 'px')
                     .style('top', (event.pageY - 30) + 'px');
-                
-                d3.select(event.currentTarget).select('circle')
-                    .attr('stroke', '#ffffff')
-                    .attr('stroke-width', 2)
-                    .attr('r', radius + 2);
             })
             .on('mouseout', (event, d) => {
                 tooltip.classed('hidden', true);
-                d3.select(event.currentTarget).select('circle')
-                    .attr('stroke', 'var(--bg-dark)')
-                    .attr('stroke-width', 1)
-                    .attr('r', radius);
             });
 
-        nodes.append('circle')
-            .attr('r', radius)
-            .attr('fill', d => d.color || 'var(--accent)')
-            .attr('stroke', 'var(--bg-dark)')
-            .attr('stroke-width', 1);
+        nodes.append('rect')
+            .attr('x', -logoWidth / 2)
+            .attr('y', -logoHeight / 2)
+            .attr('width', logoWidth)
+            .attr('height', logoHeight)
+            .attr('fill', '#ffffff')
+            .attr('rx', 4);
 
         nodes.append('image')
             .attr('xlink:href', d => TEAM_LOGOS[d.team] || '')
-            .attr('x', -logoSize / 2)
-            .attr('y', -logoSize / 2)
-            .attr('width', logoSize)
-            .attr('height', logoSize)
+            .attr('x', -logoWidth / 2 + 2)
+            .attr('y', -logoHeight / 2 + 2)
+            .attr('width', logoWidth - 4)
+            .attr('height', logoHeight - 4)
             .on('error', function() {
                 d3.select(this).style('display', 'none');
+                d3.select(this.parentNode)
+                    .append('circle')
+                    .attr('cx', 0)
+                    .attr('cy', 0)
+                    .attr('r', 6)
+                    .attr('fill', d => d.color || 'var(--accent)');
             });
     });
 }
