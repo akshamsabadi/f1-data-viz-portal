@@ -1,15 +1,15 @@
 const TEAM_LOGOS = {
-    "Mercedes": "https://commons.wikimedia.org/wiki/Special:FilePath/Mercedes_AMG_Petronas_F1_Logo.svg",
-    "McLaren": "https://en.wikipedia.org/wiki/Special:FilePath/McLaren_Racing_logo.svg",
-    "Ferrari": "https://en.wikipedia.org/wiki/Special:FilePath/Ferrari-Logo.svg",
-    "Alpine F1 Team": "https://commons.wikimedia.org/wiki/Special:FilePath/Alpine_F1_Team_Logo.svg",
-    "Red Bull": "https://en.wikipedia.org/wiki/Special:FilePath/Red_Bull_Racing_logo.svg",
-    "RB F1 Team": "https://en.wikipedia.org/wiki/Special:FilePath/Visa_Cash_App_RB_F1_Team_logo.svg",
-    "Haas F1 Team": "https://commons.wikimedia.org/wiki/Special:FilePath/MoneyGram_Haas_F1_Team_Logo.svg",
+    "Mercedes": "https://en.wikipedia.org/wiki/Special:FilePath/Mercedes-Benz_Star_2022.svg",
+    "McLaren": "https://en.wikipedia.org/wiki/Special:FilePath/McLaren_Speedmark_logo.svg",
+    "Ferrari": "https://en.wikipedia.org/wiki/Special:FilePath/Scuderia_Ferrari_logo.svg",
+    "Alpine F1 Team": "https://en.wikipedia.org/wiki/Special:FilePath/Alpine_logo.svg",
+    "Red Bull": "https://en.wikipedia.org/wiki/Special:FilePath/Red_Bull_logo.svg",
+    "RB F1 Team": "https://en.wikipedia.org/wiki/Special:FilePath/RB_Formula_One_Team_logo.svg",
+    "Haas F1 Team": "https://en.wikipedia.org/wiki/Special:FilePath/Haas_F1_Team_logo.svg",
     "Audi": "https://commons.wikimedia.org/wiki/Special:FilePath/Audi-Logo_2016.svg",
     "Williams": "https://commons.wikimedia.org/wiki/Special:FilePath/Williams_Racing_2020_logo.svg",
     "Cadillac F1 Team": "https://commons.wikimedia.org/wiki/Special:FilePath/Cadillac_emblem_2021.svg",
-    "Aston Martin": "https://commons.wikimedia.org/wiki/Special:FilePath/Aston_Martin_Aramco_Cognizant_F1.svg"
+    "Aston Martin": "https://en.wikipedia.org/wiki/Special:FilePath/Aston_Martin_logo.svg"
 };
 
 export function renderCornerSpeed(data) {
@@ -83,9 +83,12 @@ export function renderCornerSpeed(data) {
 
         const sortedTurns = catData.turns.sort((a, b) => a - b);
 
+        const speedExtent = d3.extent(catData.corners, d => d.speed);
+        
         const xScale = d3.scaleLinear()
-            .domain(d3.extent(catData.corners, d => d.speed))
-            .range([20, width - 20]) // add padding for logos
+            // Add a buffer to the domain so force simulation displacements don't fall off the chart
+            .domain([speedExtent[0] - 10, speedExtent[1] + 10])
+            .range([30, width - 30]) // extra padding for logos
             .nice();
 
         const yScale = d3.scalePoint()
