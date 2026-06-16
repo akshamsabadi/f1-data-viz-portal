@@ -204,5 +204,3 @@ export function renderCornerSpeed(data) {
             });
     });
 }
-    });
-}
