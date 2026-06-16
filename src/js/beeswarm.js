@@ -201,8 +201,8 @@ export function renderBeeswarm(data) {
             .enter()
             .append('line')
             .attr('class', 'median-line')
-            .attr('x1', d => xScale(d.driver) - 15)
-            .attr('x2', d => xScale(d.driver) + 15)
+            .attr('x1', d => xScale(d.driver) - 20)
+            .attr('x2', d => xScale(d.driver) + 20)
             .attr('y1', d => yScale(d.median))
             .attr('y2', d => yScale(d.median))
             .attr('stroke', d => driverColorMap[d.driver] || 'var(--text-muted)');
@@ -273,7 +273,7 @@ export function renderBeeswarm(data) {
             });
             
             medianLines.style('opacity', d => {
-                return (focusedDriver === null || focusedDriver === d.driver) ? 0.8 : 0.1;
+                return (focusedDriver === null || focusedDriver === d.driver) ? 1 : 0.1;
             });
         };
         

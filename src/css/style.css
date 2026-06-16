@@ -197,9 +197,10 @@ circle.data-point:hover {
 }
 
 .median-line {
-    stroke-width: 2px;
+    stroke-width: 4px;
     stroke-linecap: round;
-    opacity: 0.8;
+    opacity: 1;
+    filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.9));
 }
 
 .grid-row {
