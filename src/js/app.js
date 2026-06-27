@@ -57,4 +57,21 @@ function updateDashboardHeader(data) {
     document.getElementById('race-stats').innerHTML = `Total Laps: ${total_laps} | Winner: <span style="color: ${winnerColor}; font-weight: bold;">${winner || 'N/A'}</span>`;
 }
 
-document.addEventListener('DOMContentLoaded', init);
+let resizeTimeout = null;
+const resizeObserver = new ResizeObserver(() => {
+    if (!currentData) return;
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        renderBeeswarm(currentData);
+        renderCornerSpeed(currentData);
+        renderBump(currentData);
+    }, 150);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+    const dashboard = document.querySelector('.dashboard');
+    if (dashboard) {
+        resizeObserver.observe(dashboard);
+    }
+});
