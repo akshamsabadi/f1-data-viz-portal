@@ -2,7 +2,7 @@ import { renderBeeswarm } from './beeswarm.js';
 import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
 
-const APP_VERSION = 'v1.13.0';
+const APP_VERSION = 'v1.14.0';
 let currentData = null;
 
 async function init() {
@@ -21,7 +21,9 @@ async function init() {
         selector.addEventListener('change', (e) => loadRace(e.target.value));
 
         if (manifest.races.length > 0) {
-            loadRace(manifest.races[0].file);
+            const latestRaceIndex = manifest.races.length - 1;
+            selector.selectedIndex = latestRaceIndex;
+            loadRace(manifest.races[latestRaceIndex].file);
         }
     } catch (e) {
         console.error("Failed to load manifest", e);
