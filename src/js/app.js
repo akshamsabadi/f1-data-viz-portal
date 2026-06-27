@@ -2,7 +2,7 @@ import { renderBeeswarm } from './beeswarm.js';
 import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
 
-const APP_VERSION = 'v1.16.4';
+const APP_VERSION = 'v1.16.5';
 let currentData = null;
 
 async function init() {

@@ -85,7 +85,16 @@ export function renderBump(data) {
         .attr('fill', 'none')
         .attr('stroke', d => driverColors[d[0]] || '#ccc')
         .attr('stroke-width', 2)
-        .attr('opacity', 1)
+        .attr('opacity', d => {
+            const laps = d[1];
+            const isDnf = laps[laps.length - 1].lap < maxLap;
+            return isDnf ? 0.35 : 1;
+        })
+        .attr('stroke-dasharray', d => {
+            const laps = d[1];
+            const isDnf = laps[laps.length - 1].lap < maxLap;
+            return isDnf ? '3,3' : 'none';
+        })
         .attr('d', d => line(d[1]));
 
     // Start Nodes
@@ -111,9 +120,21 @@ export function renderBump(data) {
         .attr('class', 'end-node')
         .attr('cx', d => xScale(d[1][d[1].length - 1].lap))
         .attr('cy', d => yScale(d[1][d[1].length - 1].position))
-        .attr('r', 4)
-        .attr('fill', d => driverColors[d[0]] || '#ccc')
-        .attr('stroke', 'var(--bg-dark)')
+        .attr('r', d => {
+            const laps = d[1];
+            const isDnf = laps[laps.length - 1].lap < maxLap;
+            return isDnf ? 3 : 4;
+        })
+        .attr('fill', d => {
+            const laps = d[1];
+            const isDnf = laps[laps.length - 1].lap < maxLap;
+            return isDnf ? '#ef4444' : (driverColors[d[0]] || '#ccc');
+        })
+        .attr('stroke', d => {
+            const laps = d[1];
+            const isDnf = laps[laps.length - 1].lap < maxLap;
+            return isDnf ? '#ffffff' : 'var(--bg-dark)';
+        })
         .attr('stroke-width', 1);
 
     const endLabels = endNodesGroup.selectAll('.end-label')
@@ -124,11 +145,19 @@ export function renderBump(data) {
         .attr('x', d => xScale(d[1][d[1].length - 1].lap) + 8)
         .attr('y', d => yScale(d[1][d[1].length - 1].position))
         .attr('dy', '0.35em')
-        .attr('fill', d => driverColors[d[0]] || '#ccc')
+        .attr('fill', d => {
+            const laps = d[1];
+            const isDnf = laps[laps.length - 1].lap < maxLap;
+            return isDnf ? '#ef4444' : (driverColors[d[0]] || '#ccc');
+        })
         .style('font-family', 'Titillium Web, sans-serif')
         .style('font-size', '11px')
         .style('font-weight', '700')
-        .text(d => d[0]);
+        .text(d => {
+            const laps = d[1];
+            const isDnf = laps[laps.length - 1].lap < maxLap;
+            return isDnf ? `${d[0]} (DNF)` : d[0];
+        });
 
     // Focus state interaction
     const handleMouseOver = (event, d) => {
