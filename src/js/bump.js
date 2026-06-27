@@ -71,7 +71,8 @@ export function renderBump(data) {
         .y(d => yScale(d.position))
         .curve(d3.curveMonotoneX);
 
-    // 1. Calculate authentic final classification positions for all drivers (including DNS)
+    // 1. Calculate authentic final classification positions and DNF/DNS statuses for all drivers
+    const maxSessionTime = d3.max(validLaps, d => d.session_time);
     const driverLapsMap = d3.group(validLaps, d => d.driver);
     const classificationList = data.drivers.map(driver => {
         const laps = driverLapsMap.get(driver.code) || [];
@@ -97,29 +98,38 @@ export function renderBump(data) {
         finalRanks[item.code] = index + 1;
     });
 
+    const driverStatuses = {};
+    data.drivers.forEach(driver => {
+        const laps = driverLapsMap.get(driver.code) || [];
+        const lapsCompleted = laps.length;
+        if (lapsCompleted === 0) {
+            driverStatuses[driver.code] = { isDns: true, isDnf: false };
+        } else {
+            const lastLapRecord = laps[lapsCompleted - 1];
+            // Lapped drivers finished close to winner; DNF drivers stopped far earlier (>180s)
+            const isDnf = (maxLap - lastLapRecord.lap > 0) && (maxSessionTime - lastLapRecord.session_time > 180);
+            driverStatuses[driver.code] = { isDns: false, isDnf: isDnf };
+        }
+    });
+
     // 2. Preprocess driver laps to include DNS lines and DNF drop-offs
     const driverLapsProcessed = new Map();
     data.drivers.forEach(driver => {
         const realLaps = driverLapsMap.get(driver.code) || [];
         const realLapsCount = realLaps.length;
         const finalRank = finalRanks[driver.code];
+        const status = driverStatuses[driver.code];
         
         let processed = [];
-        if (realLapsCount === 0) {
-            // DNS: Create a flat line from lap 1 to lap 2 at their classification rank
+        if (status.isDns) {
+            // DNS: Create a single point on lap 1 at their classification rank
             processed.push({
                 driver: driver.code,
                 lap: 1,
                 position: finalRank,
                 isDns: true
             });
-            processed.push({
-                driver: driver.code,
-                lap: Math.min(2, maxLap),
-                position: finalRank,
-                isDns: true
-            });
-        } else if (realLapsCount < maxLap) {
+        } else if (status.isDnf) {
             // DNF: Real running positions up to retirement lap - 1, and drop to finalRank on their last lap
             processed = realLaps.map((lapRecord, index) => {
                 if (index === realLapsCount - 1) {
@@ -131,18 +141,8 @@ export function renderBump(data) {
                 }
                 return lapRecord;
             });
-            // Show one extra lap flat so the line ends on a flat curve
-            const extraLap = Math.min(realLapsCount + 1, maxLap);
-            if (extraLap > realLapsCount) {
-                processed.push({
-                    driver: driver.code,
-                    lap: extraLap,
-                    position: finalRank,
-                    isDnf: true
-                });
-            }
         } else {
-            // Finisher: Use real laps unchanged
+            // Finisher (including lapped finishers): Use real laps completely unchanged
             processed = realLaps;
         }
         
