@@ -126,8 +126,7 @@ export function renderCornerSpeed(data) {
             .style('font-weight', '700')
             .style('font-size', '12px');
 
-        const radius = 14;
-        const logoSize = 20;
+        const radius = 5;
 
         // Strictly lock the Y-coordinate before simulation so they never bleed vertically
         catData.corners.forEach(d => {
@@ -138,7 +137,7 @@ export function renderCornerSpeed(data) {
         // Force Simulation to prevent logos overlapping
         const simulation = d3.forceSimulation(catData.corners)
             .force('x', d3.forceX(d => xScale(d.speed)).strength(1))
-            .force('collide', d3.forceCollide(radius + 2))
+            .force('collide', d3.forceCollide(radius + 1))
             .stop();
 
         for (let i = 0; i < 120; ++i) simulation.tick();
@@ -172,35 +171,21 @@ export function renderCornerSpeed(data) {
                 
                 d3.select(event.currentTarget).select('circle')
                     .attr('stroke', '#ffffff')
-                    .attr('stroke-width', 2);
+                    .attr('stroke-width', 1.5)
+                    .attr('r', radius + 1.5);
             })
             .on('mouseout', (event, d) => {
                 tooltip.classed('hidden', true);
                 d3.select(event.currentTarget).select('circle')
-                    .attr('stroke', 'var(--border-color)')
-                    .attr('stroke-width', 1);
+                    .attr('stroke', 'var(--bg-dark)')
+                    .attr('stroke-width', 1)
+                    .attr('r', radius);
             });
 
         nodes.append('circle')
             .attr('r', radius)
-            .attr('fill', '#ffffff')
-            .attr('stroke', 'var(--border-color)')
+            .attr('fill', d => d.color || 'var(--accent)')
+            .attr('stroke', 'var(--bg-dark)')
             .attr('stroke-width', 1);
-
-        nodes.append('image')
-            .attr('xlink:href', d => TEAM_LOGOS[d.team] || '')
-            .attr('x', -logoSize / 2)
-            .attr('y', -logoSize / 2)
-            .attr('width', logoSize)
-            .attr('height', logoSize)
-            .on('error', function() {
-                d3.select(this).style('display', 'none');
-                d3.select(this.parentNode)
-                    .append('circle')
-                    .attr('cx', 0)
-                    .attr('cy', 0)
-                    .attr('r', 6)
-                    .attr('fill', d => d.color || 'var(--accent)');
-            });
     });
 }
