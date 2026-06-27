@@ -2,7 +2,7 @@ import { renderBeeswarm } from './beeswarm.js';
 import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
 
-const APP_VERSION = 'v1.16.3';
+const APP_VERSION = 'v1.16.4';
 let currentData = null;
 
 async function init() {
@@ -10,20 +10,47 @@ async function init() {
         const response = await fetch(`assets/data/races_manifest.json?v=${APP_VERSION}`);
         const manifest = await response.json();
         
-        const selector = document.getElementById('race-selector');
-        manifest.races.forEach(race => {
-            const option = document.createElement('option');
-            option.value = race.file;
-            option.textContent = `${race.year} ${race.name}`;
-            selector.appendChild(option);
+        const dropdownMenu = document.getElementById('dropdown-options');
+        const dropdownTrigger = document.getElementById('dropdown-btn');
+        const customDropdown = document.getElementById('gp-dropdown');
+
+        manifest.races.forEach((race, index) => {
+            const item = document.createElement('div');
+            item.className = 'dropdown-item';
+            item.dataset.value = race.file;
+            item.textContent = `${race.year} ${race.name}`;
+            
+            item.addEventListener('click', () => {
+                dropdownMenu.querySelectorAll('.dropdown-item').forEach(el => el.classList.remove('selected'));
+                item.classList.add('selected');
+                dropdownTrigger.textContent = `${race.year} ${race.name}`;
+                customDropdown.classList.remove('active');
+                loadRace(race.file);
+            });
+            
+            dropdownMenu.appendChild(item);
         });
 
-        selector.addEventListener('change', (e) => loadRace(e.target.value));
+        dropdownTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            customDropdown.classList.toggle('active');
+        });
+
+        document.addEventListener('click', () => {
+            customDropdown.classList.remove('active');
+        });
 
         if (manifest.races.length > 0) {
             const latestRaceIndex = manifest.races.length - 1;
-            selector.selectedIndex = latestRaceIndex;
-            loadRace(manifest.races[latestRaceIndex].file);
+            const latestRace = manifest.races[latestRaceIndex];
+            
+            dropdownTrigger.textContent = `${latestRace.year} ${latestRace.name}`;
+            const items = dropdownMenu.querySelectorAll('.dropdown-item');
+            if (items[latestRaceIndex]) {
+                items[latestRaceIndex].classList.add('selected');
+            }
+            
+            loadRace(latestRace.file);
         }
     } catch (e) {
         console.error("Failed to load manifest", e);

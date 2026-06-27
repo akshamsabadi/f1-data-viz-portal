@@ -11,10 +11,13 @@
 </head>
 <body>
     <header class="navbar">
-        <div class="logo">F1 Data Viz Portal <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 0.5rem; font-weight: normal;">v1.16.3</span></div>
+        <div class="logo">F1 Data Viz Portal <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 0.5rem; font-weight: normal;">v1.16.4</span></div>
         <div class="controls">
-            <label for="race-selector">Select Race:</label>
-            <select id="race-selector"></select>
+            <label>Select Race:</label>
+            <div class="custom-dropdown" id="gp-dropdown">
+                <button class="dropdown-trigger" id="dropdown-btn">Select Race</button>
+                <div class="dropdown-menu" id="dropdown-options"></div>
+            </div>
         </div>
     </header>
 
