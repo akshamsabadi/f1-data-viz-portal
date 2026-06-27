@@ -106,10 +106,16 @@ export function renderBump(data) {
         
         let processed = [];
         if (realLapsCount === 0) {
-            // DNS: Create a single point on lap 1 at their classification rank
+            // DNS: Create a flat line from lap 1 to lap 2 at their classification rank
             processed.push({
                 driver: driver.code,
                 lap: 1,
+                position: finalRank,
+                isDns: true
+            });
+            processed.push({
+                driver: driver.code,
+                lap: Math.min(2, maxLap),
                 position: finalRank,
                 isDns: true
             });
@@ -125,6 +131,16 @@ export function renderBump(data) {
                 }
                 return lapRecord;
             });
+            // Show one extra lap flat so the line ends on a flat curve
+            const extraLap = Math.min(realLapsCount + 1, maxLap);
+            if (extraLap > realLapsCount) {
+                processed.push({
+                    driver: driver.code,
+                    lap: extraLap,
+                    position: finalRank,
+                    isDnf: true
+                });
+            }
         } else {
             // Finisher: Use real laps unchanged
             processed = realLaps;
