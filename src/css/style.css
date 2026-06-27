@@ -53,14 +53,28 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .controls select {
-    background-color: var(--bg-dark);
+    background-color: var(--bg-card);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
-    padding: 0.5rem;
-    border-radius: 0;
+    padding: 0.5rem 2rem 0.5rem 1rem;
+    border-radius: 4px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     text-transform: uppercase;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.controls select:hover, .controls select:focus {
+    border-color: var(--accent);
+    outline: none;
 }
 
 .dashboard {
