@@ -5,6 +5,123 @@ import os
 import dateutil.parser
 import time
 
+def process_laps_data(laps_data, drivers_dict, stints_data):
+    # Helper to find compound
+    def get_stint_info(driver_num, lap_num):
+        for s in stints_data:
+            if s['driver_number'] == driver_num:
+                start = s.get('lap_start', 0)
+                end = s.get('lap_end', 1000)
+                if start <= lap_num <= end:
+                    age_at_start = s.get('tyre_age_at_start', 0)
+                    tyre_life = (lap_num - start) + age_at_start + 1
+                    compound = s.get('compound', 'UNKNOWN')
+                    if compound is None: compound = 'UNKNOWN'
+                    return compound, tyre_life
+        return "UNKNOWN", 1
+
+    # Group raw laps by driver to identify and interpolate gaps
+    from collections import defaultdict
+    driver_raw_laps = defaultdict(list)
+    for l in laps_data:
+        driver_raw_laps[l['driver_number']].append(l)
+        
+    formatted_laps = []
+    
+    # Calculate global driver averages for fallback
+    driver_averages = {}
+    for d_num, laps in driver_raw_laps.items():
+        valid_times = [l.get('lap_duration') for l in laps if l.get('lap_duration') is not None]
+        if valid_times:
+            driver_averages[d_num] = sum(valid_times) / len(valid_times)
+        else:
+            driver_averages[d_num] = 90.0 # general fallback
+            
+    # Calculate average per lap number across all drivers
+    lap_averages = defaultdict(list)
+    for l in laps_data:
+        if l.get('lap_duration') is not None:
+            lap_averages[l['lap_number']].append(l['lap_duration'])
+            
+    lap_average_times = {}
+    for lap_num, times in lap_averages.items():
+        lap_average_times[lap_num] = sum(times) / len(times)
+
+    for driver_num, raw_laps in driver_raw_laps.items():
+        if not raw_laps:
+            continue
+            
+        raw_laps.sort(key=lambda x: x['lap_number'])
+        max_driver_lap = raw_laps[-1]['lap_number']
+        
+        # Dictionary of valid lap times for quick lookup
+        valid_laps = {l['lap_number']: l['lap_duration'] for l in raw_laps if l.get('lap_duration') is not None}
+        valid_lap_nums = sorted(valid_laps.keys())
+        
+        cumulative_time = 0.0
+        driver_info = drivers_dict.get(driver_num)
+        if not driver_info:
+            continue
+            
+        for lap_num in range(1, max_driver_lap + 1):
+            compound, tyre_life = get_stint_info(driver_num, lap_num)
+            
+            is_interpolated = False
+            if lap_num in valid_laps:
+                lap_time = valid_laps[lap_num]
+            else:
+                is_interpolated = True
+                # Find preceding and succeeding valid laps
+                preceding = [n for n in valid_lap_nums if n < lap_num]
+                succeeding = [n for n in valid_lap_nums if n > lap_num]
+                
+                if preceding and succeeding:
+                    # Linear Interpolation
+                    p = preceding[-1]
+                    s = succeeding[0]
+                    t_p = valid_laps[p]
+                    t_s = valid_laps[s]
+                    lap_time = t_p + (t_s - t_p) * (lap_num - p) / (s - p)
+                elif preceding:
+                    # Forward-extrapolate (use last valid lap time)
+                    lap_time = valid_laps[preceding[-1]]
+                elif succeeding:
+                    # Backward-extrapolate (use first valid lap time)
+                    lap_time = valid_laps[succeeding[0]]
+                else:
+                    # Fallback to lap average or driver average
+                    lap_time = lap_average_times.get(lap_num, driver_averages.get(driver_num, 90.0))
+            
+            cumulative_time += lap_time
+            
+            formatted_laps.append({
+                "driver_num": driver_num,
+                "driver": driver_info['code'],
+                "lap": lap_num,
+                "time": round(lap_time, 3),
+                "compound": compound,
+                "tyre_life": tyre_life,
+                "session_time": round(cumulative_time, 3),
+                "interpolated": is_interpolated
+            })
+        
+    # Group by lap to determine position
+    max_lap = max([l['lap'] for l in formatted_laps]) if formatted_laps else 0
+    
+    final_laps = []
+    
+    for current_lap in range(1, max_lap + 1):
+        lap_group = [l for l in formatted_laps if l['lap'] == current_lap]
+        lap_group.sort(key=lambda x: x['session_time'])
+        
+        for pos, l in enumerate(lap_group, 1):
+            l['position'] = pos
+            # Remove driver_num
+            del l['driver_num']
+            final_laps.append(l)
+
+    return final_laps, max_lap
+
 def fetch_openf1_data(year, gp_name, out_path):
     print(f"Fetching OpenF1 data for {year} {gp_name}...")
     
@@ -74,69 +191,7 @@ def fetch_openf1_data(year, gp_name, out_path):
         print(f"API Error for stints: {stints_data}")
         stints_data = []
     
-    # Helper to find compound
-    def get_stint_info(driver_num, lap_num):
-        for s in stints_data:
-            if s['driver_number'] == driver_num:
-                start = s.get('lap_start', 0)
-                end = s.get('lap_end', 1000)
-                if start <= lap_num <= end:
-                    age_at_start = s.get('tyre_age_at_start', 0)
-                    tyre_life = (lap_num - start) + age_at_start + 1
-                    compound = s.get('compound', 'UNKNOWN')
-                    if compound is None: compound = 'UNKNOWN'
-                    return compound, tyre_life
-        return "UNKNOWN", 1
-
-    # We need to calculate session_time and position
-    # Let's track cumulative time per driver
-    driver_cumulative = {d: 0.0 for d in drivers_dict.keys()}
-    
-    # First, sort laps by driver and then by lap_number
-    laps_data.sort(key=lambda x: (x['driver_number'], x['lap_number']))
-    
-    formatted_laps = []
-    
-    for l in laps_data:
-        driver_num = l['driver_number']
-        lap_num = l['lap_number']
-        lap_time = l.get('lap_duration')
-        
-        if lap_time is None:
-            continue
-            
-        driver_cumulative[driver_num] += lap_time
-        
-        compound, tyre_life = get_stint_info(driver_num, lap_num)
-        
-        driver_info = drivers_dict.get(driver_num)
-        if not driver_info:
-            continue
-            
-        formatted_laps.append({
-            "driver_num": driver_num, # temp
-            "driver": driver_info['code'],
-            "lap": lap_num,
-            "time": round(lap_time, 3),
-            "compound": compound,
-            "tyre_life": tyre_life,
-            "session_time": round(driver_cumulative[driver_num], 3)
-        })
-        
-    # Group by lap to determine position
-    max_lap = max([l['lap'] for l in formatted_laps]) if formatted_laps else 0
-    
-    final_laps = []
-    
-    for current_lap in range(1, max_lap + 1):
-        lap_group = [l for l in formatted_laps if l['lap'] == current_lap]
-        lap_group.sort(key=lambda x: x['session_time'])
-        
-        for pos, l in enumerate(lap_group, 1):
-            l['position'] = pos
-            # Remove driver_num
-            del l['driver_num']
-            final_laps.append(l)
+    final_laps, max_lap = process_laps_data(laps_data, drivers_dict, stints_data)
 
     # Determine winner
     winner = None
