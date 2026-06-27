@@ -71,14 +71,76 @@ export function renderBump(data) {
         .y(d => yScale(d.position))
         .curve(d3.curveMonotoneX);
 
-    const driverLaps = d3.group(validLaps, d => d.driver);
+    // 1. Calculate authentic final classification positions for all drivers (including DNS)
+    const driverLapsMap = d3.group(validLaps, d => d.driver);
+    const classificationList = data.drivers.map(driver => {
+        const laps = driverLapsMap.get(driver.code) || [];
+        const lapsCompleted = laps.length;
+        const lastLapTime = lapsCompleted > 0 ? laps[lapsCompleted - 1].session_time : Infinity;
+        return {
+            code: driver.code,
+            lapsCompleted,
+            lastLapTime
+        };
+    });
+
+    // Sort: completed more laps first, then faster last lap time, then DNS at the bottom
+    classificationList.sort((a, b) => {
+        if (b.lapsCompleted !== a.lapsCompleted) {
+            return b.lapsCompleted - a.lapsCompleted;
+        }
+        return a.lastLapTime - b.lastLapTime;
+    });
+
+    const finalRanks = {};
+    classificationList.forEach((item, index) => {
+        finalRanks[item.code] = index + 1;
+    });
+
+    // 2. Preprocess driver laps to include DNS lines and DNF drop-offs
+    const driverLapsProcessed = new Map();
+    data.drivers.forEach(driver => {
+        const realLaps = driverLapsMap.get(driver.code) || [];
+        const realLapsCount = realLaps.length;
+        const finalRank = finalRanks[driver.code];
+        
+        let processed = [];
+        if (realLapsCount === 0) {
+            // DNS: Create a flat synthetic line at their classification rank
+            for (let l = 1; l <= maxLap; l++) {
+                processed.push({
+                    driver: driver.code,
+                    lap: l,
+                    position: finalRank,
+                    isDns: true
+                });
+            }
+        } else if (realLapsCount < maxLap) {
+            // DNF: Keep real laps up to retirement, then drop to final classification rank
+            processed = [...realLaps];
+            for (let l = realLapsCount + 1; l <= maxLap; l++) {
+                processed.push({
+                    driver: driver.code,
+                    lap: l,
+                    position: finalRank,
+                    isDnf: true
+                });
+            }
+        } else {
+            // Finisher: Use real laps unchanged
+            processed = realLaps;
+        }
+        
+        driverLapsProcessed.set(driver.code, processed);
+    });
+
     const driverColors = Object.fromEntries(data.drivers.map(d => [d.code, d.color]));
 
     const linesGroup = svg.append('g').attr('class', 'lines-group');
 
     // Draw lines
     const paths = linesGroup.selectAll('.bump-line')
-        .data(driverLaps)
+        .data(driverLapsProcessed)
         .enter()
         .append('path')
         .attr('class', 'bump-line')
@@ -87,20 +149,26 @@ export function renderBump(data) {
         .attr('stroke-width', 2)
         .attr('opacity', d => {
             const laps = d[1];
-            const isDnf = laps[laps.length - 1].lap < maxLap;
-            return isDnf ? 0.35 : 1;
+            const isDns = laps[0].isDns;
+            const isDnf = laps[laps.length - 1].isDnf;
+            if (isDns) return 0.15;
+            if (isDnf) return 0.4;
+            return 1;
         })
         .attr('stroke-dasharray', d => {
             const laps = d[1];
-            const isDnf = laps[laps.length - 1].lap < maxLap;
-            return isDnf ? '3,3' : 'none';
+            const isDns = laps[0].isDns;
+            const isDnf = laps[laps.length - 1].isDnf;
+            if (isDns) return '1,4';
+            if (isDnf) return '3,3';
+            return 'none';
         })
         .attr('d', d => line(d[1]));
 
-    // Start Nodes
+    // Start Nodes (Only for drivers who actually started)
     const startNodesGroup = svg.append('g').attr('class', 'start-nodes');
     const startNodes = startNodesGroup.selectAll('.start-node')
-        .data(driverLaps)
+        .data(Array.from(driverLapsProcessed).filter(d => !d[1][0].isDns))
         .enter()
         .append('circle')
         .attr('class', 'start-node')
@@ -114,7 +182,7 @@ export function renderBump(data) {
     // End Nodes
     const endNodesGroup = svg.append('g').attr('class', 'end-nodes');
     const endNodes = endNodesGroup.selectAll('.end-node')
-        .data(driverLaps)
+        .data(driverLapsProcessed)
         .enter()
         .append('circle')
         .attr('class', 'end-node')
@@ -122,23 +190,28 @@ export function renderBump(data) {
         .attr('cy', d => yScale(d[1][d[1].length - 1].position))
         .attr('r', d => {
             const laps = d[1];
-            const isDnf = laps[laps.length - 1].lap < maxLap;
-            return isDnf ? 3 : 4;
+            const isDns = laps[0].isDns;
+            const isDnf = laps[laps.length - 1].isDnf;
+            return (isDns || isDnf) ? 3 : 4;
         })
         .attr('fill', d => {
             const laps = d[1];
-            const isDnf = laps[laps.length - 1].lap < maxLap;
-            return isDnf ? '#ef4444' : (driverColors[d[0]] || '#ccc');
+            const isDns = laps[0].isDns;
+            const isDnf = laps[laps.length - 1].isDnf;
+            if (isDns) return '#8b8b99';
+            if (isDnf) return '#ef4444';
+            return driverColors[d[0]] || '#ccc';
         })
         .attr('stroke', d => {
             const laps = d[1];
-            const isDnf = laps[laps.length - 1].lap < maxLap;
-            return isDnf ? '#ffffff' : 'var(--bg-dark)';
+            const isDns = laps[0].isDns;
+            const isDnf = laps[laps.length - 1].isDnf;
+            return (isDns || isDnf) ? '#ffffff' : 'var(--bg-dark)';
         })
         .attr('stroke-width', 1);
 
     const endLabels = endNodesGroup.selectAll('.end-label')
-        .data(driverLaps)
+        .data(driverLapsProcessed)
         .enter()
         .append('text')
         .attr('class', 'end-label')
@@ -147,16 +220,22 @@ export function renderBump(data) {
         .attr('dy', '0.35em')
         .attr('fill', d => {
             const laps = d[1];
-            const isDnf = laps[laps.length - 1].lap < maxLap;
-            return isDnf ? '#ef4444' : (driverColors[d[0]] || '#ccc');
+            const isDns = laps[0].isDns;
+            const isDnf = laps[laps.length - 1].isDnf;
+            if (isDns) return '#8b8b99';
+            if (isDnf) return '#ef4444';
+            return driverColors[d[0]] || '#ccc';
         })
         .style('font-family', 'Titillium Web, sans-serif')
         .style('font-size', '11px')
         .style('font-weight', '700')
         .text(d => {
             const laps = d[1];
-            const isDnf = laps[laps.length - 1].lap < maxLap;
-            return isDnf ? `${d[0]} (DNF)` : d[0];
+            const isDns = laps[0].isDns;
+            const isDnf = laps[laps.length - 1].isDnf;
+            if (isDns) return `${d[0]} (DNS)`;
+            if (isDnf) return `${d[0]} (DNF)`;
+            return d[0];
         });
 
     // Focus state interaction
@@ -169,7 +248,14 @@ export function renderBump(data) {
     };
 
     const handleMouseOut = (event, d) => {
-        paths.attr('opacity', 1).attr('stroke-width', 2);
+        paths.attr('opacity', p => {
+            const laps = p[1];
+            const isDns = laps[0].isDns;
+            const isDnf = laps[laps.length - 1].isDnf;
+            if (isDns) return 0.15;
+            if (isDnf) return 0.4;
+            return 1;
+        }).attr('stroke-width', 2);
         startNodes.attr('opacity', 1);
         endNodes.attr('opacity', 1);
         endLabels.attr('opacity', 1);
