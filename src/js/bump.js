@@ -106,26 +106,25 @@ export function renderBump(data) {
         
         let processed = [];
         if (realLapsCount === 0) {
-            // DNS: Create a flat synthetic line at their classification rank
-            for (let l = 1; l <= maxLap; l++) {
-                processed.push({
-                    driver: driver.code,
-                    lap: l,
-                    position: finalRank,
-                    isDns: true
-                });
-            }
+            // DNS: Create a single point on lap 1 at their classification rank
+            processed.push({
+                driver: driver.code,
+                lap: 1,
+                position: finalRank,
+                isDns: true
+            });
         } else if (realLapsCount < maxLap) {
-            // DNF: Keep real laps up to retirement, then drop to final classification rank
-            processed = [...realLaps];
-            for (let l = realLapsCount + 1; l <= maxLap; l++) {
-                processed.push({
-                    driver: driver.code,
-                    lap: l,
-                    position: finalRank,
-                    isDnf: true
-                });
-            }
+            // DNF: Real running positions up to retirement lap - 1, and drop to finalRank on their last lap
+            processed = realLaps.map((lapRecord, index) => {
+                if (index === realLapsCount - 1) {
+                    return {
+                        ...lapRecord,
+                        position: finalRank,
+                        isDnf: true
+                    };
+                }
+                return lapRecord;
+            });
         } else {
             // Finisher: Use real laps unchanged
             processed = realLaps;
@@ -151,8 +150,8 @@ export function renderBump(data) {
             const laps = d[1];
             const isDns = laps[0].isDns;
             const isDnf = laps[laps.length - 1].isDnf;
-            if (isDns) return 0.15;
-            if (isDnf) return 0.4;
+            if (isDns) return 0.25;
+            if (isDnf) return 0.5;
             return 1;
         })
         .attr('stroke-dasharray', d => {
@@ -188,26 +187,9 @@ export function renderBump(data) {
         .attr('class', 'end-node')
         .attr('cx', d => xScale(d[1][d[1].length - 1].lap))
         .attr('cy', d => yScale(d[1][d[1].length - 1].position))
-        .attr('r', d => {
-            const laps = d[1];
-            const isDns = laps[0].isDns;
-            const isDnf = laps[laps.length - 1].isDnf;
-            return (isDns || isDnf) ? 3 : 4;
-        })
-        .attr('fill', d => {
-            const laps = d[1];
-            const isDns = laps[0].isDns;
-            const isDnf = laps[laps.length - 1].isDnf;
-            if (isDns) return '#8b8b99';
-            if (isDnf) return '#ef4444';
-            return driverColors[d[0]] || '#ccc';
-        })
-        .attr('stroke', d => {
-            const laps = d[1];
-            const isDns = laps[0].isDns;
-            const isDnf = laps[laps.length - 1].isDnf;
-            return (isDns || isDnf) ? '#ffffff' : 'var(--bg-dark)';
-        })
+        .attr('r', 4)
+        .attr('fill', d => driverColors[d[0]] || '#ccc')
+        .attr('stroke', 'var(--bg-dark)')
         .attr('stroke-width', 1);
 
     const endLabels = endNodesGroup.selectAll('.end-label')
@@ -218,14 +200,7 @@ export function renderBump(data) {
         .attr('x', d => xScale(d[1][d[1].length - 1].lap) + 8)
         .attr('y', d => yScale(d[1][d[1].length - 1].position))
         .attr('dy', '0.35em')
-        .attr('fill', d => {
-            const laps = d[1];
-            const isDns = laps[0].isDns;
-            const isDnf = laps[laps.length - 1].isDnf;
-            if (isDns) return '#8b8b99';
-            if (isDnf) return '#ef4444';
-            return driverColors[d[0]] || '#ccc';
-        })
+        .attr('fill', d => driverColors[d[0]] || '#ccc')
         .style('font-family', 'Titillium Web, sans-serif')
         .style('font-size', '11px')
         .style('font-weight', '700')
@@ -252,8 +227,8 @@ export function renderBump(data) {
             const laps = p[1];
             const isDns = laps[0].isDns;
             const isDnf = laps[laps.length - 1].isDnf;
-            if (isDns) return 0.15;
-            if (isDnf) return 0.4;
+            if (isDns) return 0.25;
+            if (isDnf) return 0.5;
             return 1;
         }).attr('stroke-width', 2);
         startNodes.attr('opacity', 1);
