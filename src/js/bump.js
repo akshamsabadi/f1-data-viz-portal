@@ -130,16 +130,15 @@ export function renderBump(data) {
                 isDns: true
             });
         } else if (status.isDnf) {
-            // DNF: Real running positions up to retirement lap - 1, and drop to finalRank on their last lap
-            processed = realLaps.map((lapRecord, index) => {
-                if (index === realLapsCount - 1) {
-                    return {
-                        ...lapRecord,
-                        position: finalRank,
-                        isDnf: true
-                    };
-                }
-                return lapRecord;
+            // DNF: Real running positions completely unchanged up to retirement lap (realLapsCount)
+            processed = [...realLaps];
+            // Append one extra synthetic lap showing them dropping to their final classification rank
+            const dropLap = Math.min(realLapsCount + 1, maxLap);
+            processed.push({
+                driver: driver.code,
+                lap: dropLap,
+                position: finalRank,
+                isDnf: true
             });
         } else {
             // Finisher (including lapped finishers): Use real laps completely unchanged
