@@ -299,3 +299,18 @@ circle.data-point:hover {
 .gridline path {
     stroke-width: 0;
 }
+
+/* Disclaimer Badge for Simulated Telemetry */
+.badge-estimate {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-left: 0.75rem;
+    letter-spacing: 0.75px;
+    vertical-align: middle;
+    border: 1px solid var(--border-color);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    display: inline-block;
+}

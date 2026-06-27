@@ -10,35 +10,14 @@ def calculate_corner_speeds(json_path):
         
     gp_name = data['race_info']['gp'].lower()
     
-    # Baseline track data (approximate corners and average apex speeds in km/h)
-    track_profiles = {
-        "bahrain": {"turns": 15, "base_speed": 150, "variation": 60},
-        "saudi": {"turns": 27, "base_speed": 190, "variation": 70},
-        "australian": {"turns": 14, "base_speed": 180, "variation": 60},
-        "japanese": {"turns": 18, "base_speed": 190, "variation": 80},
-        "chinese": {"turns": 16, "base_speed": 160, "variation": 70},
-        "miami": {"turns": 19, "base_speed": 150, "variation": 65},
-        "emilia": {"turns": 19, "base_speed": 170, "variation": 60},
-        "imola": {"turns": 19, "base_speed": 170, "variation": 60},
-        "monaco": {"turns": 19, "base_speed": 100, "variation": 40},
-        "canadian": {"turns": 14, "base_speed": 140, "variation": 50},
-        "spanish": {"turns": 14, "base_speed": 160, "variation": 60},
-        "austrian": {"turns": 10, "base_speed": 180, "variation": 50},
-        "british": {"turns": 18, "base_speed": 190, "variation": 70},
-        "hungarian": {"turns": 14, "base_speed": 130, "variation": 50},
-        "belgian": {"turns": 19, "base_speed": 190, "variation": 80},
-        "dutch": {"turns": 14, "base_speed": 150, "variation": 60},
-        "italian": {"turns": 11, "base_speed": 210, "variation": 60},
-        "azerbaijan": {"turns": 20, "base_speed": 150, "variation": 70},
-        "singapore": {"turns": 19, "base_speed": 120, "variation": 50},
-        "united states": {"turns": 20, "base_speed": 160, "variation": 60},
-        "mexico": {"turns": 17, "base_speed": 140, "variation": 50},
-        "são paulo": {"turns": 15, "base_speed": 160, "variation": 50},
-        "brazilian": {"turns": 15, "base_speed": 160, "variation": 50},
-        "las vegas": {"turns": 17, "base_speed": 180, "variation": 60},
-        "qatar": {"turns": 16, "base_speed": 180, "variation": 70},
-        "abu dhabi": {"turns": 16, "base_speed": 150, "variation": 60},
-    }
+    # Load track profiles from configuration file
+    profiles_path = os.path.join(os.path.dirname(__file__), "track_profiles.json")
+    try:
+        with open(profiles_path, 'r') as pf:
+            track_profiles = json.load(pf)
+    except Exception as e:
+        print(f"Warning: Failed to load track_profiles.json ({e}). Using empty profile database.")
+        track_profiles = {}
     
     # Find matching profile or use default
     profile = {"turns": 15, "base_speed": 160, "variation": 60}
