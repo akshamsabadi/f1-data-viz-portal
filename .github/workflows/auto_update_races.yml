@@ -1,0 +1,49 @@
+name: Automated Race Data Update
+
+on:
+  schedule:
+    # Run every Monday morning at 08:00 UTC (after GP weekend)
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+    # Allow manual execution via GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  update-race-data:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r data-pipeline/requirements.txt
+
+    - name: Run Auto-Update Script
+      run: |
+        python data-pipeline/auto_update_calendar.py
+
+    - name: Commit and Push Changes
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # Check if there are changes in src/assets/data/
+        if [ -n "$(git status --porcelain src/assets/data/)" ]; then
+          echo "New race data found! Committing..."
+          git add src/assets/data/
+          git commit -m "Auto-update calendar: Register newly completed Grand Prix sessions"
+          git push origin main
+        else
+          echo "No new race data detected. Repository is fully up to date."
+        fi
