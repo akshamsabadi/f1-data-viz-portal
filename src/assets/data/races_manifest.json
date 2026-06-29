@@ -35,6 +35,24 @@
       "id": "monaco",
       "name": "Monaco Grand Prix",
       "file": "races/2026/monaco.json"
+    },
+    {
+      "year": 2026,
+      "id": "united_states",
+      "name": "United States Grand Prix",
+      "file": "races/2026/united_states.json"
+    },
+    {
+      "year": 2026,
+      "id": "spain",
+      "name": "Barcelona-Catalunya Grand Prix",
+      "file": "races/2026/spain.json"
+    },
+    {
+      "year": 2026,
+      "id": "austria",
+      "name": "Austria Grand Prix",
+      "file": "races/2026/austria.json"
     }
   ]
 }
