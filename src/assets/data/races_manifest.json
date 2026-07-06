@@ -53,6 +53,12 @@
       "id": "austria",
       "name": "Austria Grand Prix",
       "file": "races/2026/austria.json"
+    },
+    {
+      "year": 2026,
+      "id": "united_kingdom",
+      "name": "United Kingdom Grand Prix",
+      "file": "races/2026/united_kingdom.json"
     }
   ]
 }
