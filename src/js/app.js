@@ -1,8 +1,9 @@
 import { renderBeeswarm } from './beeswarm.js';
 import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
+import { renderStandings } from './standings.js';
 
-const APP_VERSION = 'v1.16.22';
+const APP_VERSION = 'v1.16.23';
 
 const OFFICIAL_COLORS = {
     "Ferrari": "#e50004",
@@ -134,10 +135,11 @@ async function loadRace(dataFile) {
         currentData = rawData;
         updateDashboardHeader(currentData);
         
-        // Render visualizations
+        // Render visualizations and sidebar standings
         renderBeeswarm(currentData);
         renderCornerSpeed(currentData);
         renderBump(currentData);
+        renderStandings(currentData);
         
         const dashboard = document.querySelector('.dashboard');
         if (dashboard) {

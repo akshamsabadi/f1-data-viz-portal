@@ -25,7 +25,7 @@
         <div class="logo-container">
             <span class="f1-badge">F1</span>
             <span class="logo-text">DATA VIZ PORTAL</span>
-            <span class="app-version-badge">v1.16.22</span>
+            <span class="app-version-badge">v1.16.23</span>
         </div>
         <div class="controls">
             <label>// SELECT SESSION</label>
@@ -47,29 +47,42 @@
             <p id="race-stats"></p>
         </div>
 
-        <section class="viz-container" id="beeswarm-container">
-            <div class="viz-header-controls">
-                <h2>Lap-Time Beeswarm</h2>
-                <div class="viz-controls">
-                    <label class="toggle-label">
-                        <input type="checkbox" id="outlier-toggle">
-                        Show Outliers (e.g. Pit stops, VSC)
-                    </label>
-                    <div id="beeswarm-legend" class="legend-container"></div>
-                </div>
-            </div>
-            <div id="beeswarm-plot" class="chart"></div>
-        </section>
+        <div class="dashboard-grid">
+            <!-- Left Column: Main Telemetry Visualizations -->
+            <div class="main-column">
+                <section class="viz-container" id="beeswarm-container">
+                    <div class="viz-header-controls">
+                        <h2>Lap-Time Beeswarm</h2>
+                        <div class="viz-controls">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="outlier-toggle">
+                                Show Outliers (e.g. Pit stops, VSC)
+                            </label>
+                            <div id="beeswarm-legend" class="legend-container"></div>
+                        </div>
+                    </div>
+                    <div id="beeswarm-plot" class="chart"></div>
+                </section>
 
-        <section class="viz-container" id="corner-speed-container">
-            <h2>Average Corner Speeds <span class="badge-estimate">Model Estimate</span></h2>
-            <div id="corner-speed-chart" class="chart speed-subplots"></div>
-        </section>
-        
-        <section class="viz-container" id="bump-container">
-            <h2>Position Bump Chart</h2>
-            <div id="bump-chart" class="chart"></div>
-        </section>
+                <section class="viz-container" id="corner-speed-container">
+                    <h2>Average Corner Speeds <span class="badge-estimate">Model Estimate</span></h2>
+                    <div id="corner-speed-chart" class="chart speed-subplots"></div>
+                </section>
+                
+                <section class="viz-container" id="bump-container">
+                    <h2>Position Bump Chart</h2>
+                    <div id="bump-chart" class="chart"></div>
+                </section>
+            </div>
+
+            <!-- Right Column: Session Standings Sidebar -->
+            <div class="sidebar-column">
+                <section class="viz-container" id="standings-container">
+                    <h2>Session Classification</h2>
+                    <div id="standings-list" class="standings-list"></div>
+                </section>
+            </div>
+        </div>
     </main>
 
     <div id="tooltip" class="tooltip hidden"></div>

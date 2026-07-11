@@ -587,3 +587,121 @@ circle.data-point:hover {
     0%, 100% { opacity: 0.5; }
     50% { opacity: 1; }
 }
+
+/* Two-Column Grid and Standings Sidebar Widget */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+@media (min-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 74% 26%;
+    }
+}
+
+.main-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-column {
+    position: sticky;
+    top: 100px;
+    z-index: 100;
+}
+
+#standings-container h2 {
+    font-size: 1.125rem;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.standings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.standings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0.75rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    transition: transform 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+    font-family: 'Titillium Web', sans-serif;
+    cursor: pointer;
+}
+
+.standings-row:hover {
+    transform: translateX(4px);
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.standings-row-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.standings-pos {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--accent);
+    width: 24px;
+    text-align: center;
+}
+
+.standings-color-bar {
+    width: 4px;
+    height: 20px;
+    border-radius: 2px;
+}
+
+.standings-driver-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+
+.standings-code-team {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+.standings-team-name {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.standings-row-right {
+    text-align: right;
+}
+
+.standings-gap {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+}
+
+.standings-laps-dnf {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+}
