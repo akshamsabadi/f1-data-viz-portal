@@ -2,54 +2,32 @@ import { renderBeeswarm } from './beeswarm.js';
 import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
 
-const APP_VERSION = 'v1.16.9';
+const APP_VERSION = 'v1.16.10';
 let currentData = null;
 
 async function init() {
     try {
-        const response = await fetch(`assets/data/races_manifest.json?v=${APP_VERSION}`);
+        const response = await fetch(`src/assets/data/races_manifest.json?v=${APP_VERSION}`);
         const manifest = await response.json();
         
-        const dropdownMenu = document.getElementById('dropdown-options');
-        const dropdownTrigger = document.getElementById('dropdown-btn');
-        const customDropdown = document.getElementById('gp-dropdown');
+        const raceSelector = document.getElementById('race-selector');
 
-        manifest.races.forEach((race, index) => {
-            const item = document.createElement('div');
-            item.className = 'dropdown-item';
-            item.dataset.value = race.file;
-            item.textContent = `${race.year} ${race.name}`;
-            
-            item.addEventListener('click', () => {
-                dropdownMenu.querySelectorAll('.dropdown-item').forEach(el => el.classList.remove('selected'));
-                item.classList.add('selected');
-                dropdownTrigger.textContent = `${race.year} ${race.name}`;
-                customDropdown.classList.remove('active');
-                loadRace(race.file);
-            });
-            
-            dropdownMenu.appendChild(item);
+        manifest.races.forEach((race) => {
+            const option = document.createElement('option');
+            option.value = race.file;
+            option.textContent = `${race.year} ${race.name}`;
+            raceSelector.appendChild(option);
         });
 
-        dropdownTrigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            customDropdown.classList.toggle('active');
-        });
-
-        document.addEventListener('click', () => {
-            customDropdown.classList.remove('active');
+        raceSelector.addEventListener('change', (e) => {
+            loadRace(e.target.value);
         });
 
         if (manifest.races.length > 0) {
             const latestRaceIndex = manifest.races.length - 1;
             const latestRace = manifest.races[latestRaceIndex];
             
-            dropdownTrigger.textContent = `${latestRace.year} ${latestRace.name}`;
-            const items = dropdownMenu.querySelectorAll('.dropdown-item');
-            if (items[latestRaceIndex]) {
-                items[latestRaceIndex].classList.add('selected');
-            }
-            
+            raceSelector.value = latestRace.file;
             loadRace(latestRace.file);
         }
     } catch (e) {
@@ -61,7 +39,7 @@ async function init() {
 async function loadRace(dataFile) {
     document.getElementById('race-title').textContent = "Loading...";
     try {
-        const response = await fetch(`assets/data/${dataFile}?v=${APP_VERSION}`);
+        const response = await fetch(`src/assets/data/${dataFile}?v=${APP_VERSION}`);
         currentData = await response.json();
         
         updateDashboardHeader(currentData);
