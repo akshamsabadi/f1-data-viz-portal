@@ -2,7 +2,22 @@ import { renderBeeswarm } from './beeswarm.js';
 import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
 
-const APP_VERSION = 'v1.16.10';
+const APP_VERSION = 'v1.16.11';
+
+const OFFICIAL_COLORS = {
+    "Ferrari": "#e50004",
+    "McLaren": "#fe7b00",
+    "Mercedes": "#01e6c2",
+    "Red Bull Racing": "#14127f",
+    "Racing Bulls": "#4c68fe",
+    "Alpine": "#fe7fcf",
+    "Audi": "#ff3a28",
+    "Haas F1 Team": "#fcffff",
+    "Williams": "#0143ff",
+    "Cadillac": "#272828",
+    "Aston Martin": "#03604d"
+};
+
 let currentData = null;
 
 async function init() {
@@ -40,8 +55,25 @@ async function loadRace(dataFile) {
     document.getElementById('race-title').textContent = "Loading...";
     try {
         const response = await fetch(`src/assets/data/${dataFile}?v=${APP_VERSION}`);
-        currentData = await response.json();
+        const rawData = await response.json();
         
+        // Override team colors with new official hex colors
+        if (rawData.drivers) {
+            rawData.drivers.forEach(d => {
+                if (OFFICIAL_COLORS[d.team]) {
+                    d.color = OFFICIAL_COLORS[d.team];
+                }
+            });
+        }
+        if (rawData.corners) {
+            rawData.corners.forEach(c => {
+                if (OFFICIAL_COLORS[c.team]) {
+                    c.color = OFFICIAL_COLORS[c.team];
+                }
+            });
+        }
+        
+        currentData = rawData;
         updateDashboardHeader(currentData);
         
         // Render visualizations
