@@ -10,8 +10,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Titillium+Web:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="loader-overlay" class="loader-overlay">
+        <div class="f1-loader">
+            <div class="tire-tread"></div>
+            <div class="track-orbit">
+                <div class="f1-car-dot"></div>
+            </div>
+            <div class="loader-text">Loading Telemetry</div>
+        </div>
+    </div>
+
     <header class="navbar">
-        <div class="logo">F1 Data Viz Portal <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 0.5rem; font-weight: normal;">v1.16.17</span></div>
+        <div class="logo">F1 Data Viz Portal <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 0.5rem; font-weight: normal;">v1.16.18</span></div>
         <div class="controls">
             <label for="race-selector">Select Race:</label>
             <select id="race-selector"></select>

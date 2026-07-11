@@ -2,7 +2,7 @@ import { renderBeeswarm } from './beeswarm.js';
 import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
 
-const APP_VERSION = 'v1.16.17';
+const APP_VERSION = 'v1.16.18';
 
 const OFFICIAL_COLORS = {
     "Ferrari": "#e50004",
@@ -48,10 +48,15 @@ async function init() {
     } catch (e) {
         console.error("Failed to load manifest", e);
         document.getElementById('race-title').textContent = "Error loading data";
+        const loader = document.getElementById('loader-overlay');
+        if (loader) loader.classList.add('hidden');
     }
 }
 
 async function loadRace(dataFile) {
+    const loader = document.getElementById('loader-overlay');
+    if (loader) loader.classList.remove('hidden');
+
     document.getElementById('race-title').textContent = "Loading...";
     try {
         const response = await fetch(`src/assets/data/${dataFile}?v=${APP_VERSION}`);
@@ -86,9 +91,11 @@ async function loadRace(dataFile) {
             lastWidth = dashboard.clientWidth;
         }
         
+        if (loader) loader.classList.add('hidden');
     } catch (e) {
         console.error("Failed to load race data", e);
         document.getElementById('race-title').textContent = "Error loading race data";
+        if (loader) loader.classList.add('hidden');
     }
 }
 
