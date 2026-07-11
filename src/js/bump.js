@@ -179,6 +179,18 @@ export function renderBump(data) {
         })
         .attr('d', d => line(d[1]));
 
+    // Draw wider transparent hover target helper lines for effortless hover selection
+    const hoverPaths = linesGroup.selectAll('.bump-line-hover')
+        .data(driverLapsProcessed)
+        .enter()
+        .append('path')
+        .attr('class', 'bump-line-hover')
+        .attr('fill', 'none')
+        .attr('stroke', 'transparent')
+        .attr('stroke-width', 12)
+        .style('cursor', 'pointer')
+        .attr('d', d => line(d[1]));
+
     // Start Nodes (Only for drivers who actually started)
     const startNodesGroup = svg.append('g').attr('class', 'start-nodes');
     const startNodes = startNodesGroup.selectAll('.start-node')
@@ -228,13 +240,16 @@ export function renderBump(data) {
             return d[0];
         });
 
-    // Focus state interaction
+    // Focus state interaction bound to transparent helper hoverPaths
     const handleMouseOver = (event, d) => {
-        paths.attr('opacity', p => p[0] === d[0] ? 1 : 0.1);
-        startNodes.attr('opacity', p => p[0] === d[0] ? 1 : 0.1);
-        endNodes.attr('opacity', p => p[0] === d[0] ? 1 : 0.1);
-        endLabels.attr('opacity', p => p[0] === d[0] ? 1 : 0.1);
-        d3.select(event.currentTarget).attr('stroke-width', 4);
+        paths.attr('opacity', p => p[0] === d[0] ? 1 : 0.05);
+        startNodes.attr('opacity', p => p[0] === d[0] ? 1 : 0.05);
+        endNodes.attr('opacity', p => p[0] === d[0] ? 1 : 0.05);
+        endLabels.attr('opacity', p => p[0] === d[0] ? 1 : 0.05);
+        
+        // Thicken only the selected visible path
+        paths.filter(p => p[0] === d[0])
+            .attr('stroke-width', 4);
     };
 
     const handleMouseOut = (event, d) => {
@@ -251,5 +266,5 @@ export function renderBump(data) {
         endLabels.attr('opacity', 1);
     };
 
-    paths.on('mouseover', handleMouseOver).on('mouseout', handleMouseOut);
+    hoverPaths.on('mouseover', handleMouseOver).on('mouseout', handleMouseOut);
 }
