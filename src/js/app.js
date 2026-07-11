@@ -2,7 +2,7 @@ import { renderBeeswarm } from './beeswarm.js';
 import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
 
-const APP_VERSION = 'v1.16.16';
+const APP_VERSION = 'v1.16.17';
 
 const OFFICIAL_COLORS = {
     "Ferrari": "#e50004",
@@ -81,6 +81,11 @@ async function loadRace(dataFile) {
         renderCornerSpeed(currentData);
         renderBump(currentData);
         
+        const dashboard = document.querySelector('.dashboard');
+        if (dashboard) {
+            lastWidth = dashboard.clientWidth;
+        }
+        
     } catch (e) {
         console.error("Failed to load race data", e);
         document.getElementById('race-title').textContent = "Error loading race data";
@@ -97,10 +102,17 @@ function updateDashboardHeader(data) {
 }
 
 let resizeTimeout = null;
-const resizeObserver = new ResizeObserver(() => {
-    if (!currentData) return;
+let lastWidth = 0;
+const resizeObserver = new ResizeObserver((entries) => {
+    if (!currentData || !entries[0]) return;
+    const width = entries[0].contentRect.width;
+    
+    // Only trigger re-render if width change is significant (prevents scrollbar toggle loops)
+    if (Math.abs(width - lastWidth) < 10) return;
+    
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
+        lastWidth = width;
         renderBeeswarm(currentData);
         renderCornerSpeed(currentData);
         renderBump(currentData);

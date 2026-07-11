@@ -207,6 +207,14 @@ export function renderBeeswarm(data) {
             .attr('y2', d => yScale(d.median))
             .attr('stroke', d => driverColorMap[d.driver] || 'var(--text-muted)');
 
+        // Reset coordinates to ensure deterministic simulation results on every single render
+        lapsToUse.forEach(d => {
+            delete d.x;
+            delete d.y;
+            delete d.vx;
+            delete d.vy;
+        });
+
         // Run simulation
         const simulation = d3.forceSimulation(lapsToUse)
             .force('x', d3.forceX(d => xScale(d.driver)).strength(0.2))
