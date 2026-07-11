@@ -2,6 +2,7 @@ import json
 import os
 import sys
 import glob
+import math
 
 def calculate_corner_speeds(json_path):
     print(f"Processing {json_path}...")
@@ -64,7 +65,6 @@ def calculate_corner_speeds(json_path):
     # For each turn, calculate every team's average speed
     for turn in range(1, profile['turns'] + 1):
         # Base speed for this specific turn (some are slow hairpins, some are fast sweepers)
-        import math
         # create a deterministic pseudo-random speed profile for the track's turns
         turn_base_speed = profile['base_speed'] + (math.sin(turn) * profile['variation'])
         

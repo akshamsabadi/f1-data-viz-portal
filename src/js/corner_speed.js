@@ -1,17 +1,3 @@
-const TEAM_LOGOS = {
-    "Mercedes": "assets/logos/mercedes.svg",
-    "McLaren": "assets/logos/mclaren.svg",
-    "Ferrari": "assets/logos/ferrari.svg",
-    "Alpine F1 Team": "assets/logos/alpine.svg",
-    "Red Bull": "assets/logos/redbull.svg",
-    "RB F1 Team": "assets/logos/rbf1.svg",
-    "Haas F1 Team": "assets/logos/haas.svg",
-    "Audi": "assets/logos/audi.svg",
-    "Williams": "assets/logos/williams.svg",
-    "Cadillac F1 Team": "assets/logos/cadillac.svg",
-    "Aston Martin": "assets/logos/astonmartin.svg"
-};
-
 export function renderCornerSpeed(data) {
     const container = document.getElementById('corner-speed-chart');
     container.innerHTML = '';
@@ -88,7 +74,7 @@ export function renderCornerSpeed(data) {
         const xScale = d3.scaleLinear()
             // Add a buffer to the domain so force simulation displacements don't fall off the chart
             .domain([speedExtent[0] - 10, speedExtent[1] + 10])
-            .range([30, width - 30]) // extra padding for logos
+            .range([30, width - 30]) // extra padding
             .nice();
 
         const yScale = d3.scalePoint()
@@ -134,7 +120,7 @@ export function renderCornerSpeed(data) {
             d.fy = yScale(d.turn);
         });
 
-        // Force Simulation to prevent logos overlapping
+        // Force Simulation to prevent circles overlapping
         const simulation = d3.forceSimulation(catData.corners)
             .force('x', d3.forceX(d => xScale(d.speed)).strength(1))
             .force('collide', d3.forceCollide(radius + 1))
@@ -148,7 +134,7 @@ export function renderCornerSpeed(data) {
             .append('g')
             .attr('class', 'team-node')
             .attr('transform', d => {
-                // Clamp X to ensure logos don't fall off the edges of the SVG canvas
+                // Clamp X to ensure circles don't fall off the edges of the SVG canvas
                 const clampedX = Math.max(radius, Math.min(width - radius, d.x));
                 return `translate(${clampedX},${d.y})`;
             })

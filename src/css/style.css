@@ -264,18 +264,6 @@ circle.data-point:hover {
     /* transform scale removed to prevent breaking SVG transform attribute, handled via d3 radius */
 }
 
-.grid-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-}
-
-@media (max-width: 1024px) {
-    .grid-row {
-        grid-template-columns: 1fr;
-    }
-}
-
 .tooltip {
     position: absolute;
     background: rgba(30, 30, 40, 0.9);
