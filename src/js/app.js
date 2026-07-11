@@ -3,7 +3,7 @@ import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
 import { renderStandings } from './standings.js';
 
-const APP_VERSION = 'v1.16.25';
+const APP_VERSION = 'v1.16.26';
 
 const OFFICIAL_COLORS = {
     "Ferrari": "#e30002",
