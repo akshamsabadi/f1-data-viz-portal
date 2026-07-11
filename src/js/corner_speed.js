@@ -177,7 +177,7 @@ export function renderCornerSpeed(data) {
         circles.transition()
             .duration(600)
             .delay((d, i) => i * 8)
-            .ease(d3.easeBackOut.amplitude(1.2))
+            .ease(d3.easeBackOut)
             .attr('r', radius);
     });
 }

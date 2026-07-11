@@ -264,7 +264,7 @@ export function renderBeeswarm(data) {
         points.transition()
             .duration(600)
             .delay((d, i) => i * 0.8)
-            .ease(d3.easeBackOut.amplitude(1.2))
+            .ease(d3.easeBackOut)
             .attr('r', 3.5);
             
         updateStyles = () => {
