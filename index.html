@@ -25,11 +25,19 @@
         <div class="logo-container">
             <span class="f1-badge">F1</span>
             <span class="logo-text">DATA VIZ PORTAL</span>
-            <span class="app-version-badge">v1.16.21</span>
+            <span class="app-version-badge">v1.16.22</span>
         </div>
         <div class="controls">
-            <label for="race-selector">// SELECT SESSION</label>
-            <select id="race-selector"></select>
+            <label>// SELECT SESSION</label>
+            <div class="custom-select-container" id="custom-select-container">
+                <button class="custom-select-trigger" id="custom-select-trigger">
+                    <span id="custom-select-label">SELECT SESSION</span>
+                    <span class="custom-select-arrow"></span>
+                </button>
+                <div class="custom-select-options hidden" id="custom-select-options"></div>
+            </div>
+            <!-- Hidden native select for accessibility compliance with GEMINI.md -->
+            <select id="race-selector" class="visually-hidden"></select>
         </div>
     </header>
 

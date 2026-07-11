@@ -2,7 +2,7 @@ import { renderBeeswarm } from './beeswarm.js';
 import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
 
-const APP_VERSION = 'v1.16.21';
+const APP_VERSION = 'v1.16.22';
 
 const OFFICIAL_COLORS = {
     "Ferrari": "#e50004",
@@ -26,23 +26,76 @@ async function init() {
         const manifest = await response.json();
         
         const raceSelector = document.getElementById('race-selector');
+        const customContainer = document.getElementById('custom-select-container');
+        const customTrigger = document.getElementById('custom-select-trigger');
+        const customLabel = document.getElementById('custom-select-label');
+        const customOptionsContainer = document.getElementById('custom-select-options');
 
-        manifest.races.forEach((race) => {
+        // Populate Options
+        manifest.races.forEach((race, index) => {
+            // 1. Populate native hidden select for accessibility
             const option = document.createElement('option');
             option.value = race.file;
             option.textContent = `${race.year} ${race.name}`;
             raceSelector.appendChild(option);
+
+            // 2. Populate custom glassmorphic options
+            const customOption = document.createElement('div');
+            customOption.className = 'custom-select-option';
+            customOption.dataset.value = race.file;
+            customOption.textContent = `${race.year} ${race.name}`;
+
+            customOption.addEventListener('click', () => {
+                // Remove selected class from others
+                customOptionsContainer.querySelectorAll('.custom-select-option').forEach(el => el.classList.remove('selected'));
+                // Add selected class to this option
+                customOption.classList.add('selected');
+                // Update trigger label
+                customLabel.textContent = `${race.year} ${race.name}`;
+                // Hide dropdown overlay
+                customContainer.classList.remove('active');
+                customOptionsContainer.classList.add('hidden');
+                
+                // Sync native select value & dispatch change event
+                raceSelector.value = race.file;
+                raceSelector.dispatchEvent(new Event('change'));
+            });
+
+            customOptionsContainer.appendChild(customOption);
         });
 
+        // Trigger Click: Toggle Dropdown
+        customTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            customContainer.classList.toggle('active');
+            customOptionsContainer.classList.toggle('hidden');
+        });
+
+        // Global Click: Close Dropdown when clicking outside
+        document.addEventListener('click', () => {
+            customContainer.classList.remove('active');
+            customOptionsContainer.classList.add('hidden');
+        });
+
+        // Native Select Change Event Listener
         raceSelector.addEventListener('change', (e) => {
             loadRace(e.target.value);
         });
 
+        // Load Default Latest Race
         if (manifest.races.length > 0) {
             const latestRaceIndex = manifest.races.length - 1;
             const latestRace = manifest.races[latestRaceIndex];
             
             raceSelector.value = latestRace.file;
+            
+            // Set initial custom UI states
+            customLabel.textContent = `${latestRace.year} ${latestRace.name}`;
+            const customOptions = customOptionsContainer.querySelectorAll('.custom-select-option');
+            if (customOptions[latestRaceIndex]) {
+                customOptions[latestRaceIndex].classList.add('selected');
+            }
+
             loadRace(latestRace.file);
         }
     } catch (e) {
