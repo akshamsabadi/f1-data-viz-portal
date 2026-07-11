@@ -262,9 +262,9 @@ export function renderBeeswarm(data) {
             });
             
         points.transition()
-            .duration(600)
-            .delay((d, i) => i * 0.8)
-            .ease(d3.easeBackOut)
+            .duration(500)
+            .delay(d => orderedDrivers.indexOf(d.driver) * 30)
+            .ease(d3.easeCubicOut)
             .attr('r', 3.5);
             
         updateStyles = () => {

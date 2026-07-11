@@ -176,8 +176,8 @@ export function renderBump(data) {
                 .attr('stroke-dasharray', `${totalLength} ${totalLength}`)
                 .attr('stroke-dashoffset', totalLength)
                 .transition()
-                .duration(1800)
-                .ease(d3.easeSinInOut)
+                .duration(1500)
+                .ease(d3.easeCubicOut)
                 .attr('stroke-dashoffset', 0)
                 .on('end', function(d) {
                     const laps = d[1];
@@ -246,17 +246,17 @@ export function renderBump(data) {
 
     // Fade in nodes and labels after drawing finishes
     startNodes.transition()
-        .delay(1600)
+        .delay(1300)
         .duration(400)
         .attr('opacity', 1);
 
     endNodes.transition()
-        .delay(1600)
+        .delay(1300)
         .duration(400)
         .attr('opacity', 1);
 
     endLabels.transition()
-        .delay(1600)
+        .delay(1300)
         .duration(400)
         .attr('opacity', 1);
 
