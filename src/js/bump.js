@@ -169,15 +169,28 @@ export function renderBump(data) {
             if (isDnf) return 0.5;
             return 1;
         })
-        .attr('stroke-dasharray', d => {
-            const laps = d[1];
-            const isDns = laps[0].isDns;
-            const isDnf = laps[laps.length - 1].isDnf;
-            if (isDns) return '1,4';
-            if (isDnf) return '3,3';
-            return 'none';
-        })
-        .attr('d', d => line(d[1]));
+        .attr('d', d => line(d[1]))
+        .each(function() {
+            const totalLength = this.getTotalLength();
+            d3.select(this)
+                .attr('stroke-dasharray', `${totalLength} ${totalLength}`)
+                .attr('stroke-dashoffset', totalLength)
+                .transition()
+                .duration(1800)
+                .ease(d3.easeSinInOut)
+                .attr('stroke-dashoffset', 0)
+                .on('end', function(d) {
+                    const laps = d[1];
+                    const isDns = laps[0].isDns;
+                    const isDnf = laps[laps.length - 1].isDnf;
+                    d3.select(this)
+                        .attr('stroke-dasharray', () => {
+                            if (isDns) return '1,4';
+                            if (isDnf) return '3,3';
+                            return 'none';
+                        });
+                });
+        });
 
     // Start Nodes (Only for drivers who actually started)
     const startNodesGroup = svg.append('g').attr('class', 'start-nodes');
@@ -191,7 +204,8 @@ export function renderBump(data) {
         .attr('r', 4)
         .attr('fill', d => driverColors[d[0]] || '#ccc')
         .attr('stroke', 'var(--bg-dark)')
-        .attr('stroke-width', 1);
+        .attr('stroke-width', 1)
+        .attr('opacity', 0);
 
     // End Nodes
     const endNodesGroup = svg.append('g').attr('class', 'end-nodes');
@@ -205,7 +219,8 @@ export function renderBump(data) {
         .attr('r', 4)
         .attr('fill', d => driverColors[d[0]] || '#ccc')
         .attr('stroke', 'var(--bg-dark)')
-        .attr('stroke-width', 1);
+        .attr('stroke-width', 1)
+        .attr('opacity', 0);
 
     const endLabels = endNodesGroup.selectAll('.end-label')
         .data(driverLapsProcessed)
@@ -226,7 +241,24 @@ export function renderBump(data) {
             if (isDns) return `${d[0]} (DNS)`;
             if (isDnf) return `${d[0]} (DNF)`;
             return d[0];
-        });
+        })
+        .attr('opacity', 0);
+
+    // Fade in nodes and labels after drawing finishes
+    startNodes.transition()
+        .delay(1600)
+        .duration(400)
+        .attr('opacity', 1);
+
+    endNodes.transition()
+        .delay(1600)
+        .duration(400)
+        .attr('opacity', 1);
+
+    endLabels.transition()
+        .delay(1600)
+        .duration(400)
+        .attr('opacity', 1);
 
     // Focus state interaction
     const handleMouseOver = (event, d) => {

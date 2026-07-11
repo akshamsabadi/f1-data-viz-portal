@@ -168,10 +168,16 @@ export function renderCornerSpeed(data) {
                     .attr('r', radius);
             });
 
-        nodes.append('circle')
-            .attr('r', radius)
+        const circles = nodes.append('circle')
+            .attr('r', 0)
             .attr('fill', d => d.color || 'var(--accent)')
             .attr('stroke', 'var(--bg-dark)')
             .attr('stroke-width', 1);
+
+        circles.transition()
+            .duration(600)
+            .delay((d, i) => i * 8)
+            .ease(d3.easeBackOut.amplitude(1.2))
+            .attr('r', radius);
     });
 }

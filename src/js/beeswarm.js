@@ -223,7 +223,7 @@ export function renderBeeswarm(data) {
             .attr('class', 'data-point')
             .attr('cx', d => d.x)
             .attr('cy', d => d.y)
-            .attr('r', 3.5)
+            .attr('r', 0)
             .attr('fill', d => colorScale(d.compound.toUpperCase()))
             .attr('stroke', 'var(--bg-dark)')
             .attr('stroke-width', 1)
@@ -260,6 +260,12 @@ export function renderBeeswarm(data) {
                     .attr('stroke-width', 1)
                     .attr('r', 3.5);
             });
+            
+        points.transition()
+            .duration(600)
+            .delay((d, i) => i * 0.8)
+            .ease(d3.easeBackOut.amplitude(1.2))
+            .attr('r', 3.5);
             
         updateStyles = () => {
             points.style('opacity', d => {
