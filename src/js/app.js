@@ -3,20 +3,20 @@ import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
 import { renderStandings } from './standings.js';
 
-const APP_VERSION = 'v1.16.23';
+const APP_VERSION = 'v1.16.24';
 
 const OFFICIAL_COLORS = {
-    "Ferrari": "#e50004",
-    "McLaren": "#fe7b00",
-    "Mercedes": "#01e6c2",
-    "Red Bull Racing": "#14127f",
+    "Ferrari": "#e30002",
+    "McLaren": "#fe7b04",
+    "Mercedes": "#00e3c0",
+    "Red Bull Racing": "#141283",
     "Racing Bulls": "#4c68fe",
-    "Alpine": "#fe7fcf",
+    "Alpine": "#ff7ed1",
     "Audi": "#ff3a28",
-    "Haas F1 Team": "#fcffff",
-    "Williams": "#0143ff",
-    "Cadillac": "#272828",
-    "Aston Martin": "#03604d"
+    "Haas F1 Team": "#fefefe",
+    "Williams": "#0545ff",
+    "Cadillac": "#282828",
+    "Aston Martin": "#00644f"
 };
 
 let currentData = null;
