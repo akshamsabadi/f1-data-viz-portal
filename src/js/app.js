@@ -2,7 +2,7 @@ import { renderBeeswarm } from './beeswarm.js';
 import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
 
-const APP_VERSION = 'v1.16.11';
+const APP_VERSION = 'v1.16.12';
 
 const OFFICIAL_COLORS = {
     "Ferrari": "#e50004",
