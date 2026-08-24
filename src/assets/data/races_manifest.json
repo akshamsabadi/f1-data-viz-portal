@@ -71,6 +71,12 @@
       "id": "hungary",
       "name": "Hungary Grand Prix",
       "file": "races/2026/hungary.json"
+    },
+    {
+      "year": 2026,
+      "id": "netherlands",
+      "name": "Netherlands Grand Prix",
+      "file": "races/2026/netherlands.json"
     }
   ]
 }
