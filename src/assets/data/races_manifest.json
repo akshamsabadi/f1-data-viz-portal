@@ -83,6 +83,12 @@
       "id": "italy",
       "name": "Italy Grand Prix",
       "file": "races/2026/italy.json"
+    },
+    {
+      "year": 2026,
+      "id": "azerbaijan",
+      "name": "Azerbaijan Grand Prix",
+      "file": "races/2026/azerbaijan.json"
     }
   ]
 }
