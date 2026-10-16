@@ -1,9 +1,11 @@
 import { calculateDriverClassification, getBumpLineOpacity } from './standings.js';
 
-const _CHART_MARGIN = { top: 20, right: 76, bottom: 40, left: 56 };
+const _CHART_MARGIN = { top: 20, right: 76, bottom: 40, left: 76 };
 const _CHART_HEIGHT_PX = 440;
 const _DEFAULT_MAX_POSITIONS = 22;
 const _X_AXIS_TICKS = 10;
+const _Y_AXIS_TICK_PADDING_PX = 38;
+const _Y_AXIS_LABEL_OFFSET_Y_PX = -62;
 const _DEFAULT_STROKE_WIDTH = 2;
 const _HOVER_STROKE_WIDTH = 4;
 const _HOVER_TARGET_STROKE_WIDTH = 12;
@@ -183,10 +185,10 @@ function _renderBumpAxesAndGrid(svg, xScale, yScale, width, height, maxPos) {
         .text('LAP');
 
     svg.append('g')
-        .call(d3.axisLeft(yScale).ticks(maxPos).tickPadding(34))
+        .call(d3.axisLeft(yScale).ticks(maxPos).tickPadding(_Y_AXIS_TICK_PADDING_PX))
         .append('text')
         .attr('transform', 'rotate(-90)')
-        .attr('y', -44)
+        .attr('y', _Y_AXIS_LABEL_OFFSET_Y_PX)
         .attr('x', 0)
         .attr('fill', 'var(--text-muted)')
         .attr('text-anchor', 'end')

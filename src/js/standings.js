@@ -157,7 +157,9 @@ export function formatSessionDuration(totalSeconds) {
 }
 
 /**
- * Formats the primary gap label and secondary detail subtitle for a classified driver.
+ * Formats the primary gap label and optional retirement lap subtitle for a classified driver.
+ * Omits lap counts for classified finishers and lapped cars, showing the lap number only when
+ * a driver retired (DNF) and the final lap is not otherwise implied.
  *
  * @param {Object} driver - Classified driver entry.
  * @param {number} index - Zero-based finishing position index.
@@ -167,17 +169,15 @@ export function formatSessionDuration(totalSeconds) {
  */
 function _formatDriverGapAndDetail(driver, index, winnerTime, maxLap) {
     let gapText = '';
-    let detailText = `Laps: ${driver.lapsCompleted}`;
+    let detailText = '';
 
     if (driver.isDns) {
         gapText = _STATUS_DNS;
-        detailText = 'Did Not Start';
     } else if (driver.isDnf) {
         gapText = _STATUS_DNF;
-        detailText = `Retired - Lap ${driver.lapsCompleted}`;
+        detailText = `Lap ${driver.lapsCompleted}`;
     } else if (index === 0) {
         gapText = formatSessionDuration(winnerTime);
-        detailText = 'Winner';
     } else if (driver.status === _STATUS_LAPPED) {
         const lapsBehind = maxLap - driver.lapsCompleted;
         gapText = `+${lapsBehind} ${lapsBehind === 1 ? 'Lap' : 'Laps'}`;
@@ -204,30 +204,32 @@ function _broadcastDashboardFocus(targetDriver) {
 }
 
 /**
- * Creates a DOM element for a single driver row in the Session Classification list.
+ * Creates a compact DOM element for a single driver row in the Session Classification list,
+ * displaying only the three-letter driver code, constructor name, gap/status, and retirement lap if DNF.
  *
  * @param {Object} driver - Classified driver object.
  * @param {number} index - Zero-based finishing position index.
  * @param {string} gapText - Formatted time gap or status label.
- * @param {string} detailText - Formatted lap count or retirement subtitle.
+ * @param {string} detailText - Optional retirement lap subtitle (empty for non-DNF rows).
  * @returns {HTMLElement} Constructed `.standings-row` element.
  */
 function _createStandingsRowElement(driver, index, gapText, detailText) {
     const row = document.createElement('div');
     row.className = 'standings-row';
     row.dataset.driverCode = driver.code;
+    const detailHtml = detailText ? `<div class="standings-laps-dnf">${detailText}</div>` : '';
     row.innerHTML = `
         <div class="standings-row-left">
             <div class="standings-pos">P${index + 1}</div>
             <div class="standings-color-bar" style="background-color: ${driver.color}"></div>
             <div class="standings-driver-info">
-                <span class="standings-code-team">${driver.code} <span style="font-size: 0.75rem; font-weight: normal; color: var(--text-muted); font-family: 'Titillium Web', sans-serif;">${driver.name}</span></span>
+                <span class="standings-code-team">${driver.code}</span>
                 <span class="standings-team-name">${driver.team}</span>
             </div>
         </div>
         <div class="standings-row-right">
             <div class="standings-gap">${gapText}</div>
-            <div class="standings-laps-dnf">${detailText}</div>
+            ${detailHtml}
         </div>
     `;
     return row;

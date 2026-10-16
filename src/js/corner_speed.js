@@ -226,9 +226,15 @@ function _positionCornerNodesTrueSpeed(corners, xScale, yScale) {
         const count = turnCorners.length;
         turnCorners.forEach((d, idx) => {
             d.x = xScale(d.speed);
-            const normalizedOffset = count > 1 ? ((idx % 3) - 1) * (_MAX_VERTICAL_JITTER_PX * 0.85) : 0;
-            const fineOffset = count > 3 ? (((idx % 2) - 0.5) * 2.5) : 0;
-            d.y = baseY + Math.max(-_MAX_VERTICAL_JITTER_PX, Math.min(_MAX_VERTICAL_JITTER_PX, normalizedOffset + fineOffset));
+            const normalizedOffset =
+                count > 1 ? ((idx % 3) - 1) * (_MAX_VERTICAL_JITTER_PX * 0.85) : 0;
+            const fineOffset = count > 3 ? ((idx % 2) - 0.5) * 2.5 : 0;
+            d.y =
+                baseY +
+                Math.max(
+                    -_MAX_VERTICAL_JITTER_PX,
+                    Math.min(_MAX_VERTICAL_JITTER_PX, normalizedOffset + fineOffset)
+                );
         });
     });
 }
@@ -333,19 +339,22 @@ function _renderCornerNodes(svg, corners, width, tooltip) {
 }
 
 /**
- * Renders a single corner speed category subplot if it contains at least one turn.
+ * Draws the SVG inside a mounted corner speed category subplot container after grid layout is finalized.
  *
- * @param {HTMLElement} container - Parent DOM container for all corner speed subplots.
+ * @param {HTMLDivElement} chartDiv - Mounted chart container element with final grid column width.
  * @param {{title: string, turns: Array<number>, corners: Array<Object>}} categoryData - Category turns and records.
  * @param {Object} tooltip - D3 selection for the shared tooltip element.
- * @returns {Object|null} D3 selection of rendered nodes in this subplot, or null if empty.
+ * @returns {Object} D3 selection of rendered nodes in this subplot.
  */
-function _renderCategorySubplot(container, categoryData, tooltip) {
-    if (categoryData.turns.length === 0) return null;
-
-    const chartDiv = _createSubplotContainer(container, categoryData.title);
-    const width = chartDiv.clientWidth - _SUBPLOT_MARGIN.left - _SUBPLOT_MARGIN.right;
-    const height = Math.max(_MIN_SUBPLOT_HEIGHT_PX, categoryData.turns.length * _HEIGHT_PER_TURN_PX);
+function _drawCategorySubplotSvg(chartDiv, categoryData, tooltip) {
+    const width = Math.max(
+        120,
+        chartDiv.clientWidth - _SUBPLOT_MARGIN.left - _SUBPLOT_MARGIN.right
+    );
+    const height = Math.max(
+        _MIN_SUBPLOT_HEIGHT_PX,
+        categoryData.turns.length * _HEIGHT_PER_TURN_PX
+    );
 
     const svg = d3
         .select(chartDiv)
@@ -420,6 +429,8 @@ function _applyCornerTeamStyles(subplotNodeSelections, activeTeams, highlightedT
 
 /**
  * Renders the Corner Speeds chart partitioned into Slow, Medium, and Fast turn subplots.
+ * Mounts all non-empty subplot containers into the CSS Grid before measuring their widths
+ * so multi-column SVG dimensions match the final grid layout.
  *
  * @param {Object} data - Race telemetry payload containing `corners`.
  * @returns {void}
@@ -442,11 +453,19 @@ export function renderCornerSpeed(data) {
     let externalFocusedTeam = null;
 
     const categories = _categorizeCornersBySpeed(data.corners);
+    const nonEmptyCategories = Object.values(categories).filter(
+        (categoryData) => categoryData.turns.length > 0
+    );
     const tooltip = d3.select('#tooltip');
 
-    const subplotNodeSelections = Object.values(categories)
-        .map((categoryData) => _renderCategorySubplot(container, categoryData, tooltip))
-        .filter((sel) => sel !== null);
+    const mountedSubplots = nonEmptyCategories.map((categoryData) => ({
+        categoryData,
+        chartDiv: _createSubplotContainer(container, categoryData.title)
+    }));
+
+    const subplotNodeSelections = mountedSubplots.map(({ chartDiv, categoryData }) =>
+        _drawCategorySubplotSvg(chartDiv, categoryData, tooltip)
+    );
 
     const refreshTeamStyles = () => {
         const effectiveHighlightedTeam =
