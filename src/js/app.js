@@ -3,188 +3,291 @@ import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
 import { renderStandings } from './standings.js';
 
-const APP_VERSION = 'v1.16.26';
+const APP_VERSION = 'v1.16.27';
 
-const OFFICIAL_COLORS = {
-    "Ferrari": "#e30002",
-    "McLaren": "#fe7b04",
-    "Mercedes": "#00e3c0",
-    "Red Bull Racing": "#141283",
-    "Racing Bulls": "#4c68fe",
-    "Alpine": "#ff7ed1",
-    "Audi": "#ff3a28",
-    "Haas F1 Team": "#fefefe",
-    "Williams": "#0545ff",
-    "Cadillac": "#282828",
-    "Aston Martin": "#00644f"
+const _OFFICIAL_TEAM_COLORS = {
+    'Ferrari': '#e30002',
+    'McLaren': '#fe7b04',
+    'Mercedes': '#00e3c0',
+    'Red Bull Racing': '#141283',
+    'Racing Bulls': '#4c68fe',
+    'Alpine': '#ff7ed1',
+    'Audi': '#ff3a28',
+    'Haas F1 Team': '#fefefe',
+    'Williams': '#0545ff',
+    'Cadillac': '#282828',
+    'Aston Martin': '#00644f'
 };
 
-let currentData = null;
+const _RESIZE_THRESHOLD_PX = 10;
+const _RESIZE_DEBOUNCE_MS = 150;
 
-async function init() {
-    try {
-        const response = await fetch(`src/assets/data/races_manifest.json?v=${APP_VERSION}`);
-        const manifest = await response.json();
-        
-        const raceSelector = document.getElementById('race-selector');
-        const customContainer = document.getElementById('custom-select-container');
-        const customTrigger = document.getElementById('custom-select-trigger');
-        const customLabel = document.getElementById('custom-select-label');
-        const customOptionsContainer = document.getElementById('custom-select-options');
+let _currentData = null;
+let _resizeTimeout = null;
+let _lastWidth = 0;
 
-        // Populate Options
-        manifest.races.forEach((race, index) => {
-            // 1. Populate native hidden select for accessibility
-            const option = document.createElement('option');
-            option.value = race.file;
-            option.textContent = `${race.year} ${race.name}`;
-            raceSelector.appendChild(option);
+/**
+ * Toggles the visibility of the telemetry loading overlay.
+ *
+ * @param {boolean} isVisible - Whether the loader overlay should be shown.
+ * @returns {void}
+ */
+function _setLoaderVisibility(isVisible) {
+    const loader = document.getElementById('loader-overlay');
+    if (!loader) return;
+    loader.classList.toggle('hidden', !isVisible);
+}
 
-            // 2. Populate custom glassmorphic options
-            const customOption = document.createElement('div');
-            customOption.className = 'custom-select-option';
-            customOption.dataset.value = race.file;
-            customOption.textContent = `${race.year} ${race.name}`;
+/**
+ * Formats the display title for a race session option.
+ *
+ * @param {{year: number, name: string, file: string}} race - Race manifest entry.
+ * @returns {string} Formatted session label.
+ */
+function _formatRaceOptionLabel(race) {
+    return `${race.year} ${race.name}`;
+}
 
-            customOption.addEventListener('click', () => {
-                // Remove selected class from others
-                customOptionsContainer.querySelectorAll('.custom-select-option').forEach(el => el.classList.remove('selected'));
-                // Add selected class to this option
-                customOption.classList.add('selected');
-                // Update trigger label
-                customLabel.textContent = `${race.year} ${race.name}`;
-                // Hide dropdown overlay
-                customContainer.classList.remove('active');
-                customOptionsContainer.classList.add('hidden');
-                
-                // Sync native select value & dispatch change event
-                raceSelector.value = race.file;
-                raceSelector.dispatchEvent(new Event('change'));
-            });
+/**
+ * Populates both the native `<select>` element and custom dropdown options.
+ *
+ * @param {Array<{year: number, name: string, file: string}>} races - List of race entries from the manifest.
+ * @param {{
+ *   raceSelector: HTMLSelectElement,
+ *   customContainer: HTMLElement,
+ *   customLabel: HTMLElement,
+ *   customOptionsContainer: HTMLElement
+ * }} elements - Dropdown DOM element references.
+ * @returns {void}
+ */
+function _populateSessionOptions(races, elements) {
+    const { raceSelector, customContainer, customLabel, customOptionsContainer } = elements;
 
-            customOptionsContainer.appendChild(customOption);
-        });
+    races.forEach((race) => {
+        const label = _formatRaceOptionLabel(race);
 
-        // Trigger Click: Toggle Dropdown
-        customTrigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            customContainer.classList.toggle('active');
-            customOptionsContainer.classList.toggle('hidden');
-        });
+        const nativeOption = document.createElement('option');
+        nativeOption.value = race.file;
+        nativeOption.textContent = label;
+        raceSelector.appendChild(nativeOption);
 
-        // Global Click: Close Dropdown when clicking outside
-        document.addEventListener('click', () => {
+        const customOption = document.createElement('div');
+        customOption.className = 'custom-select-option';
+        customOption.dataset.value = race.file;
+        customOption.textContent = label;
+
+        customOption.addEventListener('click', () => {
+            customOptionsContainer
+                .querySelectorAll('.custom-select-option')
+                .forEach((el) => el.classList.remove('selected'));
+            customOption.classList.add('selected');
+            customLabel.textContent = label;
             customContainer.classList.remove('active');
             customOptionsContainer.classList.add('hidden');
+
+            raceSelector.value = race.file;
+            raceSelector.dispatchEvent(new Event('change'));
         });
 
-        // Native Select Change Event Listener
-        raceSelector.addEventListener('change', (e) => {
-            loadRace(e.target.value);
-        });
+        customOptionsContainer.appendChild(customOption);
+    });
+}
 
-        // Load Default Latest Race
-        if (manifest.races.length > 0) {
-            const latestRaceIndex = manifest.races.length - 1;
-            const latestRace = manifest.races[latestRaceIndex];
-            
-            raceSelector.value = latestRace.file;
-            
-            // Set initial custom UI states
-            customLabel.textContent = `${latestRace.year} ${latestRace.name}`;
-            const customOptions = customOptionsContainer.querySelectorAll('.custom-select-option');
-            if (customOptions[latestRaceIndex]) {
-                customOptions[latestRaceIndex].classList.add('selected');
+/**
+ * Binds open/close and change listeners for the session selector dropdown.
+ *
+ * @param {{
+ *   raceSelector: HTMLSelectElement,
+ *   customContainer: HTMLElement,
+ *   customTrigger: HTMLElement,
+ *   customOptionsContainer: HTMLElement
+ * }} elements - Dropdown DOM element references.
+ * @returns {void}
+ */
+function _bindDropdownEvents(elements) {
+    const { raceSelector, customContainer, customTrigger, customOptionsContainer } = elements;
+
+    customTrigger.addEventListener('click', (event) => {
+        event.stopPropagation();
+        customContainer.classList.toggle('active');
+        customOptionsContainer.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', () => {
+        customContainer.classList.remove('active');
+        customOptionsContainer.classList.add('hidden');
+    });
+
+    raceSelector.addEventListener('change', (event) => {
+        _loadRace(event.target.value);
+    });
+}
+
+/**
+ * Selects and loads the most recent race in the manifest by default.
+ *
+ * @param {Array<{year: number, name: string, file: string}>} races - List of race entries from the manifest.
+ * @param {{
+ *   raceSelector: HTMLSelectElement,
+ *   customLabel: HTMLElement,
+ *   customOptionsContainer: HTMLElement
+ * }} elements - Dropdown DOM element references.
+ * @returns {void}
+ */
+function _selectInitialSession(races, elements) {
+    if (!races || races.length === 0) return;
+
+    const { raceSelector, customLabel, customOptionsContainer } = elements;
+    const latestRaceIndex = races.length - 1;
+    const latestRace = races[latestRaceIndex];
+
+    raceSelector.value = latestRace.file;
+    customLabel.textContent = _formatRaceOptionLabel(latestRace);
+
+    const customOptions = customOptionsContainer.querySelectorAll('.custom-select-option');
+    if (customOptions[latestRaceIndex]) {
+        customOptions[latestRaceIndex].classList.add('selected');
+    }
+
+    _loadRace(latestRace.file);
+}
+
+/**
+ * Overrides driver and corner color properties with official team hex colors.
+ *
+ * @param {Object} rawData - Parsed race telemetry payload.
+ * @returns {void}
+ */
+function _applyOfficialTeamColors(rawData) {
+    if (Array.isArray(rawData.drivers)) {
+        rawData.drivers.forEach((driver) => {
+            if (_OFFICIAL_TEAM_COLORS[driver.team]) {
+                driver.color = _OFFICIAL_TEAM_COLORS[driver.team];
             }
+        });
+    }
 
-            loadRace(latestRace.file);
-        }
-    } catch (e) {
-        console.error("Failed to load manifest", e);
-        document.getElementById('race-title').textContent = "Error loading data";
-        const loader = document.getElementById('loader-overlay');
-        if (loader) loader.classList.add('hidden');
+    if (Array.isArray(rawData.corners)) {
+        rawData.corners.forEach((corner) => {
+            if (_OFFICIAL_TEAM_COLORS[corner.team]) {
+                corner.color = _OFFICIAL_TEAM_COLORS[corner.team];
+            }
+        });
     }
 }
 
-async function loadRace(dataFile) {
-    const loader = document.getElementById('loader-overlay');
-    if (loader) loader.classList.remove('hidden');
+/**
+ * Updates the dashboard title and summary statistics banner.
+ *
+ * @param {Object} data - Race telemetry payload containing `race_info` and `drivers`.
+ * @returns {void}
+ */
+function _updateDashboardHeader(data) {
+    const { year, gp, total_laps: totalLaps, winner } = data.race_info;
+    const winnerDriver = data.drivers.find((driver) => driver.code === winner);
+    const winnerColor = winnerDriver ? winnerDriver.color : 'var(--text-primary)';
 
-    document.getElementById('race-title').textContent = "Loading...";
+    document.getElementById('race-title').textContent = `${year} ${gp}`;
+
+    const raceStatsEl = document.getElementById('race-stats');
+    raceStatsEl.textContent = `Total Laps: ${totalLaps} | Winner: `;
+    const winnerSpan = document.createElement('span');
+    winnerSpan.style.color = winnerColor;
+    winnerSpan.style.fontWeight = 'bold';
+    winnerSpan.textContent = winner || 'N/A';
+    raceStatsEl.appendChild(winnerSpan);
+}
+
+/**
+ * Renders all primary telemetry charts for the active dataset.
+ *
+ * @param {Object} data - Race telemetry payload.
+ * @returns {void}
+ */
+function _renderPrimaryCharts(data) {
+    renderBeeswarm(data);
+    renderCornerSpeed(data);
+    renderBump(data);
+}
+
+/**
+ * Fetches a specific race dataset, applies team branding, and renders all views.
+ *
+ * @param {string} dataFile - Filename of the race JSON payload to load.
+ * @returns {Promise<void>}
+ */
+async function _loadRace(dataFile) {
+    _setLoaderVisibility(true);
+    document.getElementById('race-title').textContent = 'Loading...';
+
     try {
         const response = await fetch(`src/assets/data/${dataFile}?v=${APP_VERSION}`);
         const rawData = await response.json();
-        
-        // Override team colors with new official hex colors
-        if (rawData.drivers) {
-            rawData.drivers.forEach(d => {
-                if (OFFICIAL_COLORS[d.team]) {
-                    d.color = OFFICIAL_COLORS[d.team];
-                }
-            });
-        }
-        if (rawData.corners) {
-            rawData.corners.forEach(c => {
-                if (OFFICIAL_COLORS[c.team]) {
-                    c.color = OFFICIAL_COLORS[c.team];
-                }
-            });
-        }
-        
-        currentData = rawData;
-        updateDashboardHeader(currentData);
-        
-        // Render visualizations and sidebar standings
-        renderBeeswarm(currentData);
-        renderCornerSpeed(currentData);
-        renderBump(currentData);
-        renderStandings(currentData);
-        
+
+        _applyOfficialTeamColors(rawData);
+        _currentData = rawData;
+        _updateDashboardHeader(_currentData);
+
+        _renderPrimaryCharts(_currentData);
+        renderStandings(_currentData);
+
         const dashboard = document.querySelector('.dashboard');
         if (dashboard) {
-            lastWidth = dashboard.clientWidth;
+            _lastWidth = dashboard.clientWidth;
         }
-        
-        if (loader) loader.classList.add('hidden');
-    } catch (e) {
-        console.error("Failed to load race data", e);
-        document.getElementById('race-title').textContent = "Error loading race data";
-        if (loader) loader.classList.add('hidden');
+    } catch (error) {
+        console.error('Failed to load race data', error);
+        document.getElementById('race-title').textContent = 'Error loading race data';
+    } finally {
+        _setLoaderVisibility(false);
     }
 }
 
-function updateDashboardHeader(data) {
-    const { year, gp, total_laps, winner } = data.race_info;
-    const winnerDriver = data.drivers.find(d => d.code === winner);
-    const winnerColor = winnerDriver ? winnerDriver.color : 'var(--text-primary)';
-    
-    document.getElementById('race-title').textContent = `${year} ${gp}`;
-    document.getElementById('race-stats').innerHTML = `Total Laps: ${total_laps} | Winner: <span style="color: ${winnerColor}; font-weight: bold;">${winner || 'N/A'}</span>`;
+/**
+ * Initializes the application by fetching the race manifest and setting up controls.
+ *
+ * @returns {Promise<void>}
+ */
+async function _init() {
+    try {
+        const response = await fetch(`src/assets/data/races_manifest.json?v=${APP_VERSION}`);
+        const manifest = await response.json();
+
+        const dropdownElements = {
+            raceSelector: document.getElementById('race-selector'),
+            customContainer: document.getElementById('custom-select-container'),
+            customTrigger: document.getElementById('custom-select-trigger'),
+            customLabel: document.getElementById('custom-select-label'),
+            customOptionsContainer: document.getElementById('custom-select-options')
+        };
+
+        _populateSessionOptions(manifest.races, dropdownElements);
+        _bindDropdownEvents(dropdownElements);
+        _selectInitialSession(manifest.races, dropdownElements);
+    } catch (error) {
+        console.error('Failed to load manifest', error);
+        document.getElementById('race-title').textContent = 'Error loading data';
+        _setLoaderVisibility(false);
+    }
 }
 
-let resizeTimeout = null;
-let lastWidth = 0;
-const resizeObserver = new ResizeObserver((entries) => {
-    if (!currentData || !entries[0]) return;
+const _resizeObserver = new ResizeObserver((entries) => {
+    if (!_currentData || !entries[0]) return;
     const width = entries[0].contentRect.width;
-    
-    // Only trigger re-render if width change is significant (prevents scrollbar toggle loops)
-    if (Math.abs(width - lastWidth) < 10) return;
-    
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-        lastWidth = width;
-        renderBeeswarm(currentData);
-        renderCornerSpeed(currentData);
-        renderBump(currentData);
-    }, 150);
+
+    if (Math.abs(width - _lastWidth) < _RESIZE_THRESHOLD_PX) return;
+
+    clearTimeout(_resizeTimeout);
+    _resizeTimeout = setTimeout(() => {
+        _lastWidth = width;
+        _renderPrimaryCharts(_currentData);
+    }, _RESIZE_DEBOUNCE_MS);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    init();
+    _init();
     const dashboard = document.querySelector('.dashboard');
     if (dashboard) {
-        resizeObserver.observe(dashboard);
+        _resizeObserver.observe(dashboard);
     }
 });

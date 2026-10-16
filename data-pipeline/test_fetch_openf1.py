@@ -1,111 +1,404 @@
-import unittest
-import sys
+"""Unit tests for the OpenF1 data fetching and lap processing pipeline."""
+
+import json
 import os
+from pathlib import Path
+import sys
+from typing import Any
+import unittest
+from unittest.mock import MagicMock, patch
+import pytest
 
-# Add directory to path to enable import
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from fetch_openf1 import process_laps_data
+from fetch_openf1 import fetch_openf1_data, process_laps_data
 
-class TestFetchOpenF1(unittest.TestCase):
 
-    def setUp(self):
-        # Sample drivers_dict mapping driver_number to driver info
-        self.drivers_dict = {
-            1: {"code": "VER", "name": "Max Verstappen", "team": "Red Bull", "color": "#ffffff"},
-            44: {"code": "HAM", "name": "Lewis Hamilton", "team": "Mercedes", "color": "#ffffff"},
+class TestProcessLapsData(unittest.TestCase):
+    """Tests for `process_laps_data` covering normal, interpolation, and edge cases."""
+
+    def setUp(self) -> None:
+        """Initializes sample driver and stint fixtures for lap processing tests."""
+        self.drivers_dict: dict[int, dict[str, str]] = {
+            1: {
+                "code": "VER",
+                "name": "Max Verstappen",
+                "team": "Red Bull",
+                "color": "#ffffff",
+            },
+            44: {
+                "code": "HAM",
+                "name": "Lewis Hamilton",
+                "team": "Mercedes",
+                "color": "#ffffff",
+            },
         }
-        # Mock stints data
-        self.stints_data = [
-            {"driver_number": 1, "lap_start": 1, "lap_end": 10, "tyre_age_at_start": 0, "compound": "SOFT"},
-            {"driver_number": 44, "lap_start": 1, "lap_end": 10, "tyre_age_at_start": 0, "compound": "MEDIUM"},
+        self.stints_data: list[dict[str, Any]] = [
+            {
+                "driver_number": 1,
+                "lap_start": 1,
+                "lap_end": 10,
+                "tyre_age_at_start": 0,
+                "compound": "SOFT",
+            },
+            {
+                "driver_number": 44,
+                "lap_start": 1,
+                "lap_end": 10,
+                "tyre_age_at_start": 2,
+                "compound": "MEDIUM",
+            },
         ]
 
-    def test_normal_laps(self):
-        # Normal session with no gaps
-        laps_data = [
+    def test_normal_laps(self) -> None:
+        """Verifies normal lap ordering, session times, and tyre life calculation."""
+        laps_data: list[dict[str, Any]] = [
             {"driver_number": 1, "lap_number": 1, "lap_duration": 90.0},
             {"driver_number": 1, "lap_number": 2, "lap_duration": 91.0},
             {"driver_number": 44, "lap_number": 1, "lap_duration": 92.0},
             {"driver_number": 44, "lap_number": 2, "lap_duration": 89.0},
         ]
-        
-        final_laps, max_lap = process_laps_data(laps_data, self.drivers_dict, self.stints_data)
+
+        final_laps, max_lap = process_laps_data(
+            laps_data, self.drivers_dict, self.stints_data
+        )
         self.assertEqual(max_lap, 2)
         self.assertEqual(len(final_laps), 4)
-        
-        # Verify lap 1 ordering: VER (90.0) first, HAM (92.0) second
-        lap1 = [l for l in final_laps if l['lap'] == 1]
-        lap1.sort(key=lambda x: x['position'])
-        self.assertEqual(lap1[0]['driver'], "VER")
-        self.assertEqual(lap1[0]['position'], 1)
-        self.assertEqual(lap1[0]['session_time'], 90.0)
-        
-        self.assertEqual(lap1[1]['driver'], "HAM")
-        self.assertEqual(lap1[1]['position'], 2)
-        self.assertEqual(lap1[1]['session_time'], 92.0)
-        
-        # Verify lap 2 times: HAM (92 + 89 = 181.0), VER (90 + 91 = 181.0)
-        lap2_ver = next(l for l in final_laps if l['lap'] == 2 and l['driver'] == "VER")
-        lap2_ham = next(l for l in final_laps if l['lap'] == 2 and l['driver'] == "HAM")
-        self.assertEqual(lap2_ver['session_time'], 181.0)
-        self.assertEqual(lap2_ham['session_time'], 181.0)
 
-    def test_missing_lap_duration_interpolation(self):
-        # HAM has a null lap duration on lap 2, preceding is lap 1 (90.0), succeeding is lap 3 (92.0)
-        # Linear interpolation should set lap 2 duration to 91.0
-        laps_data = [
+        lap1 = sorted(
+            [lap for lap in final_laps if lap["lap"] == 1],
+            key=lambda item: int(item["position"]),
+        )
+        self.assertEqual(lap1[0]["driver"], "VER")
+        self.assertEqual(lap1[0]["position"], 1)
+        self.assertEqual(lap1[0]["session_time"], 90.0)
+        self.assertEqual(lap1[0]["compound"], "SOFT")
+        self.assertEqual(lap1[0]["tyre_life"], 1)
+
+        self.assertEqual(lap1[1]["driver"], "HAM")
+        self.assertEqual(lap1[1]["position"], 2)
+        self.assertEqual(lap1[1]["session_time"], 92.0)
+        self.assertEqual(lap1[1]["compound"], "MEDIUM")
+        self.assertEqual(lap1[1]["tyre_life"], 3)
+
+        lap2_ver = next(
+            lap for lap in final_laps if lap["lap"] == 2 and lap["driver"] == "VER"
+        )
+        lap2_ham = next(
+            lap for lap in final_laps if lap["lap"] == 2 and lap["driver"] == "HAM"
+        )
+        self.assertEqual(lap2_ver["session_time"], 181.0)
+        self.assertEqual(lap2_ham["session_time"], 181.0)
+
+    def test_missing_lap_duration_interpolation(self) -> None:
+        """Verifies linear interpolation when a lap record has a null duration."""
+        laps_data: list[dict[str, Any]] = [
             {"driver_number": 44, "lap_number": 1, "lap_duration": 90.0},
             {"driver_number": 44, "lap_number": 2, "lap_duration": None},
             {"driver_number": 44, "lap_number": 3, "lap_duration": 92.0},
         ]
-        
-        final_laps, max_lap = process_laps_data(laps_data, self.drivers_dict, self.stints_data)
-        self.assertEqual(max_lap, 3)
-        
-        lap2 = next(l for l in final_laps if l['lap'] == 2)
-        self.assertTrue(lap2['interpolated'])
-        self.assertEqual(lap2['time'], 91.0)
-        self.assertEqual(lap2['session_time'], 181.0) # 90 + 91
 
-    def test_missing_lap_number_interpolation(self):
-        # VER is missing lap 2 completely in laps_data list, preceding is 1 (90.0), succeeding is 3 (94.0)
-        # Linear interpolation should set lap 2 duration to 92.0
-        laps_data = [
+        final_laps, max_lap = process_laps_data(
+            laps_data, self.drivers_dict, self.stints_data
+        )
+        self.assertEqual(max_lap, 3)
+
+        lap2 = next(lap for lap in final_laps if lap["lap"] == 2)
+        self.assertTrue(lap2["interpolated"])
+        self.assertEqual(lap2["time"], 91.0)
+        self.assertEqual(lap2["session_time"], 181.0)
+
+    def test_missing_lap_number_interpolation(self) -> None:
+        """Verifies linear interpolation when a lap number is absent from input."""
+        laps_data: list[dict[str, Any]] = [
             {"driver_number": 1, "lap_number": 1, "lap_duration": 90.0},
             {"driver_number": 1, "lap_number": 3, "lap_duration": 94.0},
         ]
-        
-        final_laps, max_lap = process_laps_data(laps_data, self.drivers_dict, self.stints_data)
-        self.assertEqual(max_lap, 3)
-        
-        lap2 = next(l for l in final_laps if l['lap'] == 2)
-        self.assertTrue(lap2['interpolated'])
-        self.assertEqual(lap2['time'], 92.0)
-        self.assertEqual(lap2['session_time'], 182.0) # 90 + 92
 
-    def test_extrapolation_scenarios(self):
-        # HAM has lap 2 (91.0) and lap 3 (92.0), but lap 1 is missing (backward-extrapolate -> 91.0)
-        # VER has lap 1 (88.0) and lap 2 (89.0), but lap 3 is missing (forward-extrapolate -> 89.0)
-        laps_data = [
+        final_laps, max_lap = process_laps_data(
+            laps_data, self.drivers_dict, self.stints_data
+        )
+        self.assertEqual(max_lap, 3)
+
+        lap2 = next(lap for lap in final_laps if lap["lap"] == 2)
+        self.assertTrue(lap2["interpolated"])
+        self.assertEqual(lap2["time"], 92.0)
+        self.assertEqual(lap2["session_time"], 182.0)
+
+    def test_extrapolation_scenarios(self) -> None:
+        """Verifies backward and forward extrapolation at the start and end of a race."""
+        laps_data: list[dict[str, Any]] = [
             {"driver_number": 44, "lap_number": 2, "lap_duration": 91.0},
             {"driver_number": 44, "lap_number": 3, "lap_duration": 92.0},
             {"driver_number": 1, "lap_number": 1, "lap_duration": 88.0},
             {"driver_number": 1, "lap_number": 2, "lap_duration": 89.0},
             {"driver_number": 1, "lap_number": 3, "lap_duration": None},
         ]
-        
-        final_laps, max_lap = process_laps_data(laps_data, self.drivers_dict, self.stints_data)
-        self.assertEqual(max_lap, 3)
-        
-        # HAM lap 1 (backward extrapolated to 91.0)
-        ham_lap1 = next(l for l in final_laps if l['lap'] == 1 and l['driver'] == "HAM")
-        self.assertTrue(ham_lap1['interpolated'])
-        self.assertEqual(ham_lap1['time'], 91.0)
-        
-        # VER lap 3 (forward extrapolated to 89.0)
-        ver_lap3 = next(l for l in final_laps if l['lap'] == 3 and l['driver'] == "VER")
-        self.assertTrue(ver_lap3['interpolated'])
-        self.assertEqual(ver_lap3['time'], 89.0)
 
-if __name__ == '__main__':
+        final_laps, max_lap = process_laps_data(
+            laps_data, self.drivers_dict, self.stints_data
+        )
+        self.assertEqual(max_lap, 3)
+
+        ham_lap1 = next(
+            lap for lap in final_laps if lap["lap"] == 1 and lap["driver"] == "HAM"
+        )
+        self.assertTrue(ham_lap1["interpolated"])
+        self.assertEqual(ham_lap1["time"], 91.0)
+
+        ver_lap3 = next(
+            lap for lap in final_laps if lap["lap"] == 3 and lap["driver"] == "VER"
+        )
+        self.assertTrue(ver_lap3["interpolated"])
+        self.assertEqual(ver_lap3["time"], 89.0)
+
+    def test_fallback_to_lap_average_and_default_duration(self) -> None:
+        """Verifies fallback to cross-driver lap average or 90.0s when a driver has no valid times."""
+        laps_data: list[dict[str, Any]] = [
+            {"driver_number": 1, "lap_number": 1, "lap_duration": 84.0},
+            {"driver_number": 44, "lap_number": 1, "lap_duration": None},
+            {"driver_number": 44, "lap_number": 2, "lap_duration": None},
+        ]
+
+        final_laps, max_lap = process_laps_data(
+            laps_data, self.drivers_dict, self.stints_data
+        )
+        self.assertEqual(max_lap, 2)
+
+        ham_lap1 = next(
+            lap for lap in final_laps if lap["lap"] == 1 and lap["driver"] == "HAM"
+        )
+        ham_lap2 = next(
+            lap for lap in final_laps if lap["lap"] == 2 and lap["driver"] == "HAM"
+        )
+        self.assertEqual(ham_lap1["time"], 84.0)
+        self.assertEqual(ham_lap2["time"], 90.0)
+
+    def test_empty_laps_and_unknown_driver_and_null_compound(self) -> None:
+        """Verifies empty inputs, unknown drivers, and null stint compounds."""
+        empty_laps, max_lap = process_laps_data([], self.drivers_dict, self.stints_data)
+        self.assertEqual(empty_laps, [])
+        self.assertEqual(max_lap, 0)
+
+        stints_with_null_compound: list[dict[str, Any]] = [
+            {
+                "driver_number": 1,
+                "lap_start": 1,
+                "lap_end": 5,
+                "tyre_age_at_start": 0,
+                "compound": None,
+            }
+        ]
+        laps_data: list[dict[str, Any]] = [
+            {"driver_number": 99, "lap_number": 1, "lap_duration": 85.0},
+            {"driver_number": 1, "lap_number": 1, "lap_duration": 88.0},
+            {"driver_number": 1, "lap_number": 6, "lap_duration": 90.0},
+        ]
+        final_laps, max_lap = process_laps_data(
+            laps_data, self.drivers_dict, stints_with_null_compound
+        )
+        self.assertEqual(max_lap, 6)
+        self.assertTrue(all(lap["driver"] == "VER" for lap in final_laps))
+
+        ver_lap1 = next(lap for lap in final_laps if lap["lap"] == 1)
+        ver_lap6 = next(lap for lap in final_laps if lap["lap"] == 6)
+        self.assertEqual(ver_lap1["compound"], "UNKNOWN")
+        self.assertEqual(ver_lap6["compound"], "UNKNOWN")
+        self.assertEqual(ver_lap6["tyre_life"], 1)
+
+
+@pytest.mark.parametrize(
+    ("gp_query", "expected_gp_title"),
+    [
+        ("Bahrain", "Bahrain Grand Prix"),
+        ("Sakhir", "Bahrain Grand Prix"),
+        ("Bahrain International", "Bahrain Grand Prix"),
+    ],
+)
+def test_fetch_openf1_data_success(
+    tmp_path: Path,
+    gp_query: str,
+    expected_gp_title: str,
+) -> None:
+    """Verifies end-to-end fetching, driver deduplication, and JSON serialization."""
+    out_file = tmp_path / "nested" / "race.json"
+
+    mock_responses: list[ Any ] = [
+        [
+            {
+                "session_key": 9001,
+                "country_name": "Bahrain",
+                "circuit_short_name": "Sakhir",
+            }
+        ],
+        [
+            {
+                "driver_number": 1,
+                "name_acronym": "VER",
+                "full_name": "Max Verstappen",
+                "team_name": "Red Bull Racing",
+                "team_colour": "3671C6",
+            },
+            {
+                "driver_number": 1,
+                "name_acronym": "VER",
+                "full_name": "Max Verstappen",
+                "team_name": "Red Bull Racing",
+                "team_colour": "3671C6",
+            },
+            {
+                "driver_number": 44,
+                "name_acronym": "HAM",
+                "full_name": "Lewis Hamilton",
+                "team_name": "Mercedes",
+                "team_colour": None,
+            },
+        ],
+        [
+            {"driver_number": 1, "lap_number": 1, "lap_duration": 90.1234},
+            {"driver_number": 44, "lap_number": 1, "lap_duration": 91.5},
+        ],
+        [
+            {
+                "driver_number": 1,
+                "lap_start": 1,
+                "lap_end": 10,
+                "tyre_age_at_start": 0,
+                "compound": "SOFT",
+            }
+        ],
+    ]
+
+    def _side_effect(url: str) -> MagicMock:
+        response = MagicMock()
+        response.json.return_value = mock_responses.pop(0)
+        return response
+
+    with (
+        patch("fetch_openf1.requests.get", side_effect=_side_effect) as mock_get,
+        patch("fetch_openf1.time.sleep") as mock_sleep,
+    ):
+        fetch_openf1_data(2023, gp_query, str(out_file))
+
+    assert mock_get.call_count == 4
+    assert mock_sleep.call_count == 4
+    assert out_file.exists()
+
+    saved_payload = json.loads(out_file.read_text(encoding="utf-8"))
+    assert saved_payload["race_info"] == {
+        "year": 2023,
+        "gp": expected_gp_title,
+        "total_laps": 1,
+        "winner": "VER",
+    }
+    assert len(saved_payload["drivers"]) == 2
+    assert saved_payload["drivers"][0]["color"] == "#3671C6"
+    assert saved_payload["drivers"][1]["color"] == "#ffffff"
+    assert len(saved_payload["laps"]) == 2
+    assert saved_payload["laps"][0]["time"] == 90.123
+
+
+@pytest.mark.parametrize(
+    "mock_payloads",
+    [
+        [{"error": "rate_limited"}],
+        [
+            [
+                {
+                    "session_key": 9001,
+                    "country_name": "Monaco",
+                    "circuit_short_name": "Monte Carlo",
+                }
+            ]
+        ],
+        [
+            [
+                {
+                    "session_key": 9001,
+                    "country_name": "Bahrain",
+                    "circuit_short_name": "Sakhir",
+                }
+            ],
+            {"error": "drivers_unavailable"},
+        ],
+        [
+            [
+                {
+                    "session_key": 9001,
+                    "country_name": "Bahrain",
+                    "circuit_short_name": "Sakhir",
+                }
+            ],
+            [{"driver_number": 1}],
+            {"error": "laps_unavailable"},
+        ],
+        [
+            [
+                {
+                    "session_key": 9001,
+                    "country_name": "Bahrain",
+                    "circuit_short_name": "Sakhir",
+                }
+            ],
+            [{"driver_number": 1}],
+            [],
+        ],
+    ],
+)
+def test_fetch_openf1_data_early_exit_on_errors(
+    tmp_path: Path,
+    mock_payloads: list[Any],
+) -> None:
+    """Verifies that `fetch_openf1_data` exits cleanly without writing when an API call fails."""
+    out_file = tmp_path / "should_not_exist.json"
+    payload_queue = list(mock_payloads)
+
+    def _side_effect(url: str) -> MagicMock:
+        response = MagicMock()
+        response.json.return_value = payload_queue.pop(0)
+        return response
+
+    with (
+        patch("fetch_openf1.requests.get", side_effect=_side_effect),
+        patch("fetch_openf1.time.sleep"),
+    ):
+        fetch_openf1_data(2023, "Bahrain", str(out_file))
+
+    assert not out_file.exists()
+
+
+def test_fetch_openf1_data_stints_api_error_fallback(tmp_path: Path) -> None:
+    """Verifies that an API error on the stints endpoint falls back to empty stints."""
+    out_file = tmp_path / "race_stints_fallback.json"
+    payload_queue: list[Any] = [
+        [
+            {
+                "session_key": 9001,
+                "country_name": "Bahrain",
+                "circuit_short_name": "Sakhir",
+            }
+        ],
+        [{"driver_number": 1, "name_acronym": "VER"}],
+        [{"driver_number": 1, "lap_number": 1, "lap_duration": 88.5}],
+        {"detail": "Stints error"},
+    ]
+
+    def _side_effect(url: str) -> MagicMock:
+        response = MagicMock()
+        response.json.return_value = payload_queue.pop(0)
+        return response
+
+    with (
+        patch("fetch_openf1.requests.get", side_effect=_side_effect),
+        patch("fetch_openf1.time.sleep"),
+    ):
+        fetch_openf1_data(2023, "Bahrain", str(out_file))
+
+    assert out_file.exists()
+    saved_payload = json.loads(out_file.read_text(encoding="utf-8"))
+    assert saved_payload["laps"][0]["compound"] == "UNKNOWN"
+    assert saved_payload["laps"][0]["tyre_life"] == 1
+
+
+if __name__ == "__main__":
     unittest.main()
+

@@ -1,9 +1,358 @@
+const _CHART_MARGIN = { top: 20, right: 30, bottom: 60, left: 60 };
+const _CHART_HEIGHT_PX = 600;
+const _COMPOUND_ORDER = ['SOFT', 'MEDIUM', 'HARD', 'INTERMEDIATE', 'WET', 'UNKNOWN'];
+const _COMPOUND_COLORS = ['#ef4444', '#eab308', '#fafafa', '#22c55e', '#3b82f6', '#a1a1aa'];
+const _UNKNOWN_COMPOUND_SORT_INDEX = 99;
+const _IQR_OUTLIER_MULTIPLIER = 1.5;
+const _TIME_AXIS_PADDING_RATIO = 0.05;
+const _SIMULATION_TICKS = 120;
+const _POINT_RADIUS_PX = 3.5;
+const _POINT_HOVER_RADIUS_PX = 6;
+const _COLLIDE_RADIUS_PX = 4;
+const _X_FORCE_STRENGTH = 0.2;
+const _Y_FORCE_STRENGTH = 1;
+const _MEDIAN_HALF_WIDTH_PX = 20;
+const _ACTIVE_OPACITY = 1;
+const _DIMMED_OPACITY = 0.1;
+const _DIMMED_LABEL_OPACITY = 0.4;
+const _AXIS_TICK_COUNT = 10;
+const _TOOLTIP_OFFSET_X_PX = 15;
+const _TOOLTIP_OFFSET_Y_PX = -30;
+
+/**
+ * Determines the ordered list of driver codes based on final lap position.
+ *
+ * @param {Object} data - Race telemetry payload with `laps` and `drivers`.
+ * @returns {Array<string>} Ordered list of three-letter driver codes.
+ */
+function _getOrderedDrivers(data) {
+    const maxLap = d3.max(data.laps, (d) => d.lap);
+    const finalLapData = data.laps
+        .filter((d) => d.lap === maxLap)
+        .slice()
+        .sort((a, b) => a.position - b.position);
+
+    const orderedDrivers = finalLapData.map((d) => d.driver);
+    data.drivers.forEach((driver) => {
+        if (!orderedDrivers.includes(driver.code)) {
+            orderedDrivers.push(driver.code);
+        }
+    });
+    return orderedDrivers;
+}
+
+/**
+ * Builds a lookup table mapping driver codes to team hex colors.
+ *
+ * @param {Array<{code: string, color: string}>} drivers - Array of driver metadata objects.
+ * @returns {Object<string, string>} Map of driver code to color string.
+ */
+function _buildDriverColorMap(drivers) {
+    const colorMap = {};
+    drivers.forEach((driver) => {
+        colorMap[driver.code] = driver.color;
+    });
+    return colorMap;
+}
+
+/**
+ * Extracts distinct tire compounds used in the race sorted in canonical order.
+ *
+ * @param {Array<{compound: string}>} laps - Array of lap records.
+ * @returns {Array<string>} Sorted list of uppercase compound names.
+ */
+function _getCompoundsInRace(laps) {
+    return Array.from(new Set(laps.map((d) => d.compound.toUpperCase()))).sort((a, b) => {
+        const indexA = _COMPOUND_ORDER.indexOf(a);
+        const indexB = _COMPOUND_ORDER.indexOf(b);
+        const sortA = indexA === -1 ? _UNKNOWN_COMPOUND_SORT_INDEX : indexA;
+        const sortB = indexB === -1 ? _UNKNOWN_COMPOUND_SORT_INDEX : indexB;
+        return sortA - sortB;
+    });
+}
+
+/**
+ * Renders the interactive tire compound filter legend.
+ *
+ * @param {HTMLElement|null} legendContainer - DOM container for the legend items.
+ * @param {Array<{compound: string}>} laps - Array of lap records.
+ * @param {Function} colorScale - D3 ordinal color scale for tire compounds.
+ * @param {Set<string>} activeCompounds - Set of currently active compound names.
+ * @param {Function} onToggle - Callback invoked after a compound filter changes.
+ * @returns {void}
+ */
+function _buildCompoundLegend(legendContainer, laps, colorScale, activeCompounds, onToggle) {
+    if (!legendContainer) return;
+
+    const updateLegendUI = () => {
+        Array.from(legendContainer.children).forEach((child) => {
+            const compound = child.textContent.trim();
+            child.classList.toggle('inactive', !activeCompounds.has(compound));
+        });
+    };
+
+    const compoundsInRace = _getCompoundsInRace(laps);
+    compoundsInRace.forEach((compound) => {
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+
+        const swatch = document.createElement('div');
+        swatch.className = 'legend-color';
+        swatch.style.backgroundColor = colorScale(compound);
+        item.appendChild(swatch);
+        item.appendChild(document.createTextNode(compound));
+
+        item.addEventListener('click', () => {
+            if (activeCompounds.has(compound)) {
+                if (activeCompounds.size > 1) {
+                    activeCompounds.delete(compound);
+                }
+            } else {
+                activeCompounds.add(compound);
+            }
+            updateLegendUI();
+            onToggle();
+        });
+
+        legendContainer.appendChild(item);
+    });
+
+    updateLegendUI();
+}
+
+/**
+ * Filters out slow outlier laps using the 1.5x IQR rule when requested and returns cloned lap records.
+ *
+ * @param {Array<Object>} laps - Raw lap objects from the dataset.
+ * @param {boolean} showOutliers - Whether to include slow outlier laps.
+ * @returns {Array<Object>} Cloned lap records ready for D3 simulation without mutating caller data.
+ */
+function _filterOutlierLaps(laps, showOutliers) {
+    const sortedTimes = laps.map((d) => d.time).sort(d3.ascending);
+    const q1 = d3.quantile(sortedTimes, 0.25);
+    const q3 = d3.quantile(sortedTimes, 0.75);
+    const iqr = q3 - q1;
+    const maxAllowedTime = q3 + _IQR_OUTLIER_MULTIPLIER * iqr;
+
+    const filteredLaps = showOutliers ? laps : laps.filter((d) => d.time <= maxAllowedTime);
+    return filteredLaps.map((lap) => ({ ...lap }));
+}
+
+/**
+ * Computes the median lap time for each driver across the filtered lap set.
+ *
+ * @param {Array<string>} orderedDrivers - Ordered driver codes.
+ * @param {Array<{driver: string, time: number}>} laps - Filtered lap records.
+ * @returns {Array<{driver: string, median: number}>} Per-driver median lap times.
+ */
+function _calculateDriverMedians(orderedDrivers, laps) {
+    return orderedDrivers
+        .map((driver) => {
+            const driverTimes = laps
+                .filter((d) => d.driver === driver)
+                .map((d) => d.time)
+                .sort(d3.ascending);
+            if (driverTimes.length === 0) return null;
+            return {
+                driver,
+                median: d3.quantile(driverTimes, 0.5)
+            };
+        })
+        .filter((entry) => entry !== null);
+}
+
+/**
+ * Runs a deterministic D3 force simulation to position lap points horizontally per driver.
+ *
+ * @param {Array<Object>} simulationNodes - Cloned lap records to position.
+ * @param {Function} xScale - D3 point scale mapping driver codes to X coordinates.
+ * @param {Function} yScale - D3 linear scale mapping lap times to Y coordinates.
+ * @returns {void}
+ */
+function _runBeeswarmSimulation(simulationNodes, xScale, yScale) {
+    const simulation = d3
+        .forceSimulation(simulationNodes)
+        .force('x', d3.forceX((d) => xScale(d.driver)).strength(_X_FORCE_STRENGTH))
+        .force('y', d3.forceY((d) => yScale(d.time)).strength(_Y_FORCE_STRENGTH))
+        .force('collide', d3.forceCollide(_COLLIDE_RADIUS_PX))
+        .stop();
+
+    for (let i = 0; i < _SIMULATION_TICKS; ++i) {
+        simulation.tick();
+    }
+}
+
+/**
+ * Renders gridlines, X-axis driver labels, and Y-axis lap time ticks.
+ *
+ * @param {Object} gridGroup - D3 selection for background gridlines.
+ * @param {Object} axesGroup - D3 selection for X and Y axes.
+ * @param {Function} xScale - D3 scale for the horizontal driver axis.
+ * @param {Function} yScale - D3 scale for the vertical lap time axis.
+ * @param {number} width - Inner plot width in pixels.
+ * @param {number} height - Inner plot height in pixels.
+ * @param {Object<string, string>} driverColorMap - Lookup map of driver code to color.
+ * @param {Function} onDriverClick - Click handler invoked with a clicked driver code.
+ * @returns {Object} D3 selection of X-axis driver text labels.
+ */
+function _renderAxesAndGrid(
+    gridGroup,
+    axesGroup,
+    xScale,
+    yScale,
+    width,
+    height,
+    driverColorMap,
+    onDriverClick
+) {
+    gridGroup.call(
+        d3.axisLeft(yScale).tickSize(-width).tickFormat('').ticks(_AXIS_TICK_COUNT)
+    );
+
+    const xAxisGroup = axesGroup
+        .append('g')
+        .attr('transform', `translate(0,${height})`)
+        .call(d3.axisBottom(xScale).tickSize(0))
+        .call((g) => g.select('.domain').remove());
+
+    const driverLabels = xAxisGroup
+        .selectAll('.tick text')
+        .attr('class', 'driver-label')
+        .style('fill', (d) => driverColorMap[d] || 'var(--text-muted)')
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-weight', '700')
+        .style('font-size', '12px')
+        .on('click', (event, driverCode) => onDriverClick(driverCode));
+
+    xAxisGroup
+        .append('text')
+        .attr('x', width)
+        .attr('y', 40)
+        .attr('fill', 'var(--text-muted)')
+        .attr('text-anchor', 'end')
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-weight', '600')
+        .style('pointer-events', 'none')
+        .text('DRIVER (FINISHING ORDER)');
+
+    const yAxisGroup = axesGroup
+        .append('g')
+        .call(d3.axisLeft(yScale).ticks(_AXIS_TICK_COUNT).tickSize(0))
+        .call((g) => g.select('.domain').remove());
+
+    yAxisGroup
+        .append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', -45)
+        .attr('x', 0)
+        .attr('fill', 'var(--text-muted)')
+        .attr('text-anchor', 'end')
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-weight', '600')
+        .text('LAP TIME (S)');
+
+    return driverLabels;
+}
+
+/**
+ * Renders individual lap circles and binds hover tooltip interactions.
+ *
+ * @param {Object} pointsGroup - D3 selection for the points layer.
+ * @param {Array<Object>} simulationNodes - Positioned lap records.
+ * @param {Function} colorScale - D3 color scale for tire compounds.
+ * @param {Object<string, string>} driverColorMap - Lookup map of driver code to team color.
+ * @param {Object} tooltip - D3 selection for the shared tooltip element.
+ * @returns {Object} D3 selection of rendered circle elements.
+ */
+function _renderPoints(pointsGroup, simulationNodes, colorScale, driverColorMap, tooltip) {
+    return pointsGroup
+        .selectAll('circle.data-point')
+        .data(simulationNodes)
+        .enter()
+        .append('circle')
+        .attr('class', 'data-point')
+        .attr('cx', (d) => d.x)
+        .attr('cy', (d) => d.y)
+        .attr('r', _POINT_RADIUS_PX)
+        .attr('fill', (d) => colorScale(d.compound.toUpperCase()))
+        .attr('stroke', 'var(--bg-dark)')
+        .attr('stroke-width', 1)
+        .on('mouseover', (event, d) => {
+            const compoundColor = colorScale(d.compound.toUpperCase());
+            const teamColor = driverColorMap[d.driver] || 'var(--accent)';
+
+            tooltip
+                .classed('hidden', false)
+                .style('border-left-color', teamColor)
+                .html(`
+                    <div style="font-family: Montserrat, sans-serif; font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">
+                        ${d.driver} <span style="color: var(--text-muted); font-weight: 600; font-size: 0.75rem;">LAP ${d.lap}</span>
+                    </div>
+                    <div style="font-size: 1rem; font-weight: 600; margin-bottom: 4px;">
+                        ${d.time.toFixed(3)}s
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">
+                        <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${compoundColor};"></div>
+                        ${d.compound}
+                    </div>
+                `)
+                .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
+                .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
+
+            d3.select(event.currentTarget)
+                .attr('stroke', '#ffffff')
+                .attr('stroke-width', 2)
+                .attr('r', _POINT_HOVER_RADIUS_PX);
+        })
+        .on('mouseout', (event) => {
+            tooltip.classed('hidden', true);
+            d3.select(event.currentTarget)
+                .attr('stroke', 'var(--bg-dark)')
+                .attr('stroke-width', 1)
+                .attr('r', _POINT_RADIUS_PX);
+        });
+}
+
+/**
+ * Updates visual opacities across points, labels, and medians based on active filters.
+ *
+ * @param {Object} points - D3 selection of lap circles.
+ * @param {Object} driverLabels - D3 selection of X-axis driver labels.
+ * @param {Object} medianLines - D3 selection of median indicator lines.
+ * @param {Set<string>} activeCompounds - Set of currently enabled tire compounds.
+ * @param {string|null} focusedDriver - Currently focused driver code, or null if none.
+ * @returns {void}
+ */
+function _applyFocusStyles(points, driverLabels, medianLines, activeCompounds, focusedDriver) {
+    if (!points || !driverLabels || !medianLines) return;
+
+    points.style('opacity', (d) => {
+        const isCompoundActive = activeCompounds.has(d.compound.toUpperCase());
+        const isDriverFocused = focusedDriver === null || focusedDriver === d.driver;
+        return isCompoundActive && isDriverFocused ? _ACTIVE_OPACITY : _DIMMED_OPACITY;
+    });
+
+    driverLabels.style('opacity', (d) => {
+        return focusedDriver === null || focusedDriver === d ? _ACTIVE_OPACITY : _DIMMED_LABEL_OPACITY;
+    });
+
+    medianLines.style('opacity', (d) => {
+        return focusedDriver === null || focusedDriver === d.driver ? _ACTIVE_OPACITY : _DIMMED_OPACITY;
+    });
+}
+
+/**
+ * Renders the Lap Times Beeswarm chart with tire compound filtering and outlier controls.
+ *
+ * @param {Object} data - Race telemetry payload containing `laps` and `drivers`.
+ * @returns {void}
+ */
 export function renderBeeswarm(data) {
     const container = document.getElementById('beeswarm-plot');
     const legendContainer = document.getElementById('beeswarm-legend');
     const outlierToggle = document.getElementById('outlier-toggle');
-    
-    container.innerHTML = ''; // Clear previous
+
+    container.innerHTML = '';
     if (legendContainer) legendContainer.innerHTML = '';
 
     if (!data.laps || data.laps.length === 0) {
@@ -11,283 +360,113 @@ export function renderBeeswarm(data) {
         return;
     }
 
-    const margin = { top: 20, right: 30, bottom: 60, left: 60 };
-    const width = container.clientWidth - margin.left - margin.right;
-    const height = 600 - margin.top - margin.bottom;
-    
-    const maxLap = d3.max(data.laps, d => d.lap);
-    const finalLapData = data.laps.filter(d => d.lap === maxLap);
-    finalLapData.sort((a, b) => a.position - b.position);
-    
-    const orderedDrivers = finalLapData.map(d => d.driver);
-    data.drivers.forEach(d => {
-        if (!orderedDrivers.includes(d.code)) {
-            orderedDrivers.push(d.code);
-        }
-    });
-    
-    const driverColorMap = {};
-    data.drivers.forEach(d => {
-        driverColorMap[d.code] = d.color;
-    });
+    const width = container.clientWidth - _CHART_MARGIN.left - _CHART_MARGIN.right;
+    const height = _CHART_HEIGHT_PX - _CHART_MARGIN.top - _CHART_MARGIN.bottom;
 
+    const orderedDrivers = _getOrderedDrivers(data);
+    const driverColorMap = _buildDriverColorMap(data.drivers);
     const tooltip = d3.select('#tooltip');
 
-    const colorScale = d3.scaleOrdinal()
-        .domain(['SOFT', 'MEDIUM', 'HARD', 'INTERMEDIATE', 'WET', 'UNKNOWN'])
-        .range(['#ef4444', '#eab308', '#fafafa', '#22c55e', '#3b82f6', '#a1a1aa']);
+    const colorScale = d3
+        .scaleOrdinal()
+        .domain(_COMPOUND_ORDER)
+        .range(_COMPOUND_COLORS);
 
-    let activeCompounds = new Set(['SOFT', 'MEDIUM', 'HARD', 'INTERMEDIATE', 'WET', 'UNKNOWN']);
+    const activeCompounds = new Set(_COMPOUND_ORDER);
     let focusedDriver = null;
     let showOutliers = outlierToggle ? outlierToggle.checked : false;
+    let currentPoints = null;
+    let currentDriverLabels = null;
+    let currentMedianLines = null;
 
-    // Build Interactive Legend
-    if (legendContainer) {
-        const predefinedOrder = ['SOFT', 'MEDIUM', 'HARD', 'INTERMEDIATE', 'WET', 'UNKNOWN'];
-        const compoundsInRace = Array.from(new Set(data.laps.map(d => d.compound.toUpperCase())))
-            .sort((a, b) => {
-                let idxA = predefinedOrder.indexOf(a);
-                let idxB = predefinedOrder.indexOf(b);
-                if (idxA === -1) idxA = 99;
-                if (idxB === -1) idxB = 99;
-                return idxA - idxB;
-            });
+    const refreshStyles = () => {
+        _applyFocusStyles(
+            currentPoints,
+            currentDriverLabels,
+            currentMedianLines,
+            activeCompounds,
+            focusedDriver
+        );
+    };
 
-        compoundsInRace.forEach(comp => {
-            const item = document.createElement('div');
-            item.className = 'legend-item';
-            item.innerHTML = `<div class="legend-color" style="background-color: ${colorScale(comp)}"></div>${comp}`;
-            item.addEventListener('click', () => {
-                if (activeCompounds.has(comp)) {
-                    if (activeCompounds.size > 1) {
-                        activeCompounds.delete(comp);
-                    }
-                } else {
-                    activeCompounds.add(comp);
-                }
-                updateLegendUI();
-                updateStyles();
-            });
-            legendContainer.appendChild(item);
-        });
-        
-        function updateLegendUI() {
-            Array.from(legendContainer.children).forEach(child => {
-                const comp = child.textContent.trim();
-                if (activeCompounds.has(comp)) {
-                    child.classList.remove('inactive');
-                } else {
-                    child.classList.add('inactive');
-                }
-            });
-        }
-        updateLegendUI();
-    }
+    _buildCompoundLegend(legendContainer, data.laps, colorScale, activeCompounds, refreshStyles);
 
-    if (outlierToggle) {
-        outlierToggle.onchange = (e) => {
-            showOutliers = e.target.checked;
-            drawChart();
-        };
-    }
-
-    const svg = d3.select('#beeswarm-plot')
+    const svg = d3
+        .select('#beeswarm-plot')
         .append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom);
+        .attr('width', width + _CHART_MARGIN.left + _CHART_MARGIN.right)
+        .attr('height', height + _CHART_MARGIN.top + _CHART_MARGIN.bottom);
 
-    const mainGroup = svg.append('g')
-        .attr('transform', `translate(${margin.left},${margin.top})`);
-    
-    // Groups for layering (order matters: items appended later appear on top)
+    const mainGroup = svg
+        .append('g')
+        .attr('transform', `translate(${_CHART_MARGIN.left},${_CHART_MARGIN.top})`);
+
     const gridGroup = mainGroup.append('g').attr('class', 'gridline');
     const axesGroup = mainGroup.append('g').attr('class', 'axes');
     const pointsGroup = mainGroup.append('g').attr('class', 'points');
     const mediansGroup = mainGroup.append('g').attr('class', 'medians');
 
-    let updateStyles;
-
-    function drawChart() {
-        // Clear previous chart content
+    const drawChart = () => {
         gridGroup.selectAll('*').remove();
         mediansGroup.selectAll('*').remove();
         pointsGroup.selectAll('*').remove();
         axesGroup.selectAll('*').remove();
 
-        const q1 = d3.quantile(data.laps.map(d => d.time).sort(d3.ascending), 0.25);
-        const q3 = d3.quantile(data.laps.map(d => d.time).sort(d3.ascending), 0.75);
-        const iqr = q3 - q1;
-        const maxAllowedTime = q3 + 1.5 * iqr;
-        
-        const lapsToUse = showOutliers ? data.laps : data.laps.filter(d => d.time <= maxAllowedTime);
+        const lapsToUse = _filterOutlierLaps(data.laps, showOutliers);
 
-        const xScale = d3.scalePoint()
+        const xScale = d3
+            .scalePoint()
             .domain(orderedDrivers)
             .range([0, width])
             .padding(1);
 
-        const timeExtent = d3.extent(lapsToUse, d => d.time);
-        const timePadding = (timeExtent[1] - timeExtent[0]) * 0.05;
+        const timeExtent = d3.extent(lapsToUse, (d) => d.time);
+        const timePadding = (timeExtent[1] - timeExtent[0]) * _TIME_AXIS_PADDING_RATIO;
 
-        const yScale = d3.scaleLinear()
+        const yScale = d3
+            .scaleLinear()
             .domain([timeExtent[0] - timePadding, timeExtent[1] + timePadding])
             .range([height, 0]);
 
-        // Gridlines
-        gridGroup.call(d3.axisLeft(yScale)
-            .tickSize(-width)
-            .tickFormat('')
-            .ticks(10)
+        currentDriverLabels = _renderAxesAndGrid(
+            gridGroup,
+            axesGroup,
+            xScale,
+            yScale,
+            width,
+            height,
+            driverColorMap,
+            (clickedDriver) => {
+                focusedDriver = focusedDriver === clickedDriver ? null : clickedDriver;
+                refreshStyles();
+            }
         );
 
-        // X Axis
-        const xAxisGroup = axesGroup.append('g')
-            .attr('transform', `translate(0,${height})`)
-            .call(d3.axisBottom(xScale).tickSize(0))
-            .call(g => g.select(".domain").remove());
-
-        xAxisGroup.selectAll('.tick text')
-            .attr('class', 'driver-label')
-            .style('fill', d => driverColorMap[d] || 'var(--text-muted)')
-            .style('font-family', 'Montserrat, sans-serif')
-            .style('font-weight', '700')
-            .style('font-size', '12px')
-            .on('click', (event, d) => {
-                if (focusedDriver === d) {
-                    focusedDriver = null;
-                } else {
-                    focusedDriver = d;
-                }
-                updateStyles();
-            });
-
-        xAxisGroup.append('text')
-            .attr('x', width)
-            .attr('y', 40)
-            .attr('fill', 'var(--text-muted)')
-            .attr('text-anchor', 'end')
-            .style('font-family', 'Montserrat, sans-serif')
-            .style('font-weight', '600')
-            .style('pointer-events', 'none')
-            .text('DRIVER (FINISHING ORDER)');
-
-        // Y Axis
-        const yAxisGroup = axesGroup.append('g')
-            .call(d3.axisLeft(yScale).ticks(10).tickSize(0))
-            .call(g => g.select(".domain").remove());
-            
-        yAxisGroup.append('text')
-            .attr('transform', 'rotate(-90)')
-            .attr('y', -45)
-            .attr('x', 0)
-            .attr('fill', 'var(--text-muted)')
-            .attr('text-anchor', 'end')
-            .style('font-family', 'Montserrat, sans-serif')
-            .style('font-weight', '600')
-            .text('LAP TIME (S)');
-            
-        // Medians (calculated now, rendered to mediansGroup which is ABOVE pointsGroup)
-        const medians = orderedDrivers.map(driver => {
-            const driverLaps = lapsToUse.filter(d => d.driver === driver).map(d => d.time).sort(d3.ascending);
-            if (driverLaps.length === 0) return null;
-            return {
-                driver: driver,
-                median: d3.quantile(driverLaps, 0.5)
-            };
-        }).filter(d => d !== null);
-
-        const medianLines = mediansGroup.selectAll('line.median-line')
+        const medians = _calculateDriverMedians(orderedDrivers, lapsToUse);
+        currentMedianLines = mediansGroup
+            .selectAll('line.median-line')
             .data(medians)
             .enter()
             .append('line')
             .attr('class', 'median-line')
-            .attr('x1', d => xScale(d.driver) - 20)
-            .attr('x2', d => xScale(d.driver) + 20)
-            .attr('y1', d => yScale(d.median))
-            .attr('y2', d => yScale(d.median))
-            .attr('stroke', d => driverColorMap[d.driver] || 'var(--text-muted)');
+            .attr('x1', (d) => xScale(d.driver) - _MEDIAN_HALF_WIDTH_PX)
+            .attr('x2', (d) => xScale(d.driver) + _MEDIAN_HALF_WIDTH_PX)
+            .attr('y1', (d) => yScale(d.median))
+            .attr('y2', (d) => yScale(d.median))
+            .attr('stroke', (d) => driverColorMap[d.driver] || 'var(--text-muted)');
 
-        // Reset coordinates to ensure deterministic simulation results on every single render
-        lapsToUse.forEach(d => {
-            delete d.x;
-            delete d.y;
-            delete d.vx;
-            delete d.vy;
-        });
+        _runBeeswarmSimulation(lapsToUse, xScale, yScale);
 
-        // Run simulation
-        const simulation = d3.forceSimulation(lapsToUse)
-            .force('x', d3.forceX(d => xScale(d.driver)).strength(0.2))
-            .force('y', d3.forceY(d => yScale(d.time)).strength(1))
-            .force('collide', d3.forceCollide(4))
-            .stop();
+        currentPoints = _renderPoints(pointsGroup, lapsToUse, colorScale, driverColorMap, tooltip);
+        refreshStyles();
+    };
 
-        for (let i = 0; i < 120; ++i) simulation.tick();
-
-        const points = pointsGroup.selectAll('circle.data-point')
-            .data(lapsToUse)
-            .enter()
-            .append('circle')
-            .attr('class', 'data-point')
-            .attr('cx', d => d.x)
-            .attr('cy', d => d.y)
-            .attr('r', 3.5)
-            .attr('fill', d => colorScale(d.compound.toUpperCase()))
-            .attr('stroke', 'var(--bg-dark)')
-            .attr('stroke-width', 1)
-            .on('mouseover', (event, d) => {
-                const compoundColor = colorScale(d.compound.toUpperCase());
-                const teamColor = driverColorMap[d.driver] || 'var(--accent)';
-                
-                tooltip.classed('hidden', false)
-                    .style('border-left-color', teamColor)
-                    .html(`
-                        <div style="font-family: Montserrat, sans-serif; font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">
-                            ${d.driver} <span style="color: var(--text-muted); font-weight: 600; font-size: 0.75rem;">LAP ${d.lap}</span>
-                        </div>
-                        <div style="font-size: 1rem; font-weight: 600; margin-bottom: 4px;">
-                            ${d.time.toFixed(3)}s
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">
-                            <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${compoundColor};"></div>
-                            ${d.compound}
-                        </div>
-                    `)
-                    .style('left', (event.pageX + 15) + 'px')
-                    .style('top', (event.pageY - 30) + 'px');
-                
-                d3.select(event.currentTarget)
-                    .attr('stroke', '#ffffff')
-                    .attr('stroke-width', 2)
-                    .attr('r', 6);
-            })
-            .on('mouseout', (event, d) => {
-                tooltip.classed('hidden', true);
-                d3.select(event.currentTarget)
-                    .attr('stroke', 'var(--bg-dark)')
-                    .attr('stroke-width', 1)
-                    .attr('r', 3.5);
-            });
-            
-        updateStyles = () => {
-            points.style('opacity', d => {
-                const isCompoundActive = activeCompounds.has(d.compound.toUpperCase());
-                const isDriverFocused = focusedDriver === null || focusedDriver === d.driver;
-                return (isCompoundActive && isDriverFocused) ? 1 : 0.1;
-            });
-    
-            xAxisGroup.selectAll('.driver-label').style('opacity', d => {
-                return (focusedDriver === null || focusedDriver === d) ? 1 : 0.4;
-            });
-            
-            medianLines.style('opacity', d => {
-                return (focusedDriver === null || focusedDriver === d.driver) ? 1 : 0.1;
-            });
+    if (outlierToggle) {
+        outlierToggle.onchange = (event) => {
+            showOutliers = event.target.checked;
+            drawChart();
         };
-        
-        updateStyles();
     }
-    
-    // Initial draw
+
     drawChart();
 }
