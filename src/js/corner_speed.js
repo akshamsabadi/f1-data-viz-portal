@@ -2,17 +2,32 @@ const _SLOW_CORNER_MAX_KMH = 130;
 const _MEDIUM_CORNER_MAX_KMH = 200;
 const _SUBPLOT_MARGIN = { top: 20, right: 30, bottom: 50, left: 50 };
 const _MIN_SUBPLOT_HEIGHT_PX = 300;
-const _HEIGHT_PER_TURN_PX = 40;
-const _SPEED_DOMAIN_BUFFER_KMH = 10;
-const _RANGE_PADDING_PX = 30;
+const _HEIGHT_PER_TURN_PX = 42;
+const _SPEED_DOMAIN_BUFFER_KMH = 6;
+const _RANGE_PADDING_PX = 24;
 const _Y_SCALE_PADDING = 0.5;
 const _X_AXIS_TICKS = 5;
-const _NODE_RADIUS_PX = 5;
-const _NODE_HOVER_RADIUS_OFFSET_PX = 1.5;
-const _COLLIDE_PADDING_PX = 1;
-const _SIMULATION_TICKS = 120;
+const _NODE_RADIUS_PX = 5.5;
+const _NODE_HOVER_RADIUS_OFFSET_PX = 2;
+const _MAX_VERTICAL_JITTER_PX = 5;
+const _ACTIVE_OPACITY = 1;
+const _DIMMED_OPACITY = 0.12;
 const _TOOLTIP_OFFSET_X_PX = 15;
 const _TOOLTIP_OFFSET_Y_PX = -30;
+
+let _externalTeamFocusHandler = null;
+
+/**
+ * Highlights or restores team nodes in the Corner Speeds subplots from an external trigger.
+ *
+ * @param {string|null} teamName - Constructor name to focus, or null to restore.
+ * @returns {void}
+ */
+export function setCornerSpeedExternalFocus(teamName) {
+    if (_externalTeamFocusHandler) {
+        _externalTeamFocusHandler(teamName);
+    }
+}
 
 /**
  * Maps an average turn apex speed in km/h to its speed category key.
@@ -64,6 +79,74 @@ function _categorizeCornersBySpeed(corners) {
     });
 
     return categories;
+}
+
+/**
+ * Extracts unique constructor teams and their colors from the corner telemetry data.
+ *
+ * @param {Array<{team: string, color?: string}>} corners - Corner telemetry records.
+ * @returns {Array<{team: string, color: string}>} Unique team descriptors.
+ */
+function _extractTeamsFromCorners(corners) {
+    const seen = new Map();
+    corners.forEach((entry) => {
+        if (!seen.has(entry.team)) {
+            seen.set(entry.team, entry.color || 'var(--accent)');
+        }
+    });
+    return Array.from(seen, ([team, color]) => ({ team, color }));
+}
+
+/**
+ * Builds the interactive constructor legend in the Corner Speeds header.
+ *
+ * @param {HTMLElement|null} legendContainer - DOM container for team legend items.
+ * @param {Array<{team: string, color: string}>} teams - Constructor list.
+ * @param {Set<string>} activeTeams - Set of enabled constructor names.
+ * @param {Function} onFilterChange - Callback when active teams change.
+ * @param {Function} onHoverTeam - Callback when hovering/leaving a legend pill.
+ * @returns {void}
+ */
+function _buildConstructorLegend(legendContainer, teams, activeTeams, onFilterChange, onHoverTeam) {
+    if (!legendContainer) return;
+
+    const updateLegendUI = () => {
+        Array.from(legendContainer.children).forEach((child) => {
+            const teamName = child.dataset.team;
+            child.classList.toggle('inactive', !activeTeams.has(teamName));
+        });
+    };
+
+    teams.forEach(({ team, color }) => {
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        item.dataset.team = team;
+
+        const swatch = document.createElement('div');
+        swatch.className = 'legend-color';
+        swatch.style.backgroundColor = color;
+        item.appendChild(swatch);
+        item.appendChild(document.createTextNode(team));
+
+        item.addEventListener('click', () => {
+            if (activeTeams.has(team)) {
+                if (activeTeams.size > 1) {
+                    activeTeams.delete(team);
+                }
+            } else {
+                activeTeams.add(team);
+            }
+            updateLegendUI();
+            onFilterChange();
+        });
+
+        item.addEventListener('mouseenter', () => onHoverTeam(team));
+        item.addEventListener('mouseleave', () => onHoverTeam(null));
+
+        legendContainer.appendChild(item);
+    });
+
+    updateLegendUI();
 }
 
 /**
@@ -126,38 +209,73 @@ function _renderSubplotAxesAndGrid(svg, xScale, yScale, width, height) {
 }
 
 /**
- * Runs a 1D horizontal collision force simulation with locked vertical turn coordinates.
+ * Positions each corner node at its true X-axis speed (`xScale(d.speed)`) and applies a
+ * deterministic vertical jitter (`±5px`) within each turn's band so overlapping teams remain visible
+ * without distorting horizontal km/h readings.
  *
  * @param {Array<Object>} corners - Cloned corner records for the subplot.
  * @param {Function} xScale - D3 linear scale mapping speed to X coordinate.
  * @param {Function} yScale - D3 point scale mapping turn number to Y coordinate.
  * @returns {void}
  */
-function _runCornerSimulation(corners, xScale, yScale) {
-    corners.forEach((d) => {
-        d.x = xScale(d.speed);
-        d.fy = yScale(d.turn);
+function _positionCornerNodesTrueSpeed(corners, xScale, yScale) {
+    const byTurn = d3.group(corners, (d) => d.turn);
+    byTurn.forEach((turnCorners, turn) => {
+        turnCorners.sort((a, b) => a.speed - b.speed);
+        const baseY = yScale(turn);
+        const count = turnCorners.length;
+        turnCorners.forEach((d, idx) => {
+            d.x = xScale(d.speed);
+            const normalizedOffset = count > 1 ? ((idx % 3) - 1) * (_MAX_VERTICAL_JITTER_PX * 0.85) : 0;
+            const fineOffset = count > 3 ? (((idx % 2) - 0.5) * 2.5) : 0;
+            d.y = baseY + Math.max(-_MAX_VERTICAL_JITTER_PX, Math.min(_MAX_VERTICAL_JITTER_PX, normalizedOffset + fineOffset));
+        });
     });
+}
 
-    const simulation = d3
-        .forceSimulation(corners)
-        .force('x', d3.forceX((d) => xScale(d.speed)).strength(1))
-        .force('collide', d3.forceCollide(_NODE_RADIUS_PX + _COLLIDE_PADDING_PX))
-        .stop();
+/**
+ * Renders a subtle horizontal min-to-max speed range bar per turn so the spread across constructors is clear.
+ *
+ * @param {Object} svg - D3 selection for the subplot's main translated group.
+ * @param {Array<Object>} corners - Corner speed records for the subplot.
+ * @param {Function} xScale - D3 linear scale mapping speed to X coordinate.
+ * @param {Function} yScale - D3 point scale mapping turn number to Y coordinate.
+ * @returns {void}
+ */
+function _renderTurnRangeBars(svg, corners, xScale, yScale) {
+    const turnExtents = d3.rollups(
+        corners,
+        (values) => ({
+            minSpeed: d3.min(values, (d) => d.speed),
+            maxSpeed: d3.max(values, (d) => d.speed)
+        }),
+        (d) => d.turn
+    );
 
-    for (let i = 0; i < _SIMULATION_TICKS; ++i) {
-        simulation.tick();
-    }
+    svg.append('g')
+        .attr('class', 'turn-range-bars')
+        .selectAll('line.turn-range-bar')
+        .data(turnExtents)
+        .enter()
+        .append('line')
+        .attr('class', 'turn-range-bar')
+        .attr('x1', ([_, ext]) => xScale(ext.minSpeed))
+        .attr('x2', ([_, ext]) => xScale(ext.maxSpeed))
+        .attr('y1', ([turn]) => yScale(turn))
+        .attr('y2', ([turn]) => yScale(turn))
+        .attr('stroke', 'rgba(255, 255, 255, 0.16)')
+        .attr('stroke-width', 4)
+        .attr('stroke-linecap', 'round');
 }
 
 /**
  * Renders positioned team speed nodes and binds tooltip hover interactions.
  *
  * @param {Object} svg - D3 selection for the subplot's main translated group.
- * @param {Array<Object>} corners - Simulated corner speed records.
+ * @param {Array<Object>} corners - Positioned corner speed records.
  * @param {number} width - Inner subplot width in pixels.
  * @param {Object} tooltip - D3 selection for the shared tooltip element.
- * @returns {void}
+ * @returns {Object} D3 selection of rendered `.team-node` groups.
  */
 function _renderCornerNodes(svg, corners, width, tooltip) {
     const nodes = svg
@@ -189,16 +307,17 @@ function _renderCornerNodes(svg, corners, width, tooltip) {
                 .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
 
             d3.select(event.currentTarget)
+                .raise()
                 .select('circle')
                 .attr('stroke', '#ffffff')
-                .attr('stroke-width', 1.5)
+                .attr('stroke-width', 2)
                 .attr('r', _NODE_RADIUS_PX + _NODE_HOVER_RADIUS_OFFSET_PX);
         })
         .on('mouseout', (event) => {
             tooltip.classed('hidden', true);
             d3.select(event.currentTarget)
                 .select('circle')
-                .attr('stroke', 'var(--bg-dark)')
+                .attr('stroke', 'rgba(255, 255, 255, 0.35)')
                 .attr('stroke-width', 1)
                 .attr('r', _NODE_RADIUS_PX);
         });
@@ -207,8 +326,10 @@ function _renderCornerNodes(svg, corners, width, tooltip) {
         .append('circle')
         .attr('r', _NODE_RADIUS_PX)
         .attr('fill', (d) => d.color || 'var(--accent)')
-        .attr('stroke', 'var(--bg-dark)')
+        .attr('stroke', 'rgba(255, 255, 255, 0.35)')
         .attr('stroke-width', 1);
+
+    return nodes;
 }
 
 /**
@@ -217,10 +338,10 @@ function _renderCornerNodes(svg, corners, width, tooltip) {
  * @param {HTMLElement} container - Parent DOM container for all corner speed subplots.
  * @param {{title: string, turns: Array<number>, corners: Array<Object>}} categoryData - Category turns and records.
  * @param {Object} tooltip - D3 selection for the shared tooltip element.
- * @returns {void}
+ * @returns {Object|null} D3 selection of rendered nodes in this subplot, or null if empty.
  */
 function _renderCategorySubplot(container, categoryData, tooltip) {
-    if (categoryData.turns.length === 0) return;
+    if (categoryData.turns.length === 0) return null;
 
     const chartDiv = _createSubplotContainer(container, categoryData.title);
     const width = chartDiv.clientWidth - _SUBPLOT_MARGIN.left - _SUBPLOT_MARGIN.right;
@@ -253,8 +374,48 @@ function _renderCategorySubplot(container, categoryData, tooltip) {
         .padding(_Y_SCALE_PADDING);
 
     _renderSubplotAxesAndGrid(svg, xScale, yScale, width, height);
-    _runCornerSimulation(categoryData.corners, xScale, yScale);
-    _renderCornerNodes(svg, categoryData.corners, width, tooltip);
+    _renderTurnRangeBars(svg, categoryData.corners, xScale, yScale);
+    _positionCornerNodesTrueSpeed(categoryData.corners, xScale, yScale);
+    return _renderCornerNodes(svg, categoryData.corners, width, tooltip);
+}
+
+/**
+ * Updates node opacities and radii across all corner speed subplots based on active teams and hovered team.
+ *
+ * @param {Array<Object>} subplotNodeSelections - List of D3 `.team-node` selections.
+ * @param {Set<string>} activeTeams - Set of enabled constructor names.
+ * @param {string|null} highlightedTeam - Currently hovered/focused team name, or null.
+ * @returns {void}
+ */
+function _applyCornerTeamStyles(subplotNodeSelections, activeTeams, highlightedTeam) {
+    subplotNodeSelections.forEach((nodes) => {
+        if (!nodes) return;
+        nodes.style('opacity', (d) => {
+            const isTeamActive = activeTeams.has(d.team);
+            const isTeamHighlighted = highlightedTeam === null || highlightedTeam === d.team;
+            return isTeamActive && isTeamHighlighted ? _ACTIVE_OPACITY : _DIMMED_OPACITY;
+        });
+
+        nodes
+            .select('circle')
+            .attr('r', (d) =>
+                highlightedTeam !== null && highlightedTeam === d.team
+                    ? _NODE_RADIUS_PX + _NODE_HOVER_RADIUS_OFFSET_PX
+                    : _NODE_RADIUS_PX
+            )
+            .attr('stroke', (d) =>
+                highlightedTeam !== null && highlightedTeam === d.team
+                    ? '#ffffff'
+                    : 'rgba(255, 255, 255, 0.35)'
+            )
+            .attr('stroke-width', (d) =>
+                highlightedTeam !== null && highlightedTeam === d.team ? 2 : 1
+            );
+
+        if (highlightedTeam !== null) {
+            nodes.filter((d) => d.team === highlightedTeam).raise();
+        }
+    });
 }
 
 /**
@@ -265,17 +426,49 @@ function _renderCategorySubplot(container, categoryData, tooltip) {
  */
 export function renderCornerSpeed(data) {
     const container = document.getElementById('corner-speed-chart');
+    const legendContainer = document.getElementById('corner-speed-legend');
     container.innerHTML = '';
+    if (legendContainer) legendContainer.innerHTML = '';
 
     if (!data.corners || data.corners.length === 0) {
+        _externalTeamFocusHandler = null;
         container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding-top: 2rem; font-family: Montserrat, sans-serif; text-transform: uppercase;">No corner speed data available.</p>';
         return;
     }
 
+    const teams = _extractTeamsFromCorners(data.corners);
+    const activeTeams = new Set(teams.map((t) => t.team));
+    let hoveredLegendTeam = null;
+    let externalFocusedTeam = null;
+
     const categories = _categorizeCornersBySpeed(data.corners);
     const tooltip = d3.select('#tooltip');
 
-    Object.values(categories).forEach((categoryData) => {
-        _renderCategorySubplot(container, categoryData, tooltip);
-    });
+    const subplotNodeSelections = Object.values(categories)
+        .map((categoryData) => _renderCategorySubplot(container, categoryData, tooltip))
+        .filter((sel) => sel !== null);
+
+    const refreshTeamStyles = () => {
+        const effectiveHighlightedTeam =
+            externalFocusedTeam !== null ? externalFocusedTeam : hoveredLegendTeam;
+        _applyCornerTeamStyles(subplotNodeSelections, activeTeams, effectiveHighlightedTeam);
+    };
+
+    _externalTeamFocusHandler = (teamName) => {
+        externalFocusedTeam = teamName;
+        refreshTeamStyles();
+    };
+
+    _buildConstructorLegend(
+        legendContainer,
+        teams,
+        activeTeams,
+        refreshTeamStyles,
+        (hoveredTeam) => {
+            hoveredLegendTeam = hoveredTeam;
+            refreshTeamStyles();
+        }
+    );
+
+    refreshTeamStyles();
 }

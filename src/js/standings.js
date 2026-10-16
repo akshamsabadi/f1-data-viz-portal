@@ -1,13 +1,13 @@
+import { setBeeswarmExternalFocus } from './beeswarm.js';
+import { setCornerSpeedExternalFocus } from './corner_speed.js';
+import { setBumpExternalFocus } from './bump.js';
+
 const _DNF_TIME_THRESHOLD_SECONDS = 180;
 const _SECONDS_PER_HOUR = 3600;
 const _SECONDS_PER_MINUTE = 60;
 const _DNS_LINE_OPACITY = 0.25;
 const _DNF_LINE_OPACITY = 0.5;
 const _ACTIVE_OPACITY = 1;
-const _DIMMED_HOVER_OPACITY = 0.05;
-const _BUMP_DEFAULT_STROKE_WIDTH = 2;
-const _BUMP_HOVER_STROKE_WIDTH = 3.5;
-const _BUMP_DIMMED_STROKE_WIDTH = 1;
 
 const _STATUS_FINISHER = 'FINISHER';
 const _STATUS_LAPPED = 'LAPPED';
@@ -54,7 +54,7 @@ function _determineDriverStatus(lapsCompleted, lastLapRecord, maxLap, maxSession
 
 /**
  * Computes the official session classification, ranks, and DNF/DNS statuses for all drivers.
- * Shared between the Session Classification sidebar and the Track Position bump chart.
+ * Shared between the Session Classification sidebar, Lap Times X-axis, and Track Position bump chart.
  *
  * @param {Object} data - Race telemetry payload containing `drivers` and `laps`.
  * @returns {{
@@ -136,12 +136,13 @@ export function getBumpLineOpacity(laps) {
 }
 
 /**
- * Formats the race winner's total session time as `h:mm:ss.sss` or `m:ss.sss`.
+ * Formats a total duration in seconds as `h:mm:ss.sss` or `m:ss.sss`.
  *
- * @param {number} totalSeconds - Winner's total session time in seconds.
+ * @param {number} totalSeconds - Duration in seconds.
  * @returns {string} Formatted duration string.
  */
-function _formatWinnerTime(totalSeconds) {
+export function formatSessionDuration(totalSeconds) {
+    if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) return 'N/A';
     const hours = Math.floor(totalSeconds / _SECONDS_PER_HOUR);
     const minutes = Math.floor((totalSeconds % _SECONDS_PER_HOUR) / _SECONDS_PER_MINUTE);
     const seconds = (totalSeconds % _SECONDS_PER_MINUTE).toFixed(3);
@@ -149,7 +150,10 @@ function _formatWinnerTime(totalSeconds) {
     if (hours > 0) {
         return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.padStart(6, '0')}`;
     }
-    return `${minutes}:${seconds.padStart(6, '0')}`;
+    if (minutes > 0) {
+        return `${minutes}:${seconds.padStart(6, '0')}`;
+    }
+    return `${seconds}s`;
 }
 
 /**
@@ -172,7 +176,7 @@ function _formatDriverGapAndDetail(driver, index, winnerTime, maxLap) {
         gapText = _STATUS_DNF;
         detailText = `Retired - Lap ${driver.lapsCompleted}`;
     } else if (index === 0) {
-        gapText = _formatWinnerTime(winnerTime);
+        gapText = formatSessionDuration(winnerTime);
         detailText = 'Winner';
     } else if (driver.status === _STATUS_LAPPED) {
         const lapsBehind = maxLap - driver.lapsCompleted;
@@ -186,38 +190,17 @@ function _formatDriverGapAndDetail(driver, index, winnerTime, maxLap) {
 }
 
 /**
- * Binds cross-dashboard hover highlighting to a standings row element.
+ * Propagates a unified focus state across Lap Times, Corner Speeds, and Track Position charts.
  *
- * @param {HTMLElement} row - Standings row DOM node.
- * @param {string} driverCode - Three-letter code of the driver represented by the row.
+ * @param {{code: string, team: string}|null} targetDriver - Driver to highlight across the dashboard, or null to restore.
  * @returns {void}
  */
-function _bindStandingsHoverEvents(row, driverCode) {
-    row.addEventListener('mouseover', () => {
-        d3.selectAll('circle.data-point').style('opacity', (c) =>
-            c.driver === driverCode ? _ACTIVE_OPACITY : _DIMMED_HOVER_OPACITY
-        );
-
-        d3.selectAll('.bump-line')
-            .attr('opacity', (p) => (p[0] === driverCode ? _ACTIVE_OPACITY : _DIMMED_HOVER_OPACITY))
-            .attr('stroke-width', (p) =>
-                p[0] === driverCode ? _BUMP_HOVER_STROKE_WIDTH : _BUMP_DIMMED_STROKE_WIDTH
-            );
-
-        d3.selectAll('.end-label, .end-node, .start-node').attr('opacity', (p) =>
-            p[0] === driverCode ? _ACTIVE_OPACITY : _DIMMED_HOVER_OPACITY
-        );
-    });
-
-    row.addEventListener('mouseout', () => {
-        d3.selectAll('circle.data-point').style('opacity', _ACTIVE_OPACITY);
-
-        d3.selectAll('.bump-line')
-            .attr('opacity', (p) => getBumpLineOpacity(p[1]))
-            .attr('stroke-width', _BUMP_DEFAULT_STROKE_WIDTH);
-
-        d3.selectAll('.end-label, .end-node, .start-node').attr('opacity', _ACTIVE_OPACITY);
-    });
+function _broadcastDashboardFocus(targetDriver) {
+    const driverCode = targetDriver ? targetDriver.code : null;
+    const teamName = targetDriver ? targetDriver.team : null;
+    setBeeswarmExternalFocus(driverCode);
+    setCornerSpeedExternalFocus(teamName);
+    setBumpExternalFocus(driverCode);
 }
 
 /**
@@ -232,6 +215,7 @@ function _bindStandingsHoverEvents(row, driverCode) {
 function _createStandingsRowElement(driver, index, gapText, detailText) {
     const row = document.createElement('div');
     row.className = 'standings-row';
+    row.dataset.driverCode = driver.code;
     row.innerHTML = `
         <div class="standings-row-left">
             <div class="standings-pos">P${index + 1}</div>
@@ -250,7 +234,7 @@ function _createStandingsRowElement(driver, index, gapText, detailText) {
 }
 
 /**
- * Renders the Session Classification sidebar table and binds cross-chart focus interactions.
+ * Renders the Session Classification sidebar table and binds unified cross-chart hover and click-lock interactions.
  *
  * @param {Object} data - Race telemetry payload containing `drivers` and `laps`.
  * @returns {void}
@@ -267,11 +251,39 @@ export function renderStandings(data) {
     }
 
     const winnerTime = classification[0].lastLapTime;
+    let lockedDriver = null;
+
+    const updateRowSelectionStyles = () => {
+        container.querySelectorAll('.standings-row').forEach((rowEl) => {
+            rowEl.classList.toggle(
+                'selected',
+                lockedDriver !== null && rowEl.dataset.driverCode === lockedDriver.code
+            );
+        });
+    };
 
     classification.forEach((driver, index) => {
         const { gapText, detailText } = _formatDriverGapAndDetail(driver, index, winnerTime, maxLap);
         const row = _createStandingsRowElement(driver, index, gapText, detailText);
-        _bindStandingsHoverEvents(row, driver.code);
+
+        row.addEventListener('mouseover', () => {
+            _broadcastDashboardFocus(driver);
+        });
+
+        row.addEventListener('mouseout', () => {
+            _broadcastDashboardFocus(lockedDriver);
+        });
+
+        row.addEventListener('click', () => {
+            if (lockedDriver && lockedDriver.code === driver.code) {
+                lockedDriver = null;
+            } else {
+                lockedDriver = driver;
+            }
+            updateRowSelectionStyles();
+            _broadcastDashboardFocus(lockedDriver);
+        });
+
         container.appendChild(row);
     });
 }

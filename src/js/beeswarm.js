@@ -1,3 +1,5 @@
+import { calculateDriverClassification } from './standings.js';
+
 const _CHART_MARGIN = { top: 20, right: 30, bottom: 60, left: 60 };
 const _CHART_HEIGHT_PX = 600;
 const _COMPOUND_ORDER = ['SOFT', 'MEDIUM', 'HARD', 'INTERMEDIATE', 'WET', 'UNKNOWN'];
@@ -13,32 +15,39 @@ const _X_FORCE_STRENGTH = 0.2;
 const _Y_FORCE_STRENGTH = 1;
 const _MEDIAN_HALF_WIDTH_PX = 20;
 const _ACTIVE_OPACITY = 1;
-const _DIMMED_OPACITY = 0.1;
-const _DIMMED_LABEL_OPACITY = 0.4;
+const _DIMMED_OPACITY = 0.08;
+const _DIMMED_LABEL_OPACITY = 0.35;
 const _AXIS_TICK_COUNT = 10;
 const _TOOLTIP_OFFSET_X_PX = 15;
 const _TOOLTIP_OFFSET_Y_PX = -30;
 
+let _externalRefreshHandler = null;
+
 /**
- * Determines the ordered list of driver codes based on final lap position.
+ * Sets or clears an external driver focus filter (e.g., from Session Classification)
+ * while preserving active tire compound filters and local chart state.
+ *
+ * @param {string|null} driverCode - Three-letter driver code to highlight, or null to restore.
+ * @returns {void}
+ */
+export function setBeeswarmExternalFocus(driverCode) {
+    if (_externalRefreshHandler) {
+        _externalRefreshHandler(driverCode);
+    }
+}
+
+/**
+ * Determines the ordered list of driver codes matching official Session Classification (P1-P22).
  *
  * @param {Object} data - Race telemetry payload with `laps` and `drivers`.
  * @returns {Array<string>} Ordered list of three-letter driver codes.
  */
 function _getOrderedDrivers(data) {
-    const maxLap = d3.max(data.laps, (d) => d.lap);
-    const finalLapData = data.laps
-        .filter((d) => d.lap === maxLap)
-        .slice()
-        .sort((a, b) => a.position - b.position);
-
-    const orderedDrivers = finalLapData.map((d) => d.driver);
-    data.drivers.forEach((driver) => {
-        if (!orderedDrivers.includes(driver.code)) {
-            orderedDrivers.push(driver.code);
-        }
-    });
-    return orderedDrivers;
+    const { classification } = calculateDriverClassification(data);
+    if (classification.length > 0) {
+        return classification.map((entry) => entry.code);
+    }
+    return (data.drivers || []).map((driver) => driver.code);
 }
 
 /**
@@ -293,7 +302,7 @@ function _renderPoints(pointsGroup, simulationNodes, colorScale, driverColorMap,
                     </div>
                     <div style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">
                         <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${compoundColor};"></div>
-                        ${d.compound}
+                        ${d.compound} (Tyre Life: ${d.tyre_life || 1}L)
                     </div>
                 `)
                 .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
@@ -320,24 +329,24 @@ function _renderPoints(pointsGroup, simulationNodes, colorScale, driverColorMap,
  * @param {Object} driverLabels - D3 selection of X-axis driver labels.
  * @param {Object} medianLines - D3 selection of median indicator lines.
  * @param {Set<string>} activeCompounds - Set of currently enabled tire compounds.
- * @param {string|null} focusedDriver - Currently focused driver code, or null if none.
+ * @param {string|null} effectiveDriver - Currently focused driver code, or null if none.
  * @returns {void}
  */
-function _applyFocusStyles(points, driverLabels, medianLines, activeCompounds, focusedDriver) {
+function _applyFocusStyles(points, driverLabels, medianLines, activeCompounds, effectiveDriver) {
     if (!points || !driverLabels || !medianLines) return;
 
     points.style('opacity', (d) => {
         const isCompoundActive = activeCompounds.has(d.compound.toUpperCase());
-        const isDriverFocused = focusedDriver === null || focusedDriver === d.driver;
+        const isDriverFocused = effectiveDriver === null || effectiveDriver === d.driver;
         return isCompoundActive && isDriverFocused ? _ACTIVE_OPACITY : _DIMMED_OPACITY;
     });
 
     driverLabels.style('opacity', (d) => {
-        return focusedDriver === null || focusedDriver === d ? _ACTIVE_OPACITY : _DIMMED_LABEL_OPACITY;
+        return effectiveDriver === null || effectiveDriver === d ? _ACTIVE_OPACITY : _DIMMED_LABEL_OPACITY;
     });
 
     medianLines.style('opacity', (d) => {
-        return focusedDriver === null || focusedDriver === d.driver ? _ACTIVE_OPACITY : _DIMMED_OPACITY;
+        return effectiveDriver === null || effectiveDriver === d.driver ? _ACTIVE_OPACITY : _DIMMED_OPACITY;
     });
 }
 
@@ -356,6 +365,7 @@ export function renderBeeswarm(data) {
     if (legendContainer) legendContainer.innerHTML = '';
 
     if (!data.laps || data.laps.length === 0) {
+        _externalRefreshHandler = null;
         container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding-top: 2rem; font-family: Montserrat, sans-serif; text-transform: uppercase;">No lap data available for this race.</p>';
         return;
     }
@@ -374,19 +384,26 @@ export function renderBeeswarm(data) {
 
     const activeCompounds = new Set(_COMPOUND_ORDER);
     let focusedDriver = null;
+    let externalFocusedDriver = null;
     let showOutliers = outlierToggle ? outlierToggle.checked : false;
     let currentPoints = null;
     let currentDriverLabels = null;
     let currentMedianLines = null;
 
     const refreshStyles = () => {
+        const effectiveDriver = externalFocusedDriver !== null ? externalFocusedDriver : focusedDriver;
         _applyFocusStyles(
             currentPoints,
             currentDriverLabels,
             currentMedianLines,
             activeCompounds,
-            focusedDriver
+            effectiveDriver
         );
+    };
+
+    _externalRefreshHandler = (driverCode) => {
+        externalFocusedDriver = driverCode;
+        refreshStyles();
     };
 
     _buildCompoundLegend(legendContainer, data.laps, colorScale, activeCompounds, refreshStyles);

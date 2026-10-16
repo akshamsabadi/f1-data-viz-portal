@@ -25,7 +25,7 @@
         <div class="logo-container">
             <span class="f1-badge">F1</span>
             <span class="logo-text">DATA VIZ PORTAL</span>
-            <span class="app-version-badge">v1.16.27</span>
+            <span class="app-version-badge">v1.16.28</span>
         </div>
         <div class="controls">
             <label>// SELECT SESSION</label>
@@ -44,7 +44,7 @@
     <main class="dashboard">
         <div class="dashboard-header">
             <h1 id="race-title">Loading...</h1>
-            <p id="race-stats"></p>
+            <div id="race-stats" class="kpi-strip"></div>
         </div>
 
         <div class="dashboard-grid">
@@ -65,12 +65,24 @@
                 </section>
 
                 <section class="viz-container" id="corner-speed-container">
-                    <h2>Corner Speeds <span class="badge-estimate">Model Estimate</span></h2>
+                    <div class="viz-header-controls">
+                        <h2>Corner Speeds <span class="badge-estimate">Model Estimate</span></h2>
+                        <div class="viz-controls">
+                            <div id="corner-speed-legend" class="legend-container"></div>
+                        </div>
+                    </div>
                     <div id="corner-speed-chart" class="chart speed-subplots"></div>
                 </section>
                 
                 <section class="viz-container" id="bump-container">
-                    <h2>Track Position</h2>
+                    <div class="viz-header-controls">
+                        <h2>Track Position</h2>
+                        <div class="bump-legend">
+                            <span class="bump-legend-item"><span class="bump-swatch solid"></span>Teammate 1</span>
+                            <span class="bump-legend-item"><span class="bump-swatch dashed"></span>Teammate 2</span>
+                            <span class="bump-legend-item"><span class="bump-swatch dotted"></span>DNF / DNS</span>
+                        </div>
+                    </div>
                     <div id="bump-chart" class="chart"></div>
                 </section>
             </div>

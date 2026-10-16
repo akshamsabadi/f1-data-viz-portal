@@ -1,22 +1,26 @@
 import { renderBeeswarm } from './beeswarm.js';
 import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
-import { renderStandings } from './standings.js';
+import {
+    renderStandings,
+    calculateDriverClassification,
+    formatSessionDuration
+} from './standings.js';
 
-const APP_VERSION = 'v1.16.27';
+const APP_VERSION = 'v1.16.28';
 
 const _OFFICIAL_TEAM_COLORS = {
     'Ferrari': '#e30002',
     'McLaren': '#fe7b04',
     'Mercedes': '#00e3c0',
-    'Red Bull Racing': '#141283',
-    'Racing Bulls': '#4c68fe',
+    'Red Bull Racing': '#3671c6',
+    'Racing Bulls': '#6692ff',
     'Alpine': '#ff7ed1',
     'Audi': '#ff3a28',
     'Haas F1 Team': '#fefefe',
-    'Williams': '#0545ff',
-    'Cadillac': '#282828',
-    'Aston Martin': '#00644f'
+    'Williams': '#1868db',
+    'Cadillac': '#9ca3af',
+    'Aston Martin': '#229971'
 };
 
 const _RESIZE_THRESHOLD_PX = 10;
@@ -153,7 +157,7 @@ function _selectInitialSession(races, elements) {
 }
 
 /**
- * Overrides driver and corner color properties with official team hex colors.
+ * Overrides driver and corner color properties with high-contrast dark-mode broadcast hex colors.
  *
  * @param {Object} rawData - Parsed race telemetry payload.
  * @returns {void}
@@ -177,25 +181,119 @@ function _applyOfficialTeamColors(rawData) {
 }
 
 /**
- * Updates the dashboard title and summary statistics banner.
+ * Finds the fastest valid non-interpolated lap across the race session.
  *
- * @param {Object} data - Race telemetry payload containing `race_info` and `drivers`.
+ * @param {Array<Object>} laps - Race lap records.
+ * @returns {Object|null} Fastest lap object, or null if no valid laps exist.
+ */
+function _findFastestLap(laps) {
+    if (!Array.isArray(laps) || laps.length === 0) return null;
+    const candidates = laps.filter((lap) => lap.time > 0 && !lap.interpolated);
+    const pool = candidates.length > 0 ? candidates : laps.filter((lap) => lap.time > 0);
+    if (pool.length === 0) return null;
+    return pool.reduce((best, current) => (current.time < best.time ? current : best), pool[0]);
+}
+
+/**
+ * Creates a single telemetry KPI stat pill element for the dashboard header.
+ *
+ * @param {string} label - Uppercase KPI category title.
+ * @param {string} primaryText - Primary headline metric value.
+ * @param {string} subText - Secondary context subtitle.
+ * @param {string} accentColor - Left-border accent color CSS value.
+ * @returns {HTMLDivElement} Constructed `.kpi-pill` element.
+ */
+function _createKpiPill(label, primaryText, subText, accentColor) {
+    const pill = document.createElement('div');
+    pill.className = 'kpi-pill';
+    pill.style.borderLeftColor = accentColor || 'var(--accent)';
+
+    const labelEl = document.createElement('div');
+    labelEl.className = 'kpi-label';
+    labelEl.textContent = label;
+
+    const valueEl = document.createElement('div');
+    valueEl.className = 'kpi-value';
+    valueEl.textContent = primaryText;
+
+    const subEl = document.createElement('div');
+    subEl.className = 'kpi-subvalue';
+    subEl.textContent = subText;
+
+    pill.appendChild(labelEl);
+    pill.appendChild(valueEl);
+    pill.appendChild(subEl);
+    return pill;
+}
+
+/**
+ * Updates the dashboard title and renders the 4 F1 telemetry KPI pills.
+ *
+ * @param {Object} data - Race telemetry payload containing `race_info`, `drivers`, and `laps`.
  * @returns {void}
  */
 function _updateDashboardHeader(data) {
     const { year, gp, total_laps: totalLaps, winner } = data.race_info;
-    const winnerDriver = data.drivers.find((driver) => driver.code === winner);
-    const winnerColor = winnerDriver ? winnerDriver.color : 'var(--text-primary)';
-
     document.getElementById('race-title').textContent = `${year} ${gp}`;
 
     const raceStatsEl = document.getElementById('race-stats');
-    raceStatsEl.textContent = `Total Laps: ${totalLaps} | Winner: `;
-    const winnerSpan = document.createElement('span');
-    winnerSpan.style.color = winnerColor;
-    winnerSpan.style.fontWeight = 'bold';
-    winnerSpan.textContent = winner || 'N/A';
-    raceStatsEl.appendChild(winnerSpan);
+    raceStatsEl.innerHTML = '';
+
+    const { classification } = calculateDriverClassification(data);
+    const driverByCode = new Map((data.drivers || []).map((d) => [d.code, d]));
+
+    const winnerEntry = classification[0] || driverByCode.get(winner);
+    const winnerColor = winnerEntry?.color || 'var(--accent)';
+    const winnerName = winnerEntry ? `${winnerEntry.code} • ${winnerEntry.name}` : winner || 'N/A';
+    const winnerSubtext =
+        winnerEntry && Number.isFinite(winnerEntry.lastLapTime)
+            ? `${winnerEntry.team} (${formatSessionDuration(winnerEntry.lastLapTime)})`
+            : 'Session Winner';
+
+    const fastestLap = _findFastestLap(data.laps);
+    const fastestDriver = fastestLap ? driverByCode.get(fastestLap.driver) : null;
+    const fastestValue = fastestLap
+        ? `${fastestLap.driver} • ${formatSessionDuration(fastestLap.time)}`
+        : 'N/A';
+    const fastestSubtext = fastestLap
+        ? `Lap ${fastestLap.lap} • ${fastestLap.compound || 'UNKNOWN'}`
+        : 'No lap time recorded';
+    const fastestColor = fastestDriver?.color || '#a855f7';
+
+    const totalDrivers = (data.drivers || []).length;
+    const dnfCount = classification.filter((d) => d.isDnf).length;
+    const dnsCount = classification.filter((d) => d.isDns).length;
+    const finishersCount = Math.max(0, totalDrivers - dnfCount - dnsCount);
+    const retirementParts = [];
+    if (dnfCount > 0) retirementParts.push(`${dnfCount} DNF`);
+    if (dnsCount > 0) retirementParts.push(`${dnsCount} DNS`);
+    const classificationSubtext =
+        retirementParts.length > 0 ? retirementParts.join(' • ') : 'All Starters Classified';
+
+    const compoundsUsed = Array.from(
+        new Set((data.laps || []).map((l) => (l.compound || 'UNKNOWN').toUpperCase()))
+    ).filter((c) => c !== 'UNKNOWN');
+
+    raceStatsEl.appendChild(_createKpiPill('Race Winner', winnerName, winnerSubtext, winnerColor));
+    raceStatsEl.appendChild(
+        _createKpiPill('Fastest Lap', fastestValue, fastestSubtext, fastestColor)
+    );
+    raceStatsEl.appendChild(
+        _createKpiPill(
+            'Race Distance',
+            `${totalLaps} Laps`,
+            compoundsUsed.length > 0 ? `Compounds: ${compoundsUsed.join(', ')}` : 'Grand Prix Session',
+            'var(--accent)'
+        )
+    );
+    raceStatsEl.appendChild(
+        _createKpiPill(
+            'Classification',
+            `${finishersCount} / ${totalDrivers} Classified`,
+            classificationSubtext,
+            '#22c55e'
+        )
+    );
 }
 
 /**
