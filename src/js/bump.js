@@ -12,7 +12,7 @@ const _HOVER_TARGET_STROKE_WIDTH = 12;
 const _NODE_RADIUS_PX = 4;
 const _LABEL_OFFSET_X_PX = 8;
 const _ACTIVE_OPACITY = 1;
-const _DIMMED_OPACITY = 0.06;
+const _DIMMED_OPACITY = 0.38;
 const _TEAMMATE_SECOND_DASH_ARRAY = '8,4';
 const _DNS_DASH_ARRAY = '1,4';
 const _DNF_DASH_ARRAY = '3,3';
@@ -89,7 +89,7 @@ function _buildProcessedDriverLaps(drivers, classification, maxLap, secondTeamma
                 }
             ];
         } else if (classifiedDriver.isDnf) {
-            const dropLap = Math.min(realLaps.length + 1, maxLap);
+            const dropLap = Math.min(classifiedDriver.lapsCompleted + 1, maxLap);
             processedLaps = [
                 ...realLaps.map((lap) => ({ ...lap, isSecondTeammate })),
                 {
@@ -334,16 +334,13 @@ function _formatPositionDeltaHtml(startPos, finishPos) {
  * Binds mouseover, mousemove, and mouseout focus and tooltip handlers to the bump chart.
  *
  * @param {Object} hoverPaths - D3 selection of transparent hit-target paths.
- * @param {Object} Selections - D3 selections for paths, nodes, and labels.
  * @param {Map<string, Object>} classificationByCode - Map of driver code to classification entry.
- * @param {Set<string>} secondTeammates - Set of 2nd teammate driver codes.
  * @param {Function} applyFocusState - Function that highlights a given driverCode or restores default when null.
  * @returns {void}
  */
 function _bindBumpHoverInteraction(
     hoverPaths,
     classificationByCode,
-    secondTeammates,
     applyFocusState
 ) {
     const tooltip = d3.select('#tooltip');
@@ -358,23 +355,25 @@ function _bindBumpHoverInteraction(
         const startPos = laps[0]?.position ?? info.rank;
         const finishPos = info.rank;
         const deltaHtml = info.isDns ? '' : _formatPositionDeltaHtml(startPos, finishPos);
-        const teammateBadge = secondTeammates.has(hoveredDriver) ? 'Teammate 2 (Dashed)' : 'Teammate 1 (Solid)';
+
+        let positionText = '';
+        if (info.isDns) {
+            positionText = 'DNS';
+        } else if (info.isDnf) {
+            positionText = `Lap 1: P${startPos} → DNF (Lap ${info.lapsCompleted})`;
+        } else {
+            positionText = `Lap 1: P${startPos} → Finish: P${finishPos} ${deltaHtml}`;
+        }
 
         tooltip
             .classed('hidden', false)
             .style('border-left-color', info.color || 'var(--accent)')
             .html(`
-                <div style="font-family: Montserrat, sans-serif; font-weight: 700; margin-bottom: 2px; text-transform: uppercase;">
-                    ${info.code} <span style="color: var(--text-muted); font-weight: 600; font-size: 0.75rem;">${info.name}</span>
+                <div style="font-family: Montserrat, sans-serif; font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">
+                    ${info.code}<span style="color: var(--text-muted); font-weight: 600; font-size: 0.75rem; margin-left: 6px;">${info.team}</span>
                 </div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">
-                    ${info.team} • ${teammateBadge}
-                </div>
-                <div style="font-size: 0.9rem; font-weight: 600;">
-                    Lap 1: P${startPos} → Finish: P${finishPos} ${deltaHtml}
-                </div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
-                    Laps Completed: ${info.lapsCompleted} (${info.status})
+                <div style="font-size: 0.85rem; font-weight: 600;">
+                    ${positionText}
                 </div>
             `)
             .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
@@ -478,7 +477,11 @@ export function renderBump(data) {
             endLabels.attr('opacity', _ACTIVE_OPACITY);
         } else {
             paths
-                .attr('opacity', (p) => (p[0] === activeDriver ? _ACTIVE_OPACITY : _DIMMED_OPACITY))
+                .attr('opacity', (p) =>
+                    p[0] === activeDriver
+                        ? _ACTIVE_OPACITY
+                        : Math.min(_DIMMED_OPACITY, getBumpLineOpacity(p[1]))
+                )
                 .attr('stroke-width', (p) =>
                     p[0] === activeDriver ? _HOVER_STROKE_WIDTH : _DEFAULT_STROKE_WIDTH
                 );
@@ -505,7 +508,6 @@ export function renderBump(data) {
     _bindBumpHoverInteraction(
         hoverPaths,
         classificationByCode,
-        secondTeammates,
         (hoveredDriver) => {
             localHoveredDriver = hoveredDriver;
             updateVisualFocus();

@@ -80,9 +80,9 @@ export function calculateDriverClassification(data) {
     const driverLapsMap = d3.group(validLaps, (d) => d.driver);
 
     const unsortedClassification = data.drivers.map((driver) => {
-        const laps = driverLapsMap.get(driver.code) || [];
-        const lapsCompleted = laps.length;
-        const lastLapRecord = lapsCompleted > 0 ? laps[lapsCompleted - 1] : null;
+        const laps = (driverLapsMap.get(driver.code) || []).slice().sort((a, b) => a.lap - b.lap);
+        const lastLapRecord = laps.length > 0 ? laps[laps.length - 1] : null;
+        const lapsCompleted = lastLapRecord ? lastLapRecord.lap : 0;
         const lastLapTime = lastLapRecord ? lastLapRecord.session_time : Infinity;
         const status = _determineDriverStatus(lapsCompleted, lastLapRecord, maxLap, maxSessionTime);
 

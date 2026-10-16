@@ -405,6 +405,14 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 0.65;
 }
 
+.bump-line,
+.start-node,
+.end-node,
+.start-label,
+.end-label {
+    transition: opacity 0.18s ease, stroke-width 0.18s ease;
+}
+
 .chart {
     width: 100%;
     min-height: 400px;
@@ -452,15 +460,9 @@ circle.data-point:hover {
 
 .speed-subplots {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 0.9rem;
     align-items: start;
-}
-
-@media (max-width: 1200px) {
-    .speed-subplots {
-        grid-template-columns: 1fr;
-    }
 }
 
 .subplot-container {
@@ -473,6 +475,57 @@ circle.data-point:hover {
     min-width: 0;
     overflow: hidden;
     box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.turn-subplot-card {
+    padding: 0.75rem 0.85rem 0.5rem;
+}
+
+.turn-subplot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+    text-align: left;
+}
+
+.turn-subplot-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.8px;
+}
+
+.turn-category-badge {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 0.12rem 0.45rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+}
+
+.turn-category-badge.category-slow {
+    color: #38bdf8;
+    border-color: rgba(56, 189, 248, 0.3);
+    background: rgba(56, 189, 248, 0.08);
+}
+
+.turn-category-badge.category-medium {
+    color: #facc15;
+    border-color: rgba(250, 204, 21, 0.3);
+    background: rgba(250, 204, 21, 0.08);
+}
+
+.turn-category-badge.category-fast {
+    color: #4ade80;
+    border-color: rgba(74, 222, 128, 0.3);
+    background: rgba(74, 222, 128, 0.08);
 }
 
 .subplot-title {
@@ -685,7 +738,7 @@ circle.data-point:hover {
 
 @media (min-width: 1200px) {
     .dashboard-grid {
-        grid-template-columns: minmax(0, 1fr) 230px;
+        grid-template-columns: minmax(0, 1fr) 270px;
     }
 }
 
@@ -702,7 +755,7 @@ circle.data-point:hover {
 }
 
 #standings-container {
-    padding: 1rem 0.9rem;
+    padding: 1rem 0.85rem;
 }
 
 #standings-container h2 {
@@ -741,7 +794,7 @@ circle.data-point:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.4rem 0.55rem;
+    padding: 0.4rem 0.5rem;
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.03);
     border-radius: 4px;

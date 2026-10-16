@@ -10,7 +10,12 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from fetch_openf1 import fetch_openf1_data, process_laps_data
+from fetch_openf1 import (
+    _find_matching_session,
+    _is_matching_session,
+    fetch_openf1_data,
+    process_laps_data,
+)
 
 
 class TestProcessLapsData(unittest.TestCase):
@@ -212,6 +217,7 @@ class TestProcessLapsData(unittest.TestCase):
         ("Bahrain", "Bahrain Grand Prix"),
         ("Sakhir", "Bahrain Grand Prix"),
         ("Bahrain International", "Bahrain Grand Prix"),
+        ("Kuala Lumpur", "Bahrain Grand Prix"),
     ],
 )
 def test_fetch_openf1_data_success(
@@ -222,12 +228,13 @@ def test_fetch_openf1_data_success(
     """Verifies end-to-end fetching, driver deduplication, and JSON serialization."""
     out_file = tmp_path / "nested" / "race.json"
 
-    mock_responses: list[ Any ] = [
+    mock_responses: list[Any] = [
         [
             {
                 "session_key": 9001,
                 "country_name": "Bahrain",
                 "circuit_short_name": "Sakhir",
+                "location": "Kuala Lumpur",
             }
         ],
         [
@@ -397,6 +404,147 @@ def test_fetch_openf1_data_stints_api_error_fallback(tmp_path: Path) -> None:
     saved_payload = json.loads(out_file.read_text(encoding="utf-8"))
     assert saved_payload["laps"][0]["compound"] == "UNKNOWN"
     assert saved_payload["laps"][0]["tyre_life"] == 1
+
+
+def test_fetch_openf1_data_falls_through_empty_laps_session(
+    tmp_path: Path,
+) -> None:
+    """Verifies fallback to the second matching session when the first has empty laps."""
+    out_file = tmp_path / "bahrain_fallback.json"
+    payload_queue: list[Any] = [
+        [
+            {
+                "session_key": 11261,
+                "country_name": "Bahrain",
+                "location": "Sakhir",
+                "circuit_short_name": "Sakhir",
+            },
+            {
+                "session_key": 11731,
+                "country_name": "Bahrain",
+                "location": "Kuala Lumpur",
+                "circuit_short_name": "Kuala Lumpur",
+            },
+        ],
+        [{"driver_number": 16, "name_acronym": "LEC"}],
+        [],
+        [
+            {
+                "driver_number": 12,
+                "name_acronym": "ANT",
+                "full_name": "Kimi Antonelli",
+                "team_name": "Mercedes",
+                "team_colour": "00D7B6",
+            }
+        ],
+        [{"driver_number": 12, "lap_number": 1, "lap_duration": 95.4}],
+        [
+            {
+                "driver_number": 12,
+                "lap_start": 1,
+                "lap_end": 20,
+                "tyre_age_at_start": 0,
+                "compound": "MEDIUM",
+            }
+        ],
+    ]
+
+    requested_urls: list[str] = []
+
+    def _side_effect(url: str) -> MagicMock:
+        requested_urls.append(url)
+        response = MagicMock()
+        response.json.return_value = payload_queue.pop(0)
+        return response
+
+    with (
+        patch("fetch_openf1.requests.get", side_effect=_side_effect),
+        patch("fetch_openf1.time.sleep"),
+    ):
+        fetch_openf1_data(2026, "Bahrain", str(out_file))
+
+    assert out_file.exists()
+    assert any("session_key=11261" in url for url in requested_urls)
+    assert any("session_key=11731" in url for url in requested_urls)
+    saved_payload = json.loads(out_file.read_text(encoding="utf-8"))
+    assert saved_payload["race_info"]["winner"] == "ANT"
+    assert saved_payload["race_info"]["total_laps"] == 1
+
+
+def test_fetch_openf1_data_with_explicit_session_key(tmp_path: Path) -> None:
+    """Verifies explicit `session_key` selects the exact session directly."""
+    out_file = tmp_path / "bahrain_explicit.json"
+    payload_queue: list[Any] = [
+        [
+            {
+                "session_key": 11261,
+                "country_name": "Bahrain",
+                "location": "Sakhir",
+                "circuit_short_name": "Sakhir",
+            },
+            {
+                "session_key": 11731,
+                "country_name": "Bahrain",
+                "location": "Kuala Lumpur",
+                "circuit_short_name": "Kuala Lumpur",
+            },
+        ],
+        [
+            {
+                "driver_number": 63,
+                "name_acronym": "RUS",
+                "full_name": "George Russell",
+                "team_name": "Mercedes",
+                "team_colour": "00D7B6",
+            }
+        ],
+        [{"driver_number": 63, "lap_number": 1, "lap_duration": 94.2}],
+        [],
+    ]
+
+    requested_urls: list[str] = []
+
+    def _side_effect(url: str) -> MagicMock:
+        requested_urls.append(url)
+        response = MagicMock()
+        response.json.return_value = payload_queue.pop(0)
+        return response
+
+    with (
+        patch("fetch_openf1.requests.get", side_effect=_side_effect),
+        patch("fetch_openf1.time.sleep"),
+    ):
+        fetch_openf1_data(2026, "Bahrain", str(out_file), session_key=11731)
+
+    assert out_file.exists()
+    assert not any("session_key=11261" in url for url in requested_urls)
+    assert any("session_key=11731" in url for url in requested_urls)
+    saved_payload = json.loads(out_file.read_text(encoding="utf-8"))
+    assert saved_payload["race_info"]["winner"] == "RUS"
+
+
+def test_find_matching_session_and_empty_query() -> None:
+    """Verifies `_find_matching_session` helper and empty query handling."""
+    sessions: list[dict[str, Any]] = [
+        {
+            "session_key": 11261,
+            "country_name": "Bahrain",
+            "location": "Sakhir",
+            "circuit_short_name": "Sakhir",
+        },
+        {
+            "session_key": 11731,
+            "country_name": "Bahrain",
+            "location": "Kuala Lumpur",
+            "circuit_short_name": "Kuala Lumpur",
+        },
+    ]
+    assert not _is_matching_session(sessions[0], "")
+    first = _find_matching_session(sessions, "Bahrain")
+    assert first is not None and first["session_key"] == 11261
+    second = _find_matching_session(sessions, "Bahrain", session_key=11731)
+    assert second is not None and second["session_key"] == 11731
+    assert _find_matching_session(sessions, "Nonexistent") is None
 
 
 if __name__ == "__main__":

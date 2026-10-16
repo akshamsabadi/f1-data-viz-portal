@@ -101,7 +101,15 @@ class TestAutoUpdateCalendarNormalCases:
             ],
         )
 
-        def fake_fetch(year: int, country: str, out_path: str) -> None:
+        forwarded_session_keys: list[int | None] = []
+
+        def fake_fetch(
+            year: int,
+            country: str,
+            out_path: str,
+            session_key: int | None = None,
+        ) -> None:
+            forwarded_session_keys.append(session_key)
             Path(out_path).parent.mkdir(parents=True, exist_ok=True)
             Path(out_path).write_text("{}", encoding="utf-8")
 
@@ -111,6 +119,7 @@ class TestAutoUpdateCalendarNormalCases:
 
         assert result is True
         assert mock_fetch_data.call_count == 2
+        assert forwarded_session_keys == [1002, 1003]
         assert mock_calc_corners.call_count == 2
 
         updated_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -128,6 +137,58 @@ class TestAutoUpdateCalendarNormalCases:
             "name": "Barcelona-Catalunya Grand Prix",
             "file": "races/2026/spain.json",
         }
+
+    @patch("auto_update_calendar.calculate_corner_speeds")
+    @patch("auto_update_calendar.fetch_openf1_data")
+    @patch("auto_update_calendar.requests.get")
+    def test_falls_through_duplicate_country_session_when_first_has_no_data(
+        self,
+        mock_get: MagicMock,
+        mock_fetch_data: MagicMock,
+        mock_calc_corners: MagicMock,
+        tmp_path: Path,
+    ) -> None:
+        """Verifies second session for same country is ingested if first produced no file."""
+        manifest_path = _create_manifest(tmp_path, [])
+        mock_get.return_value = _make_mock_response(
+            status_code=200,
+            json_data=[
+                {
+                    "country_name": "Bahrain",
+                    "circuit_short_name": "Sakhir",
+                    "session_key": 11261,
+                },
+                {
+                    "country_name": "Bahrain",
+                    "circuit_short_name": "Kuala Lumpur",
+                    "session_key": 11731,
+                },
+            ],
+        )
+
+        forwarded_session_keys: list[int | None] = []
+
+        def fake_fetch(
+            year: int,
+            country: str,
+            out_path: str,
+            session_key: int | None = None,
+        ) -> None:
+            forwarded_session_keys.append(session_key)
+            if session_key == 11731:
+                Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+                Path(out_path).write_text("{}", encoding="utf-8")
+
+        mock_fetch_data.side_effect = fake_fetch
+
+        result = auto_update_calendar.main(str(tmp_path))
+
+        assert result is True
+        assert forwarded_session_keys == [11261, 11731]
+        assert mock_calc_corners.call_count == 1
+        updated_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        assert len(updated_manifest["races"]) == 1
+        assert updated_manifest["races"][0]["id"] == "bahrain"
 
 
 class TestAutoUpdateCalendarEdgeCases:
@@ -363,7 +424,12 @@ class TestAutoUpdateCalendarFailureCases:
             ],
         )
 
-        def fake_fetch(year: int, country: str, out_path: str) -> None:
+        def fake_fetch(
+            year: int,
+            country: str,
+            out_path: str,
+            session_key: int | None = None,
+        ) -> None:
             Path(out_path).parent.mkdir(parents=True, exist_ok=True)
             Path(out_path).write_text("{}", encoding="utf-8")
 

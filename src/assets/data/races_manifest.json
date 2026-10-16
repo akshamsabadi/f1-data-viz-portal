@@ -92,6 +92,12 @@
     },
     {
       "year": 2026,
+      "id": "bahrain",
+      "name": "Bahrain Grand Prix (Kuala Lumpur)",
+      "file": "races/2026/bahrain.json"
+    },
+    {
+      "year": 2026,
       "id": "singapore",
       "name": "Singapore Grand Prix",
       "file": "races/2026/singapore.json"

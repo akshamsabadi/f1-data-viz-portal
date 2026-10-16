@@ -7,7 +7,7 @@ import {
     formatSessionDuration
 } from './standings.js';
 
-const APP_VERSION = 'v1.16.29';
+const APP_VERSION = 'v1.16.30';
 
 const _OFFICIAL_TEAM_COLORS = {
     'Ferrari': '#e30002',

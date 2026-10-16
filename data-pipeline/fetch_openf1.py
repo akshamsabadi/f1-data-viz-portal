@@ -340,38 +340,81 @@ def _is_matching_session(session: Mapping[str, Any], gp_name: str) -> bool:
 
     Args:
         session: A session metadata record from OpenF1.
-        gp_name: User-supplied Grand Prix country or circuit name.
+        gp_name: User-supplied Grand Prix country, circuit, or location name.
 
     Returns:
-        `True` if the session's country or circuit matches `gp_name`.
+        `True` if the session's country, circuit, or location matches `gp_name`.
     """
     normalized_gp = gp_name.lower()
+    if not normalized_gp:
+        return False
     country_name = str(session.get("country_name", "")).lower()
     circuit_short_name = str(session.get("circuit_short_name", "")).lower()
+    location = str(session.get("location", "")).lower()
     return (
-        country_name in normalized_gp
-        or circuit_short_name in normalized_gp
-        or normalized_gp in country_name
+        (
+            bool(country_name)
+            and (country_name in normalized_gp or normalized_gp in country_name)
+        )
+        or (
+            bool(circuit_short_name)
+            and (
+                circuit_short_name in normalized_gp
+                or normalized_gp in circuit_short_name
+            )
+        )
+        or (
+            bool(location)
+            and (location in normalized_gp or normalized_gp in location)
+        )
     )
+
+
+def _find_matching_sessions(
+    sessions: Sequence[Mapping[str, Any]],
+    gp_name: str,
+    session_key: int | None = None,
+) -> list[Mapping[str, Any]]:
+    """Finds all sessions in `sessions` matching `session_key` or `gp_name`.
+
+    Args:
+        sessions: Sequence of session records returned by OpenF1.
+        gp_name: Target Grand Prix name, circuit, or location.
+        session_key: Optional explicit OpenF1 session key to filter by.
+
+    Returns:
+        A list of matching session dictionaries in discovery order.
+    """
+    if session_key is not None:
+        return [
+            session
+            for session in sessions
+            if session.get("session_key") == session_key
+        ]
+    return [
+        session
+        for session in sessions
+        if _is_matching_session(session, gp_name)
+    ]
 
 
 def _find_matching_session(
     sessions: Sequence[Mapping[str, Any]],
     gp_name: str,
+    session_key: int | None = None,
 ) -> Mapping[str, Any] | None:
-    """Finds the first session in `sessions` matching `gp_name`.
+    """Finds the first session in `sessions` matching `session_key` or `gp_name`.
 
     Args:
         sessions: Sequence of session records returned by OpenF1.
-        gp_name: Target Grand Prix name or location.
+        gp_name: Target Grand Prix name, circuit, or location.
+        session_key: Optional explicit OpenF1 session key to filter by.
 
     Returns:
         The matching session dictionary, or `None` if no match is found.
     """
-    for session in sessions:
-        if _is_matching_session(session, gp_name):
-            return session
-    return None
+    matching_sessions = _find_matching_sessions(sessions, gp_name, session_key)
+    return matching_sessions[0] if matching_sessions else None
 
 
 def _extract_unique_drivers(
@@ -446,13 +489,21 @@ def _save_race_payload(out_path: str, payload: Mapping[str, Any]) -> None:
     print(f"Data saved to {out_path}")
 
 
-def fetch_openf1_data(year: int, gp_name: str, out_path: str) -> None:
+def fetch_openf1_data(
+    year: int,
+    gp_name: str,
+    out_path: str,
+    session_key: int | None = None,
+) -> None:
     """Fetches race session, driver, lap, and stint data from OpenF1 and saves JSON.
 
     Args:
         year: Championship season year (e.g., `2023`).
-        gp_name: Country or circuit name identifying the Grand Prix.
+        gp_name: Country, circuit, or location name identifying the Grand Prix.
         out_path: Output file path where the processed JSON payload will be written.
+        session_key: Optional explicit OpenF1 `session_key` to fetch. When `None`,
+            all sessions matching `gp_name` are tried until one with non-empty
+            lap data is found.
     """
     print(f"Fetching OpenF1 data for {year} {gp_name}...")
 
@@ -462,48 +513,58 @@ def fetch_openf1_data(year: int, gp_name: str, out_path: str) -> None:
     if sessions is None:
         return
 
-    session = _find_matching_session(sessions, gp_name)
-    if not session:
+    matching_sessions = _find_matching_sessions(sessions, gp_name, session_key)
+    if not matching_sessions:
         print("Could not find session for", gp_name)
         return
 
-    session_key = session["session_key"]
-    print(f"Found session_key: {session_key}")
+    for session in matching_sessions:
+        candidate_session_key = session["session_key"]
+        print(f"Found session_key: {candidate_session_key}")
 
-    drivers_data = _fetch_openf1_endpoint("drivers", {"session_key": session_key})
-    if drivers_data is None:
+        drivers_data = _fetch_openf1_endpoint(
+            "drivers", {"session_key": candidate_session_key}
+        )
+        if drivers_data is None:
+            return
+        drivers_dict, drivers_list = _extract_unique_drivers(drivers_data)
+
+        laps_data = _fetch_openf1_endpoint(
+            "laps", {"session_key": candidate_session_key}
+        )
+        if laps_data is None:
+            return
+        if not laps_data:
+            print("No lap data available.")
+            continue
+
+        stints_data = _fetch_openf1_endpoint(
+            "stints", {"session_key": candidate_session_key}
+        )
+        if stints_data is None:
+            stints_data = []
+
+        final_laps, max_lap = process_laps_data(
+            laps_data, drivers_dict, stints_data
+        )
+        winner = _determine_race_winner(final_laps, max_lap)
+
+        race_info = {
+            "year": year,
+            "gp": f"{session['country_name']} Grand Prix",
+            "total_laps": max_lap,
+            "winner": winner,
+        }
+
+        payload = {
+            "race_info": race_info,
+            "drivers": drivers_list,
+            "session_events": [],
+            "laps": final_laps,
+        }
+
+        _save_race_payload(out_path, payload)
         return
-    drivers_dict, drivers_list = _extract_unique_drivers(drivers_data)
-
-    laps_data = _fetch_openf1_endpoint("laps", {"session_key": session_key})
-    if laps_data is None:
-        return
-    if not laps_data:
-        print("No lap data available.")
-        return
-
-    stints_data = _fetch_openf1_endpoint("stints", {"session_key": session_key})
-    if stints_data is None:
-        stints_data = []
-
-    final_laps, max_lap = process_laps_data(laps_data, drivers_dict, stints_data)
-    winner = _determine_race_winner(final_laps, max_lap)
-
-    race_info = {
-        "year": year,
-        "gp": f"{session['country_name']} Grand Prix",
-        "total_laps": max_lap,
-        "winner": winner,
-    }
-
-    payload = {
-        "race_info": race_info,
-        "drivers": drivers_list,
-        "session_events": [],
-        "laps": final_laps,
-    }
-
-    _save_race_payload(out_path, payload)
 
 
 if __name__ == "__main__":
@@ -513,6 +574,9 @@ if __name__ == "__main__":
     parser.add_argument("--year", type=int, required=True)
     parser.add_argument("--gp", type=str, required=True)
     parser.add_argument("--out", type=str, required=True)
+    parser.add_argument("--session-key", type=int, default=None)
     args = parser.parse_args()
 
-    fetch_openf1_data(args.year, args.gp, args.out)
+    fetch_openf1_data(
+        args.year, args.gp, args.out, session_key=args.session_key
+    )

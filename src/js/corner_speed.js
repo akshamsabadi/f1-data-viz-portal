@@ -1,15 +1,14 @@
 const _SLOW_CORNER_MAX_KMH = 130;
 const _MEDIUM_CORNER_MAX_KMH = 200;
-const _SUBPLOT_MARGIN = { top: 20, right: 30, bottom: 50, left: 50 };
-const _MIN_SUBPLOT_HEIGHT_PX = 300;
-const _HEIGHT_PER_TURN_PX = 42;
-const _SPEED_DOMAIN_BUFFER_KMH = 6;
-const _RANGE_PADDING_PX = 24;
-const _Y_SCALE_PADDING = 0.5;
-const _X_AXIS_TICKS = 5;
+const _TURN_SUBPLOT_MARGIN = { top: 10, right: 18, bottom: 26, left: 18 };
+const _TURN_CHART_HEIGHT_PX = 44;
+const _MIN_SUBPLOT_WIDTH_PX = 120;
+const _SPEED_DOMAIN_BUFFER_KMH = 1.5;
+const _RANGE_PADDING_PX = 14;
+const _X_AXIS_TICKS = 4;
 const _NODE_RADIUS_PX = 5.5;
 const _NODE_HOVER_RADIUS_OFFSET_PX = 2;
-const _MAX_VERTICAL_JITTER_PX = 5;
+const _MAX_VERTICAL_JITTER_PX = 5.5;
 const _ACTIVE_OPACITY = 1;
 const _DIMMED_OPACITY = 0.12;
 const _TOOLTIP_OFFSET_X_PX = 15;
@@ -30,55 +29,60 @@ export function setCornerSpeedExternalFocus(teamName) {
 }
 
 /**
- * Maps an average turn apex speed in km/h to its speed category key.
+ * Maps an average turn apex speed in km/h to its speed category descriptor.
  *
- * @param {number} avgSpeed - Mean speed across teams for a given turn.
- * @returns {'Slow'|'Medium'|'Fast'} Speed category identifier.
+ * @param {number} avgSpeed - Mean speed across constructors for a given turn.
+ * @returns {{key: 'Slow'|'Medium'|'Fast', label: string, cssClass: string}} Speed category metadata.
  */
-function _getCornerCategoryKey(avgSpeed) {
-    if (avgSpeed < _SLOW_CORNER_MAX_KMH) return 'Slow';
-    if (avgSpeed <= _MEDIUM_CORNER_MAX_KMH) return 'Medium';
-    return 'Fast';
+function _getCornerCategory(avgSpeed) {
+    if (avgSpeed < _SLOW_CORNER_MAX_KMH) {
+        return {
+            key: 'Slow',
+            label: `Slow (<${_SLOW_CORNER_MAX_KMH} km/h)`,
+            cssClass: 'category-slow'
+        };
+    }
+    if (avgSpeed <= _MEDIUM_CORNER_MAX_KMH) {
+        return {
+            key: 'Medium',
+            label: `Medium (${_SLOW_CORNER_MAX_KMH}–${_MEDIUM_CORNER_MAX_KMH} km/h)`,
+            cssClass: 'category-medium'
+        };
+    }
+    return {
+        key: 'Fast',
+        label: `Fast (>${_MEDIUM_CORNER_MAX_KMH} km/h)`,
+        cssClass: 'category-fast'
+    };
 }
 
 /**
- * Groups turns and cloned corner speed measurements into Slow, Medium, and Fast categories.
+ * Groups corner speed measurements by turn number in ascending order (1..N),
+ * cloning each corner record and computing per-turn speed statistics and category metadata.
  *
  * @param {Array<{turn: number, team: string, speed: number, color?: string}>} corners - Raw corner speed records.
- * @returns {Object<string, {title: string, turns: Array<number>, corners: Array<Object>}>} Categorized corner data with cloned records.
+ * @returns {Array<{turn: number, avgSpeed: number, minSpeed: number, maxSpeed: number, category: {key: string, label: string, cssClass: string}, corners: Array<Object>}>} Per-turn descriptors sorted by turn number.
  */
-function _categorizeCornersBySpeed(corners) {
-    const turnAverages = d3.rollups(
-        corners,
-        (values) => d3.mean(values, (d) => d.speed),
-        (d) => d.turn
-    );
+function _groupCornersByTurn(corners) {
+    const grouped = d3.group(corners, (d) => d.turn);
+    const turns = Array.from(grouped.keys()).sort((a, b) => a - b);
 
-    const categories = {
-        Slow: { title: `Slow Corners (< ${_SLOW_CORNER_MAX_KMH} km/h)`, turns: [], corners: [] },
-        Medium: {
-            title: `Medium Corners (${_SLOW_CORNER_MAX_KMH} - ${_MEDIUM_CORNER_MAX_KMH} km/h)`,
-            turns: [],
-            corners: []
-        },
-        Fast: { title: `Fast Corners (> ${_MEDIUM_CORNER_MAX_KMH} km/h)`, turns: [], corners: [] }
-    };
+    return turns.map((turn) => {
+        const rawTurnCorners = grouped.get(turn) || [];
+        const turnCorners = rawTurnCorners.map((corner) => ({ ...corner }));
+        const avgSpeed = d3.mean(turnCorners, (d) => d.speed) || 0;
+        const minSpeed = d3.min(turnCorners, (d) => d.speed) || 0;
+        const maxSpeed = d3.max(turnCorners, (d) => d.speed) || 0;
 
-    const turnToCategory = new Map();
-    turnAverages.forEach(([turn, avgSpeed]) => {
-        const categoryKey = _getCornerCategoryKey(avgSpeed);
-        categories[categoryKey].turns.push(turn);
-        turnToCategory.set(turn, categoryKey);
+        return {
+            turn,
+            avgSpeed,
+            minSpeed,
+            maxSpeed,
+            category: _getCornerCategory(avgSpeed),
+            corners: turnCorners
+        };
     });
-
-    corners.forEach((corner) => {
-        const categoryKey = turnToCategory.get(corner.turn);
-        if (categoryKey) {
-            categories[categoryKey].corners.push({ ...corner });
-        }
-    });
-
-    return categories;
 }
 
 /**
@@ -150,22 +154,35 @@ function _buildConstructorLegend(legendContainer, teams, activeTeams, onFilterCh
 }
 
 /**
- * Creates the DOM wrapper and title for a single corner speed category subplot.
+ * Creates the DOM card wrapper, header with turn title and speed category badge,
+ * and inner chart mount container for a single turn subplot.
  *
- * @param {HTMLElement} parentContainer - Parent container holding all subplots.
- * @param {string} titleText - Heading text for the subplot category.
- * @returns {HTMLDivElement} Inner chart container `div` where the SVG will be mounted.
+ * @param {HTMLElement} parentContainer - Parent container holding all turn cards.
+ * @param {{turn: number, category: {key: string, label: string, cssClass: string}}} turnData - Turn metadata.
+ * @returns {HTMLDivElement} Inner chart container `div.turn-chart-mount` where the SVG will be mounted.
  */
-function _createSubplotContainer(parentContainer, titleText) {
+function _createTurnSubplotCard(parentContainer, turnData) {
     const subplotWrap = document.createElement('div');
-    subplotWrap.className = 'subplot-container';
+    subplotWrap.className = 'subplot-container turn-subplot-card';
 
-    const title = document.createElement('div');
-    title.className = 'subplot-title';
-    title.textContent = titleText;
-    subplotWrap.appendChild(title);
+    const header = document.createElement('div');
+    header.className = 'subplot-title turn-subplot-header';
+
+    const turnName = document.createElement('span');
+    turnName.className = 'turn-subplot-name';
+    turnName.textContent = `TURN ${turnData.turn}`;
+
+    const badge = document.createElement('span');
+    badge.className = `turn-category-badge ${turnData.category.cssClass}`;
+    badge.title = turnData.category.label;
+    badge.textContent = turnData.category.key;
+
+    header.appendChild(turnName);
+    header.appendChild(badge);
+    subplotWrap.appendChild(header);
 
     const chartDiv = document.createElement('div');
+    chartDiv.className = 'turn-chart-mount';
     subplotWrap.appendChild(chartDiv);
     parentContainer.appendChild(subplotWrap);
 
@@ -173,117 +190,139 @@ function _createSubplotContainer(parentContainer, titleText) {
 }
 
 /**
- * Renders gridlines, horizontal Speed axis, and vertical Turn axis for a subplot.
+ * Renders vertical tick gridlines and a compact bottom Speed axis (km/h) for a turn card.
  *
- * @param {Object} svg - D3 selection for the subplot's main translated group.
- * @param {Function} xScale - D3 linear scale for corner speeds.
- * @param {Function} yScale - D3 point scale for turn numbers.
- * @param {number} width - Inner subplot width in pixels.
+ * @param {Object} svg - D3 selection for the turn subplot's translated group.
+ * @param {Function} xScale - D3 linear scale for turn corner speeds.
  * @param {number} height - Inner subplot height in pixels.
  * @returns {void}
  */
-function _renderSubplotAxesAndGrid(svg, xScale, yScale, width, height) {
+function _renderTurnAxesAndGrid(svg, xScale, height) {
     svg.append('g')
         .attr('class', 'gridline')
-        .call(d3.axisLeft(yScale).tickSize(-width).tickFormat(''));
+        .attr('transform', `translate(0,${height})`)
+        .call(
+            d3
+                .axisBottom(xScale)
+                .ticks(_X_AXIS_TICKS)
+                .tickSize(-height)
+                .tickSizeOuter(0)
+                .tickFormat('')
+        );
 
     svg.append('g')
         .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(xScale).ticks(_X_AXIS_TICKS))
-        .append('text')
-        .attr('x', width / 2)
-        .attr('y', 40)
-        .attr('fill', 'var(--text-muted)')
-        .attr('text-anchor', 'middle')
-        .style('font-family', 'Montserrat, sans-serif')
-        .style('font-weight', '600')
-        .text('SPEED (KM/H)');
-
-    svg.append('g')
-        .call(d3.axisLeft(yScale).tickFormat((d) => `T${d}`))
-        .selectAll('.tick text')
-        .style('fill', 'var(--text-muted)')
-        .style('font-family', 'Titillium Web, sans-serif')
-        .style('font-weight', '700')
-        .style('font-size', '12px');
+        .call(
+            d3
+                .axisBottom(xScale)
+                .ticks(_X_AXIS_TICKS)
+                .tickSizeOuter(0)
+                .tickFormat((d) => `${d}`)
+        );
 }
 
 /**
- * Positions each corner node at its true X-axis speed (`xScale(d.speed)`) and applies a
- * deterministic vertical jitter (`±5px`) within each turn's band so overlapping teams remain visible
- * without distorting horizontal km/h readings.
+ * Renders a horizontal min-to-max speed range bar across the vertical center of a turn subplot.
  *
- * @param {Array<Object>} corners - Cloned corner records for the subplot.
+ * @param {Object} svg - D3 selection for the turn subplot's translated group.
  * @param {Function} xScale - D3 linear scale mapping speed to X coordinate.
- * @param {Function} yScale - D3 point scale mapping turn number to Y coordinate.
+ * @param {number} minSpeed - Slowest constructor speed in this turn.
+ * @param {number} maxSpeed - Fastest constructor speed in this turn.
+ * @param {number} centerY - Vertical center coordinate of the turn chart.
  * @returns {void}
  */
-function _positionCornerNodesTrueSpeed(corners, xScale, yScale) {
-    const byTurn = d3.group(corners, (d) => d.turn);
-    byTurn.forEach((turnCorners, turn) => {
-        turnCorners.sort((a, b) => a.speed - b.speed);
-        const baseY = yScale(turn);
-        const count = turnCorners.length;
-        turnCorners.forEach((d, idx) => {
-            d.x = xScale(d.speed);
-            const normalizedOffset =
-                count > 1 ? ((idx % 3) - 1) * (_MAX_VERTICAL_JITTER_PX * 0.85) : 0;
-            const fineOffset = count > 3 ? ((idx % 2) - 0.5) * 2.5 : 0;
-            d.y =
-                baseY +
-                Math.max(
-                    -_MAX_VERTICAL_JITTER_PX,
-                    Math.min(_MAX_VERTICAL_JITTER_PX, normalizedOffset + fineOffset)
-                );
-        });
-    });
-}
-
-/**
- * Renders a subtle horizontal min-to-max speed range bar per turn so the spread across constructors is clear.
- *
- * @param {Object} svg - D3 selection for the subplot's main translated group.
- * @param {Array<Object>} corners - Corner speed records for the subplot.
- * @param {Function} xScale - D3 linear scale mapping speed to X coordinate.
- * @param {Function} yScale - D3 point scale mapping turn number to Y coordinate.
- * @returns {void}
- */
-function _renderTurnRangeBars(svg, corners, xScale, yScale) {
-    const turnExtents = d3.rollups(
-        corners,
-        (values) => ({
-            minSpeed: d3.min(values, (d) => d.speed),
-            maxSpeed: d3.max(values, (d) => d.speed)
-        }),
-        (d) => d.turn
-    );
-
-    svg.append('g')
-        .attr('class', 'turn-range-bars')
-        .selectAll('line.turn-range-bar')
-        .data(turnExtents)
-        .enter()
-        .append('line')
+function _renderTurnRangeBar(svg, xScale, minSpeed, maxSpeed, centerY) {
+    svg.append('line')
         .attr('class', 'turn-range-bar')
-        .attr('x1', ([_, ext]) => xScale(ext.minSpeed))
-        .attr('x2', ([_, ext]) => xScale(ext.maxSpeed))
-        .attr('y1', ([turn]) => yScale(turn))
-        .attr('y2', ([turn]) => yScale(turn))
+        .attr('x1', xScale(minSpeed))
+        .attr('x2', xScale(maxSpeed))
+        .attr('y1', centerY)
+        .attr('y2', centerY)
         .attr('stroke', 'rgba(255, 255, 255, 0.16)')
         .attr('stroke-width', 4)
         .attr('stroke-linecap', 'round');
 }
 
 /**
- * Renders positioned team speed nodes and binds tooltip hover interactions.
+ * Positions each corner node at its true X-axis speed (`xScale(d.speed)`) and applies a
+ * deterministic vertical offset (`±5.5px`) around `centerY` based on sorted speed index
+ * so closely-spaced constructors remain easy to see and hover without distorting horizontal km/h coordinates.
  *
- * @param {Object} svg - D3 selection for the subplot's main translated group.
- * @param {Array<Object>} corners - Positioned corner speed records.
+ * @param {Array<Object>} turnCorners - Cloned corner records for a single turn.
+ * @param {Function} xScale - D3 linear scale mapping speed to X coordinate.
+ * @param {number} centerY - Vertical center coordinate of the turn chart.
+ * @returns {void}
+ */
+function _positionTurnNodesTrueSpeed(turnCorners, xScale, centerY) {
+    turnCorners.sort((a, b) => a.speed - b.speed);
+    const count = turnCorners.length;
+    turnCorners.forEach((d, idx) => {
+        d.x = xScale(d.speed);
+        const normalizedOffset =
+            count > 1 ? ((idx % 3) - 1) * (_MAX_VERTICAL_JITTER_PX * 0.85) : 0;
+        const fineOffset = count > 3 ? ((idx % 2) - 0.5) * 2.2 : 0;
+        d.y =
+            centerY +
+            Math.max(
+                -_MAX_VERTICAL_JITTER_PX,
+                Math.min(_MAX_VERTICAL_JITTER_PX, normalizedOffset + fineOffset)
+            );
+    });
+}
+
+/**
+ * Populates the shared tooltip element with constructor turn speed and delta to the fastest car in that turn.
+ *
+ * @param {HTMLElement|null} tooltipNode - DOM node of the shared `#tooltip` container.
+ * @param {{team: string, turn: number, speed: number}} cornerEntry - Hovered corner record.
+ * @param {{key: string}} category - Turn speed category descriptor.
+ * @param {number} fastestInTurn - Maximum speed recorded in this turn across constructors.
+ * @returns {void}
+ */
+function _populateCornerTooltipContent(tooltipNode, cornerEntry, category, fastestInTurn) {
+    if (!tooltipNode) return;
+
+    const headerDiv = document.createElement('div');
+    headerDiv.style.fontFamily = 'Montserrat, sans-serif';
+    headerDiv.style.fontWeight = '700';
+    headerDiv.style.marginBottom = '4px';
+    headerDiv.style.textTransform = 'uppercase';
+    headerDiv.appendChild(document.createTextNode(`${cornerEntry.team} `));
+
+    const turnSpan = document.createElement('span');
+    turnSpan.style.color = 'var(--text-muted)';
+    turnSpan.style.fontWeight = '600';
+    turnSpan.style.fontSize = '0.75rem';
+    turnSpan.textContent = `TURN ${cornerEntry.turn} (${category.key.toUpperCase()})`;
+    headerDiv.appendChild(turnSpan);
+
+    const speedDiv = document.createElement('div');
+    speedDiv.style.fontSize = '0.95rem';
+    speedDiv.style.fontWeight = '600';
+    speedDiv.textContent = `Speed: ${cornerEntry.speed.toFixed(1)} km/h`;
+
+    const delta = fastestInTurn - cornerEntry.speed;
+    const deltaDiv = document.createElement('div');
+    deltaDiv.style.fontSize = '0.8rem';
+    deltaDiv.style.color = delta === 0 ? '#34d399' : 'var(--text-muted)';
+    deltaDiv.style.marginTop = '2px';
+    deltaDiv.textContent =
+        delta === 0 ? 'Fastest in Turn' : `-${delta.toFixed(1)} km/h vs P1`;
+
+    tooltipNode.replaceChildren(headerDiv, speedDiv, deltaDiv);
+}
+
+/**
+ * Renders positioned team speed nodes for a single turn and binds tooltip hover interactions.
+ *
+ * @param {Object} svg - D3 selection for the turn subplot's translated group.
+ * @param {{corners: Array<Object>, category: {key: string}, maxSpeed: number}} turnData - Turn data and speed stats.
  * @param {number} width - Inner subplot width in pixels.
  * @param {Object} tooltip - D3 selection for the shared tooltip element.
  * @returns {Object} D3 selection of rendered `.team-node` groups.
  */
-function _renderCornerNodes(svg, corners, width, tooltip) {
+function _renderTurnCornerNodes(svg, turnData, width, tooltip) {
+    const { corners, category, maxSpeed: fastestInTurn } = turnData;
     const nodes = svg
         .selectAll('.team-node')
         .data(corners)
@@ -297,18 +336,11 @@ function _renderCornerNodes(svg, corners, width, tooltip) {
         .style('cursor', 'pointer')
         .on('mouseover', (event, d) => {
             const teamColor = d.color || 'var(--accent)';
+            _populateCornerTooltipContent(tooltip.node(), d, category, fastestInTurn);
 
             tooltip
                 .classed('hidden', false)
                 .style('border-left-color', teamColor)
-                .html(`
-                    <div style="font-family: Montserrat, sans-serif; font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">
-                        ${d.team} <span style="color: var(--text-muted); font-weight: 600; font-size: 0.75rem;">TURN ${d.turn}</span>
-                    </div>
-                    <div style="font-size: 1rem; font-weight: 600;">
-                        ${d.speed.toFixed(1)} km/h
-                    </div>
-                `)
                 .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
                 .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
 
@@ -339,57 +371,46 @@ function _renderCornerNodes(svg, corners, width, tooltip) {
 }
 
 /**
- * Draws the SVG inside a mounted corner speed category subplot container after grid layout is finalized.
+ * Draws the auto-scaled SVG inside a mounted per-turn card container after the CSS Grid layout settles.
  *
- * @param {HTMLDivElement} chartDiv - Mounted chart container element with final grid column width.
- * @param {{title: string, turns: Array<number>, corners: Array<Object>}} categoryData - Category turns and records.
+ * @param {HTMLDivElement} chartDiv - Mounted `.turn-chart-mount` container with final grid column width.
+ * @param {{turn: number, minSpeed: number, maxSpeed: number, category: {key: string}, corners: Array<Object>}} turnData - Turn data and speed bounds.
  * @param {Object} tooltip - D3 selection for the shared tooltip element.
- * @returns {Object} D3 selection of rendered nodes in this subplot.
+ * @returns {Object} D3 selection of rendered nodes in this turn subplot.
  */
-function _drawCategorySubplotSvg(chartDiv, categoryData, tooltip) {
+function _drawTurnSubplotSvg(chartDiv, turnData, tooltip) {
     const width = Math.max(
-        120,
-        chartDiv.clientWidth - _SUBPLOT_MARGIN.left - _SUBPLOT_MARGIN.right
+        _MIN_SUBPLOT_WIDTH_PX,
+        chartDiv.clientWidth - _TURN_SUBPLOT_MARGIN.left - _TURN_SUBPLOT_MARGIN.right
     );
-    const height = Math.max(
-        _MIN_SUBPLOT_HEIGHT_PX,
-        categoryData.turns.length * _HEIGHT_PER_TURN_PX
-    );
+    const height = _TURN_CHART_HEIGHT_PX;
+    const centerY = height / 2;
 
     const svg = d3
         .select(chartDiv)
         .append('svg')
-        .attr('width', width + _SUBPLOT_MARGIN.left + _SUBPLOT_MARGIN.right)
-        .attr('height', height + _SUBPLOT_MARGIN.top + _SUBPLOT_MARGIN.bottom)
+        .attr('width', width + _TURN_SUBPLOT_MARGIN.left + _TURN_SUBPLOT_MARGIN.right)
+        .attr('height', height + _TURN_SUBPLOT_MARGIN.top + _TURN_SUBPLOT_MARGIN.bottom)
         .append('g')
-        .attr('transform', `translate(${_SUBPLOT_MARGIN.left},${_SUBPLOT_MARGIN.top})`);
-
-    const sortedTurns = categoryData.turns.slice().sort((a, b) => a - b);
-    const speedExtent = d3.extent(categoryData.corners, (d) => d.speed);
+        .attr('transform', `translate(${_TURN_SUBPLOT_MARGIN.left},${_TURN_SUBPLOT_MARGIN.top})`);
 
     const xScale = d3
         .scaleLinear()
         .domain([
-            speedExtent[0] - _SPEED_DOMAIN_BUFFER_KMH,
-            speedExtent[1] + _SPEED_DOMAIN_BUFFER_KMH
+            turnData.minSpeed - _SPEED_DOMAIN_BUFFER_KMH,
+            turnData.maxSpeed + _SPEED_DOMAIN_BUFFER_KMH
         ])
         .range([_RANGE_PADDING_PX, width - _RANGE_PADDING_PX])
         .nice();
 
-    const yScale = d3
-        .scalePoint()
-        .domain(sortedTurns)
-        .range([0, height])
-        .padding(_Y_SCALE_PADDING);
-
-    _renderSubplotAxesAndGrid(svg, xScale, yScale, width, height);
-    _renderTurnRangeBars(svg, categoryData.corners, xScale, yScale);
-    _positionCornerNodesTrueSpeed(categoryData.corners, xScale, yScale);
-    return _renderCornerNodes(svg, categoryData.corners, width, tooltip);
+    _renderTurnAxesAndGrid(svg, xScale, height);
+    _renderTurnRangeBar(svg, xScale, turnData.minSpeed, turnData.maxSpeed, centerY);
+    _positionTurnNodesTrueSpeed(turnData.corners, xScale, centerY);
+    return _renderTurnCornerNodes(svg, turnData, width, tooltip);
 }
 
 /**
- * Updates node opacities and radii across all corner speed subplots based on active teams and hovered team.
+ * Updates node opacities and radii across all turn subplots based on active teams and hovered team.
  *
  * @param {Array<Object>} subplotNodeSelections - List of D3 `.team-node` selections.
  * @param {Set<string>} activeTeams - Set of enabled constructor names.
@@ -428,9 +449,9 @@ function _applyCornerTeamStyles(subplotNodeSelections, activeTeams, highlightedT
 }
 
 /**
- * Renders the Corner Speeds chart partitioned into Slow, Medium, and Fast turn subplots.
- * Mounts all non-empty subplot containers into the CSS Grid before measuring their widths
- * so multi-column SVG dimensions match the final grid layout.
+ * Renders the Corner Speeds chart with an individual auto-scaled subplot card per turn (`Turn 1..N`)
+ * and its speed category badge (`Slow`, `Medium`, `Fast`).
+ * Mounts all turn cards into the CSS Grid before measuring their widths so SVG dimensions match the layout.
  *
  * @param {Object} data - Race telemetry payload containing `corners`.
  * @returns {void}
@@ -438,12 +459,19 @@ function _applyCornerTeamStyles(subplotNodeSelections, activeTeams, highlightedT
 export function renderCornerSpeed(data) {
     const container = document.getElementById('corner-speed-chart');
     const legendContainer = document.getElementById('corner-speed-legend');
-    container.innerHTML = '';
-    if (legendContainer) legendContainer.innerHTML = '';
+    container.replaceChildren();
+    if (legendContainer) legendContainer.replaceChildren();
 
     if (!data.corners || data.corners.length === 0) {
         _externalTeamFocusHandler = null;
-        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding-top: 2rem; font-family: Montserrat, sans-serif; text-transform: uppercase;">No corner speed data available.</p>';
+        const emptyParagraph = document.createElement('p');
+        emptyParagraph.style.color = 'var(--text-muted)';
+        emptyParagraph.style.textAlign = 'center';
+        emptyParagraph.style.paddingTop = '2rem';
+        emptyParagraph.style.fontFamily = 'Montserrat, sans-serif';
+        emptyParagraph.style.textTransform = 'uppercase';
+        emptyParagraph.textContent = 'No corner speed data available.';
+        container.replaceChildren(emptyParagraph);
         return;
     }
 
@@ -452,19 +480,16 @@ export function renderCornerSpeed(data) {
     let hoveredLegendTeam = null;
     let externalFocusedTeam = null;
 
-    const categories = _categorizeCornersBySpeed(data.corners);
-    const nonEmptyCategories = Object.values(categories).filter(
-        (categoryData) => categoryData.turns.length > 0
-    );
+    const turnsData = _groupCornersByTurn(data.corners);
     const tooltip = d3.select('#tooltip');
 
-    const mountedSubplots = nonEmptyCategories.map((categoryData) => ({
-        categoryData,
-        chartDiv: _createSubplotContainer(container, categoryData.title)
+    const mountedTurnCards = turnsData.map((turnData) => ({
+        turnData,
+        chartDiv: _createTurnSubplotCard(container, turnData)
     }));
 
-    const subplotNodeSelections = mountedSubplots.map(({ chartDiv, categoryData }) =>
-        _drawCategorySubplotSvg(chartDiv, categoryData, tooltip)
+    const subplotNodeSelections = mountedTurnCards.map(({ chartDiv, turnData }) =>
+        _drawTurnSubplotSvg(chartDiv, turnData, tooltip)
     );
 
     const refreshTeamStyles = () => {

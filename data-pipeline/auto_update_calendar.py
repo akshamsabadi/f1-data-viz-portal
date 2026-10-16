@@ -179,7 +179,8 @@ def _ingest_new_race_session(
         return None
 
     circuit_name = session.get("circuit_short_name")
-    session_key = session.get("session_key")
+    raw_session_key = session.get("session_key")
+    session_key = raw_session_key if isinstance(raw_session_key, int) else None
     gp_id = _format_gp_id(country_name)
     gp_name = _format_gp_name(country_name, gp_id)
     out_filename = f"{gp_id}.json"
@@ -193,7 +194,9 @@ def _ingest_new_race_session(
 
     print(f"Executing fetch_openf1_data for {gp_name} -> {out_path}...")
     try:
-        fetch_openf1_data(_TARGET_YEAR, country_name, out_path)
+        fetch_openf1_data(
+            _TARGET_YEAR, country_name, out_path, session_key=session_key
+        )
     except Exception as error:
         print(f"Error fetching data for {gp_name}: {error}")
         return None
