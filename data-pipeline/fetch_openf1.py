@@ -327,6 +327,11 @@ def _fetch_openf1_endpoint(
     query_string = "&".join(f"{key}={value}" for key, value in params.items())
     url = f"{_OPENF1_BASE_URL}/{endpoint}?{query_string}"
     response = requests.get(url)
+    for attempt in range(4):
+        if getattr(response, "status_code", 200) != 429:
+            break
+        time.sleep(1.5 * (attempt + 1))
+        response = requests.get(url)
     time.sleep(_API_RATE_LIMIT_DELAY_SECONDS)
     payload = response.json()
     if isinstance(payload, dict):

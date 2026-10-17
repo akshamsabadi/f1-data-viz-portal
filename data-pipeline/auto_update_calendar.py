@@ -20,7 +20,20 @@ _OPENF1_SESSIONS_URL: Final[str] = (
 _REQUEST_TIMEOUT_SECONDS: Final[int] = 15
 _HTTP_OK: Final[int] = 200
 _CATALUNYA_GP_NAME: Final[str] = "Barcelona-Catalunya Grand Prix"
+_MADRING_GP_NAME: Final[str] = "Spanish Grand Prix (Madring)"
 _SPAIN_IDENTIFIERS: Final[tuple[str, ...]] = ("spain", "catalunya")
+_CIRCUIT_ID_OVERRIDES: Final[dict[str, str]] = {
+    "madring": "madring",
+    "miami": "miami",
+    "las vegas": "las_vegas",
+    "imola": "imola",
+}
+_CIRCUIT_NAME_OVERRIDES: Final[dict[str, str]] = {
+    "madring": _MADRING_GP_NAME,
+    "miami": "Miami Grand Prix",
+    "las_vegas": "Las Vegas Grand Prix",
+    "imola": "Emilia Romagna Grand Prix",
+}
 
 
 def _resolve_base_dir(base_dir: str | None) -> str:
@@ -119,28 +132,43 @@ def _fetch_race_sessions(
     return sessions
 
 
-def _format_gp_id(country_name: str) -> str:
-    """Formats a country name into a standardized lowercase snake_case GP ID.
+def _format_gp_id(
+    country_name: str, circuit_short_name: str | None = None
+) -> str:
+    """Formats a country and circuit name into a standardized lowercase snake_case GP ID.
 
     Args:
         country_name: The country name from the OpenF1 session payload.
+        circuit_short_name: Optional circuit short name to disambiguate countries
+            hosting multiple Grands Prix (e.g., 'Madring' vs 'Catalunya' in Spain).
 
     Returns:
-        Normalized identifier string (e.g., 'spain', 'great_britain').
+        Normalized identifier string (e.g., 'spain', 'madring', 'miami').
     """
+    if circuit_short_name:
+        normalized_circuit = circuit_short_name.strip().lower()
+        if normalized_circuit in _CIRCUIT_ID_OVERRIDES:
+            return _CIRCUIT_ID_OVERRIDES[normalized_circuit]
     return country_name.lower().replace(" ", "_")
 
 
-def _format_gp_name(country_name: str, gp_id: str) -> str:
+def _format_gp_name(
+    country_name: str, gp_id: str, circuit_short_name: str | None = None
+) -> str:
     """Determines the display Grand Prix name for a given country and GP ID.
 
     Args:
         country_name: The country name from the OpenF1 session payload.
         gp_id: The standardized GP identifier.
+        circuit_short_name: Optional circuit short name from OpenF1.
 
     Returns:
         The formatted Grand Prix display title.
     """
+    if gp_id in _CIRCUIT_NAME_OVERRIDES:
+        return _CIRCUIT_NAME_OVERRIDES[gp_id]
+    if circuit_short_name and circuit_short_name.strip().lower() in _CIRCUIT_NAME_OVERRIDES:
+        return _CIRCUIT_NAME_OVERRIDES[circuit_short_name.strip().lower()]
     if any(identifier in gp_id for identifier in _SPAIN_IDENTIFIERS):
         return _CATALUNYA_GP_NAME
     return f"{country_name} Grand Prix"
@@ -180,10 +208,11 @@ def _ingest_new_race_session(
         return None
 
     circuit_name = session.get("circuit_short_name")
+    circuit_str = circuit_name if isinstance(circuit_name, str) else None
     raw_session_key = session.get("session_key")
     session_key = raw_session_key if isinstance(raw_session_key, int) else None
-    gp_id = _format_gp_id(country_name)
-    gp_name = _format_gp_name(country_name, gp_id)
+    gp_id = _format_gp_id(country_name, circuit_str)
+    gp_name = _format_gp_name(country_name, gp_id, circuit_str)
     out_filename = f"{gp_id}.json"
     out_path = _build_race_output_path(base_dir, _TARGET_YEAR, out_filename)
 
@@ -262,7 +291,9 @@ def main(base_dir: str | None = None) -> bool:
         if not country_name or not isinstance(country_name, str):
             continue
 
-        gp_id = _format_gp_id(country_name)
+        circuit_name = session.get("circuit_short_name")
+        circuit_str = circuit_name if isinstance(circuit_name, str) else None
+        gp_id = _format_gp_id(country_name, circuit_str)
         if gp_id in registered_ids:
             print(
                 f"GP '{country_name}' ({gp_id}) is already registered in "

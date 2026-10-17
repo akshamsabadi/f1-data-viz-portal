@@ -190,6 +190,75 @@ class TestAutoUpdateCalendarNormalCases:
         assert len(updated_manifest["races"]) == 1
         assert updated_manifest["races"][0]["id"] == "bahrain"
 
+    @patch("auto_update_calendar.generate_weekend_telemetry")
+    @patch("auto_update_calendar.calculate_corner_speeds")
+    @patch("auto_update_calendar.fetch_openf1_data")
+    @patch("auto_update_calendar.requests.get")
+    def test_disambiguates_multi_race_countries_spain_madring_and_usa_circuits(
+        self,
+        mock_get: MagicMock,
+        mock_fetch_data: MagicMock,
+        mock_calc_corners: MagicMock,
+        mock_gen_weekend: MagicMock,
+        tmp_path: Path,
+    ) -> None:
+        """Verifies Catalunya vs Madring and Miami vs Austin vs Las Vegas do not collide."""
+        manifest_path = _create_manifest(tmp_path, [])
+        mock_get.return_value = _make_mock_response(
+            status_code=200,
+            json_data=[
+                {
+                    "country_name": "Spain",
+                    "circuit_short_name": "Catalunya",
+                    "session_key": 11296,
+                },
+                {
+                    "country_name": "Spain",
+                    "circuit_short_name": "Madring",
+                    "session_key": 11369,
+                },
+                {
+                    "country_name": "United States",
+                    "circuit_short_name": "Miami",
+                    "session_key": 11280,
+                },
+                {
+                    "country_name": "United States",
+                    "circuit_short_name": "Austin",
+                    "session_key": 11393,
+                },
+                {
+                    "country_name": "United States",
+                    "circuit_short_name": "Las Vegas",
+                    "session_key": 11417,
+                },
+            ],
+        )
+
+        def fake_fetch(
+            year: int,
+            gp_query: str,
+            out_path: str,
+            session_key: int | None = None,
+        ) -> None:
+            Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+            Path(out_path).write_text("{}", encoding="utf-8")
+
+        mock_fetch_data.side_effect = fake_fetch
+
+        result = auto_update_calendar.main(str(tmp_path))
+
+        assert result is True
+        updated_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        races = updated_manifest["races"]
+        assert [(r["id"], r["name"]) for r in races] == [
+            ("spain", "Barcelona-Catalunya Grand Prix"),
+            ("madring", "Spanish Grand Prix (Madring)"),
+            ("miami", "Miami Grand Prix"),
+            ("united_states", "United States Grand Prix"),
+            ("las_vegas", "Las Vegas Grand Prix"),
+        ]
+
 
 class TestAutoUpdateCalendarEdgeCases:
     """Tests for boundary conditions and non-error early exits."""

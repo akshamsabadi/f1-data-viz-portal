@@ -9,6 +9,7 @@
   "imola": {"turns": 19, "base_speed": 170, "variation": 60},
   "monaco": {"turns": 19, "base_speed": 100, "variation": 40},
   "canadian": {"turns": 14, "base_speed": 140, "variation": 50},
+  "madring": {"turns": 22, "base_speed": 165, "variation": 65},
   "spanish": {"turns": 14, "base_speed": 160, "variation": 60},
   "austrian": {"turns": 10, "base_speed": 180, "variation": 50},
   "british": {"turns": 18, "base_speed": 190, "variation": 70},

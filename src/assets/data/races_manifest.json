@@ -38,12 +38,6 @@
     },
     {
       "year": 2026,
-      "id": "united_states",
-      "name": "United States Grand Prix",
-      "file": "races/2026/united_states.json"
-    },
-    {
-      "year": 2026,
       "id": "spain",
       "name": "Barcelona-Catalunya Grand Prix",
       "file": "races/2026/spain.json"
@@ -83,6 +77,12 @@
       "id": "italy",
       "name": "Italy Grand Prix",
       "file": "races/2026/italy.json"
+    },
+    {
+      "year": 2026,
+      "id": "madring",
+      "name": "Spanish Grand Prix (Madring)",
+      "file": "races/2026/madring.json"
     },
     {
       "year": 2026,

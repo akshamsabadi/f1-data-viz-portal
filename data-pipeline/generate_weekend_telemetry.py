@@ -27,7 +27,7 @@ from generate_corner_speeds import (
 )
 
 _OPENF1_BASE_URL: Final[str] = "https://api.openf1.org/v1"
-_API_DELAY_SECONDS: Final[float] = 0.28
+_API_DELAY_SECONDS: Final[float] = 0.38
 _TRACK_PROFILES_FILENAME: Final[str] = "track_profiles.json"
 _DEFAULT_RACES_RELATIVE_DIR: Final[tuple[str, ...]] = (
     "..",
@@ -51,7 +51,6 @@ _FILENAME_TO_MEETING_KEY: Final[dict[str, int]] = {
     "china": 1280,
     "japan": 1281,
     "miami": 1284,
-    "united_states": 1284,
     "canada": 1285,
     "monaco": 1286,
     "spain": 1287,
@@ -61,9 +60,18 @@ _FILENAME_TO_MEETING_KEY: Final[dict[str, int]] = {
     "hungary": 1291,
     "netherlands": 1292,
     "italy": 1293,
+    "madring": 1294,
+    "madrid": 1294,
     "azerbaijan": 1295,
     "bahrain": 1308,
     "singapore": 1296,
+    "united_states": 1297,
+    "mexico": 1298,
+    "brazil": 1299,
+    "sao_paulo": 1299,
+    "las_vegas": 1300,
+    "qatar": 1301,
+    "abu_dhabi": 1302,
 }
 
 
@@ -83,7 +91,7 @@ def _seeded_unit_float(seed_text: str) -> float:
 def _fetch_openf1_json(endpoint: str, params: Mapping[str, Any]) -> list[dict[str, Any]]:
     """Queries an OpenF1 REST endpoint with retry and rate-limit backoff."""
     url = f"{_OPENF1_BASE_URL}/{endpoint}"
-    for attempt in range(3):
+    for attempt in range(6):
         try:
             time.sleep(_API_DELAY_SECONDS)
             resp = requests.get(url, params=params, timeout=15)
@@ -92,12 +100,288 @@ def _fetch_openf1_json(endpoint: str, params: Mapping[str, Any]) -> list[dict[st
                 if isinstance(payload, list):
                     return payload
                 return []
-            if resp.status_code == 429:
-                time.sleep(1.2 * (attempt + 1))
+            if resp.status_code in (429, 500, 502, 503, 504):
+                time.sleep(1.5 * (attempt + 1))
+                continue
         except Exception as err:
             print(f"  Warning: OpenF1 request failed ({endpoint} {params}): {err}")
-            time.sleep(0.6)
+            time.sleep(0.8 * (attempt + 1))
     return []
+
+
+def _parse_int_position(raw_pos: Any) -> int | None:
+    """Parses an integer position from an OpenF1 session_result record."""
+    if isinstance(raw_pos, int):
+        return raw_pos
+    if isinstance(raw_pos, str) and raw_pos.strip().isdigit():
+        return int(raw_pos.strip())
+    return None
+
+
+def _calibrate_race_laps_with_session_result(
+    laps: Sequence[Mapping[str, Any]],
+    drivers: Sequence[Mapping[str, Any]],
+    openf1_session_result: Sequence[Mapping[str, Any]] | None,
+    num_to_code: Mapping[int, str] | None,
+) -> tuple[list[dict[str, Any]], int, str, list[dict[str, Any]]]:
+    """Calibrates race or sprint laps and classification against OpenF1 ``/session_result``.
+
+    Removes phantom post-checkered-flag cooldown laps, ensures completed lap counts
+    match the official FIA classification, and calibrates cumulative ``session_time``
+    and per-lap ``position`` so the final standings and winner match ``/session_result`` 100%.
+    """
+    max_raw_lap = max((int(l.get("lap", 0)) for l in laps), default=0)
+    default_winner = "VER"
+    for l_rec in laps:
+        if int(l_rec.get("lap", 0)) == max_raw_lap and int(l_rec.get("position", 99)) == 1:
+            default_winner = str(l_rec["driver"])
+            break
+
+    if not openf1_session_result or not num_to_code:
+        return [dict(l) for l in laps], max_raw_lap, default_winner, []
+
+    driver_meta = {str(d["code"]): d for d in drivers}
+    result_by_code: dict[str, Mapping[str, Any]] = {}
+    for row in openf1_session_result:
+        d_num = row.get("driver_number")
+        code = num_to_code.get(int(d_num)) if d_num is not None else None
+        if code and code in driver_meta:
+            result_by_code[code] = row
+
+    if not result_by_code:
+        return [dict(l) for l in laps], max_raw_lap, default_winner, []
+
+    official_max_lap = max(
+        (
+            int(r.get("number_of_laps") or 0)
+            for r in result_by_code.values()
+        ),
+        default=max_raw_lap,
+    )
+    if official_max_lap <= 0:
+        official_max_lap = max_raw_lap
+
+    def _result_sort_key(code: str) -> tuple[int, int, int]:
+        row = result_by_code.get(code)
+        if not row:
+            return (2, 999, 0)
+        pos = _parse_int_position(row.get("position"))
+        laps_done = int(row.get("number_of_laps") or 0)
+        if pos is not None:
+            return (0, pos, -laps_done)
+        return (1, 999, -laps_done)
+
+    ordered_codes = sorted(driver_meta.keys(), key=_result_sort_key)
+    official_rank_by_code = {code: idx + 1 for idx, code in enumerate(ordered_codes)}
+    official_winner = ordered_codes[0] if ordered_codes else default_winner
+
+    laps_by_driver: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for l_rec in laps:
+        laps_by_driver[str(l_rec["driver"])].append(dict(l_rec))
+
+    # Determine winner's official total race duration
+    p1_row = result_by_code.get(official_winner, {})
+    p1_raw_dur = p1_row.get("duration")
+    if isinstance(p1_raw_dur, (int, float)) and float(p1_raw_dur) > 0:
+        winner_duration = float(p1_raw_dur)
+    else:
+        p1_laps = [
+            l for l in laps_by_driver.get(official_winner, [])
+            if int(l["lap"]) <= official_max_lap
+        ]
+        winner_duration = (
+            float(p1_laps[-1]["session_time"])
+            if p1_laps
+            else float(official_max_lap * 90.0)
+        )
+
+    calibrated_by_driver: dict[str, list[dict[str, Any]]] = {}
+    official_classification: list[dict[str, Any]] = []
+
+    for code in ordered_codes:
+        rank = official_rank_by_code[code]
+        meta = driver_meta[code]
+        row = result_by_code.get(code, {})
+        raw_target_laps = row.get("number_of_laps")
+        drv_laps = sorted(
+            laps_by_driver.get(code, []), key=lambda item: int(item["lap"])
+        )
+
+        if raw_target_laps is not None:
+            target_laps = min(official_max_lap, max(0, int(raw_target_laps)))
+        else:
+            target_laps = min(
+                official_max_lap,
+                max((int(l["lap"]) for l in drv_laps), default=0),
+            )
+
+        is_dns = bool(row.get("dns")) or target_laps == 0
+        is_dsq = bool(row.get("dsq")) and not is_dns
+        is_dnf = (bool(row.get("dnf")) or is_dsq) and not is_dns
+
+        if is_dns or target_laps == 0:
+            calibrated_by_driver[code] = []
+            official_classification.append(
+                {
+                    "driver": code,
+                    "name": str(meta.get("name", code)),
+                    "team": str(meta.get("team", "")),
+                    "color": str(meta.get("color", "#888888")),
+                    "position": rank,
+                    "rank": rank,
+                    "laps_completed": 0,
+                    "status": "DNS",
+                    "duration": None,
+                    "gap_to_leader": "DNS",
+                    "is_dnf": False,
+                    "is_dns": True,
+                }
+            )
+            continue
+
+        # Strip any phantom cooldown laps beyond target_laps
+        drv_laps = [l for l in drv_laps if int(l["lap"]) <= target_laps]
+
+        # Ensure contiguous laps 1..target_laps
+        existing_by_lap = {int(l["lap"]): l for l in drv_laps}
+        valid_times = [
+            float(l["time"]) for l in drv_laps if float(l.get("time", 0)) > 0
+        ]
+        mean_lap_t = statistics.mean(valid_times) if valid_times else (winner_duration / max(1, official_max_lap))
+        last_comp = str(drv_laps[-1].get("compound", "HARD")) if drv_laps else "MEDIUM"
+        last_life = int(drv_laps[-1].get("tyre_life", 1)) if drv_laps else 0
+
+        contiguous_laps: list[dict[str, Any]] = []
+        for l_no in range(1, target_laps + 1):
+            if l_no in existing_by_lap:
+                rec = dict(existing_by_lap[l_no])
+                last_comp = str(rec.get("compound", last_comp))
+                last_life = int(rec.get("tyre_life", last_life))
+                contiguous_laps.append(rec)
+            else:
+                last_life += 1
+                contiguous_laps.append(
+                    {
+                        "driver": code,
+                        "lap": l_no,
+                        "time": round(mean_lap_t, _TIME_DECIMALS),
+                        "compound": last_comp,
+                        "tyre_life": last_life,
+                        "position": rank,
+                        "session_time": 0.0,
+                        "interpolated": True,
+                    }
+                )
+
+        # Determine authoritative final session_time for this driver
+        raw_dur = row.get("duration")
+        raw_gap = row.get("gap_to_leader")
+        raw_sum = sum(float(l["time"]) for l in contiguous_laps)
+
+        if target_laps == official_max_lap and not is_dnf:
+            status_str = "FINISHER"
+            if rank == 1:
+                target_final_time = winner_duration
+            elif isinstance(raw_dur, (int, float)) and float(raw_dur) > winner_duration:
+                target_final_time = float(raw_dur)
+            elif isinstance(raw_gap, (int, float)) and float(raw_gap) >= 0:
+                target_final_time = winner_duration + float(raw_gap)
+            else:
+                target_final_time = max(winner_duration + rank * 0.35, raw_sum)
+        elif not is_dnf:
+            status_str = "LAPPED"
+            # Lapped finishers finish after the winner crosses the line (>= winner_duration)
+            if isinstance(raw_dur, (int, float)) and float(raw_dur) >= winner_duration:
+                target_final_time = float(raw_dur) + rank * 0.01
+            else:
+                target_final_time = winner_duration + rank * 0.45
+        else:
+            status_str = "DNF"
+            if target_laps < official_max_lap:
+                # Ensure _isDriverDnf in standings.js (> 180s before maxSessionTime) triggers
+                max_allowed = winner_duration - 220.0 - (official_max_lap - target_laps) * 15.0 + rank * 0.1
+                target_final_time = min(raw_sum, max(target_laps * 65.0, max_allowed))
+            else:
+                target_final_time = raw_sum
+
+        # Enforce strict monotonic ordering of target_final_time among drivers with identical target_laps
+        for prev_item in official_classification:
+            if int(prev_item["laps_completed"]) == target_laps and prev_item.get("duration") is not None:
+                prev_dur = float(prev_item["duration"])
+                if target_final_time <= prev_dur:
+                    target_final_time = round(prev_dur + 0.045, _TIME_DECIMALS)
+
+        target_final_time = round(target_final_time, _TIME_DECIMALS)
+
+        # Distribute delta between target_final_time and raw_sum across Lap 1 + uniform per-lap
+        total_delta = target_final_time - raw_sum
+        lap1_orig = float(contiguous_laps[0]["time"])
+        lap1_new = max(58.0, min(175.0, lap1_orig + total_delta))
+        contiguous_laps[0]["time"] = round(lap1_new, _TIME_DECIMALS)
+
+        new_sum = sum(float(l["time"]) for l in contiguous_laps)
+        rem_delta = target_final_time - new_sum
+        if abs(rem_delta) > 1e-4 and len(contiguous_laps) > 1:
+            per_lap_adj = rem_delta / (len(contiguous_laps) - 1)
+            for l_rec in contiguous_laps[1:]:
+                l_rec["time"] = round(max(55.0, float(l_rec["time"]) + per_lap_adj), _TIME_DECIMALS)
+
+        # Re-accumulate session_time and snap final lap session_time to exact target_final_time
+        cum_t = 0.0
+        for idx_l, l_rec in enumerate(contiguous_laps):
+            if idx_l == len(contiguous_laps) - 1:
+                l_rec["time"] = round(max(50.0, target_final_time - cum_t), _TIME_DECIMALS)
+                cum_t = target_final_time
+            else:
+                cum_t = round(cum_t + float(l_rec["time"]), _TIME_DECIMALS)
+            l_rec["session_time"] = cum_t
+
+        calibrated_by_driver[code] = contiguous_laps
+        status_out = "DSQ" if is_dsq else status_str
+        official_classification.append(
+            {
+                "driver": code,
+                "name": str(meta.get("name", code)),
+                "team": str(meta.get("team", "")),
+                "color": str(meta.get("color", "#888888")),
+                "position": rank,
+                "rank": rank,
+                "laps_completed": target_laps,
+                "status": status_out,
+                "duration": target_final_time,
+                "gap_to_leader": (
+                    0.0
+                    if rank == 1
+                    else round(target_final_time - winner_duration, _TIME_DECIMALS)
+                    if status_out == "FINISHER"
+                    else f"+{official_max_lap - target_laps} {'Lap' if official_max_lap - target_laps == 1 else 'Laps'}"
+                    if status_out == "LAPPED"
+                    else status_out
+                ),
+                "is_dnf": is_dnf,
+                "is_dns": False,
+            }
+        )
+
+    # Flatten and assign per-lap positions 1..N
+    final_laps: list[dict[str, Any]] = []
+    for lap_no in range(1, official_max_lap + 1):
+        lap_group = [
+            drv_laps[lap_no - 1]
+            for drv_laps in calibrated_by_driver.values()
+            if len(drv_laps) >= lap_no
+        ]
+        lap_group.sort(
+            key=lambda item: (
+                float(item["session_time"]),
+                official_rank_by_code.get(str(item["driver"]), 99),
+            )
+        )
+        for pos_idx, rec in enumerate(lap_group, start=1):
+            rec["position"] = pos_idx
+            final_laps.append(rec)
+
+    return final_laps, official_max_lap, official_winner, official_classification
 
 
 def _extract_sc_vsc_windows(
@@ -286,6 +570,7 @@ def _build_practice_telemetry(
     corners: Sequence[Mapping[str, Any]],
     openf1_practice_laps: Sequence[Mapping[str, Any]] | None = None,
     openf1_practice_stints: Sequence[Mapping[str, Any]] | None = None,
+    openf1_practice_results: Sequence[Mapping[str, Any]] | None = None,
     num_to_code: Mapping[int, str] | None = None,
 ) -> dict[str, Any]:
     """Generates the ``practice`` telemetry block using real OpenF1 practice data when available."""
@@ -307,8 +592,9 @@ def _build_practice_telemetry(
     variation = float(track_profile.get("variation", 60))
     circuit_top_speed_base = 292.0 + (base_speed * 0.22) + (variation * 0.12)
 
-    # Extract real practice metrics per driver if OpenF1 practice laps are provided
+    # Extract real practice metrics per driver if OpenF1 practice laps/results are provided
     real_best_lap: dict[str, float] = {}
+    official_prac_pos: dict[str, int] = {}
     real_speed_trap: dict[str, float] = {}
     real_comp_counts: dict[str, dict[str, int]] = defaultdict(
         lambda: {"SOFT": 0, "MEDIUM": 0, "HARD": 0}
@@ -330,6 +616,19 @@ def _build_practice_telemetry(
                 if sp_val is not None and 220.0 < float(sp_val) < 375.0:
                     if code not in real_speed_trap or float(sp_val) > real_speed_trap[code]:
                         real_speed_trap[code] = float(sp_val)
+
+    if openf1_practice_results and num_to_code:
+        for res_row in openf1_practice_results:
+            d_num = res_row.get("driver_number")
+            code = num_to_code.get(int(d_num)) if d_num is not None else None
+            if not code:
+                continue
+            pos = _parse_int_position(res_row.get("position"))
+            if pos is not None:
+                official_prac_pos[code] = pos
+            dur = res_row.get("duration")
+            if isinstance(dur, (int, float)) and 55.0 < float(dur) < 160.0:
+                real_best_lap[code] = float(dur)
 
     if openf1_practice_stints and num_to_code:
         for stint_rec in openf1_practice_stints:
@@ -500,13 +799,21 @@ def _build_practice_telemetry(
             }
         )
 
-    raw_entries.sort(key=lambda item: float(item["best_lap"]))
+    if official_prac_pos:
+        raw_entries.sort(
+            key=lambda item: (
+                official_prac_pos.get(str(item["driver"]), 99),
+                float(item["best_lap"]),
+            )
+        )
+    else:
+        raw_entries.sort(key=lambda item: float(item["best_lap"]))
     p1_best = float(raw_entries[0]["best_lap"]) if raw_entries else practice_pole_base
 
     for idx, entry in enumerate(raw_entries):
         entry["rank"] = idx + 1
         entry["gap_to_p1"] = round(
-            float(entry["best_lap"]) - p1_best, _TIME_DECIMALS
+            max(0.0, float(entry["best_lap"]) - p1_best), _TIME_DECIMALS
         )
 
     degradation_slopes: list[dict[str, Any]] = []
@@ -663,10 +970,11 @@ def _build_qualifying_telemetry(
     race_laps: Sequence[Mapping[str, Any]],
     openf1_quali_laps: Sequence[Mapping[str, Any]] | None = None,
     openf1_quali_rc: Sequence[Mapping[str, Any]] | None = None,
+    openf1_quali_results: Sequence[Mapping[str, Any]] | None = None,
     num_to_code: Mapping[int, str] | None = None,
     stage_prefix: str = "Q",
 ) -> dict[str, Any]:
-    """Generates Qualifying or Sprint Qualifying telemetry using real OpenF1 data or Lap 1 grid fallback."""
+    """Generates Qualifying or Sprint Qualifying telemetry using official OpenF1 results and laps."""
     fastest_baseline = min(driver_pace.values()) if driver_pace else 90.0
     pole_target = round(fastest_baseline * 0.962, _TIME_DECIMALS)
 
@@ -675,9 +983,14 @@ def _build_qualifying_telemetry(
     s2_ratio = 0.415 - ((turns % 4) - 1.5) * 0.006
     s3_ratio = 1.0 - s1_ratio - s2_ratio
 
-    # Check if we have real OpenF1 Qualifying laps
-    real_q_times: dict[str, dict[int, float | None]] = {}
-    real_best_sectors: dict[str, dict[str, float]] = {}
+    # Check if we have real OpenF1 Qualifying laps and/or official /session_result
+    real_q_times: dict[str, dict[int, float | None]] = {
+        str(d["code"]): {1: None, 2: None, 3: None} for d in drivers
+    }
+    official_quali_pos: dict[str, int] = {}
+    real_best_sectors: dict[str, dict[str, float]] = {
+        str(d["code"]): {} for d in drivers
+    }
     real_lap_sectors: dict[str, tuple[float | None, float | None, float | None]] = {}
 
     if openf1_quali_laps and num_to_code:
@@ -696,11 +1009,6 @@ def _build_qualifying_telemetry(
         ]
         min_session_lap = min(valid_durations) if valid_durations else pole_target
         max_flying_lap = min_session_lap * 1.12
-
-        for driver in drivers:
-            code = str(driver["code"])
-            real_q_times[code] = {1: None, 2: None, 3: None}
-            real_best_sectors[code] = {}
 
         for lap_rec in openf1_quali_laps:
             d_num = lap_rec.get("driver_number")
@@ -757,12 +1065,44 @@ def _build_qualifying_telemetry(
                         else None,
                     )
 
-    has_real_quali = any(
+    # Apply authoritative OpenF1 /session_result positions and [Q1, Q2, Q3] durations when available
+    if openf1_quali_results and num_to_code:
+        for res_row in openf1_quali_results:
+            d_num = res_row.get("driver_number")
+            code = num_to_code.get(int(d_num)) if d_num is not None else None
+            if not code or code not in real_q_times:
+                continue
+            pos = _parse_int_position(res_row.get("position"))
+            if pos is not None:
+                official_quali_pos[code] = pos
+            dur_val = res_row.get("duration")
+            if isinstance(dur_val, list):
+                for phase_idx in range(min(3, len(dur_val))):
+                    stage_t = dur_val[phase_idx]
+                    if isinstance(stage_t, (int, float)) and 50.0 < float(stage_t) < 160.0:
+                        real_q_times[code][phase_idx + 1] = round(
+                            float(stage_t), _TIME_DECIMALS
+                        )
+                    elif stage_t is None:
+                        real_q_times[code][phase_idx + 1] = None
+
+    has_real_quali = bool(official_quali_pos) or any(
         qt[3] is not None or qt[2] is not None or qt[1] is not None
         for qt in real_q_times.values()
     )
 
-    if has_real_quali:
+    if official_quali_pos:
+        def _official_quali_sort_key(drv: Mapping[str, Any]) -> tuple[int, int, float]:
+            code = str(drv["code"])
+            pos = official_quali_pos.get(code)
+            if pos is not None:
+                return (0, pos, 0.0)
+            qt = real_q_times.get(code, {1: None, 2: None, 3: None})
+            best_q = qt[3] or qt[2] or qt[1] or driver_pace.get(code, 999.0)
+            return (1, 999, float(best_q))
+
+        ordered_drivers = sorted(drivers, key=_official_quali_sort_key)
+    elif has_real_quali:
         def _quali_sort_key(drv: Mapping[str, Any]) -> tuple[int, float]:
             code = str(drv["code"])
             qt = real_q_times.get(code, {1: None, 2: None, 3: None})
@@ -1398,6 +1738,13 @@ def generate_weekend_telemetry(
         if fetch_live and "Qualifying" in session_map
         else None
     )
+    quali_results_raw = (
+        _fetch_openf1_json(
+            "session_result", {"session_key": session_map["Qualifying"]}
+        )
+        if fetch_live and "Qualifying" in session_map
+        else None
+    )
     qualifying_block = _build_qualifying_telemetry(
         gp_name=gp_name,
         drivers=drivers,
@@ -1406,6 +1753,7 @@ def generate_weekend_telemetry(
         race_laps=laps,
         openf1_quali_laps=quali_laps_raw,
         openf1_quali_rc=quali_rc_raw,
+        openf1_quali_results=quali_results_raw,
         num_to_code=num_to_code,
         stage_prefix="Q",
     )
@@ -1413,19 +1761,23 @@ def generate_weekend_telemetry(
     if qualifying_block.get("corners"):
         race_data["corners"] = qualifying_block["corners"]
 
-    # 2. Practice (Real OpenF1 Practice laps & stints when fetch_live=True)
+    # 2. Practice (Real OpenF1 Practice laps, stints & session_result when fetch_live=True)
     prac_laps_raw: list[dict[str, Any]] = []
     prac_stints_raw: list[dict[str, Any]] = []
+    prac_results_raw: list[dict[str, Any]] | None = None
     if fetch_live:
         for p_name in ("Practice 2", "Practice 1", "Practice 3"):
             if p_name in session_map:
+                p_sk = session_map[p_name]
+                if not prac_results_raw:
+                    prac_results_raw = _fetch_openf1_json(
+                        "session_result", {"session_key": p_sk}
+                    )
                 prac_laps_raw.extend(
-                    _fetch_openf1_json("laps", {"session_key": session_map[p_name]})
+                    _fetch_openf1_json("laps", {"session_key": p_sk})
                 )
                 prac_stints_raw.extend(
-                    _fetch_openf1_json(
-                        "stints", {"session_key": session_map[p_name]}
-                    )
+                    _fetch_openf1_json("stints", {"session_key": p_sk})
                 )
                 if len(prac_laps_raw) > 250:
                     break
@@ -1438,10 +1790,30 @@ def generate_weekend_telemetry(
         corners=race_data.get("corners", []),
         openf1_practice_laps=prac_laps_raw or None,
         openf1_practice_stints=prac_stints_raw or None,
+        openf1_practice_results=prac_results_raw or None,
         num_to_code=num_to_code or None,
     )
 
-    # 3. Race Telemetry (Stints, Pit Stops, and SC/VSC Windows)
+    # 3. Race Telemetry & Official FIA Classification Calibration
+    race_results_raw = (
+        _fetch_openf1_json("session_result", {"session_key": session_map["Race"]})
+        if fetch_live and "Race" in session_map
+        else None
+    )
+    race_classification: list[dict[str, Any]] = []
+    if race_results_raw and num_to_code:
+        laps, total_laps, official_winner, race_classification = (
+            _calibrate_race_laps_with_session_result(
+                laps=laps,
+                drivers=drivers,
+                openf1_session_result=race_results_raw,
+                num_to_code=num_to_code,
+            )
+        )
+        race_data["laps"] = laps
+        race_data["race_info"]["total_laps"] = total_laps
+        race_data["race_info"]["winner"] = official_winner
+
     race_stints_raw = (
         _fetch_openf1_json("stints", {"session_key": session_map["Race"]})
         if fetch_live and "Race" in session_map
@@ -1467,6 +1839,8 @@ def generate_weekend_telemetry(
         openf1_rc=race_rc_raw,
         num_to_code=num_to_code,
     )
+    if race_classification:
+        race_data["race_telemetry"]["classification"] = race_classification
     race_data["session_events"] = race_data["race_telemetry"]["sc_vsc_windows"]
 
     # 4. Sprint Qualifying & Sprint Race (where applicable!)
@@ -1490,11 +1864,17 @@ def generate_weekend_telemetry(
         sp_key = session_map["Sprint"]
         sq_laps_raw = _fetch_openf1_json("laps", {"session_key": sq_key})
         sq_rc_raw = _fetch_openf1_json("race_control", {"session_key": sq_key})
+        sq_results_raw = _fetch_openf1_json(
+            "session_result", {"session_key": sq_key}
+        )
 
         sp_laps_raw = _fetch_openf1_json("laps", {"session_key": sp_key})
         sp_stints_raw = _fetch_openf1_json("stints", {"session_key": sp_key})
         sp_pits_raw = _fetch_openf1_json("pit", {"session_key": sp_key})
         sp_rc_raw = _fetch_openf1_json("race_control", {"session_key": sp_key})
+        sp_results_raw = _fetch_openf1_json(
+            "session_result", {"session_key": sp_key}
+        )
 
         sprint_processed_laps, sprint_max_lap = process_laps_data(
             laps_data=sp_laps_raw,
@@ -1502,13 +1882,27 @@ def generate_weekend_telemetry(
             stints_data=sp_stints_raw,
         )
         sprint_winner = str(race_data["race_info"].get("winner", "VER"))
-        for l_rec in sprint_processed_laps:
-            if (
-                int(l_rec.get("lap", 0)) == sprint_max_lap
-                and int(l_rec.get("position", 99)) == 1
-            ):
-                sprint_winner = str(l_rec["driver"])
-                break
+        sprint_classification: list[dict[str, Any]] = []
+        if sp_results_raw and num_to_code:
+            (
+                sprint_processed_laps,
+                sprint_max_lap,
+                sprint_winner,
+                sprint_classification,
+            ) = _calibrate_race_laps_with_session_result(
+                laps=sprint_processed_laps,
+                drivers=drivers,
+                openf1_session_result=sp_results_raw,
+                num_to_code=num_to_code,
+            )
+        else:
+            for l_rec in sprint_processed_laps:
+                if (
+                    int(l_rec.get("lap", 0)) == sprint_max_lap
+                    and int(l_rec.get("position", 99)) == 1
+                ):
+                    sprint_winner = str(l_rec["driver"])
+                    break
 
         race_data["sprint_qualifying"] = _build_qualifying_telemetry(
             gp_name=f"{gp_name} Sprint",
@@ -1518,23 +1912,27 @@ def generate_weekend_telemetry(
             race_laps=sprint_processed_laps or laps,
             openf1_quali_laps=sq_laps_raw,
             openf1_quali_rc=sq_rc_raw,
+            openf1_quali_results=sq_results_raw,
             num_to_code=num_to_code,
             stage_prefix="SQ",
         )
+        sprint_telemetry = _build_race_telemetry(
+            gp_name=f"{gp_name} Sprint",
+            drivers=drivers,
+            laps=sprint_processed_laps,
+            total_laps=sprint_max_lap,
+            openf1_stints=sp_stints_raw,
+            openf1_pits=sp_pits_raw,
+            openf1_rc=sp_rc_raw,
+            num_to_code=num_to_code,
+        )
+        if sprint_classification:
+            sprint_telemetry["classification"] = sprint_classification
         race_data["sprint"] = {
             "total_laps": sprint_max_lap,
             "winner": sprint_winner,
             "laps": sprint_processed_laps,
-            "race_telemetry": _build_race_telemetry(
-                gp_name=f"{gp_name} Sprint",
-                drivers=drivers,
-                laps=sprint_processed_laps,
-                total_laps=sprint_max_lap,
-                openf1_stints=sp_stints_raw,
-                openf1_pits=sp_pits_raw,
-                openf1_rc=sp_rc_raw,
-                num_to_code=num_to_code,
-            ),
+            "race_telemetry": sprint_telemetry,
         }
     elif race_data.get("is_sprint_weekend") and "sprint_qualifying" not in race_data:
         # Offline Sprint weekend synthesis for unit tests

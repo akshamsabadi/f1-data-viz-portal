@@ -106,13 +106,18 @@ export function calculateDriverClassification(data) {
     const maxLap = d3.max(validLaps, (d) => d.lap);
     const maxSessionTime = d3.max(validLaps, (d) => d.session_time);
     const driverLapsMap = d3.group(validLaps, (d) => d.driver);
+    const officialList = data.race_telemetry?.classification || [];
+    const officialMap = new Map(officialList.map((item) => [item.driver, item]));
 
     const unsortedClassification = (data.drivers || []).map((driver) => {
         const laps = (driverLapsMap.get(driver.code) || []).slice().sort((a, b) => a.lap - b.lap);
         const lastLapRecord = laps.length > 0 ? laps[laps.length - 1] : null;
         const lapsCompleted = lastLapRecord ? lastLapRecord.lap : 0;
         const lastLapTime = lastLapRecord ? lastLapRecord.session_time : Infinity;
-        const status = _determineDriverStatus(lapsCompleted, lastLapRecord, maxLap, maxSessionTime);
+        const official = officialMap.get(driver.code);
+        const status = official?.status
+            ? official.status
+            : _determineDriverStatus(lapsCompleted, lastLapRecord, maxLap, maxSessionTime);
 
         return {
             ...driver,
@@ -120,12 +125,18 @@ export function calculateDriverClassification(data) {
             lapsCompleted,
             lastLapTime,
             status,
+            officialPosition: official?.position ?? null,
+            officialGap: official?.gap_to_leader ?? null,
             isDns: status === _STATUS_DNS,
-            isDnf: status === _STATUS_DNF
+            isDnf: status === _STATUS_DNF || status === 'DSQ',
+            isDsq: status === 'DSQ'
         };
     });
 
     unsortedClassification.sort((a, b) => {
+        if (a.officialPosition !== null && b.officialPosition !== null) {
+            return a.officialPosition - b.officialPosition;
+        }
         if (b.lapsCompleted !== a.lapsCompleted) {
             return b.lapsCompleted - a.lapsCompleted;
         }
@@ -197,7 +208,10 @@ function _formatRaceGapAndDetail(driver, index, winnerTime, maxLap) {
     let gapText = '';
     let detailText = '';
 
-    if (driver.isDns) {
+    if (driver.isDsq) {
+        gapText = 'DSQ';
+        detailText = `Lap ${driver.lapsCompleted}`;
+    } else if (driver.isDns) {
         gapText = _STATUS_DNS;
     } else if (driver.isDnf) {
         gapText = _STATUS_DNF;
@@ -208,7 +222,10 @@ function _formatRaceGapAndDetail(driver, index, winnerTime, maxLap) {
         const lapsBehind = maxLap - driver.lapsCompleted;
         gapText = `+${lapsBehind} ${lapsBehind === 1 ? 'Lap' : 'Laps'}`;
     } else {
-        const gap = driver.lastLapTime - winnerTime;
+        const gap =
+            typeof driver.officialGap === 'number' && driver.officialGap > 0
+                ? driver.officialGap
+                : driver.lastLapTime - winnerTime;
         gapText = `+${gap.toFixed(3)}s`;
     }
 
