@@ -15,7 +15,7 @@ import { renderRaceWorm } from './race_worm.js';
 import { renderRacePitStops } from './race_pitstops.js';
 import { renderRaceStintPace } from './race_stint_pace.js';
 
-const APP_VERSION = 'v1.18.3';
+const APP_VERSION = 'v1.18.4';
 
 const _OFFICIAL_TEAM_COLORS = {
     'Ferrari': '#e30002',
@@ -373,6 +373,7 @@ function _resolveSessionViewData(data, activeSession) {
     if (activeSession === 'sprint' && data.sprint) {
         return {
             ...data,
+            qualifying: data.sprint_qualifying || data.qualifying,
             race_info: {
                 ...data.race_info,
                 total_laps: data.sprint.total_laps || data.race_info.total_laps,

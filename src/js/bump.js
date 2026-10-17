@@ -55,7 +55,55 @@ function _identifySecondTeammates(classification) {
 }
 
 /**
+ * Builds a lookup map from driver code to starting grid position (Lap 0).
+ * Uses `data.qualifying.results` (`grid_pos`) when available, and falls back
+ * to Lap 1 order or classification rank when qualifying results are absent.
+ *
+ * @param {Object} data - Race telemetry payload.
+ * @param {Array<Object>} classification - Computed driver classification list.
+ * @returns {Map<string, number>} Map of driver code to 1-indexed starting grid position.
+ */
+function _buildStartingGridMap(data, classification) {
+    const gridMap = new Map();
+    const qualiResults = data?.qualifying?.results;
+
+    if (Array.isArray(qualiResults) && qualiResults.length > 0) {
+        qualiResults.forEach((entry) => {
+            const pos = Number(entry.grid_pos ?? entry.position);
+            if (entry.driver && Number.isFinite(pos) && pos > 0) {
+                gridMap.set(entry.driver, pos);
+            }
+        });
+    }
+
+    const usedPositions = new Set(gridMap.values());
+    let nextFallbackPos = 1;
+    const findNextFreePos = () => {
+        while (usedPositions.has(nextFallbackPos)) {
+            nextFallbackPos += 1;
+        }
+        usedPositions.add(nextFallbackPos);
+        return nextFallbackPos;
+    };
+
+    classification.forEach((entry) => {
+        if (!gridMap.has(entry.code)) {
+            const lap1Pos = entry.laps?.[0]?.position;
+            if (Number.isFinite(lap1Pos) && !usedPositions.has(lap1Pos)) {
+                usedPositions.add(lap1Pos);
+                gridMap.set(entry.code, lap1Pos);
+            } else {
+                gridMap.set(entry.code, findNextFreePos());
+            }
+        }
+    });
+
+    return gridMap;
+}
+
+/**
  * Constructs a Map of driver code to processed lap arrays in the original driver list order,
+ * starting every driver at `lap: 0` at their starting grid position (`gridPos`),
  * aligning all classified finishers (including lapped finishers) to `maxLap` at their `finalRank`
  * while keeping DNF drop-offs at their retirement lap.
  *
@@ -63,9 +111,10 @@ function _identifySecondTeammates(classification) {
  * @param {Array<Object>} classification - Computed driver classification entries from `calculateDriverClassification`.
  * @param {number} maxLap - Total laps completed by the winner.
  * @param {Set<string>} secondTeammates - Set of driver codes representing the 2nd teammate per constructor.
+ * @param {Map<string, number>} gridMap - Map of driver code to starting grid position (Lap 0).
  * @returns {Map<string, Array<Object>>} Map of driver code to lap position records.
  */
-function _buildProcessedDriverLaps(drivers, classification, maxLap, secondTeammates) {
+function _buildProcessedDriverLaps(drivers, classification, maxLap, secondTeammates, gridMap) {
     const processedByDriver = new Map();
     const byCode = new Map(classification.map((entry) => [entry.code, entry]));
 
@@ -76,10 +125,21 @@ function _buildProcessedDriverLaps(drivers, classification, maxLap, secondTeamma
         const realLaps = classifiedDriver.laps;
         const finalRank = classifiedDriver.rank;
         const isSecondTeammate = secondTeammates.has(driver.code);
+        const gridPos = gridMap.get(driver.code) ?? finalRank;
+
+        const lap0Point = {
+            driver: driver.code,
+            lap: 0,
+            position: gridPos,
+            isGridStart: true,
+            isDns: classifiedDriver.isDns,
+            isSecondTeammate
+        };
 
         let processedLaps = [];
         if (classifiedDriver.isDns) {
             processedLaps = [
+                lap0Point,
                 {
                     driver: driver.code,
                     lap: 1,
@@ -91,6 +151,7 @@ function _buildProcessedDriverLaps(drivers, classification, maxLap, secondTeamma
         } else if (classifiedDriver.isDnf) {
             const dropLap = Math.min(classifiedDriver.lapsCompleted + 1, maxLap);
             processedLaps = [
+                lap0Point,
                 ...realLaps.map((lap) => ({ ...lap, isSecondTeammate })),
                 {
                     driver: driver.code,
@@ -116,7 +177,7 @@ function _buildProcessedDriverLaps(drivers, classification, maxLap, secondTeamma
                     lastRecordedLap.position = finalRank;
                 }
             }
-            processedLaps = clonedLaps;
+            processedLaps = [lap0Point, ...clonedLaps];
         }
 
         processedByDriver.set(driver.code, processedLaps);
@@ -248,7 +309,7 @@ function _renderBumpLines(svg, driverLapsProcessed, driverColors, lineGenerator)
  * @returns {{startNodes: Object, startLabels: Object, endNodes: Object, endLabels: Object}} D3 selections for nodes and labels.
  */
 function _renderBumpNodesAndLabels(svg, driverLapsProcessed, driverColors, xScale, yScale) {
-    const starters = Array.from(driverLapsProcessed).filter((d) => !d[1][0].isDns);
+    const starters = Array.from(driverLapsProcessed);
 
     const startNodesGroup = svg.append('g').attr('class', 'start-nodes');
     const startNodes = startNodesGroup
@@ -360,17 +421,18 @@ function _bindBumpHoverInteraction(
         applyFocusState(hoveredDriver);
 
         if (!info) return;
-        const startPos = laps[0]?.position ?? info.rank;
+        const gridPos = laps[0]?.position ?? info.rank;
+        const lap1Pos = laps[1]?.position ?? gridPos;
         const finishPos = info.rank;
-        const deltaHtml = info.isDns ? '' : _formatPositionDeltaHtml(startPos, finishPos);
+        const deltaHtml = info.isDns ? '' : _formatPositionDeltaHtml(gridPos, finishPos);
 
         let positionText = '';
         if (info.isDns) {
-            positionText = 'DNS';
+            positionText = `Grid: P${gridPos} → DNS`;
         } else if (info.isDnf) {
-            positionText = `Lap 1: P${startPos} → DNF (Lap ${info.lapsCompleted})`;
+            positionText = `Grid: P${gridPos} · Lap 1: P${lap1Pos} → DNF (Lap ${info.lapsCompleted})`;
         } else {
-            positionText = `Lap 1: P${startPos} → Finish: P${finishPos} ${deltaHtml}`;
+            positionText = `Grid: P${gridPos} · Lap 1: P${lap1Pos} → Finish: P${finishPos} ${deltaHtml}`;
         }
 
         tooltip
@@ -435,7 +497,7 @@ export function renderBump(data) {
 
     const maxPos = data.drivers.length || _DEFAULT_MAX_POSITIONS;
 
-    const xScale = d3.scaleLinear().domain([1, maxLap]).range([0, width]);
+    const xScale = d3.scaleLinear().domain([0, maxLap]).range([0, width]);
     const yScale = d3.scaleLinear().domain([1, maxPos]).range([0, height]);
 
     _renderBumpAxesAndGrid(svg, xScale, yScale, width, height, maxPos);
@@ -447,11 +509,13 @@ export function renderBump(data) {
         .curve(d3.curveMonotoneX);
 
     const secondTeammates = _identifySecondTeammates(classification);
+    const gridMap = _buildStartingGridMap(data, classification);
     const driverLapsProcessed = _buildProcessedDriverLaps(
         data.drivers,
         classification,
         maxLap,
-        secondTeammates
+        secondTeammates,
+        gridMap
     );
     const driverColors = Object.fromEntries(data.drivers.map((d) => [d.code, d.color]));
     const classificationByCode = new Map(classification.map((entry) => [entry.code, entry]));
