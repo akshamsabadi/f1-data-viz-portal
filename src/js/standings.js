@@ -1,6 +1,18 @@
 import { setBeeswarmExternalFocus } from './beeswarm.js';
 import { setCornerSpeedExternalFocus } from './corner_speed.js';
 import { setBumpExternalFocus } from './bump.js';
+import { setPracticeDegradationExternalFocus } from './practice_degradation.js';
+import { setPracticeAeroExternalFocus } from './practice_aero.js';
+import { setPracticeLongRunExternalFocus } from './practice_longrun.js';
+import { setPracticeProgrammeExternalFocus } from './practice_programme.js';
+import { setQualiTraceExternalFocus } from './quali_trace.js';
+import { setQualiProgressionExternalFocus } from './quali_progression.js';
+import { setQualiTeammateExternalFocus } from './quali_teammate.js';
+import { setQualiSectorsExternalFocus } from './quali_sectors.js';
+import { setRaceStrategyExternalFocus } from './race_strategy.js';
+import { setRaceWormExternalFocus } from './race_worm.js';
+import { setRacePitStopsExternalFocus } from './race_pitstops.js';
+import { setRaceStintPaceExternalFocus } from './race_stint_pace.js';
 
 const _DNF_TIME_THRESHOLD_SECONDS = 180;
 const _SECONDS_PER_HOUR = 3600;
@@ -13,6 +25,20 @@ const _STATUS_FINISHER = 'FINISHER';
 const _STATUS_LAPPED = 'LAPPED';
 const _STATUS_DNF = 'DNF';
 const _STATUS_DNS = 'DNS';
+
+const _COMPOUND_COLORS = {
+    SOFT: '#FF3333',
+    MEDIUM: '#FFE600',
+    HARD: '#F0F0F5',
+    INTERMEDIATE: '#39B54A',
+    WET: '#00AEEF'
+};
+
+const _SESSION_TITLES = {
+    practice: 'Practice Classification',
+    qualifying: 'Qualifying Classification',
+    race: 'Race Classification'
+};
 
 /**
  * Checks whether a driver retired early (DNF) rather than finishing on the lead lap or lapped.
@@ -53,8 +79,8 @@ function _determineDriverStatus(lapsCompleted, lastLapRecord, maxLap, maxSession
 }
 
 /**
- * Computes the official session classification, ranks, and DNF/DNS statuses for all drivers.
- * Shared between the Session Classification sidebar, Lap Times X-axis, and Track Position bump chart.
+ * Computes the official race classification, ranks, and DNF/DNS statuses for all drivers.
+ * Shared between the Session Classification sidebar, Lap Times X-axis, Strategy chart, and Bump chart.
  *
  * @param {Object} data - Race telemetry payload containing `drivers` and `laps`.
  * @returns {{
@@ -79,7 +105,7 @@ export function calculateDriverClassification(data) {
     const maxSessionTime = d3.max(validLaps, (d) => d.session_time);
     const driverLapsMap = d3.group(validLaps, (d) => d.driver);
 
-    const unsortedClassification = data.drivers.map((driver) => {
+    const unsortedClassification = (data.drivers || []).map((driver) => {
         const laps = (driverLapsMap.get(driver.code) || []).slice().sort((a, b) => a.lap - b.lap);
         const lastLapRecord = laps.length > 0 ? laps[laps.length - 1] : null;
         const lapsCompleted = lastLapRecord ? lastLapRecord.lap : 0;
@@ -157,9 +183,7 @@ export function formatSessionDuration(totalSeconds) {
 }
 
 /**
- * Formats the primary gap label and optional retirement lap subtitle for a classified driver.
- * Omits lap counts for classified finishers and lapped cars, showing the lap number only when
- * a driver retired (DNF) and the final lap is not otherwise implied.
+ * Formats the primary gap label and optional retirement lap subtitle for a classified race driver.
  *
  * @param {Object} driver - Classified driver entry.
  * @param {number} index - Zero-based finishing position index.
@@ -167,7 +191,7 @@ export function formatSessionDuration(totalSeconds) {
  * @param {number} maxLap - Total laps completed by the race winner.
  * @returns {{gapText: string, detailText: string}} Formatted display strings for the row.
  */
-function _formatDriverGapAndDetail(driver, index, winnerTime, maxLap) {
+function _formatRaceGapAndDetail(driver, index, winnerTime, maxLap) {
     let gapText = '';
     let detailText = '';
 
@@ -190,34 +214,55 @@ function _formatDriverGapAndDetail(driver, index, winnerTime, maxLap) {
 }
 
 /**
- * Propagates a unified focus state across Lap Times, Corner Speeds, and Track Position charts.
+ * Propagates a unified focus state across all telemetry visualizations in the active session tab.
  *
  * @param {{code: string, team: string}|null} targetDriver - Driver to highlight across the dashboard, or null to restore.
+ * @param {string} activeSession - Active tab identifier (`'practice'`, `'qualifying'`, or `'race'`).
  * @returns {void}
  */
-function _broadcastDashboardFocus(targetDriver) {
+export function broadcastDashboardFocus(targetDriver, activeSession = 'race') {
     const driverCode = targetDriver ? targetDriver.code : null;
     const teamName = targetDriver ? targetDriver.team : null;
+
+    if (activeSession === 'practice') {
+        setPracticeDegradationExternalFocus(driverCode);
+        setPracticeAeroExternalFocus(driverCode);
+        setPracticeLongRunExternalFocus(driverCode);
+        setPracticeProgrammeExternalFocus(driverCode);
+        return;
+    }
+
+    if (activeSession === 'qualifying') {
+        setQualiTraceExternalFocus(driverCode);
+        setQualiProgressionExternalFocus(driverCode);
+        setQualiTeammateExternalFocus(driverCode);
+        setQualiSectorsExternalFocus(driverCode);
+        setCornerSpeedExternalFocus(teamName);
+        return;
+    }
+
     setBeeswarmExternalFocus(driverCode);
-    setCornerSpeedExternalFocus(teamName);
+    setRaceStrategyExternalFocus(driverCode);
+    setRaceWormExternalFocus(driverCode);
     setBumpExternalFocus(driverCode);
+    setRacePitStopsExternalFocus(driverCode);
+    setRaceStintPaceExternalFocus(driverCode);
 }
 
 /**
- * Creates a compact DOM element for a single driver row in the Session Classification list,
- * displaying only the three-letter driver code, constructor name, gap/status, and retirement lap if DNF.
+ * Creates a compact DOM element for a single driver row in the Session Classification list.
  *
- * @param {Object} driver - Classified driver object.
- * @param {number} index - Zero-based finishing position index.
- * @param {string} gapText - Formatted time gap or status label.
- * @param {string} detailText - Optional retirement lap subtitle (empty for non-DNF rows).
+ * @param {Object} driver - Classified driver object (`{ code, team, color }`).
+ * @param {number} index - Zero-based position index.
+ * @param {string} gapHtml - Formatted primary gap/time HTML.
+ * @param {string} detailHtml - Optional secondary subtitle HTML.
  * @returns {HTMLElement} Constructed `.standings-row` element.
  */
-function _createStandingsRowElement(driver, index, gapText, detailText) {
+function _createStandingsRowElement(driver, index, gapHtml, detailHtml) {
     const row = document.createElement('div');
     row.className = 'standings-row';
     row.dataset.driverCode = driver.code;
-    const detailHtml = detailText ? `<div class="standings-laps-dnf">${detailText}</div>` : '';
+    const subHtml = detailHtml ? `<div class="standings-laps-dnf">${detailHtml}</div>` : '';
     row.innerHTML = `
         <div class="standings-row-left">
             <div class="standings-pos">P${index + 1}</div>
@@ -228,64 +273,154 @@ function _createStandingsRowElement(driver, index, gapText, detailText) {
             </div>
         </div>
         <div class="standings-row-right">
-            <div class="standings-gap">${gapText}</div>
-            ${detailHtml}
+            <div class="standings-gap">${gapHtml}</div>
+            ${subHtml}
         </div>
     `;
     return row;
 }
 
 /**
- * Renders the Session Classification sidebar table and binds unified cross-chart hover and click-lock interactions.
+ * Creates a horizontal knockout divider element for the Qualifying Classification sidebar.
  *
- * @param {Object} data - Race telemetry payload containing `drivers` and `laps`.
+ * @param {string} label - Cutoff label (e.g. `'Q3 CUTOFF · TOP 10'`).
+ * @param {string} cutoffTimeText - Formatted cutoff time string.
+ * @returns {HTMLElement} Divider element.
+ */
+function _createCutoffDividerElement(label, cutoffTimeText) {
+    const divider = document.createElement('div');
+    divider.className = 'standings-cutoff-divider';
+    divider.innerHTML = `<span>${label}</span><span>${cutoffTimeText}</span>`;
+    return divider;
+}
+
+/**
+ * Binds unified hover and click-lock interaction listeners to all `.standings-row` elements.
+ *
+ * @param {HTMLElement} container - `#standings-list` container element.
+ * @param {Array<{row: HTMLElement, driver: {code: string, team: string}}>} rowBindings - Row and driver pairs.
+ * @param {string} activeSession - Active tab identifier (`'practice'`, `'qualifying'`, or `'race'`).
  * @returns {void}
  */
-export function renderStandings(data) {
+function _bindStandingsRowInteractions(container, rowBindings, activeSession) {
+    let lockedDriverCode = null;
+
+    rowBindings.forEach(({ row, driver }) => {
+        row.addEventListener('mouseover', () => {
+            if (!lockedDriverCode) {
+                broadcastDashboardFocus(driver, activeSession);
+            }
+        });
+
+        row.addEventListener('mouseout', () => {
+            if (!lockedDriverCode) {
+                broadcastDashboardFocus(null, activeSession);
+            }
+        });
+
+        row.addEventListener('click', () => {
+            if (lockedDriverCode === driver.code) {
+                lockedDriverCode = null;
+                row.classList.remove('selected');
+                broadcastDashboardFocus(null, activeSession);
+            } else {
+                lockedDriverCode = driver.code;
+                container
+                    .querySelectorAll('.standings-row')
+                    .forEach((el) => el.classList.remove('selected'));
+                row.classList.add('selected');
+                broadcastDashboardFocus(driver, activeSession);
+            }
+        });
+    });
+}
+
+/**
+ * Renders the Session Classification sidebar table for the active session (`practice`, `qualifying`, or `race`)
+ * and binds unified cross-chart hover and click-lock interactions.
+ *
+ * @param {Object} data - Enriched Grand Prix telemetry payload.
+ * @param {string} [activeSession='race'] - Active session tab (`'practice'`, `'qualifying'`, or `'race'`).
+ * @returns {void}
+ */
+export function renderStandings(data, activeSession = 'race') {
     const container = document.getElementById('standings-list');
+    const titleEl = document.getElementById('standings-title');
+    if (titleEl) {
+        titleEl.textContent = _SESSION_TITLES[activeSession] || _SESSION_TITLES.race;
+    }
     if (!container) return;
     container.innerHTML = '';
 
+    const rowBindings = [];
+
+    if (activeSession === 'practice' && data.practice && Array.isArray(data.practice.classification)) {
+        data.practice.classification.forEach((entry, index) => {
+            const code = entry.driver;
+            const compoundColor = _COMPOUND_COLORS[entry.compound] || '#F0F0F5';
+            const dotHtml = `<span class="standings-compound-badge" style="background-color: ${compoundColor}" title="${entry.compound}"></span>`;
+            const gapHtml =
+                index === 0
+                    ? `${dotHtml}${formatSessionDuration(entry.best_lap)}`
+                    : `${dotHtml}+${Number(entry.gap_to_p1).toFixed(3)}s`;
+            const detailHtml = `${entry.total_laps} Laps`;
+            const driverObj = { code, team: entry.team, color: entry.color };
+            const row = _createStandingsRowElement(driverObj, index, gapHtml, detailHtml);
+            container.appendChild(row);
+            rowBindings.push({ row, driver: driverObj });
+        });
+        _bindStandingsRowInteractions(container, rowBindings, activeSession);
+        return;
+    }
+
+    if (activeSession === 'qualifying' && data.qualifying && Array.isArray(data.qualifying.results)) {
+        const cutoffs = data.qualifying.cutoffs || {};
+        data.qualifying.results.forEach((entry, index) => {
+            const code = entry.driver;
+            const gapHtml =
+                index === 0
+                    ? formatSessionDuration(entry.best_time)
+                    : `+${Number(entry.gap_to_pole).toFixed(3)}s`;
+            const detailHtml = `${entry.eliminated_in} · ${formatSessionDuration(entry.best_time)}`;
+            const driverObj = { code, team: entry.team, color: entry.color };
+            const row = _createStandingsRowElement(driverObj, index, gapHtml, detailHtml);
+            container.appendChild(row);
+            rowBindings.push({ row, driver: driverObj });
+
+            if (index === 9 && data.qualifying.results.length > 10) {
+                container.appendChild(
+                    _createCutoffDividerElement(
+                        'Q3 CUTOFF · TOP 10',
+                        formatSessionDuration(cutoffs.q3_cutoff_time || entry.best_time)
+                    )
+                );
+            } else if (index === 15 && data.qualifying.results.length > 16) {
+                container.appendChild(
+                    _createCutoffDividerElement(
+                        'Q2 CUTOFF · TOP 16',
+                        formatSessionDuration(cutoffs.q2_cutoff_time || entry.best_time)
+                    )
+                );
+            }
+        });
+        _bindStandingsRowInteractions(container, rowBindings, activeSession);
+        return;
+    }
+
+    // Default: Race Classification
     const { validLaps, maxLap, classification } = calculateDriverClassification(data);
     if (validLaps.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.8rem; text-align: center; padding: 1rem 0; text-transform: uppercase; font-family: Montserrat;">No classification available.</p>';
+        container.innerHTML = '<p style="color: var(--text-muted)">No classification data available.</p>';
         return;
     }
 
     const winnerTime = classification[0].lastLapTime;
-    let lockedDriver = null;
-
-    const updateRowSelectionStyles = () => {
-        container.querySelectorAll('.standings-row').forEach((rowEl) => {
-            rowEl.classList.toggle(
-                'selected',
-                lockedDriver !== null && rowEl.dataset.driverCode === lockedDriver.code
-            );
-        });
-    };
-
     classification.forEach((driver, index) => {
-        const { gapText, detailText } = _formatDriverGapAndDetail(driver, index, winnerTime, maxLap);
+        const { gapText, detailText } = _formatRaceGapAndDetail(driver, index, winnerTime, maxLap);
         const row = _createStandingsRowElement(driver, index, gapText, detailText);
-
-        row.addEventListener('mouseover', () => {
-            _broadcastDashboardFocus(driver);
-        });
-
-        row.addEventListener('mouseout', () => {
-            _broadcastDashboardFocus(lockedDriver);
-        });
-
-        row.addEventListener('click', () => {
-            if (lockedDriver && lockedDriver.code === driver.code) {
-                lockedDriver = null;
-            } else {
-                lockedDriver = driver;
-            }
-            updateRowSelectionStyles();
-            _broadcastDashboardFocus(lockedDriver);
-        });
-
         container.appendChild(row);
+        rowBindings.push({ row, driver });
     });
+
+    _bindStandingsRowInteractions(container, rowBindings, activeSession);
 }

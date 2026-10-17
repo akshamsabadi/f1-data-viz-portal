@@ -1,28 +1,50 @@
 import { renderBeeswarm } from './beeswarm.js';
 import { renderCornerSpeed } from './corner_speed.js';
 import { renderBump } from './bump.js';
-import { renderStandings } from './standings.js';
+import { renderStandings, broadcastDashboardFocus } from './standings.js';
+import { renderPracticeDegradation } from './practice_degradation.js';
+import { renderPracticeAero } from './practice_aero.js';
+import { renderPracticeLongRun } from './practice_longrun.js';
+import { renderPracticeProgramme } from './practice_programme.js';
+import { renderQualiTrace } from './quali_trace.js';
+import { renderQualiProgression } from './quali_progression.js';
+import { renderQualiTeammate } from './quali_teammate.js';
+import { renderQualiSectors } from './quali_sectors.js';
+import { renderRaceStrategy } from './race_strategy.js';
+import { renderRaceWorm } from './race_worm.js';
+import { renderRacePitStops } from './race_pitstops.js';
+import { renderRaceStintPace } from './race_stint_pace.js';
 
-const APP_VERSION = 'v1.17.0';
+const APP_VERSION = 'v1.18.0';
 
 const _OFFICIAL_TEAM_COLORS = {
     'Ferrari': '#e30002',
     'McLaren': '#fe7b04',
     'Mercedes': '#00e3c0',
     'Red Bull Racing': '#3671c6',
+    'Red Bull': '#3671c6',
     'Racing Bulls': '#6692ff',
+    'RB': '#6692ff',
     'Alpine': '#ff7ed1',
     'Audi': '#ff3a28',
     'Haas F1 Team': '#fefefe',
+    'Haas': '#fefefe',
     'Williams': '#1868db',
     'Cadillac': '#9ca3af',
     'Aston Martin': '#229971'
+};
+
+const _SESSION_EYEBROWS = {
+    practice: '// PRACTICE TELEMETRY · FP1–FP3 PROGRAMME',
+    qualifying: '// QUALIFYING TELEMETRY · Q1 / Q2 / Q3 SHOOTOUT',
+    race: '// GRAND PRIX RACE TELEMETRY'
 };
 
 const _RESIZE_THRESHOLD_PX = 10;
 const _RESIZE_DEBOUNCE_MS = 150;
 
 let _currentData = null;
+let _activeSession = 'race';
 let _resizeTimeout = null;
 let _lastWidth = 0;
 
@@ -39,17 +61,17 @@ function _setLoaderVisibility(isVisible) {
 }
 
 /**
- * Formats the display title for a race session option.
+ * Formats the display title for a Grand Prix option.
  *
  * @param {{year: number, name: string, file: string}} race - Race manifest entry.
- * @returns {string} Formatted session label.
+ * @returns {string} Formatted Grand Prix label.
  */
 function _formatRaceOptionLabel(race) {
     return `${race.year} ${race.name}`;
 }
 
 /**
- * Populates both the native `<select>` element and custom dropdown options.
+ * Populates both the native `<select>` element and custom Grand Prix dropdown options.
  *
  * @param {Array<{year: number, name: string, file: string}>} races - List of race entries from the manifest.
  * @param {{
@@ -60,7 +82,7 @@ function _formatRaceOptionLabel(race) {
  * }} elements - Dropdown DOM element references.
  * @returns {void}
  */
-function _populateSessionOptions(races, elements) {
+function _populateGrandPrixOptions(races, elements) {
     const { raceSelector, customContainer, customLabel, customOptionsContainer } = elements;
 
     races.forEach((race) => {
@@ -94,7 +116,7 @@ function _populateSessionOptions(races, elements) {
 }
 
 /**
- * Binds open/close and change listeners for the session selector dropdown.
+ * Binds open/close and change listeners for the Grand Prix selector dropdown.
  *
  * @param {{
  *   raceSelector: HTMLSelectElement,
@@ -119,12 +141,80 @@ function _bindDropdownEvents(elements) {
     });
 
     raceSelector.addEventListener('change', (event) => {
-        _loadRace(event.target.value);
+        _loadGrandPrix(event.target.value);
     });
 }
 
 /**
- * Selects and loads the most recent race in the manifest by default.
+ * Binds click and change listeners for the Select Session tab bar (`Practice`, `Qualifying`, `Race`)
+ * and its synchronized accessible `<select id="session-selector">`.
+ *
+ * @returns {void}
+ */
+function _bindSessionTabEvents() {
+    const sessionTabsContainer = document.getElementById('session-tabs');
+    const sessionSelector = document.getElementById('session-selector');
+    if (!sessionTabsContainer) return;
+
+    const tabButtons = Array.from(sessionTabsContainer.querySelectorAll('.session-tab'));
+
+    const activateSession = (sessionKey) => {
+        if (!sessionKey || !['practice', 'qualifying', 'race'].includes(sessionKey)) return;
+        _activeSession = sessionKey;
+
+        tabButtons.forEach((btn) => {
+            const isMatch = btn.dataset.session === sessionKey;
+            btn.classList.toggle('active', isMatch);
+            btn.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+        });
+
+        if (sessionSelector && sessionSelector.value !== sessionKey) {
+            sessionSelector.value = sessionKey;
+        }
+
+        ['practice', 'qualifying', 'race'].forEach((panelKey) => {
+            const panel = document.getElementById(`tab-panel-${panelKey}`);
+            if (panel) {
+                panel.classList.toggle('hidden', panelKey !== sessionKey);
+            }
+        });
+
+        const eyebrowEl = document.getElementById('session-eyebrow');
+        if (eyebrowEl) {
+            eyebrowEl.textContent = _SESSION_EYEBROWS[sessionKey] || _SESSION_EYEBROWS.race;
+        }
+
+        const tooltip = document.getElementById('tooltip');
+        if (tooltip) {
+            tooltip.classList.add('hidden');
+        }
+
+        if (_currentData) {
+            broadcastDashboardFocus(null, _activeSession);
+            _renderActiveSession(_currentData, _activeSession);
+        }
+    };
+
+    tabButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            activateSession(btn.dataset.session);
+        });
+    });
+
+    if (sessionSelector) {
+        sessionSelector.addEventListener('change', (event) => {
+            activateSession(event.target.value);
+        });
+    }
+
+    const urlSession = new URLSearchParams(window.location.search).get('session');
+    if (urlSession && ['practice', 'qualifying', 'race'].includes(urlSession.toLowerCase())) {
+        activateSession(urlSession.toLowerCase());
+    }
+}
+
+/**
+ * Selects and loads the most recent Grand Prix in the manifest by default.
  *
  * @param {Array<{year: number, name: string, file: string}>} races - List of race entries from the manifest.
  * @param {{
@@ -134,7 +224,7 @@ function _bindDropdownEvents(elements) {
  * }} elements - Dropdown DOM element references.
  * @returns {void}
  */
-function _selectInitialSession(races, elements) {
+function _selectInitialGrandPrix(races, elements) {
     if (!races || races.length === 0) return;
 
     const { raceSelector, customLabel, customOptionsContainer } = elements;
@@ -149,63 +239,114 @@ function _selectInitialSession(races, elements) {
         customOptions[latestRaceIndex].classList.add('selected');
     }
 
-    _loadRace(latestRace.file);
+    _loadGrandPrix(latestRace.file);
 }
 
 /**
- * Overrides driver and corner color properties with high-contrast dark-mode broadcast hex colors.
+ * Overrides driver and constructor color properties across all session blocks with
+ * high-contrast dark-mode broadcast hex colors.
  *
- * @param {Object} rawData - Parsed race telemetry payload.
+ * @param {Object} rawData - Parsed Grand Prix telemetry payload.
  * @returns {void}
  */
 function _applyOfficialTeamColors(rawData) {
-    if (Array.isArray(rawData.drivers)) {
-        rawData.drivers.forEach((driver) => {
-            if (_OFFICIAL_TEAM_COLORS[driver.team]) {
-                driver.color = _OFFICIAL_TEAM_COLORS[driver.team];
-            }
-        });
+    const applyTeamColor = (item) => {
+        if (item && item.team && _OFFICIAL_TEAM_COLORS[item.team]) {
+            item.color = _OFFICIAL_TEAM_COLORS[item.team];
+        }
+    };
+
+    (rawData.drivers || []).forEach(applyTeamColor);
+    (rawData.corners || []).forEach(applyTeamColor);
+
+    if (rawData.practice) {
+        (rawData.practice.classification || []).forEach(applyTeamColor);
+        (rawData.practice.stint_laps || []).forEach(applyTeamColor);
     }
 
-    if (Array.isArray(rawData.corners)) {
-        rawData.corners.forEach((corner) => {
-            if (_OFFICIAL_TEAM_COLORS[corner.team]) {
-                corner.color = _OFFICIAL_TEAM_COLORS[corner.team];
-            }
-        });
+    if (rawData.qualifying) {
+        (rawData.qualifying.results || []).forEach(applyTeamColor);
+        (rawData.qualifying.teammate_deltas || []).forEach(applyTeamColor);
+        (rawData.qualifying.corners || []).forEach(applyTeamColor);
+    }
+
+    if (rawData.race_telemetry) {
+        (rawData.race_telemetry.stints || []).forEach(applyTeamColor);
+        (rawData.race_telemetry.pit_stops || []).forEach(applyTeamColor);
     }
 }
 
 /**
- * Updates the dashboard header title for the selected Grand Prix session.
+ * Updates the dashboard header title and eyebrow for the selected Grand Prix and session.
  *
- * @param {Object} data - Race telemetry payload containing `race_info`.
+ * @param {Object} data - Grand Prix telemetry payload containing `race_info`.
+ * @param {string} activeSession - Active session key (`'practice'`, `'qualifying'`, or `'race'`).
  * @returns {void}
  */
-function _updateDashboardHeader(data) {
+function _updateDashboardHeader(data, activeSession) {
     const { year, gp } = data.race_info;
     document.getElementById('race-title').textContent = `${year} ${gp}`;
+    const eyebrowEl = document.getElementById('session-eyebrow');
+    if (eyebrowEl) {
+        eyebrowEl.textContent = _SESSION_EYEBROWS[activeSession] || _SESSION_EYEBROWS.race;
+    }
 }
 
 /**
- * Renders all primary telemetry charts for the active dataset.
+ * Renders only the primary telemetry visualizations belonging to the currently active session tab.
  *
- * @param {Object} data - Race telemetry payload.
+ * @param {Object} data - Enriched Grand Prix telemetry payload.
+ * @param {string} activeSession - Active session tab (`'practice'`, `'qualifying'`, or `'race'`).
  * @returns {void}
  */
-function _renderPrimaryCharts(data) {
+function _renderSessionCharts(data, activeSession) {
+    if (activeSession === 'practice') {
+        renderPracticeDegradation(data);
+        renderPracticeAero(data);
+        renderPracticeLongRun(data);
+        renderPracticeProgramme(data);
+        return;
+    }
+
+    if (activeSession === 'qualifying') {
+        renderQualiTrace(data);
+        renderQualiProgression(data);
+        renderQualiTeammate(data);
+        renderQualiSectors(data);
+        renderCornerSpeed({
+            ...data,
+            corners: (data.qualifying && data.qualifying.corners) || data.corners || []
+        });
+        return;
+    }
+
     renderBeeswarm(data);
-    renderCornerSpeed(data);
+    renderRaceStrategy(data);
+    renderRaceWorm(data);
     renderBump(data);
+    renderRacePitStops(data);
+    renderRaceStintPace(data);
 }
 
 /**
- * Fetches a specific race dataset, applies team branding, and renders all views.
+ * Renders both the active session's telemetry charts and the right-hand Session Classification sidebar.
  *
- * @param {string} dataFile - Filename of the race JSON payload to load.
+ * @param {Object} data - Enriched Grand Prix telemetry payload.
+ * @param {string} activeSession - Active session tab (`'practice'`, `'qualifying'`, or `'race'`).
+ * @returns {void}
+ */
+function _renderActiveSession(data, activeSession) {
+    _renderSessionCharts(data, activeSession);
+    renderStandings(data, activeSession);
+}
+
+/**
+ * Fetches a specific Grand Prix dataset, applies team branding, and renders the active session view.
+ *
+ * @param {string} dataFile - Filename of the Grand Prix JSON payload to load.
  * @returns {Promise<void>}
  */
-async function _loadRace(dataFile) {
+async function _loadGrandPrix(dataFile) {
     _setLoaderVisibility(true);
     document.getElementById('race-title').textContent = 'Loading...';
 
@@ -215,25 +356,24 @@ async function _loadRace(dataFile) {
 
         _applyOfficialTeamColors(rawData);
         _currentData = rawData;
-        _updateDashboardHeader(_currentData);
+        _updateDashboardHeader(_currentData, _activeSession);
 
-        _renderPrimaryCharts(_currentData);
-        renderStandings(_currentData);
+        _renderActiveSession(_currentData, _activeSession);
 
         const dashboard = document.querySelector('.dashboard');
         if (dashboard) {
             _lastWidth = dashboard.clientWidth;
         }
     } catch (error) {
-        console.error('Failed to load race data', error);
-        document.getElementById('race-title').textContent = 'Error loading race data';
+        console.error('Failed to load Grand Prix data', error);
+        document.getElementById('race-title').textContent = 'Error loading Grand Prix data';
     } finally {
         _setLoaderVisibility(false);
     }
 }
 
 /**
- * Initializes the application by fetching the race manifest and setting up controls.
+ * Initializes the application by fetching the Grand Prix manifest and binding dropdown & session tab controls.
  *
  * @returns {Promise<void>}
  */
@@ -250,9 +390,10 @@ async function _init() {
             customOptionsContainer: document.getElementById('custom-select-options')
         };
 
-        _populateSessionOptions(manifest.races, dropdownElements);
+        _populateGrandPrixOptions(manifest.races, dropdownElements);
         _bindDropdownEvents(dropdownElements);
-        _selectInitialSession(manifest.races, dropdownElements);
+        _bindSessionTabEvents();
+        _selectInitialGrandPrix(manifest.races, dropdownElements);
     } catch (error) {
         console.error('Failed to load manifest', error);
         document.getElementById('race-title').textContent = 'Error loading data';
@@ -269,7 +410,7 @@ const _resizeObserver = new ResizeObserver((entries) => {
     clearTimeout(_resizeTimeout);
     _resizeTimeout = setTimeout(() => {
         _lastWidth = width;
-        _renderPrimaryCharts(_currentData);
+        _renderSessionCharts(_currentData, _activeSession);
     }, _RESIZE_DEBOUNCE_MS);
 });
 

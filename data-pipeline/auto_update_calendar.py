@@ -11,6 +11,7 @@ import requests
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from fetch_openf1 import fetch_openf1_data  # noqa: E402
 from generate_corner_speeds import calculate_corner_speeds  # noqa: E402
+from generate_weekend_telemetry import generate_weekend_telemetry  # noqa: E402
 
 _TARGET_YEAR: Final[int] = 2026
 _OPENF1_SESSIONS_URL: Final[str] = (
@@ -211,6 +212,7 @@ def _ingest_new_race_session(
     print(f"Executing calculate_corner_speeds on {out_path}...")
     try:
         calculate_corner_speeds(out_path)
+        generate_weekend_telemetry(out_path)
     except Exception as error:
         print(f"Error calculating corner speeds: {error}")
 

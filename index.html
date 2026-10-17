@@ -7,7 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="src/assets/favicon.svg">
     <link rel="stylesheet" href="src/css/style.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Titillium+Web:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Titillium+Web:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="loader-overlay" class="loader-overlay">
@@ -25,71 +25,215 @@
         <div class="logo-container">
             <span class="f1-badge">F1</span>
             <span class="logo-text">DATA VIZ PORTAL</span>
-            <span class="app-version-badge">v1.17.0</span>
+            <span class="app-version-badge">v1.18.0</span>
         </div>
         <div class="controls">
-            <label>// SELECT SESSION</label>
+            <label for="race-selector">// SELECT GRAND PRIX</label>
             <div class="custom-select-container" id="custom-select-container">
-                <button class="custom-select-trigger" id="custom-select-trigger">
-                    <span id="custom-select-label">SELECT SESSION</span>
+                <button class="custom-select-trigger" id="custom-select-trigger" type="button">
+                    <span id="custom-select-label">SELECT GRAND PRIX</span>
                     <span class="custom-select-arrow"></span>
                 </button>
                 <div class="custom-select-options hidden" id="custom-select-options"></div>
             </div>
             <!-- Hidden native select for accessibility compliance with GEMINI.md -->
-            <select id="race-selector" class="visually-hidden"></select>
+            <select id="race-selector" class="visually-hidden" aria-label="Select Grand Prix"></select>
         </div>
     </header>
 
     <main class="dashboard">
         <div class="dashboard-header">
-            <h1 id="race-title">Loading...</h1>
+            <div class="dashboard-title-block">
+                <span class="session-eyebrow" id="session-eyebrow">// GRAND PRIX TELEMETRY</span>
+                <h1 id="race-title">Loading...</h1>
+            </div>
+            <div class="session-selector-group">
+                <label class="session-selector-label" for="session-selector">// SELECT SESSION</label>
+                <div class="session-tabs" id="session-tabs" role="tablist" aria-label="Select Grand Prix Session">
+                    <button class="session-tab" data-session="practice" role="tab" aria-selected="false" type="button">
+                        <span class="session-tab-code">FP</span>
+                        <span class="session-tab-name">Practice</span>
+                    </button>
+                    <button class="session-tab" data-session="qualifying" role="tab" aria-selected="false" type="button">
+                        <span class="session-tab-code">QUAL</span>
+                        <span class="session-tab-name">Qualifying</span>
+                    </button>
+                    <button class="session-tab active" data-session="race" role="tab" aria-selected="true" type="button">
+                        <span class="session-tab-code">GP</span>
+                        <span class="session-tab-name">Race</span>
+                    </button>
+                </div>
+                <!-- Synchronized native select for accessibility compliance with GEMINI.md -->
+                <select id="session-selector" class="visually-hidden" aria-label="Select Session">
+                    <option value="practice">Practice</option>
+                    <option value="qualifying">Qualifying</option>
+                    <option value="race" selected>Race</option>
+                </select>
+            </div>
         </div>
 
         <div class="dashboard-grid">
-            <!-- Left Column: Main Telemetry Visualizations -->
+            <!-- Left Column: Session-Specific Telemetry Panels -->
             <div class="main-column">
-                <section class="viz-container" id="beeswarm-container">
-                    <div class="viz-header-controls">
-                        <h2>Lap Times</h2>
-                        <div class="viz-controls">
-                            <label class="toggle-label">
-                                <input type="checkbox" id="outlier-toggle">
-                                Show Outliers (e.g. Pit stops, VSC)
-                            </label>
-                            <div id="beeswarm-legend" class="legend-container"></div>
+                <!-- ================= TAB 1: PRACTICE ================= -->
+                <div id="tab-panel-practice" class="session-tab-panel hidden" role="tabpanel">
+                    <section class="viz-container" id="practice-deg-container">
+                        <div class="viz-header-controls">
+                            <h2>Long-Run Stint Pace &amp; Tyre Degradation <span class="badge-estimate">FP1–FP3 Stint Model</span></h2>
+                            <div class="viz-controls">
+                                <div id="practice-deg-legend" class="legend-container"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div id="beeswarm-plot" class="chart"></div>
-                </section>
+                        <div id="practice-deg-chart" class="chart"></div>
+                    </section>
 
-                <section class="viz-container" id="corner-speed-container">
-                    <div class="viz-header-controls">
-                        <h2>Corner Speeds <span class="badge-estimate">Model Estimate</span></h2>
-                        <div class="viz-controls">
-                            <div id="corner-speed-legend" class="legend-container"></div>
-                        </div>
+                    <div class="viz-pair-grid">
+                        <section class="viz-container" id="practice-aero-container">
+                            <div class="viz-header-controls">
+                                <h2>Aero Setup Balance <span class="badge-estimate">Trap vs. Apex</span></h2>
+                            </div>
+                            <div id="practice-aero-chart" class="chart chart-compact"></div>
+                        </section>
+
+                        <section class="viz-container" id="practice-longrun-container">
+                            <div class="viz-header-controls">
+                                <h2>Long-Run Race Sim Ranking <span class="badge-estimate">High-Fuel IQR</span></h2>
+                            </div>
+                            <div id="practice-longrun-chart" class="chart chart-compact"></div>
+                        </section>
                     </div>
-                    <div id="corner-speed-chart" class="chart speed-subplots"></div>
-                </section>
-                
-                <section class="viz-container" id="bump-container">
-                    <div class="viz-header-controls">
-                        <h2>Track Position</h2>
-                        <div class="bump-legend">
-                            <span class="bump-legend-item"><span class="bump-swatch solid"></span>Teammate 1</span>
-                            <span class="bump-legend-item"><span class="bump-swatch dashed"></span>Teammate 2</span>
-                            <span class="bump-legend-item"><span class="bump-swatch dotted"></span>DNF / DNS</span>
+
+                    <section class="viz-container" id="practice-programme-container">
+                        <div class="viz-header-controls">
+                            <h2>Practice Programme &amp; Compound Utilisation</h2>
+                            <div class="viz-controls">
+                                <div id="practice-programme-legend" class="legend-container"></div>
+                            </div>
                         </div>
+                        <div id="practice-programme-chart" class="chart"></div>
+                    </section>
+                </div>
+
+                <!-- ================= TAB 2: QUALIFYING ================= -->
+                <div id="tab-panel-qualifying" class="session-tab-panel hidden" role="tabpanel">
+                    <section class="viz-container" id="quali-trace-container">
+                        <div class="viz-header-controls">
+                            <h2>Fastest Lap Telemetry Trace <span class="badge-estimate">Speed · Throttle/Brake · Δt</span></h2>
+                            <div class="viz-controls" id="quali-trace-controls"></div>
+                        </div>
+                        <div id="quali-trace-chart" class="chart"></div>
+                    </section>
+
+                    <div class="viz-pair-grid">
+                        <section class="viz-container" id="quali-progression-container">
+                            <div class="viz-header-controls">
+                                <h2>Q1 / Q2 / Q3 Knockout Progression</h2>
+                                <div class="viz-controls">
+                                    <div id="quali-progression-legend" class="legend-container"></div>
+                                </div>
+                            </div>
+                            <div id="quali-progression-chart" class="chart chart-compact"></div>
+                        </section>
+
+                        <section class="viz-container" id="quali-teammate-container">
+                            <div class="viz-header-controls">
+                                <h2>Teammate Qualifying Head-to-Head</h2>
+                            </div>
+                            <div id="quali-teammate-chart" class="chart chart-compact"></div>
+                        </section>
                     </div>
-                    <div id="bump-chart" class="chart"></div>
-                </section>
+
+                    <section class="viz-container" id="quali-sectors-container">
+                        <div class="viz-header-controls">
+                            <h2>Sector Dominance &amp; Ideal vs. Actual Lap</h2>
+                            <div class="viz-controls">
+                                <div id="quali-sectors-legend" class="legend-container"></div>
+                            </div>
+                        </div>
+                        <div id="quali-sectors-chart" class="chart"></div>
+                    </section>
+
+                    <section class="viz-container" id="corner-speed-container">
+                        <div class="viz-header-controls">
+                            <h2>Corner Speeds <span class="badge-estimate">Low-Fuel Qualifying Trim</span></h2>
+                            <div class="viz-controls">
+                                <div id="corner-speed-legend" class="legend-container"></div>
+                            </div>
+                        </div>
+                        <div id="corner-speed-chart" class="chart speed-subplots"></div>
+                    </section>
+                </div>
+
+                <!-- ================= TAB 3: RACE ================= -->
+                <div id="tab-panel-race" class="session-tab-panel" role="tabpanel">
+                    <section class="viz-container" id="beeswarm-container">
+                        <div class="viz-header-controls">
+                            <h2>Lap Times</h2>
+                            <div class="viz-controls">
+                                <label class="toggle-label">
+                                    <input type="checkbox" id="outlier-toggle">
+                                    Show Outliers (e.g. Pit stops, VSC)
+                                </label>
+                                <div id="beeswarm-legend" class="legend-container"></div>
+                            </div>
+                        </div>
+                        <div id="beeswarm-plot" class="chart"></div>
+                    </section>
+
+                    <section class="viz-container" id="race-strategy-container">
+                        <div class="viz-header-controls">
+                            <h2>Tyre Strategy &amp; Pit Windows</h2>
+                            <div class="viz-controls">
+                                <div id="race-strategy-legend" class="legend-container"></div>
+                            </div>
+                        </div>
+                        <div id="race-strategy-chart" class="chart"></div>
+                    </section>
+
+                    <section class="viz-container" id="race-worm-container">
+                        <div class="viz-header-controls">
+                            <h2>Gap to Race Leader <span class="badge-estimate">Race Trace</span></h2>
+                            <div class="viz-controls" id="race-worm-controls"></div>
+                        </div>
+                        <div id="race-worm-chart" class="chart"></div>
+                    </section>
+
+                    <section class="viz-container" id="bump-container">
+                        <div class="viz-header-controls">
+                            <h2>Track Position</h2>
+                            <div class="bump-legend">
+                                <span class="bump-legend-item"><span class="bump-swatch solid"></span>Teammate 1</span>
+                                <span class="bump-legend-item"><span class="bump-swatch dashed"></span>Teammate 2</span>
+                                <span class="bump-legend-item"><span class="bump-swatch dotted"></span>DNF / DNS</span>
+                            </div>
+                        </div>
+                        <div id="bump-chart" class="chart"></div>
+                    </section>
+
+                    <div class="viz-pair-grid">
+                        <section class="viz-container" id="race-pitstops-container">
+                            <div class="viz-header-controls">
+                                <h2>Pit Stop Execution &amp; Time Loss</h2>
+                                <div class="viz-controls" id="race-pitstops-controls"></div>
+                            </div>
+                            <div id="race-pitstops-chart" class="chart chart-compact"></div>
+                        </section>
+
+                        <section class="viz-container" id="race-stint-pace-container">
+                            <div class="viz-header-controls">
+                                <h2>Stint Pace Progression</h2>
+                                <div class="viz-controls" id="race-stint-pace-controls"></div>
+                            </div>
+                            <div id="race-stint-pace-chart" class="chart chart-compact"></div>
+                        </section>
+                    </div>
+                </div>
             </div>
 
             <!-- Right Column: Session Standings Sidebar -->
             <div class="sidebar-column">
                 <section class="viz-container" id="standings-container">
-                    <h2>Session Classification</h2>
+                    <h2 id="standings-title">Race Classification</h2>
                     <div id="standings-list" class="standings-list"></div>
                 </section>
             </div>
