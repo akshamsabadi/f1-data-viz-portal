@@ -1,6 +1,6 @@
 import { calculateDriverClassification } from './standings.js';
 
-const _CHART_MARGIN = { top: 24, right: 32, bottom: 44, left: 82 };
+const _CHART_MARGIN = { top: 34, right: 32, bottom: 44, left: 82 };
 const _ROW_HEIGHT_PX = 26;
 const _MIN_CHART_HEIGHT_PX = 420;
 const _BAR_VERTICAL_PADDING_RATIO = 0.2;
@@ -204,11 +204,12 @@ function _resolveStints(data, driverMetaByCode, maxLap) {
  *
  * @param {HTMLElement|null} legendContainer - DOM element for the legend.
  * @param {Array<Object>} stints - Normalized stint records.
+ * @param {Array<Object>} scWindows - Normalized Safety Car / VSC lap windows.
  * @param {Set<string>} activeCompounds - Set of currently active compound names.
  * @param {Function} onToggle - Callback invoked when a compound filter is toggled.
  * @returns {void}
  */
-function _buildStrategyLegend(legendContainer, stints, activeCompounds, onToggle) {
+function _buildStrategyLegend(legendContainer, stints, scWindows, activeCompounds, onToggle) {
     if (!legendContainer) return;
     legendContainer.replaceChildren();
 
@@ -250,6 +251,35 @@ function _buildStrategyLegend(legendContainer, stints, activeCompounds, onToggle
 
         legendContainer.appendChild(item);
     });
+
+    const hasSC = scWindows.some((w) => w.type === 'SC');
+    const hasVSC = scWindows.some((w) => w.type === 'VSC');
+
+    if (hasSC) {
+        const scItem = document.createElement('div');
+        scItem.className = 'legend-item';
+        scItem.style.cursor = 'default';
+        const swatch = document.createElement('div');
+        swatch.className = 'legend-color';
+        swatch.style.backgroundColor = 'rgba(245, 158, 11, 0.35)';
+        swatch.style.border = '1.5px dashed #f59e0b';
+        scItem.appendChild(swatch);
+        scItem.appendChild(document.createTextNode('SAFETY CAR (SC)'));
+        legendContainer.appendChild(scItem);
+    }
+
+    if (hasVSC) {
+        const vscItem = document.createElement('div');
+        vscItem.className = 'legend-item';
+        vscItem.style.cursor = 'default';
+        const swatch = document.createElement('div');
+        swatch.className = 'legend-color';
+        swatch.style.backgroundColor = 'rgba(250, 204, 21, 0.3)';
+        swatch.style.border = '1.5px dashed #facc15';
+        vscItem.appendChild(swatch);
+        vscItem.appendChild(document.createTextNode('VIRTUAL SC (VSC)'));
+        legendContainer.appendChild(vscItem);
+    }
 
     updateLegendStyles();
 }
@@ -420,6 +450,56 @@ export function renderRaceStrategy(data) {
         .attr('rx', _BAR_CORNER_RADIUS_PX)
         .attr('fill', 'rgba(255, 255, 255, 0.025)');
 
+    // Safety Car (SC) & Virtual Safety Car (VSC) Window Extraction
+    const rawScWindows =
+        data.race_telemetry && Array.isArray(data.race_telemetry.sc_vsc_windows)
+            ? data.race_telemetry.sc_vsc_windows
+            : Array.isArray(data.session_events)
+              ? data.session_events
+              : [];
+
+    const scWindows = rawScWindows
+        .filter(
+            (w) =>
+                (w.type === 'SC' || w.type === 'VSC') &&
+                Number.isFinite(Number(w.start_lap)) &&
+                Number(w.start_lap) <= maxLap
+        )
+        .map((w) => {
+            const startLap = Math.max(1, Number(w.start_lap));
+            const endLap = Math.min(maxLap, Math.max(startLap, Number(w.end_lap) || startLap));
+            return {
+                type: w.type,
+                start_lap: startLap,
+                end_lap: endLap,
+                label:
+                    startLap === endLap
+                        ? `${w.type} · L${startLap}`
+                        : `${w.type} · L${startLap}–${endLap}`
+            };
+        });
+
+    // Under-stint SC / VSC vertical shaded bands
+    if (scWindows.length > 0) {
+        svg.append('g')
+            .attr('class', 'sc-vsc-bg-layer')
+            .selectAll('rect.sc-vsc-band')
+            .data(scWindows)
+            .enter()
+            .append('rect')
+            .attr('class', 'sc-vsc-band')
+            .attr('x', (w) => xScale(Math.max(0, w.start_lap - 1)))
+            .attr('y', -4)
+            .attr('width', (w) =>
+                Math.max(6, xScale(w.end_lap) - xScale(Math.max(0, w.start_lap - 1)))
+            )
+            .attr('height', height + 8)
+            .attr('fill', (w) =>
+                w.type === 'SC' ? 'rgba(245, 158, 11, 0.14)' : 'rgba(250, 204, 21, 0.11)'
+            )
+            .style('pointer-events', 'none');
+    }
+
     // X-axis
     const xAxisGroup = svg
         .append('g')
@@ -573,6 +653,117 @@ export function renderRaceStrategy(data) {
         .attr('stroke-width', 2)
         .style('pointer-events', 'none');
 
+    // Over-stint SC / VSC dashed boundary lines & top header badges
+    if (scWindows.length > 0) {
+        const scOverlayGroup = svg.append('g').attr('class', 'sc-vsc-overlay-layer');
+
+        const windowGroups = scOverlayGroup
+            .selectAll('g.sc-vsc-window')
+            .data(scWindows)
+            .enter()
+            .append('g')
+            .attr('class', 'sc-vsc-window');
+
+        windowGroups
+            .append('line')
+            .attr('x1', (w) => xScale(Math.max(0, w.start_lap - 1)))
+            .attr('x2', (w) => xScale(Math.max(0, w.start_lap - 1)))
+            .attr('y1', -6)
+            .attr('y2', height)
+            .attr('stroke', (w) => (w.type === 'SC' ? '#f59e0b' : '#facc15'))
+            .attr('stroke-width', 1.6)
+            .attr('stroke-dasharray', '4,3')
+            .attr('opacity', 0.9)
+            .style('pointer-events', 'none');
+
+        windowGroups
+            .append('line')
+            .attr('x1', (w) => xScale(w.end_lap))
+            .attr('x2', (w) => xScale(w.end_lap))
+            .attr('y1', -6)
+            .attr('y2', height)
+            .attr('stroke', (w) => (w.type === 'SC' ? '#f59e0b' : '#facc15'))
+            .attr('stroke-width', 1.6)
+            .attr('stroke-dasharray', '4,3')
+            .attr('opacity', 0.9)
+            .style('pointer-events', 'none');
+
+        const badgeGroups = windowGroups
+            .append('g')
+            .attr('class', 'sc-vsc-badge')
+            .attr('transform', (w) => {
+                const x0 = xScale(Math.max(0, w.start_lap - 1));
+                const x1 = xScale(w.end_lap);
+                const cx = Math.max(38, Math.min(width - 38, (x0 + x1) / 2));
+                return `translate(${cx},-15)`;
+            })
+            .style('cursor', 'pointer');
+
+        badgeGroups
+            .append('rect')
+            .attr('x', (w) => -(w.label.length * 3.3 + 8))
+            .attr('y', -9)
+            .attr('width', (w) => w.label.length * 6.6 + 16)
+            .attr('height', 17)
+            .attr('rx', 4)
+            .attr('fill', 'rgba(18, 18, 26, 0.95)')
+            .attr('stroke', (w) => (w.type === 'SC' ? '#f59e0b' : '#facc15'))
+            .attr('stroke-width', 1.2);
+
+        badgeGroups
+            .append('text')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('dy', '0.34em')
+            .attr('text-anchor', 'middle')
+            .attr('fill', (w) => (w.type === 'SC' ? '#f59e0b' : '#facc15'))
+            .style('font-family', 'Montserrat, sans-serif')
+            .style('font-size', '9.5px')
+            .style('font-weight', '700')
+            .style('letter-spacing', '0.4px')
+            .text((w) => w.label);
+
+        badgeGroups
+            .on('mouseover', (event, w) => {
+                const color = w.type === 'SC' ? '#f59e0b' : '#facc15';
+                const fullTitle =
+                    w.type === 'SC' ? 'SAFETY CAR DEPLOYED' : 'VIRTUAL SAFETY CAR';
+                const pitsInWindow = pitTransitions.filter(
+                    (p) => p.lap >= w.start_lap - 1 && p.lap <= w.end_lap
+                );
+                const pittedDrivers = Array.from(new Set(pitsInWindow.map((p) => p.driver)));
+                const pitSummary =
+                    pittedDrivers.length > 0
+                        ? `Drivers Pitting (${pittedDrivers.length}): ${pittedDrivers.join(', ')}`
+                        : 'No pit stops recorded in this window';
+
+                tooltip
+                    .classed('hidden', false)
+                    .style('border-left-color', color)
+                    .html(`
+                        <div style="font-family: Montserrat, sans-serif; font-weight: 700; margin-bottom: 4px; color: ${color};">
+                            ${fullTitle}
+                        </div>
+                        <div style="font-size: 0.82rem; font-weight: 600; margin-bottom: 4px;">
+                            Active Window: Laps ${w.start_lap}&ndash;${w.end_lap}
+                        </div>
+                        <div style="font-size: 0.76rem; color: var(--text-muted);">
+                            ${pitSummary}
+                        </div>
+                    `)
+                    .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
+                    .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
+            })
+            .on('mousemove', (event) => {
+                tooltip
+                    .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
+                    .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
+            })
+            .on('mouseout', () => {
+                tooltip.classed('hidden', true);
+            });
+    }
+
     const updateFocusStyles = () => {
         const effectiveDriver =
             hoveredDriver !== null
@@ -644,6 +835,6 @@ export function renderRaceStrategy(data) {
         updateFocusStyles();
     };
 
-    _buildStrategyLegend(legendContainer, stints, activeCompounds, updateFocusStyles);
+    _buildStrategyLegend(legendContainer, stints, scWindows, activeCompounds, updateFocusStyles);
     updateFocusStyles();
 }

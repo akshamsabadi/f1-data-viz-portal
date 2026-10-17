@@ -25,7 +25,7 @@
         <div class="logo-container">
             <span class="f1-badge">F1</span>
             <span class="logo-text">DATA VIZ PORTAL</span>
-            <span class="app-version-badge">v1.18.0</span>
+            <span class="app-version-badge">v1.18.1</span>
         </div>
         <div class="controls">
             <label for="race-selector">// SELECT GRAND PRIX</label>
@@ -54,6 +54,14 @@
                         <span class="session-tab-code">FP</span>
                         <span class="session-tab-name">Practice</span>
                     </button>
+                    <button class="session-tab sprint-only-tab hidden" data-session="sprint_qualifying" role="tab" aria-selected="false" type="button">
+                        <span class="session-tab-code">SQ</span>
+                        <span class="session-tab-name">Sprint Quali</span>
+                    </button>
+                    <button class="session-tab sprint-only-tab hidden" data-session="sprint" role="tab" aria-selected="false" type="button">
+                        <span class="session-tab-code">SPR</span>
+                        <span class="session-tab-name">Sprint</span>
+                    </button>
                     <button class="session-tab" data-session="qualifying" role="tab" aria-selected="false" type="button">
                         <span class="session-tab-code">QUAL</span>
                         <span class="session-tab-name">Qualifying</span>
@@ -66,6 +74,8 @@
                 <!-- Synchronized native select for accessibility compliance with GEMINI.md -->
                 <select id="session-selector" class="visually-hidden" aria-label="Select Session">
                     <option value="practice">Practice</option>
+                    <option value="sprint_qualifying">Sprint Qualifying</option>
+                    <option value="sprint">Sprint</option>
                     <option value="qualifying">Qualifying</option>
                     <option value="race" selected>Race</option>
                 </select>
@@ -127,7 +137,7 @@
                     <div class="viz-pair-grid">
                         <section class="viz-container" id="quali-progression-container">
                             <div class="viz-header-controls">
-                                <h2>Q1 / Q2 / Q3 Knockout Progression</h2>
+                                <h2 id="quali-progression-title">Q1 / Q2 / Q3 Knockout Progression</h2>
                                 <div class="viz-controls">
                                     <div id="quali-progression-legend" class="legend-container"></div>
                                 </div>

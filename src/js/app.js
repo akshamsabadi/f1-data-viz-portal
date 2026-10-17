@@ -15,7 +15,7 @@ import { renderRaceWorm } from './race_worm.js';
 import { renderRacePitStops } from './race_pitstops.js';
 import { renderRaceStintPace } from './race_stint_pace.js';
 
-const APP_VERSION = 'v1.18.0';
+const APP_VERSION = 'v1.18.1';
 
 const _OFFICIAL_TEAM_COLORS = {
     'Ferrari': '#e30002',
@@ -34,8 +34,12 @@ const _OFFICIAL_TEAM_COLORS = {
     'Aston Martin': '#229971'
 };
 
+const _VALID_SESSIONS = ['practice', 'sprint_qualifying', 'sprint', 'qualifying', 'race'];
+
 const _SESSION_EYEBROWS = {
     practice: '// PRACTICE TELEMETRY · FP1–FP3 PROGRAMME',
+    sprint_qualifying: '// SPRINT QUALIFYING TELEMETRY · SQ1 / SQ2 / SQ3 SHOOTOUT',
+    sprint: '// SPRINT RACE TELEMETRY · SHORT-FORMAT SPRINT',
     qualifying: '// QUALIFYING TELEMETRY · Q1 / Q2 / Q3 SHOOTOUT',
     race: '// GRAND PRIX RACE TELEMETRY'
 };
@@ -146,7 +150,101 @@ function _bindDropdownEvents(elements) {
 }
 
 /**
- * Binds click and change listeners for the Select Session tab bar (`Practice`, `Qualifying`, `Race`)
+ * Maps an active session identifier (`practice`, `sprint_qualifying`, `sprint`, `qualifying`, `race`)
+ * to its corresponding DOM tab panel key (`practice`, `qualifying`, `race`).
+ *
+ * @param {string} sessionKey - Active session identifier.
+ * @returns {'practice'|'qualifying'|'race'} Panel key.
+ */
+function _resolvePanelKeyForSession(sessionKey) {
+    if (sessionKey === 'practice') return 'practice';
+    if (sessionKey === 'qualifying' || sessionKey === 'sprint_qualifying') return 'qualifying';
+    return 'race';
+}
+
+/**
+ * Synchronizes the Session tab bar buttons, accessible `<select>`, panel visibility, and eyebrow text.
+ *
+ * @param {string} sessionKey - Session identifier to activate.
+ * @returns {void}
+ */
+function _syncSessionTabUI(sessionKey) {
+    const sessionTabsContainer = document.getElementById('session-tabs');
+    const sessionSelector = document.getElementById('session-selector');
+    if (sessionTabsContainer) {
+        sessionTabsContainer.querySelectorAll('.session-tab').forEach((btn) => {
+            const isMatch = btn.dataset.session === sessionKey;
+            btn.classList.toggle('active', isMatch);
+            btn.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+        });
+    }
+
+    if (sessionSelector && sessionSelector.value !== sessionKey) {
+        sessionSelector.value = sessionKey;
+    }
+
+    const activePanelKey = _resolvePanelKeyForSession(sessionKey);
+    ['practice', 'qualifying', 'race'].forEach((panelKey) => {
+        const panel = document.getElementById(`tab-panel-${panelKey}`);
+        if (panel) {
+            panel.classList.toggle('hidden', panelKey !== activePanelKey);
+        }
+    });
+
+    const progTitleEl = document.getElementById('quali-progression-title');
+    if (progTitleEl) {
+        progTitleEl.textContent =
+            sessionKey === 'sprint_qualifying'
+                ? 'SQ1 / SQ2 / SQ3 Knockout Progression'
+                : 'Q1 / Q2 / Q3 Knockout Progression';
+    }
+
+    const eyebrowEl = document.getElementById('session-eyebrow');
+    if (eyebrowEl) {
+        eyebrowEl.textContent = _SESSION_EYEBROWS[sessionKey] || _SESSION_EYEBROWS.race;
+    }
+
+    const tooltip = document.getElementById('tooltip');
+    if (tooltip) {
+        tooltip.classList.add('hidden');
+    }
+}
+
+/**
+ * Updates visibility of Sprint Qualifying (`SQ`) and Sprint (`SPR`) tabs based on whether
+ * the selected Grand Prix is a Sprint weekend.
+ *
+ * @param {Object} data - Enriched Grand Prix payload.
+ * @returns {void}
+ */
+function _updateSprintTabsAvailability(data) {
+    const isSprintWeekend = Boolean(
+        data && (data.is_sprint_weekend || data.sprint_qualifying || data.sprint)
+    );
+    document.querySelectorAll('.sprint-only-tab').forEach((btn) => {
+        btn.classList.toggle('hidden', !isSprintWeekend);
+    });
+
+    const sessionSelector = document.getElementById('session-selector');
+    if (sessionSelector) {
+        Array.from(sessionSelector.options).forEach((opt) => {
+            if (opt.value === 'sprint_qualifying' || opt.value === 'sprint') {
+                opt.disabled = !isSprintWeekend;
+                opt.hidden = !isSprintWeekend;
+            }
+        });
+    }
+
+    if (
+        !isSprintWeekend &&
+        (_activeSession === 'sprint_qualifying' || _activeSession === 'sprint')
+    ) {
+        _activeSession = 'race';
+    }
+}
+
+/**
+ * Binds click and change listeners for the Select Session tab bar
  * and its synchronized accessible `<select id="session-selector">`.
  *
  * @returns {void}
@@ -156,38 +254,10 @@ function _bindSessionTabEvents() {
     const sessionSelector = document.getElementById('session-selector');
     if (!sessionTabsContainer) return;
 
-    const tabButtons = Array.from(sessionTabsContainer.querySelectorAll('.session-tab'));
-
     const activateSession = (sessionKey) => {
-        if (!sessionKey || !['practice', 'qualifying', 'race'].includes(sessionKey)) return;
+        if (!sessionKey || !_VALID_SESSIONS.includes(sessionKey)) return;
         _activeSession = sessionKey;
-
-        tabButtons.forEach((btn) => {
-            const isMatch = btn.dataset.session === sessionKey;
-            btn.classList.toggle('active', isMatch);
-            btn.setAttribute('aria-selected', isMatch ? 'true' : 'false');
-        });
-
-        if (sessionSelector && sessionSelector.value !== sessionKey) {
-            sessionSelector.value = sessionKey;
-        }
-
-        ['practice', 'qualifying', 'race'].forEach((panelKey) => {
-            const panel = document.getElementById(`tab-panel-${panelKey}`);
-            if (panel) {
-                panel.classList.toggle('hidden', panelKey !== sessionKey);
-            }
-        });
-
-        const eyebrowEl = document.getElementById('session-eyebrow');
-        if (eyebrowEl) {
-            eyebrowEl.textContent = _SESSION_EYEBROWS[sessionKey] || _SESSION_EYEBROWS.race;
-        }
-
-        const tooltip = document.getElementById('tooltip');
-        if (tooltip) {
-            tooltip.classList.add('hidden');
-        }
+        _syncSessionTabUI(_activeSession);
 
         if (_currentData) {
             broadcastDashboardFocus(null, _activeSession);
@@ -195,7 +265,7 @@ function _bindSessionTabEvents() {
         }
     };
 
-    tabButtons.forEach((btn) => {
+    sessionTabsContainer.querySelectorAll('.session-tab').forEach((btn) => {
         btn.addEventListener('click', () => {
             activateSession(btn.dataset.session);
         });
@@ -208,7 +278,7 @@ function _bindSessionTabEvents() {
     }
 
     const urlSession = new URLSearchParams(window.location.search).get('session');
-    if (urlSession && ['practice', 'qualifying', 'race'].includes(urlSession.toLowerCase())) {
+    if (urlSession && _VALID_SESSIONS.includes(urlSession.toLowerCase())) {
         activateSession(urlSession.toLowerCase());
     }
 }
@@ -264,80 +334,120 @@ function _applyOfficialTeamColors(rawData) {
         (rawData.practice.stint_laps || []).forEach(applyTeamColor);
     }
 
-    if (rawData.qualifying) {
-        (rawData.qualifying.results || []).forEach(applyTeamColor);
-        (rawData.qualifying.teammate_deltas || []).forEach(applyTeamColor);
-        (rawData.qualifying.corners || []).forEach(applyTeamColor);
-    }
+    ['qualifying', 'sprint_qualifying'].forEach((qKey) => {
+        if (rawData[qKey]) {
+            (rawData[qKey].results || []).forEach(applyTeamColor);
+            (rawData[qKey].teammate_deltas || []).forEach(applyTeamColor);
+            (rawData[qKey].corners || []).forEach(applyTeamColor);
+        }
+    });
 
     if (rawData.race_telemetry) {
         (rawData.race_telemetry.stints || []).forEach(applyTeamColor);
         (rawData.race_telemetry.pit_stops || []).forEach(applyTeamColor);
     }
+
+    if (rawData.sprint && rawData.sprint.race_telemetry) {
+        (rawData.sprint.race_telemetry.stints || []).forEach(applyTeamColor);
+        (rawData.sprint.race_telemetry.pit_stops || []).forEach(applyTeamColor);
+    }
+}
+
+/**
+ * Builds a session-scoped data view for `sprint_qualifying` or `sprint` so all Qualifying
+ * and Race chart modules can render Sprint sessions seamlessly.
+ *
+ * @param {Object} data - Full Grand Prix payload.
+ * @param {string} activeSession - Active session identifier.
+ * @returns {Object} Session-scoped telemetry object.
+ */
+function _resolveSessionViewData(data, activeSession) {
+    if (activeSession === 'sprint_qualifying' && data.sprint_qualifying) {
+        return {
+            ...data,
+            qualifying: data.sprint_qualifying,
+            corners: data.sprint_qualifying.corners || data.corners || []
+        };
+    }
+
+    if (activeSession === 'sprint' && data.sprint) {
+        return {
+            ...data,
+            race_info: {
+                ...data.race_info,
+                total_laps: data.sprint.total_laps || data.race_info.total_laps,
+                winner: data.sprint.winner || data.race_info.winner
+            },
+            laps: data.sprint.laps || data.laps,
+            race_telemetry: data.sprint.race_telemetry || data.race_telemetry
+        };
+    }
+
+    return data;
 }
 
 /**
  * Updates the dashboard header title and eyebrow for the selected Grand Prix and session.
  *
  * @param {Object} data - Grand Prix telemetry payload containing `race_info`.
- * @param {string} activeSession - Active session key (`'practice'`, `'qualifying'`, or `'race'`).
+ * @param {string} activeSession - Active session key.
  * @returns {void}
  */
 function _updateDashboardHeader(data, activeSession) {
     const { year, gp } = data.race_info;
     document.getElementById('race-title').textContent = `${year} ${gp}`;
-    const eyebrowEl = document.getElementById('session-eyebrow');
-    if (eyebrowEl) {
-        eyebrowEl.textContent = _SESSION_EYEBROWS[activeSession] || _SESSION_EYEBROWS.race;
-    }
+    _syncSessionTabUI(activeSession);
 }
 
 /**
  * Renders only the primary telemetry visualizations belonging to the currently active session tab.
  *
  * @param {Object} data - Enriched Grand Prix telemetry payload.
- * @param {string} activeSession - Active session tab (`'practice'`, `'qualifying'`, or `'race'`).
+ * @param {string} activeSession - Active session tab.
  * @returns {void}
  */
 function _renderSessionCharts(data, activeSession) {
+    const viewData = _resolveSessionViewData(data, activeSession);
+
     if (activeSession === 'practice') {
-        renderPracticeDegradation(data);
-        renderPracticeAero(data);
-        renderPracticeLongRun(data);
-        renderPracticeProgramme(data);
+        renderPracticeDegradation(viewData);
+        renderPracticeAero(viewData);
+        renderPracticeLongRun(viewData);
+        renderPracticeProgramme(viewData);
         return;
     }
 
-    if (activeSession === 'qualifying') {
-        renderQualiTrace(data);
-        renderQualiProgression(data);
-        renderQualiTeammate(data);
-        renderQualiSectors(data);
+    if (activeSession === 'qualifying' || activeSession === 'sprint_qualifying') {
+        renderQualiTrace(viewData);
+        renderQualiProgression(viewData);
+        renderQualiTeammate(viewData);
+        renderQualiSectors(viewData);
         renderCornerSpeed({
-            ...data,
-            corners: (data.qualifying && data.qualifying.corners) || data.corners || []
+            ...viewData,
+            corners: (viewData.qualifying && viewData.qualifying.corners) || viewData.corners || []
         });
         return;
     }
 
-    renderBeeswarm(data);
-    renderRaceStrategy(data);
-    renderRaceWorm(data);
-    renderBump(data);
-    renderRacePitStops(data);
-    renderRaceStintPace(data);
+    renderBeeswarm(viewData);
+    renderRaceStrategy(viewData);
+    renderRaceWorm(viewData);
+    renderBump(viewData);
+    renderRacePitStops(viewData);
+    renderRaceStintPace(viewData);
 }
 
 /**
  * Renders both the active session's telemetry charts and the right-hand Session Classification sidebar.
  *
  * @param {Object} data - Enriched Grand Prix telemetry payload.
- * @param {string} activeSession - Active session tab (`'practice'`, `'qualifying'`, or `'race'`).
+ * @param {string} activeSession - Active session tab.
  * @returns {void}
  */
 function _renderActiveSession(data, activeSession) {
+    const viewData = _resolveSessionViewData(data, activeSession);
     _renderSessionCharts(data, activeSession);
-    renderStandings(data, activeSession);
+    renderStandings(viewData, activeSession);
 }
 
 /**
@@ -356,6 +466,7 @@ async function _loadGrandPrix(dataFile) {
 
         _applyOfficialTeamColors(rawData);
         _currentData = rawData;
+        _updateSprintTabsAvailability(_currentData);
         _updateDashboardHeader(_currentData, _activeSession);
 
         _renderActiveSession(_currentData, _activeSession);

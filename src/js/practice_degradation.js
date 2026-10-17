@@ -1,4 +1,4 @@
-const _CHART_MARGIN = { top: 24, right: 90, bottom: 52, left: 68 };
+const _CHART_MARGIN = { top: 24, right: 118, bottom: 52, left: 68 };
 const _CHART_HEIGHT_PX = 430;
 const _MIN_CHART_WIDTH_PX = 320;
 
@@ -401,19 +401,32 @@ export function renderPracticeDegradation(data) {
             tooltip.classed('hidden', true);
         });
 
+    const slopeLabelPositions = new Map();
+    const rawSlopeTargets = degradationSlopes
+        .map((d) => {
+            const pts = d.curve_points || [];
+            const last = pts[pts.length - 1];
+            return {
+                compound: d.compound,
+                x: last ? xScale(last.tyre_life) + 8 : width + 8,
+                rawY: last ? yScale(last.predicted_time) : 0
+            };
+        })
+        .sort((a, b) => a.rawY - b.rawY);
+
+    const minLabelSepPx = 15;
+    for (let i = 1; i < rawSlopeTargets.length; i++) {
+        if (rawSlopeTargets[i].rawY - rawSlopeTargets[i - 1].rawY < minLabelSepPx) {
+            rawSlopeTargets[i].rawY = rawSlopeTargets[i - 1].rawY + minLabelSepPx;
+        }
+    }
+    rawSlopeTargets.forEach((t) => slopeLabelPositions.set(t.compound, t));
+
     slopeGroups
         .append('text')
         .attr('class', 'deg-slope-label')
-        .attr('x', (d) => {
-            const pts = d.curve_points || [];
-            const last = pts[pts.length - 1];
-            return last ? xScale(last.tyre_life) + 8 : width + 8;
-        })
-        .attr('y', (d) => {
-            const pts = d.curve_points || [];
-            const last = pts[pts.length - 1];
-            return last ? yScale(last.predicted_time) : 0;
-        })
+        .attr('x', (d) => slopeLabelPositions.get(d.compound)?.x ?? width + 8)
+        .attr('y', (d) => slopeLabelPositions.get(d.compound)?.rawY ?? 0)
         .attr('dy', '0.35em')
         .attr('fill', (d) => _COMPOUND_COLORS[d.compound.toUpperCase()] || '#ffffff')
         .style('font-family', 'Montserrat, sans-serif')

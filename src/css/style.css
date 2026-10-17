@@ -307,6 +307,10 @@ h1, h2, h3, h4, h5, h6 {
     background: rgba(255, 255, 255, 0.05);
 }
 
+.session-tab.hidden {
+    display: none !important;
+}
+
 .session-tab.active {
     color: #ffffff;
     background: linear-gradient(180deg, rgba(225, 6, 0, 0.24) 0%, rgba(225, 6, 0, 0.12) 100%);

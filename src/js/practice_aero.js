@@ -39,32 +39,70 @@ export function setPracticeAeroExternalFocus(driverCode) {
  */
 function _computeLabelOffsets(nodes, width) {
     const offsets = new Map();
-    const sorted = nodes.slice().sort((a, b) => a.px - b.px);
+    const placedBoxes = [];
+    const sorted = nodes.slice().sort((a, b) => a.py - b.py || a.px - b.px);
 
-    sorted.forEach((node, idx) => {
-        let dx = 9;
-        let dy = -8;
-        let anchor = 'start';
+    const candidates = [
+        { dx: 9, dy: -6, anchor: 'start' },
+        { dx: 9, dy: 13, anchor: 'start' },
+        { dx: -9, dy: -6, anchor: 'end' },
+        { dx: -9, dy: 13, anchor: 'end' },
+        { dx: 0, dy: -11, anchor: 'middle' },
+        { dx: 0, dy: 17, anchor: 'middle' }
+    ];
 
-        if (node.px > width - 48) {
-            dx = -9;
-            anchor = 'end';
-        }
+    sorted.forEach((node) => {
+        let bestCandidate = candidates[0];
+        let bestPenalty = Infinity;
 
-        for (let j = 0; j < idx; j++) {
-            const prev = sorted[j];
-            const dist = Math.hypot(node.px - prev.px, node.py - prev.py);
-            if (dist < 24) {
-                const prevOffset = offsets.get(prev.driver);
-                if (prevOffset && prevOffset.dy < 0) {
-                    dy = 14;
-                } else {
-                    dy = -10;
+        candidates.forEach((cand) => {
+            if (node.px > width - 42 && cand.anchor === 'start') return;
+            if (node.px < 42 && cand.anchor === 'end') return;
+
+            const labelW = 28;
+            const labelH = 11;
+            const lx =
+                cand.anchor === 'start'
+                    ? node.px + cand.dx
+                    : cand.anchor === 'end'
+                      ? node.px + cand.dx - labelW
+                      : node.px - labelW / 2;
+            const ly = node.py + cand.dy - labelH + 2;
+
+            let penalty = 0;
+            nodes.forEach((other) => {
+                if (other.driver === node.driver) return;
+                const cx = Math.max(lx, Math.min(other.px, lx + labelW));
+                const cy = Math.max(ly, Math.min(other.py, ly + labelH));
+                const dist = Math.hypot(other.px - cx, other.py - cy);
+                if (dist < 10) penalty += (10 - dist) * 20;
+            });
+
+            placedBoxes.forEach((box) => {
+                const overlapX = Math.max(0, Math.min(lx + labelW, box.x + box.w) - Math.max(lx, box.x));
+                const overlapY = Math.max(0, Math.min(ly + labelH, box.y + box.h) - Math.max(ly, box.y));
+                if (overlapX > 0 && overlapY > 0) {
+                    penalty += overlapX * overlapY * 5;
                 }
-            }
-        }
+            });
 
-        offsets.set(node.driver, { dx, dy, anchor });
+            if (penalty < bestPenalty) {
+                bestPenalty = penalty;
+                bestCandidate = cand;
+            }
+        });
+
+        const labelW = 28;
+        const labelH = 11;
+        const lx =
+            bestCandidate.anchor === 'start'
+                ? node.px + bestCandidate.dx
+                : bestCandidate.anchor === 'end'
+                  ? node.px + bestCandidate.dx - labelW
+                  : node.px - labelW / 2;
+        const ly = node.py + bestCandidate.dy - labelH + 2;
+        placedBoxes.push({ x: lx, y: ly, w: labelW, h: labelH });
+        offsets.set(node.driver, bestCandidate);
     });
 
     return offsets;
@@ -181,32 +219,32 @@ function _renderCrosshairsAndQuadrants(svg, xScale, yScale, medianX, medianY, wi
 
     const quadrants = [
         {
-            x: width - 10,
-            y: 14,
+            x: width - 8,
+            y: 13,
             anchor: 'end',
-            label: 'HIGH EFFICIENCY (FAST CORNERS + TOP SPEED)',
-            color: 'rgba(74, 222, 128, 0.55)'
+            label: 'HIGH AERO EFFICIENCY',
+            color: 'rgba(74, 222, 128, 0.6)'
         },
         {
-            x: 10,
-            y: 14,
+            x: 8,
+            y: 13,
             anchor: 'start',
-            label: 'LOW-DRAG TRIM (STRAIGHT-LINE FOCUS)',
-            color: 'rgba(56, 189, 248, 0.55)'
+            label: 'LOW-DRAG TRIM (TOP SPEED)',
+            color: 'rgba(56, 189, 248, 0.6)'
         },
         {
-            x: width - 10,
-            y: height - 10,
+            x: width - 8,
+            y: height - 8,
             anchor: 'end',
-            label: 'HIGH-DOWNFORCE TRIM (CORNERING FOCUS)',
-            color: 'rgba(250, 204, 21, 0.55)'
+            label: 'HIGH-DOWNFORCE TRIM',
+            color: 'rgba(250, 204, 21, 0.6)'
         },
         {
-            x: 10,
-            y: height - 10,
+            x: 8,
+            y: height - 8,
             anchor: 'start',
-            label: 'DRAGGY / LOW GRIP',
-            color: 'rgba(248, 113, 113, 0.45)'
+            label: 'LOW GRIP / HIGH DRAG',
+            color: 'rgba(248, 113, 113, 0.5)'
         }
     ];
 
@@ -221,9 +259,9 @@ function _renderCrosshairsAndQuadrants(svg, xScale, yScale, medianX, medianY, wi
         .attr('text-anchor', (d) => d.anchor)
         .attr('fill', (d) => d.color)
         .style('font-family', 'Montserrat, sans-serif')
-        .style('font-size', '9.5px')
+        .style('font-size', '8.5px')
         .style('font-weight', '700')
-        .style('letter-spacing', '0.6px')
+        .style('letter-spacing', '0.4px')
         .style('pointer-events', 'none')
         .text((d) => d.label);
 }

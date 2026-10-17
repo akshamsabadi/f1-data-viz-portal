@@ -36,6 +36,8 @@ const _COMPOUND_COLORS = {
 
 const _SESSION_TITLES = {
     practice: 'Practice Classification',
+    sprint_qualifying: 'Sprint Qualifying',
+    sprint: 'Sprint Classification',
     qualifying: 'Qualifying Classification',
     race: 'Race Classification'
 };
@@ -232,7 +234,7 @@ export function broadcastDashboardFocus(targetDriver, activeSession = 'race') {
         return;
     }
 
-    if (activeSession === 'qualifying') {
+    if (activeSession === 'qualifying' || activeSession === 'sprint_qualifying') {
         setQualiTraceExternalFocus(driverCode);
         setQualiProgressionExternalFocus(driverCode);
         setQualiTeammateExternalFocus(driverCode);
@@ -373,8 +375,14 @@ export function renderStandings(data, activeSession = 'race') {
         return;
     }
 
-    if (activeSession === 'qualifying' && data.qualifying && Array.isArray(data.qualifying.results)) {
+    if (
+        (activeSession === 'qualifying' || activeSession === 'sprint_qualifying') &&
+        data.qualifying &&
+        Array.isArray(data.qualifying.results)
+    ) {
         const cutoffs = data.qualifying.cutoffs || {};
+        const stagePrefix =
+            data.qualifying.stage_prefix || (activeSession === 'sprint_qualifying' ? 'SQ' : 'Q');
         data.qualifying.results.forEach((entry, index) => {
             const code = entry.driver;
             const gapHtml =
@@ -390,14 +398,14 @@ export function renderStandings(data, activeSession = 'race') {
             if (index === 9 && data.qualifying.results.length > 10) {
                 container.appendChild(
                     _createCutoffDividerElement(
-                        'Q3 CUTOFF · TOP 10',
+                        `${stagePrefix}3 CUTOFF · TOP 10`,
                         formatSessionDuration(cutoffs.q3_cutoff_time || entry.best_time)
                     )
                 );
             } else if (index === 15 && data.qualifying.results.length > 16) {
                 container.appendChild(
                     _createCutoffDividerElement(
-                        'Q2 CUTOFF · TOP 16',
+                        `${stagePrefix}2 CUTOFF · TOP 16`,
                         formatSessionDuration(cutoffs.q2_cutoff_time || entry.best_time)
                     )
                 );

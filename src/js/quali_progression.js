@@ -1,4 +1,4 @@
-const _CHART_MARGIN = { top: 28, right: 112, bottom: 44, left: 82 };
+const _CHART_MARGIN = { top: 36, right: 118, bottom: 44, left: 82 };
 const _ROW_HEIGHT_PX = 25;
 const _MIN_CHART_WIDTH_PX = 340;
 const _Q1_COLOR = '#9ca3af';
@@ -74,13 +74,13 @@ function _buildDriverColorMap(data) {
  * @param {Function} onToggle - Callback invoked when stage visibility is toggled.
  * @returns {void}
  */
-function _buildProgressionLegend(legendContainer, activeStages, onToggle) {
+function _buildProgressionLegend(legendContainer, activeStages, stagePrefix, onToggle) {
     if (!legendContainer) return;
 
     const stages = [
-        { key: 'Q1', label: 'Q1 LAP', color: _Q1_COLOR, hollow: true },
-        { key: 'Q2', label: 'Q2 LAP', color: _Q2_COLOR, hollow: false },
-        { key: 'Q3', label: 'Q3 SHOOTOUT', color: '#ef4444', hollow: false }
+        { key: 'Q1', label: `${stagePrefix}1 LAP`, color: _Q1_COLOR, hollow: true },
+        { key: 'Q2', label: `${stagePrefix}2 LAP`, color: _Q2_COLOR, hollow: false },
+        { key: 'Q3', label: `${stagePrefix}3 SHOOTOUT`, color: '#ef4444', hollow: false }
     ];
 
     const updateLegendUI = () => {
@@ -135,7 +135,7 @@ function _buildProgressionLegend(legendContainer, activeStages, onToggle) {
  * @param {string} teamColor - Driver's constructor hex color.
  * @returns {void}
  */
-function _populateProgressionTooltip(tooltipNode, entry, teamColor) {
+function _populateProgressionTooltip(tooltipNode, entry, teamColor, stagePrefix = 'Q') {
     if (!tooltipNode) return;
 
     const header = document.createElement('div');
@@ -188,7 +188,7 @@ function _populateProgressionTooltip(tooltipNode, entry, teamColor) {
             ? entry.q1_time - entry.best_time
             : 0;
     const gainText =
-        progressionGain > 0.0005 ? ` | Q1→Best: -${progressionGain.toFixed(3)}s` : '';
+        progressionGain > 0.0005 ? ` | ${stagePrefix}1→Best: -${progressionGain.toFixed(3)}s` : '';
 
     summary.textContent =
         entry.grid_pos === 1
@@ -197,9 +197,9 @@ function _populateProgressionTooltip(tooltipNode, entry, teamColor) {
 
     tooltipNode.replaceChildren(
         header,
-        buildStageLine('Q1', entry.q1_time, _Q1_COLOR),
-        buildStageLine('Q2', entry.q2_time, _Q2_COLOR),
-        buildStageLine('Q3', entry.q3_time, teamColor),
+        buildStageLine(`${stagePrefix}1`, entry.q1_time, _Q1_COLOR),
+        buildStageLine(`${stagePrefix}2`, entry.q2_time, _Q2_COLOR),
+        buildStageLine(`${stagePrefix}3`, entry.q3_time, teamColor),
         summary
     );
 }
@@ -337,18 +337,29 @@ export function renderQualiProgression(data) {
             .text(labelText);
     };
 
-    drawHorizontalKnockoutDivider(10, '▲ Q3 SHOOTOUT CUTOFF (TOP 10)', _Q3_CUTOFF_COLOR);
-    drawHorizontalKnockoutDivider(16, '▲ Q2 KNOCKOUT CUTOFF (TOP 16)', _Q2_CUTOFF_COLOR);
+    const stagePrefix = data.qualifying?.stage_prefix || 'Q';
+    drawHorizontalKnockoutDivider(
+        10,
+        `▲ ${stagePrefix}3 SHOOTOUT CUTOFF (TOP 10)`,
+        _Q3_CUTOFF_COLOR
+    );
+    drawHorizontalKnockoutDivider(
+        16,
+        `▲ ${stagePrefix}2 KNOCKOUT CUTOFF (TOP 16)`,
+        _Q2_CUTOFF_COLOR
+    );
 
     // Vertical Dashed Cutoff Lines at cutoffs.q3_cutoff_time and cutoffs.q2_cutoff_time
-    const drawVerticalCutoffLine = (timeSeconds, labelText, color) => {
+    // Stagger vertical Y offsets (-21px vs -7px) so Q3 and Q2 cutoff labels never collide horizontally
+    const drawVerticalCutoffLine = (timeSeconds, labelText, color, labelYOffset) => {
         if (!Number.isFinite(timeSeconds)) return;
         const cx = xScale(timeSeconds);
+        const clampedTextX = Math.max(68, Math.min(width - 68, cx));
 
         svg.append('line')
             .attr('x1', cx)
             .attr('x2', cx)
-            .attr('y1', 0)
+            .attr('y1', labelYOffset + 4)
             .attr('y2', height)
             .attr('stroke', color)
             .attr('stroke-width', 1.3)
@@ -356,8 +367,8 @@ export function renderQualiProgression(data) {
             .attr('opacity', 0.75);
 
         svg.append('text')
-            .attr('x', cx)
-            .attr('y', -8)
+            .attr('x', clampedTextX)
+            .attr('y', labelYOffset)
             .attr('text-anchor', 'middle')
             .attr('fill', color)
             .style('font-family', 'Montserrat, sans-serif')
@@ -366,8 +377,18 @@ export function renderQualiProgression(data) {
             .text(`${labelText} (${_formatLapTime(timeSeconds, 3)})`);
     };
 
-    drawVerticalCutoffLine(cutoffs.q3_cutoff_time, 'Q3 CUTOFF', _Q3_CUTOFF_COLOR);
-    drawVerticalCutoffLine(cutoffs.q2_cutoff_time, 'Q2 CUTOFF', _Q2_CUTOFF_COLOR);
+    drawVerticalCutoffLine(
+        cutoffs.q3_cutoff_time,
+        `${stagePrefix}3 CUTOFF`,
+        _Q3_CUTOFF_COLOR,
+        -21
+    );
+    drawVerticalCutoffLine(
+        cutoffs.q2_cutoff_time,
+        `${stagePrefix}2 CUTOFF`,
+        _Q2_CUTOFF_COLOR,
+        -7
+    );
 
     // Driver Rows Group
     const rowGroups = svg
@@ -455,7 +476,7 @@ export function renderQualiProgression(data) {
         .attr('text-anchor', 'start')
         .attr('fill', (d) => {
             if (d.grid_pos === 1) return '#4ade80';
-            if (d.eliminated_in === 'Q3') return 'var(--text-primary)';
+            if (d.eliminated_in === 'Q3' || d.eliminated_in === 'SQ3') return 'var(--text-primary)';
             return 'var(--text-muted)';
         })
         .style('font-family', 'Titillium Web, sans-serif')
@@ -465,7 +486,8 @@ export function renderQualiProgression(data) {
             if (d.grid_pos === 1) {
                 return `POLE (${_formatLapTime(d.best_time, 3)})`;
             }
-            const stageSuffix = d.eliminated_in !== 'Q3' ? ` [${d.eliminated_in}]` : '';
+            const isTop10 = d.eliminated_in === 'Q3' || d.eliminated_in === 'SQ3';
+            const stageSuffix = !isTop10 ? ` [${d.eliminated_in}]` : '';
             return `+${d.gap_to_pole.toFixed(3)}s${stageSuffix}`;
         });
 
@@ -515,7 +537,7 @@ export function renderQualiProgression(data) {
             updateVisualState();
 
             const teamColor = colorMap.get(d.driver) || d.color || 'var(--accent)';
-            _populateProgressionTooltip(tooltip.node(), d, teamColor);
+            _populateProgressionTooltip(tooltip.node(), d, teamColor, stagePrefix);
 
             tooltip
                 .classed('hidden', false)
@@ -539,6 +561,6 @@ export function renderQualiProgression(data) {
         updateVisualState();
     };
 
-    _buildProgressionLegend(legendContainer, activeStages, updateVisualState);
+    _buildProgressionLegend(legendContainer, activeStages, stagePrefix, updateVisualState);
     updateVisualState();
 }
