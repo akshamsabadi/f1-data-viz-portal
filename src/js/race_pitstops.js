@@ -1,4 +1,4 @@
-const _CHART_MARGIN = { top: 24, right: 145, bottom: 42, left: 102 };
+const _CHART_MARGIN = { top: 24, right: 185, bottom: 42, left: 102 };
 const _ROW_HEIGHT_PX = 28;
 const _MIN_CHART_HEIGHT_PX = 360;
 const _BAR_CORNER_RADIUS_PX = 4;
@@ -487,17 +487,17 @@ export function renderRacePitStops(data) {
             .append('rect')
             .attr('x', 0)
             .attr('y', -9)
-            .attr('width', 44)
+            .attr('width', 58)
             .attr('height', 18)
             .attr('rx', 4)
-            .attr('fill', 'rgba(17, 17, 24, 0.85)')
-            .attr('stroke', 'rgba(255, 255, 255, 0.14)')
+            .attr('fill', 'rgba(17, 17, 24, 0.96)')
+            .attr('stroke', 'rgba(255, 255, 255, 0.16)')
             .attr('stroke-width', 1);
 
         // From-compound dot
         pillGroup
             .append('circle')
-            .attr('cx', 8)
+            .attr('cx', 10)
             .attr('cy', 0)
             .attr('r', 4)
             .attr(
@@ -508,7 +508,7 @@ export function renderRacePitStops(data) {
         // Transition text (e.g., "M→H")
         pillGroup
             .append('text')
-            .attr('x', 22)
+            .attr('x', 29)
             .attr('y', 0)
             .attr('dy', '0.35em')
             .attr('text-anchor', 'middle')
@@ -525,7 +525,7 @@ export function renderRacePitStops(data) {
         // To-compound dot
         pillGroup
             .append('circle')
-            .attr('cx', 36)
+            .attr('cx', 48)
             .attr('cy', 0)
             .attr('r', 4)
             .attr(
@@ -533,10 +533,20 @@ export function renderRacePitStops(data) {
                 (d) => _COMPOUND_COLORS[d.to_compound] || _COMPOUND_COLORS.UNKNOWN
             );
 
+        // Dark backing behind numeric readout so median dashed line never bleeds through text
+        pillGroup
+            .append('rect')
+            .attr('x', 62)
+            .attr('y', -9)
+            .attr('width', 112)
+            .attr('height', 18)
+            .attr('rx', 3)
+            .attr('fill', 'rgba(21, 21, 30, 0.92)');
+
         // Numeric duration & delta readout
         pillGroup
             .append('text')
-            .attr('x', 50)
+            .attr('x', 66)
             .attr('y', 0)
             .attr('dy', '0.35em')
             .attr('fill', (d, idx) => (idx === 0 ? '#34d399' : 'var(--text-primary)'))

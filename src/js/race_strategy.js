@@ -606,6 +606,10 @@ export function renderRaceStrategy(data) {
         .style('font-weight', '700')
         .style('font-size', '10px')
         .style('pointer-events', 'none')
+        .style('paint-order', 'stroke')
+        .attr('stroke', (d) => _COMPOUND_COLORS[d.compound] || _COMPOUND_COLORS.UNKNOWN)
+        .attr('stroke-width', 4)
+        .attr('stroke-linejoin', 'round')
         .attr('fill', (d) =>
             _DARK_TEXT_COMPOUNDS.has(d.compound) ? '#111118' : '#ffffff'
         )
@@ -671,9 +675,9 @@ export function renderRaceStrategy(data) {
             .attr('y1', -6)
             .attr('y2', height)
             .attr('stroke', (w) => (w.type === 'SC' ? '#f59e0b' : '#facc15'))
-            .attr('stroke-width', 1.6)
+            .attr('stroke-width', 1.5)
             .attr('stroke-dasharray', '4,3')
-            .attr('opacity', 0.9)
+            .attr('opacity', 0.72)
             .style('pointer-events', 'none');
 
         windowGroups
@@ -683,19 +687,35 @@ export function renderRaceStrategy(data) {
             .attr('y1', -6)
             .attr('y2', height)
             .attr('stroke', (w) => (w.type === 'SC' ? '#f59e0b' : '#facc15'))
-            .attr('stroke-width', 1.6)
+            .attr('stroke-width', 1.5)
             .attr('stroke-dasharray', '4,3')
-            .attr('opacity', 0.9)
+            .attr('opacity', 0.72)
             .style('pointer-events', 'none');
+
+        // De-collide top SC/VSC header badges horizontally
+        const badgePositions = [];
+        scWindows.forEach((w) => {
+            const x0 = xScale(Math.max(0, w.start_lap - 1));
+            const x1 = xScale(w.end_lap);
+            const badgeW = w.label.length * 6.6 + 16;
+            let cx = Math.max(badgeW / 2 + 2, Math.min(width - badgeW / 2 - 2, (x0 + x1) / 2));
+            let cy = -15;
+            if (badgePositions.length > 0) {
+                const prev = badgePositions[badgePositions.length - 1];
+                const minGap = (prev.badgeW + badgeW) / 2 + 6;
+                if (cx - prev.cx < minGap) {
+                    cx = Math.min(width - badgeW / 2 - 2, prev.cx + minGap);
+                }
+            }
+            badgePositions.push({ cx, cy, badgeW });
+        });
 
         const badgeGroups = windowGroups
             .append('g')
             .attr('class', 'sc-vsc-badge')
-            .attr('transform', (w) => {
-                const x0 = xScale(Math.max(0, w.start_lap - 1));
-                const x1 = xScale(w.end_lap);
-                const cx = Math.max(38, Math.min(width - 38, (x0 + x1) / 2));
-                return `translate(${cx},-15)`;
+            .attr('transform', (_w, idx) => {
+                const pos = badgePositions[idx] || { cx: 40, cy: -15 };
+                return `translate(${pos.cx},${pos.cy})`;
             })
             .style('cursor', 'pointer');
 

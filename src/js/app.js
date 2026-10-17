@@ -15,7 +15,7 @@ import { renderRaceWorm } from './race_worm.js';
 import { renderRacePitStops } from './race_pitstops.js';
 import { renderRaceStintPace } from './race_stint_pace.js';
 
-const APP_VERSION = 'v1.18.2';
+const APP_VERSION = 'v1.18.3';
 
 const _OFFICIAL_TEAM_COLORS = {
     'Ferrari': '#e30002',

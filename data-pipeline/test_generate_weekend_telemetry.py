@@ -278,6 +278,39 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
         assert len(prac_cls) >= 18, f"{gp_id}: missing practice classification"
         assert [r["rank"] for r in prac_cls] == list(range(1, len(prac_cls) + 1))
 
+        # Guardrail against unrealistic lap time outliers (e.g., 58.0s calibration clamp)
+        lap_times_sorted = sorted(float(l["time"]) for l in laps if float(l.get("time") or 0) > 0)
+        field_median = lap_times_sorted[len(lap_times_sorted) // 2]
+        min_allowed_lap = field_median * 0.85
+        unrealistic_laps = [
+            (l["driver"], l["lap"], l["time"])
+            for l in laps
+            if float(l["time"]) < min_allowed_lap
+        ]
+        assert not unrealistic_laps, (
+            f"{gp_id}: unrealistic fast lap times (< {min_allowed_lap:.2f}s): {unrealistic_laps[:5]}"
+        )
+
+        # Guardrail against 1-lap tyre stint artifacts for multi-lap drivers
+        stints = data.get("race_telemetry", {}).get("stints", [])
+        laps_per_driver: dict[str, int] = {}
+        for l in laps:
+            laps_per_driver[l["driver"]] = laps_per_driver.get(l["driver"], 0) + 1
+        one_lap_stints = [
+            (s["driver"], s["stint"], s["compound"], s["start_lap"], s["end_lap"])
+            for s in stints
+            if int(s["laps_count"]) <= 1 and laps_per_driver.get(s["driver"], 0) > 1
+        ]
+        assert not one_lap_stints, (
+            f"{gp_id}: 1-lap tyre stint artifacts detected: {one_lap_stints}"
+        )
+
+        # Guardrail for Lap 1 positions: must have unique positions 1..K
+        lap1_positions = sorted(int(l["position"]) for l in laps if int(l["lap"]) == 1)
+        assert lap1_positions == list(range(1, len(lap1_positions) + 1)), (
+            f"{gp_id}: invalid Lap 1 positions: {lap1_positions}"
+        )
+
         # Sprint weekends must have valid sprint_qualifying and sprint blocks
         if data.get("is_sprint_weekend"):
             sq_results = data.get("sprint_qualifying", {}).get("results", [])
@@ -298,5 +331,29 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
             ]
             assert sp_p1 == [sp_winner], (
                 f"{gp_id}: sprint winner ({sp_winner}) != sprint final lap P1 ({sp_p1})"
+            )
+            sp_times_sorted = sorted(
+                float(l["time"]) for l in sp_laps if float(l.get("time") or 0) > 0
+            )
+            sp_median = sp_times_sorted[len(sp_times_sorted) // 2]
+            sp_bad_laps = [
+                (l["driver"], l["lap"], l["time"])
+                for l in sp_laps
+                if float(l["time"]) < sp_median * 0.85
+            ]
+            assert not sp_bad_laps, (
+                f"{gp_id}: unrealistic sprint lap times: {sp_bad_laps[:5]}"
+            )
+            sp_stints = sprint.get("race_telemetry", {}).get("stints", [])
+            sp_lpd: dict[str, int] = {}
+            for l in sp_laps:
+                sp_lpd[l["driver"]] = sp_lpd.get(l["driver"], 0) + 1
+            sp_one_lap = [
+                (s["driver"], s["stint"], s["compound"])
+                for s in sp_stints
+                if int(s["laps_count"]) <= 1 and sp_lpd.get(s["driver"], 0) > 1
+            ]
+            assert not sp_one_lap, (
+                f"{gp_id}: 1-lap sprint stint artifacts: {sp_one_lap}"
             )
 
