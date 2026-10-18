@@ -487,14 +487,9 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
             const rec = lapsByDriver.get(code)?.get(lap);
             const isPitting = pitsOnLap.has(code);
 
-            const isRetiredDriver =
-                Boolean(entry.isDns) ||
-                Boolean(entry.isDnf) ||
-                maxLap - entry.lapsCompleted > 4;
-
             const isRetiredOnLap =
                 Boolean(entry.isDns) ||
-                (isRetiredDriver && lap > entry.lapsCompleted);
+                (Boolean(entry.isDnf) && lap > entry.lapsCompleted);
 
             if (isRetiredOnLap) {
                 const coords = sampleTrackPoint(prev.pct, 0);
@@ -562,9 +557,21 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
                 };
             }
 
-            // Lapped finisher after their final recorded lap
+            // Lapped finisher still circulating while the leader completes final lap(s)
             const lappedPos = entry.rank || prev.pos;
             const lapsDown = Math.max(1, maxLap - entry.lapsCompleted);
+            const advancedPct =
+                ((prev.pct + 82 + ((entry.rank || 1) % 5) * 3) % 100 + 100) % 100;
+
+            lastKnownStateByDriver.set(code, {
+                pct: advancedPct,
+                normalOffset: 0,
+                compound: prev.compound,
+                tyreAge: prev.tyreAge + 1,
+                sessionTime: prev.sessionTime + refLapTime,
+                pos: lappedPos
+            });
+
             return {
                 code,
                 name: entry.name || code,
@@ -574,12 +581,12 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
                 gridPos,
                 gridDelta: gridPos - lappedPos,
                 compound: prev.compound,
-                tyreAge: prev.tyreAge,
+                tyreAge: prev.tyreAge + 1,
                 gapSeconds: lapsDown * refLapTime,
                 gapLabel: `+${lapsDown}L`,
                 isRetired: false,
                 isPitting: false,
-                pct: prev.pct,
+                pct: advancedPct,
                 normalOffset: 0,
                 x: 0,
                 y: 0
@@ -949,38 +956,6 @@ function _createCircuitRadarSvg(radarMount, trackGeo, initialDrivers, onSelectDr
             .append('polygon')
             .attr('points', '7,-5 16,0 7,5')
             .attr('fill', '#ffffff');
-
-        const rad = (angleDeg * Math.PI) / 180;
-        const sfLabelX = sx - Math.sin(rad) * 20;
-        const sfLabelY = sy + Math.cos(rad) * 20;
-        const sfBadge = svg
-            .append('g')
-            .attr('class', 'start-finish-label-badge')
-            .attr('transform', `translate(${sfLabelX},${sfLabelY})`)
-            .style('pointer-events', 'none');
-
-        sfBadge
-            .append('rect')
-            .attr('x', -13)
-            .attr('y', -7.5)
-            .attr('width', 26)
-            .attr('height', 15)
-            .attr('rx', 3)
-            .attr('fill', 'rgba(15, 15, 23, 0.94)')
-            .attr('stroke', 'rgba(255, 255, 255, 0.65)')
-            .attr('stroke-width', 1);
-
-        sfBadge
-            .append('text')
-            .attr('x', 0)
-            .attr('y', 0.5)
-            .attr('dy', '0.32em')
-            .attr('text-anchor', 'middle')
-            .attr('fill', '#ffffff')
-            .style('font-family', 'Montserrat, sans-serif')
-            .style('font-size', '7.5px')
-            .style('font-weight', '800')
-            .text('S/F');
     }
 
     // Cars layer

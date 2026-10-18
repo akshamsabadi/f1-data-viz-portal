@@ -286,11 +286,11 @@ function _renderBumpAxesAndGrid(svg, xScale, yScale, width, height, maxPos) {
         .call(d3.axisLeft(yScale).tickSize(-width).tickFormat('').ticks(maxPos));
 
     svg.append('g')
-        .attr('transform', `translate(0,${height})`)
+        .attr('transform', `translate(0,${height + 8})`)
         .call(d3.axisBottom(xScale).ticks(_X_AXIS_TICKS).tickFormat(d3.format('d')))
         .append('text')
         .attr('x', width)
-        .attr('y', _X_AXIS_LABEL_OFFSET_Y_PX)
+        .attr('y', _X_AXIS_LABEL_OFFSET_Y_PX - 4)
         .attr('fill', 'var(--text-muted)')
         .attr('text-anchor', 'end')
         .style('font-family', 'Montserrat, sans-serif')

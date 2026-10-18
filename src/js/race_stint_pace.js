@@ -15,6 +15,7 @@ const _NODE_HOVER_STROKE_WIDTH_PX = 2.2;
 const _NODE_STROKE_COLOR = '#111118';
 const _NODE_HOVER_STROKE_COLOR = '#ffffff';
 const _MAX_VERTICAL_NODE_STEP_PX = 3.2;
+const _MIN_SAME_DRIVER_NODE_X_GAP_PX = 16;
 const _VERTICAL_STEP_BANDWIDTH_INSET_PX = 10;
 const _LINK_STROKE_WIDTH = 2.4;
 const _LINK_HOVER_STROKE_WIDTH = 3.6;
@@ -618,6 +619,40 @@ function _renderStintPaceAxes(
 }
 
 /**
+ * Computes de-collided `(x, y)` coordinates for all stint nodes of a single driver row.
+ *
+ * @param {Object} series - Driver stint series object.
+ * @param {Function} xScale - D3 linear scale for stint pace in seconds.
+ * @param {Function} yScale - D3 band scale for driver codes.
+ * @param {string} activeMetric - Active pace metric key.
+ * @returns {Array<{stintObj: Object, prevStintObj: Object|null, x: number, y: number}>} Positioned stint node descriptors.
+ */
+function _computeDriverStintNodeData(series, xScale, yScale, activeMetric) {
+    const nodeData = series.stints.map((stintObj, idx) => ({
+        stintObj,
+        prevStintObj: idx > 0 ? series.stints[idx - 1] : null,
+        x: xScale(stintObj[activeMetric]),
+        y: _computeStintNodeY(yScale, series.driver, idx, series.stints.length)
+    }));
+
+    if (nodeData.length > 1) {
+        const sortedByX = nodeData
+            .slice()
+            .sort((a, b) => a.x - b.x || a.stintObj.stint - b.stintObj.stint);
+        for (let i = 1; i < sortedByX.length; i++) {
+            const gap = sortedByX[i].x - sortedByX[i - 1].x;
+            if (gap < _MIN_SAME_DRIVER_NODE_X_GAP_PX) {
+                const shift = (_MIN_SAME_DRIVER_NODE_X_GAP_PX - gap) / 2;
+                sortedByX[i - 1].x -= shift;
+                sortedByX[i].x += shift;
+            }
+        }
+    }
+
+    return nodeData;
+}
+
+/**
  * Renders the circular compound nodes and stint numbers for a single driver row.
  *
  * @param {Object} rowGroup - D3 selection for a single `<g class="driver-stint-row">`.
@@ -638,12 +673,12 @@ function _renderDriverStintNodes(
     tooltip,
     onHoverChange
 ) {
-    const nodeData = series.stints.map((stintObj, idx) => ({
-        stintObj,
-        prevStintObj: idx > 0 ? series.stints[idx - 1] : null,
-        x: xScale(stintObj[activeMetric]),
-        y: _computeStintNodeY(yScale, series.driver, idx, series.stints.length)
-    }));
+    const nodeData = _computeDriverStintNodeData(
+        series,
+        xScale,
+        yScale,
+        activeMetric
+    );
 
     const nodes = rowGroup
         .selectAll('g.stint-pace-node')
@@ -755,7 +790,7 @@ function _renderDriverStintRows(
 
     const lineGen = d3
         .line()
-        .x((d) => xScale(d.stintObj[activeMetric]))
+        .x((d) => d.x)
         .y((d) => d.y);
 
     driverRowGroups
@@ -767,10 +802,12 @@ function _renderDriverStintRows(
         .attr('stroke-linecap', 'round')
         .attr('d', (d) => {
             if (d.stints.length < 2) return null;
-            const pts = d.stints.map((stintObj, idx) => ({
-                stintObj,
-                y: _computeStintNodeY(yScale, d.driver, idx, d.stints.length)
-            }));
+            const pts = _computeDriverStintNodeData(
+                d,
+                xScale,
+                yScale,
+                activeMetric
+            );
             return lineGen(pts);
         });
 

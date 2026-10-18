@@ -23825,8 +23825,8 @@
         "start_lap": 1,
         "end_lap": 15,
         "laps_count": 15,
-        "avg_pace": 99.78,
-        "fuel_corrected_pace": 97.085
+        "avg_pace": 99.819,
+        "fuel_corrected_pace": 97.124
       },
       {
         "driver": "NOR",
@@ -23851,8 +23851,8 @@
         "start_lap": 1,
         "end_lap": 14,
         "laps_count": 14,
-        "avg_pace": 99.959,
-        "fuel_corrected_pace": 97.237
+        "avg_pace": 100.353,
+        "fuel_corrected_pace": 97.63
       },
       {
         "driver": "VER",
@@ -23942,8 +23942,8 @@
         "start_lap": 1,
         "end_lap": 14,
         "laps_count": 14,
-        "avg_pace": 99.823,
-        "fuel_corrected_pace": 97.1
+        "avg_pace": 100.168,
+        "fuel_corrected_pace": 97.446
       },
       {
         "driver": "ANT",

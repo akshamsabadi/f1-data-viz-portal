@@ -72,6 +72,8 @@ _DEFAULT_RACE_MEDIAN_TIME_S: Final[float] = 95.0
 _UNRANKED_POSITION: Final[int] = 99
 _UNCLASSIFIED_SORT_POSITION: Final[int] = 999
 _MIN_VALID_LAP_RATIO: Final[float] = 0.88
+_MAX_VALID_LAP_RATIO: Final[float] = 1.85
+_SC_CLAMPED_LAP_RATIO: Final[float] = 1.38
 _MIN_CLEAN_RACE_LAP_S: Final[float] = 45.0
 _MAX_CLEAN_RACE_LAP_S: Final[float] = 165.0
 _LAP1_STANDING_START_OVERHEAD_S: Final[float] = 3.5
@@ -707,11 +709,14 @@ def _reconstruct_driver_calibrated_laps(
         lap for lap in sorted_drv_laps if int(lap["lap"]) <= target_laps
     ]
     existing_by_lap = {int(lap["lap"]): lap for lap in trimmed_laps}
+    max_valid_lap_time = context.field_median * _MAX_VALID_LAP_RATIO
     clean_drv_times = [
         float(lap["time"])
         for lap in trimmed_laps
         if int(lap.get("lap", 0)) >= 2
-        and float(lap.get("time", 0)) >= context.min_valid_lap_time
+        and context.min_valid_lap_time
+        <= float(lap.get("time", 0))
+        <= max_valid_lap_time
     ]
     drv_median = (
         statistics.median(clean_drv_times)
@@ -748,12 +753,18 @@ def _reconstruct_driver_calibrated_laps(
             if (
                 context.has_raw_laps
                 or float(rec.get("time", 0)) < context.min_valid_lap_time
+                or float(rec.get("time", 0)) > max_valid_lap_time
             ):
                 rec["time"] = context.lap1_time_by_code.get(
                     code, context.leader_lap1_time
                 )
         elif float(rec.get("time", 0)) < context.min_valid_lap_time:
             rec["time"] = round(drv_median, _TIME_DECIMALS)
+            rec["interpolated"] = True
+        elif float(rec.get("time", 0)) > max_valid_lap_time:
+            rec["time"] = round(
+                context.field_median * _SC_CLAMPED_LAP_RATIO, _TIME_DECIMALS
+            )
             rec["interpolated"] = True
 
         contiguous_laps.append(rec)
@@ -885,7 +896,12 @@ def _build_official_classification_entry(
                     prev_dur + _MONOTONIC_DURATION_STEP_S, _TIME_DECIMALS
                 )
 
-    contiguous_laps[-1]["session_time"] = final_session_time
+    if (
+        target_laps == context.official_max_lap
+        or abs(final_session_time - float(contiguous_laps[-1]["session_time"]))
+        <= context.field_median * _MAX_VALID_LAP_RATIO
+    ):
+        contiguous_laps[-1]["session_time"] = final_session_time
     status_out = "DSQ" if is_dsq else status_str
     laps_behind = context.official_max_lap - target_laps
     gap_to_leader: float | str = (
@@ -2879,8 +2895,16 @@ def _build_pit_stop_entry(
         )
         else None
     )
-    if openf1_pit and openf1_pit.get("stop_duration") is not None:
-        stationary_s = round(float(openf1_pit["stop_duration"]), _STOP_DECIMALS)
+    raw_stop_val = (
+        float(openf1_pit["stop_duration"])
+        if openf1_pit and openf1_pit.get("stop_duration") is not None
+        else None
+    )
+    if (
+        raw_stop_val is not None
+        and _MIN_DERIVED_STATIONARY_S <= raw_stop_val <= _MAX_DERIVED_STATIONARY_S
+    ):
+        stationary_s = round(raw_stop_val, _STOP_DECIMALS)
     elif raw_lane_val is not None:
         stationary_s = round(
             max(
@@ -2979,14 +3003,14 @@ def _build_stints_and_pit_stops(
         times = [
             float(lap["time"])
             for lap in driver_laps
-            if float(lap.get("time", 0)) > 0
+            if 0 < float(lap.get("time", 0)) < _MAX_CLEAN_RACE_LAP_S
             and int(lap["lap"]) not in sc_laps_set
         ]
         if not times:
             times = [
                 float(lap["time"])
                 for lap in driver_laps
-                if float(lap.get("time", 0)) > 0
+                if 0 < float(lap.get("time", 0)) < _MAX_CLEAN_RACE_LAP_S
             ]
         median_time = (
             statistics.median(times) if times else _DEFAULT_RACE_MEDIAN_TIME_S
@@ -3018,8 +3042,10 @@ def _build_stints_and_pit_stops(
                 and int(lap["lap"]) not in sc_laps_set
             ]
             if not clean_group_times:
+                min_clean_t = median_time * _MIN_VALID_LAP_RATIO
+                max_clean_t = median_time + _CLEAN_STINT_LAP_BUFFER_S
                 clean_group_times = [
-                    float(lap["time"])
+                    min(max_clean_t, max(min_clean_t, float(lap["time"])))
                     for lap in group
                     if float(lap.get("time", 0)) > 0
                 ] or [median_time]

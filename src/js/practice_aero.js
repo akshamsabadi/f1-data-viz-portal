@@ -36,12 +36,12 @@ const _QUADRANT_LABEL_TOP_Y_PX = 13;
 const _QUADRANT_LABEL_FONT_SIZE = '8.5px';
 
 const _LABEL_EDGE_MARGIN_PX = 42;
-const _ESTIMATED_LABEL_WIDTH_PX = 28;
-const _ESTIMATED_LABEL_HEIGHT_PX = 11;
+const _ESTIMATED_LABEL_WIDTH_PX = 36;
+const _ESTIMATED_LABEL_HEIGHT_PX = 15;
 const _LABEL_BASELINE_ADJUST_PX = 2;
-const _NODE_PROXIMITY_THRESHOLD_PX = 10;
-const _NODE_PROXIMITY_PENALTY_WEIGHT = 20;
-const _BOX_OVERLAP_PENALTY_WEIGHT = 5;
+const _NODE_PROXIMITY_THRESHOLD_PX = 12;
+const _NODE_PROXIMITY_PENALTY_WEIGHT = 25;
+const _BOX_OVERLAP_PENALTY_WEIGHT = 60;
 const _DEFAULT_LABEL_DX_PX = 8;
 const _DEFAULT_LABEL_DY_PX = -8;
 
@@ -51,7 +51,13 @@ const _LABEL_OFFSET_CANDIDATES = [
     { dx: -9, dy: -6, anchor: 'end' },
     { dx: -9, dy: 13, anchor: 'end' },
     { dx: 0, dy: -11, anchor: 'middle' },
-    { dx: 0, dy: 17, anchor: 'middle' }
+    { dx: 0, dy: 18, anchor: 'middle' },
+    { dx: 14, dy: 4, anchor: 'start' },
+    { dx: -14, dy: 4, anchor: 'end' },
+    { dx: 12, dy: -14, anchor: 'start' },
+    { dx: -12, dy: -14, anchor: 'end' },
+    { dx: 12, dy: 20, anchor: 'start' },
+    { dx: -12, dy: 20, anchor: 'end' }
 ];
 
 const _TOOLTIP_OFFSET_X_PX = 15;

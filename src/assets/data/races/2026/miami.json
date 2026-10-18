@@ -22805,8 +22805,8 @@
         "start_lap": 1,
         "end_lap": 26,
         "laps_count": 26,
-        "avg_pace": 93.471,
-        "fuel_corrected_pace": 91.079
+        "avg_pace": 93.762,
+        "fuel_corrected_pace": 91.37
       },
       {
         "driver": "ANT",
@@ -22961,8 +22961,8 @@
         "start_lap": 1,
         "end_lap": 6,
         "laps_count": 6,
-        "avg_pace": 95.692,
-        "fuel_corrected_pace": 92.749
+        "avg_pace": 97.973,
+        "fuel_corrected_pace": 95.031
       },
       {
         "driver": "OCO",

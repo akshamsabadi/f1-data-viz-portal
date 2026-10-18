@@ -393,81 +393,81 @@
     {
       "driver": "VER",
       "lap": 2,
-      "time": 239.842,
+      "time": 144.106,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 347.769,
-      "interpolated": false,
+      "session_time": 252.033,
+      "interpolated": true,
       "position": 2
     },
     {
       "driver": "HAM",
       "lap": 2,
-      "time": 235.572,
+      "time": 144.106,
       "compound": "MEDIUM",
       "tyre_life": 1,
-      "session_time": 348.489,
-      "interpolated": false,
+      "session_time": 257.023,
+      "interpolated": true,
       "position": 3
     },
     {
       "driver": "ANT",
       "lap": 2,
-      "time": 234.631,
+      "time": 144.106,
       "compound": "INTERMEDIATE",
       "tyre_life": 2,
-      "session_time": 348.716,
-      "interpolated": false,
+      "session_time": 258.191,
+      "interpolated": true,
       "position": 4
     },
     {
       "driver": "LEC",
       "lap": 2,
-      "time": 234.025,
+      "time": 144.106,
       "compound": "INTERMEDIATE",
       "tyre_life": 1,
-      "session_time": 349.516,
-      "interpolated": false,
+      "session_time": 259.597,
+      "interpolated": true,
       "position": 5
     },
     {
       "driver": "NOR",
       "lap": 2,
-      "time": 231.981,
+      "time": 144.106,
       "compound": "HARD",
       "tyre_life": 1,
-      "session_time": 349.973,
-      "interpolated": false,
+      "session_time": 262.098,
+      "interpolated": true,
       "position": 6
     },
     {
       "driver": "RUS",
       "lap": 2,
-      "time": 227.904,
+      "time": 144.106,
       "compound": "MEDIUM",
       "tyre_life": 1,
-      "session_time": 349.903,
-      "interpolated": false,
+      "session_time": 266.105,
+      "interpolated": true,
       "position": 7
     },
     {
       "driver": "HAD",
       "lap": 2,
-      "time": 226.225,
+      "time": 144.106,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 350.285,
-      "interpolated": false,
+      "session_time": 268.166,
+      "interpolated": true,
       "position": 8
     },
     {
       "driver": "GAS",
       "lap": 2,
-      "time": 203.913,
+      "time": 144.106,
       "compound": "MEDIUM",
       "tyre_life": 1,
-      "session_time": 328.82,
-      "interpolated": false,
+      "session_time": 269.013,
+      "interpolated": true,
       "position": 9
     },
     {
@@ -483,31 +483,31 @@
     {
       "driver": "LAW",
       "lap": 2,
-      "time": 215.414,
+      "time": 144.106,
       "compound": "HARD",
       "tyre_life": 1,
-      "session_time": 339.961,
-      "interpolated": false,
+      "session_time": 268.653,
+      "interpolated": true,
       "position": 11
     },
     {
       "driver": "ALO",
       "lap": 2,
-      "time": 211.874,
+      "time": 144.106,
       "compound": "HARD",
       "tyre_life": 1,
-      "session_time": 336.541,
-      "interpolated": false,
+      "session_time": 268.773,
+      "interpolated": true,
       "position": 12
     },
     {
       "driver": "SAI",
       "lap": 2,
-      "time": 210.515,
+      "time": 144.106,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 335.302,
-      "interpolated": false,
+      "session_time": 268.893,
+      "interpolated": true,
       "position": 13
     },
     {
@@ -533,41 +533,41 @@
     {
       "driver": "BEA",
       "lap": 2,
-      "time": 201.03,
+      "time": 144.106,
       "compound": "MEDIUM",
       "tyre_life": 1,
-      "session_time": 326.297,
-      "interpolated": false,
+      "session_time": 269.373,
+      "interpolated": true,
       "position": 16
     },
     {
       "driver": "OCO",
       "lap": 2,
-      "time": 199.448,
+      "time": 144.106,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 324.835,
-      "interpolated": false,
+      "session_time": 269.493,
+      "interpolated": true,
       "position": 17
     },
     {
       "driver": "ALB",
       "lap": 2,
-      "time": 197.717,
+      "time": 144.106,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 323.224,
-      "interpolated": false,
+      "session_time": 269.613,
+      "interpolated": true,
       "position": 18
     },
     {
       "driver": "BOT",
       "lap": 2,
-      "time": 193.718,
+      "time": 144.106,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 319.345,
-      "interpolated": false,
+      "session_time": 269.733,
+      "interpolated": true,
       "position": 19
     },
     {
@@ -606,7 +606,7 @@
       "time": 111.458,
       "compound": "INTERMEDIATE",
       "tyre_life": 3,
-      "session_time": 460.174,
+      "session_time": 369.649,
       "interpolated": false,
       "position": 1
     },
@@ -616,7 +616,7 @@
       "time": 111.144,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 461.047,
+      "session_time": 377.249,
       "interpolated": false,
       "position": 2
     },
@@ -626,7 +626,7 @@
       "time": 114.55,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 462.319,
+      "session_time": 366.583,
       "interpolated": false,
       "position": 3
     },
@@ -636,7 +636,7 @@
       "time": 113.879,
       "compound": "HARD",
       "tyre_life": 2,
-      "session_time": 453.84,
+      "session_time": 382.532,
       "interpolated": false,
       "position": 4
     },
@@ -646,7 +646,7 @@
       "time": 114.964,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 465.249,
+      "session_time": 383.13,
       "interpolated": false,
       "position": 5
     },
@@ -656,7 +656,7 @@
       "time": 115.559,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 450.861,
+      "session_time": 384.452,
       "interpolated": false,
       "position": 6
     },
@@ -666,7 +666,7 @@
       "time": 116.305,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 439.529,
+      "session_time": 385.918,
       "interpolated": false,
       "position": 7
     },
@@ -676,7 +676,7 @@
       "time": 116.397,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 441.232,
+      "session_time": 385.89,
       "interpolated": false,
       "position": 8
     },
@@ -746,7 +746,7 @@
       "time": 141.532,
       "compound": "MEDIUM",
       "tyre_life": 2,
-      "session_time": 490.021,
+      "session_time": 398.555,
       "interpolated": false,
       "position": 15
     },
@@ -756,7 +756,7 @@
       "time": 138.986,
       "compound": "HARD",
       "tyre_life": 1,
-      "session_time": 475.527,
+      "session_time": 407.759,
       "interpolated": false,
       "position": 16
     },
@@ -766,7 +766,7 @@
       "time": 140.049,
       "compound": "HARD",
       "tyre_life": 2,
-      "session_time": 490.022,
+      "session_time": 402.147,
       "interpolated": false,
       "position": 17
     },
@@ -776,7 +776,7 @@
       "time": 141.833,
       "compound": "HARD",
       "tyre_life": 1,
-      "session_time": 470.653,
+      "session_time": 410.846,
       "interpolated": false,
       "position": 18
     },
@@ -786,7 +786,7 @@
       "time": 141.435,
       "compound": "MEDIUM",
       "tyre_life": 2,
-      "session_time": 467.732,
+      "session_time": 410.808,
       "interpolated": false,
       "position": 19
     },
@@ -806,7 +806,7 @@
       "time": 143.713,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 463.058,
+      "session_time": 413.446,
       "interpolated": false,
       "position": 21
     },
@@ -816,7 +816,7 @@
       "time": 154.427,
       "compound": "INTERMEDIATE",
       "tyre_life": 2,
-      "session_time": 503.943,
+      "session_time": 414.024,
       "interpolated": false,
       "position": 22
     },
@@ -826,7 +826,7 @@
       "time": 108.702,
       "compound": "INTERMEDIATE",
       "tyre_life": 4,
-      "session_time": 568.876,
+      "session_time": 478.351,
       "interpolated": false,
       "position": 1
     },
@@ -836,7 +836,7 @@
       "time": 109.122,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 570.169,
+      "session_time": 486.371,
       "interpolated": false,
       "position": 2
     },
@@ -846,7 +846,7 @@
       "time": 109.03,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 571.349,
+      "session_time": 475.613,
       "interpolated": false,
       "position": 3
     },
@@ -856,7 +856,7 @@
       "time": 111.807,
       "compound": "HARD",
       "tyre_life": 3,
-      "session_time": 565.647,
+      "session_time": 494.339,
       "interpolated": false,
       "position": 4
     },
@@ -866,7 +866,7 @@
       "time": 111.757,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 577.006,
+      "session_time": 494.887,
       "interpolated": false,
       "position": 5
     },
@@ -876,7 +876,7 @@
       "time": 112.997,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 563.858,
+      "session_time": 497.449,
       "interpolated": false,
       "position": 6
     },
@@ -886,7 +886,7 @@
       "time": 111.853,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 553.085,
+      "session_time": 497.743,
       "interpolated": false,
       "position": 7
     },
@@ -896,7 +896,7 @@
       "time": 113.606,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 553.135,
+      "session_time": 499.524,
       "interpolated": false,
       "position": 8
     },
@@ -966,7 +966,7 @@
       "time": 126.772,
       "compound": "HARD",
       "tyre_life": 3,
-      "session_time": 616.794,
+      "session_time": 528.919,
       "interpolated": false,
       "position": 15
     },
@@ -976,7 +976,7 @@
       "time": 130.091,
       "compound": "HARD",
       "tyre_life": 2,
-      "session_time": 605.618,
+      "session_time": 537.85,
       "interpolated": false,
       "position": 16
     },
@@ -986,7 +986,7 @@
       "time": 133.074,
       "compound": "MEDIUM",
       "tyre_life": 3,
-      "session_time": 623.095,
+      "session_time": 531.629,
       "interpolated": false,
       "position": 17
     },
@@ -996,7 +996,7 @@
       "time": 132.456,
       "compound": "HARD",
       "tyre_life": 2,
-      "session_time": 603.109,
+      "session_time": 543.302,
       "interpolated": false,
       "position": 18
     },
@@ -1006,7 +1006,7 @@
       "time": 132.805,
       "compound": "MEDIUM",
       "tyre_life": 3,
-      "session_time": 600.537,
+      "session_time": 543.613,
       "interpolated": false,
       "position": 19
     },
@@ -1026,7 +1026,7 @@
       "time": 134.261,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 597.319,
+      "session_time": 547.707,
       "interpolated": false,
       "position": 21
     },
@@ -1036,7 +1036,7 @@
       "time": 139.763,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 643.706,
+      "session_time": 553.787,
       "interpolated": false,
       "position": 22
     },
@@ -1046,7 +1046,7 @@
       "time": 109.756,
       "compound": "INTERMEDIATE",
       "tyre_life": 5,
-      "session_time": 678.632,
+      "session_time": 588.107,
       "interpolated": false,
       "position": 1
     },
@@ -1056,7 +1056,7 @@
       "time": 110.461,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 680.63,
+      "session_time": 596.832,
       "interpolated": false,
       "position": 2
     },
@@ -1066,7 +1066,7 @@
       "time": 109.634,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 680.983,
+      "session_time": 585.247,
       "interpolated": false,
       "position": 3
     },
@@ -1076,7 +1076,7 @@
       "time": 111.636,
       "compound": "HARD",
       "tyre_life": 4,
-      "session_time": 677.283,
+      "session_time": 605.975,
       "interpolated": false,
       "position": 4
     },
@@ -1086,7 +1086,7 @@
       "time": 111.549,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 688.555,
+      "session_time": 606.436,
       "interpolated": false,
       "position": 5
     },
@@ -1096,7 +1096,7 @@
       "time": 113.002,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 676.86,
+      "session_time": 610.451,
       "interpolated": false,
       "position": 6
     },
@@ -1106,7 +1106,7 @@
       "time": 113.308,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 666.393,
+      "session_time": 611.051,
       "interpolated": false,
       "position": 7
     },
@@ -1116,7 +1116,7 @@
       "time": 113.353,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 666.488,
+      "session_time": 612.877,
       "interpolated": false,
       "position": 8
     },
@@ -1186,7 +1186,7 @@
       "time": 121.976,
       "compound": "HARD",
       "tyre_life": 4,
-      "session_time": 738.77,
+      "session_time": 650.895,
       "interpolated": false,
       "position": 15
     },
@@ -1196,7 +1196,7 @@
       "time": 123.123,
       "compound": "HARD",
       "tyre_life": 3,
-      "session_time": 728.741,
+      "session_time": 660.973,
       "interpolated": false,
       "position": 16
     },
@@ -1206,7 +1206,7 @@
       "time": 124.251,
       "compound": "MEDIUM",
       "tyre_life": 4,
-      "session_time": 747.346,
+      "session_time": 655.88,
       "interpolated": false,
       "position": 17
     },
@@ -1216,7 +1216,7 @@
       "time": 125.812,
       "compound": "HARD",
       "tyre_life": 3,
-      "session_time": 728.921,
+      "session_time": 669.114,
       "interpolated": false,
       "position": 18
     },
@@ -1226,7 +1226,7 @@
       "time": 126.151,
       "compound": "MEDIUM",
       "tyre_life": 4,
-      "session_time": 726.688,
+      "session_time": 669.764,
       "interpolated": false,
       "position": 19
     },
@@ -1246,7 +1246,7 @@
       "time": 129.421,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 726.74,
+      "session_time": 677.128,
       "interpolated": false,
       "position": 21
     },
@@ -1256,7 +1256,7 @@
       "time": 110.859,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 754.565,
+      "session_time": 664.646,
       "interpolated": false,
       "position": 22
     },
@@ -1266,7 +1266,7 @@
       "time": 110.741,
       "compound": "INTERMEDIATE",
       "tyre_life": 6,
-      "session_time": 789.373,
+      "session_time": 698.848,
       "interpolated": false,
       "position": 1
     },
@@ -1276,7 +1276,7 @@
       "time": 110.519,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 791.502,
+      "session_time": 695.766,
       "interpolated": false,
       "position": 2
     },
@@ -1286,7 +1286,7 @@
       "time": 112.22,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 792.85,
+      "session_time": 709.052,
       "interpolated": false,
       "position": 3
     },
@@ -1296,7 +1296,7 @@
       "time": 112.005,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 800.56,
+      "session_time": 718.441,
       "interpolated": false,
       "position": 4
     },
@@ -1306,7 +1306,7 @@
       "time": 113.035,
       "compound": "HARD",
       "tyre_life": 5,
-      "session_time": 790.318,
+      "session_time": 719.01,
       "interpolated": false,
       "position": 5
     },
@@ -1316,7 +1316,7 @@
       "time": 112.199,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 778.592,
+      "session_time": 723.25,
       "interpolated": false,
       "position": 6
     },
@@ -1326,7 +1326,7 @@
       "time": 113.615,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 790.475,
+      "session_time": 724.066,
       "interpolated": false,
       "position": 7
     },
@@ -1346,7 +1346,7 @@
       "time": 114.808,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 781.296,
+      "session_time": 727.685,
       "interpolated": false,
       "position": 9
     },
@@ -1406,7 +1406,7 @@
       "time": 118.162,
       "compound": "HARD",
       "tyre_life": 5,
-      "session_time": 856.932,
+      "session_time": 769.057,
       "interpolated": false,
       "position": 15
     },
@@ -1416,7 +1416,7 @@
       "time": 119.006,
       "compound": "HARD",
       "tyre_life": 4,
-      "session_time": 847.747,
+      "session_time": 779.979,
       "interpolated": false,
       "position": 16
     },
@@ -1426,7 +1426,7 @@
       "time": 121.279,
       "compound": "MEDIUM",
       "tyre_life": 5,
-      "session_time": 868.625,
+      "session_time": 777.159,
       "interpolated": false,
       "position": 17
     },
@@ -1436,7 +1436,7 @@
       "time": 123.852,
       "compound": "HARD",
       "tyre_life": 4,
-      "session_time": 852.773,
+      "session_time": 792.966,
       "interpolated": false,
       "position": 18
     },
@@ -1446,7 +1446,7 @@
       "time": 110.593,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 865.158,
+      "session_time": 775.239,
       "interpolated": false,
       "position": 19
     },
@@ -1456,7 +1456,7 @@
       "time": 122.986,
       "compound": "MEDIUM",
       "tyre_life": 5,
-      "session_time": 849.674,
+      "session_time": 792.75,
       "interpolated": false,
       "position": 20
     },
@@ -1476,7 +1476,7 @@
       "time": 124.533,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 851.273,
+      "session_time": 801.661,
       "interpolated": false,
       "position": 22
     },
@@ -1486,7 +1486,7 @@
       "time": 112.884,
       "compound": "INTERMEDIATE",
       "tyre_life": 7,
-      "session_time": 902.257,
+      "session_time": 811.732,
       "interpolated": false,
       "position": 1
     },
@@ -1496,7 +1496,7 @@
       "time": 111.456,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 902.958,
+      "session_time": 807.222,
       "interpolated": false,
       "position": 2
     },
@@ -1506,7 +1506,7 @@
       "time": 112.409,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 905.259,
+      "session_time": 821.461,
       "interpolated": false,
       "position": 3
     },
@@ -1516,7 +1516,7 @@
       "time": 111.57,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 912.13,
+      "session_time": 830.011,
       "interpolated": false,
       "position": 4
     },
@@ -1526,7 +1526,7 @@
       "time": 114.361,
       "compound": "HARD",
       "tyre_life": 6,
-      "session_time": 904.679,
+      "session_time": 833.371,
       "interpolated": false,
       "position": 5
     },
@@ -1536,7 +1536,7 @@
       "time": 112.638,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 891.23,
+      "session_time": 835.888,
       "interpolated": false,
       "position": 6
     },
@@ -1546,7 +1546,7 @@
       "time": 113.897,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 904.372,
+      "session_time": 837.963,
       "interpolated": false,
       "position": 7
     },
@@ -1566,7 +1566,7 @@
       "time": 115.151,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 896.447,
+      "session_time": 842.836,
       "interpolated": false,
       "position": 9
     },
@@ -1626,7 +1626,7 @@
       "time": 115.255,
       "compound": "HARD",
       "tyre_life": 6,
-      "session_time": 972.187,
+      "session_time": 884.312,
       "interpolated": false,
       "position": 15
     },
@@ -1636,7 +1636,7 @@
       "time": 116.846,
       "compound": "HARD",
       "tyre_life": 5,
-      "session_time": 964.593,
+      "session_time": 896.825,
       "interpolated": false,
       "position": 16
     },
@@ -1646,7 +1646,7 @@
       "time": 111.829,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 976.987,
+      "session_time": 887.068,
       "interpolated": false,
       "position": 17
     },
@@ -1656,7 +1656,7 @@
       "time": 116.549,
       "compound": "MEDIUM",
       "tyre_life": 6,
-      "session_time": 985.174,
+      "session_time": 893.708,
       "interpolated": false,
       "position": 18
     },
@@ -1666,7 +1666,7 @@
       "time": 118.18,
       "compound": "HARD",
       "tyre_life": 5,
-      "session_time": 970.953,
+      "session_time": 911.146,
       "interpolated": false,
       "position": 19
     },
@@ -1676,7 +1676,7 @@
       "time": 118.308,
       "compound": "MEDIUM",
       "tyre_life": 6,
-      "session_time": 967.982,
+      "session_time": 911.058,
       "interpolated": false,
       "position": 20
     },
@@ -1696,7 +1696,7 @@
       "time": 119.953,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 971.226,
+      "session_time": 921.614,
       "interpolated": false,
       "position": 22
     },
@@ -1706,7 +1706,7 @@
       "time": 112.623,
       "compound": "INTERMEDIATE",
       "tyre_life": 8,
-      "session_time": 1014.88,
+      "session_time": 924.355,
       "interpolated": false,
       "position": 1
     },
@@ -1716,7 +1716,7 @@
       "time": 111.887,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 1014.845,
+      "session_time": 919.109,
       "interpolated": false,
       "position": 2
     },
@@ -1726,7 +1726,7 @@
       "time": 112.623,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 1017.882,
+      "session_time": 934.084,
       "interpolated": false,
       "position": 3
     },
@@ -1736,7 +1736,7 @@
       "time": 112.021,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 1024.151,
+      "session_time": 942.032,
       "interpolated": false,
       "position": 4
     },
@@ -1746,7 +1746,7 @@
       "time": 114.122,
       "compound": "HARD",
       "tyre_life": 7,
-      "session_time": 1018.801,
+      "session_time": 947.493,
       "interpolated": false,
       "position": 5
     },
@@ -1756,7 +1756,7 @@
       "time": 113.48,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 1004.71,
+      "session_time": 949.368,
       "interpolated": false,
       "position": 6
     },
@@ -1766,7 +1766,7 @@
       "time": 114.387,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 1018.759,
+      "session_time": 952.35,
       "interpolated": false,
       "position": 7
     },
@@ -1786,7 +1786,7 @@
       "time": 115.402,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 1011.849,
+      "session_time": 958.238,
       "interpolated": false,
       "position": 9
     },
@@ -1846,7 +1846,7 @@
       "time": 112.056,
       "compound": "HARD",
       "tyre_life": 7,
-      "session_time": 1084.243,
+      "session_time": 996.368,
       "interpolated": false,
       "position": 15
     },
@@ -1856,7 +1856,7 @@
       "time": 111.529,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 1088.516,
+      "session_time": 998.597,
       "interpolated": false,
       "position": 16
     },
@@ -1866,7 +1866,7 @@
       "time": 114.007,
       "compound": "HARD",
       "tyre_life": 6,
-      "session_time": 1078.6,
+      "session_time": 1010.832,
       "interpolated": false,
       "position": 17
     },
@@ -1876,7 +1876,7 @@
       "time": 112.876,
       "compound": "MEDIUM",
       "tyre_life": 7,
-      "session_time": 1098.05,
+      "session_time": 1006.584,
       "interpolated": false,
       "position": 18
     },
@@ -1886,7 +1886,7 @@
       "time": 114.626,
       "compound": "HARD",
       "tyre_life": 6,
-      "session_time": 1085.579,
+      "session_time": 1025.772,
       "interpolated": false,
       "position": 19
     },
@@ -1896,7 +1896,7 @@
       "time": 114.634,
       "compound": "MEDIUM",
       "tyre_life": 7,
-      "session_time": 1082.616,
+      "session_time": 1025.692,
       "interpolated": false,
       "position": 20
     },
@@ -1916,7 +1916,7 @@
       "time": 122.695,
       "compound": "INTERMEDIATE",
       "tyre_life": 9,
-      "session_time": 1137.575,
+      "session_time": 1047.05,
       "interpolated": false,
       "position": 1
     },
@@ -1926,7 +1926,7 @@
       "time": 123.556,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 1138.401,
+      "session_time": 1042.665,
       "interpolated": false,
       "position": 2
     },
@@ -1936,7 +1936,7 @@
       "time": 124.965,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 1142.847,
+      "session_time": 1059.049,
       "interpolated": false,
       "position": 3
     },
@@ -1946,7 +1946,7 @@
       "time": 127.852,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 1152.003,
+      "session_time": 1069.884,
       "interpolated": false,
       "position": 4
     },
@@ -1956,7 +1956,7 @@
       "time": 131.18,
       "compound": "HARD",
       "tyre_life": 8,
-      "session_time": 1149.981,
+      "session_time": 1078.673,
       "interpolated": false,
       "position": 5
     },
@@ -1966,7 +1966,7 @@
       "time": 130.709,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 1135.419,
+      "session_time": 1080.077,
       "interpolated": false,
       "position": 6
     },
@@ -1976,7 +1976,7 @@
       "time": 131.637,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 1150.396,
+      "session_time": 1083.987,
       "interpolated": false,
       "position": 7
     },
@@ -1996,7 +1996,7 @@
       "time": 133.565,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 1145.414,
+      "session_time": 1091.803,
       "interpolated": false,
       "position": 9
     },
@@ -2056,7 +2056,7 @@
       "time": 142.264,
       "compound": "HARD",
       "tyre_life": 8,
-      "session_time": 1226.507,
+      "session_time": 1138.632,
       "interpolated": false,
       "position": 15
     },
@@ -2066,7 +2066,7 @@
       "time": 143.096,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 1231.612,
+      "session_time": 1141.693,
       "interpolated": false,
       "position": 16
     },
@@ -2076,7 +2076,7 @@
       "time": 145.693,
       "compound": "HARD",
       "tyre_life": 7,
-      "session_time": 1224.293,
+      "session_time": 1156.525,
       "interpolated": false,
       "position": 17
     },
@@ -2086,7 +2086,7 @@
       "time": 140.394,
       "compound": "MEDIUM",
       "tyre_life": 8,
-      "session_time": 1238.444,
+      "session_time": 1146.978,
       "interpolated": false,
       "position": 18
     },
@@ -2096,7 +2096,7 @@
       "time": 148.634,
       "compound": "HARD",
       "tyre_life": 7,
-      "session_time": 1234.213,
+      "session_time": 1174.406,
       "interpolated": false,
       "position": 19
     },
@@ -2106,7 +2106,7 @@
       "time": 143.172,
       "compound": "MEDIUM",
       "tyre_life": 8,
-      "session_time": 1225.788,
+      "session_time": 1168.864,
       "interpolated": false,
       "position": 20
     },
@@ -2126,7 +2126,7 @@
       "time": 170.986,
       "compound": "MEDIUM",
       "tyre_life": 1,
-      "session_time": 1308.561,
+      "session_time": 1218.036,
       "interpolated": false,
       "position": 1
     },
@@ -2136,7 +2136,7 @@
       "time": 171.005,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 1309.406,
+      "session_time": 1213.67,
       "interpolated": false,
       "position": 2
     },
@@ -2146,7 +2146,7 @@
       "time": 168.426,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 1311.273,
+      "session_time": 1227.475,
       "interpolated": false,
       "position": 3
     },
@@ -2156,7 +2156,7 @@
       "time": 161.494,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 1313.497,
+      "session_time": 1231.378,
       "interpolated": false,
       "position": 4
     },
@@ -2166,7 +2166,7 @@
       "time": 159.574,
       "compound": "HARD",
       "tyre_life": 1,
-      "session_time": 1309.555,
+      "session_time": 1238.247,
       "interpolated": false,
       "position": 5
     },
@@ -2176,7 +2176,7 @@
       "time": 159.803,
       "compound": "HARD",
       "tyre_life": 1,
-      "session_time": 1295.222,
+      "session_time": 1239.88,
       "interpolated": false,
       "position": 6
     },
@@ -2196,7 +2196,7 @@
       "time": 163.597,
       "compound": "HARD",
       "tyre_life": 1,
-      "session_time": 1313.993,
+      "session_time": 1247.584,
       "interpolated": false,
       "position": 8
     },
@@ -2236,7 +2236,7 @@
       "time": 167.151,
       "compound": "HARD",
       "tyre_life": 1,
-      "session_time": 1312.565,
+      "session_time": 1258.954,
       "interpolated": false,
       "position": 12
     },
@@ -2266,7 +2266,7 @@
       "time": 143.525,
       "compound": "MEDIUM",
       "tyre_life": 9,
-      "session_time": 1381.969,
+      "session_time": 1290.503,
       "interpolated": false,
       "position": 15
     },
@@ -2276,7 +2276,7 @@
       "time": 164.236,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 1390.743,
+      "session_time": 1302.868,
       "interpolated": false,
       "position": 16
     },
@@ -2286,7 +2286,7 @@
       "time": 161.035,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 1392.647,
+      "session_time": 1302.728,
       "interpolated": false,
       "position": 17
     },
@@ -2296,7 +2296,7 @@
       "time": 149.532,
       "compound": "MEDIUM",
       "tyre_life": 9,
-      "session_time": 1375.32,
+      "session_time": 1318.396,
       "interpolated": false,
       "position": 18
     },
@@ -2306,7 +2306,7 @@
       "time": 160.442,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 1384.735,
+      "session_time": 1316.967,
       "interpolated": false,
       "position": 19
     },
@@ -2316,7 +2316,7 @@
       "time": 160.313,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 1394.526,
+      "session_time": 1334.719,
       "interpolated": false,
       "position": 20
     },
@@ -2336,7 +2336,7 @@
       "time": 147.449,
       "compound": "MEDIUM",
       "tyre_life": 2,
-      "session_time": 1456.01,
+      "session_time": 1365.485,
       "interpolated": false,
       "position": 1
     },
@@ -2346,7 +2346,7 @@
       "time": 147.418,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 1456.824,
+      "session_time": 1361.088,
       "interpolated": false,
       "position": 2
     },
@@ -2356,7 +2356,7 @@
       "time": 146.649,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 1457.922,
+      "session_time": 1374.124,
       "interpolated": false,
       "position": 3
     },
@@ -2366,7 +2366,7 @@
       "time": 145.335,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 1458.832,
+      "session_time": 1376.713,
       "interpolated": false,
       "position": 4
     },
@@ -2376,7 +2376,7 @@
       "time": 140.126,
       "compound": "HARD",
       "tyre_life": 2,
-      "session_time": 1449.681,
+      "session_time": 1378.373,
       "interpolated": false,
       "position": 5
     },
@@ -2386,7 +2386,7 @@
       "time": 139.175,
       "compound": "HARD",
       "tyre_life": 2,
-      "session_time": 1434.397,
+      "session_time": 1379.055,
       "interpolated": false,
       "position": 6
     },
@@ -2406,7 +2406,7 @@
       "time": 133.816,
       "compound": "HARD",
       "tyre_life": 2,
-      "session_time": 1447.809,
+      "session_time": 1381.4,
       "interpolated": false,
       "position": 8
     },
@@ -2446,7 +2446,7 @@
       "time": 129.006,
       "compound": "HARD",
       "tyre_life": 2,
-      "session_time": 1441.571,
+      "session_time": 1387.96,
       "interpolated": false,
       "position": 12
     },
@@ -2476,7 +2476,7 @@
       "time": 113.622,
       "compound": "MEDIUM",
       "tyre_life": 10,
-      "session_time": 1495.591,
+      "session_time": 1404.125,
       "interpolated": false,
       "position": 15
     },
@@ -2486,7 +2486,7 @@
       "time": 116.754,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 1507.497,
+      "session_time": 1419.622,
       "interpolated": false,
       "position": 16
     },
@@ -2496,7 +2496,7 @@
       "time": 116.505,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 1509.152,
+      "session_time": 1419.233,
       "interpolated": false,
       "position": 17
     },
@@ -2506,7 +2506,7 @@
       "time": 113.301,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 1498.036,
+      "session_time": 1430.268,
       "interpolated": false,
       "position": 18
     },
@@ -2516,7 +2516,7 @@
       "time": 117.283,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 1511.809,
+      "session_time": 1452.002,
       "interpolated": false,
       "position": 19
     },
@@ -2526,7 +2526,7 @@
       "time": 134.204,
       "compound": "HARD",
       "tyre_life": 1,
-      "session_time": 1509.524,
+      "session_time": 1452.6,
       "interpolated": false,
       "position": 20
     },
@@ -2546,7 +2546,7 @@
       "time": 161.185,
       "compound": "MEDIUM",
       "tyre_life": 3,
-      "session_time": 1617.195,
+      "session_time": 1526.67,
       "interpolated": false,
       "position": 1
     },
@@ -2556,7 +2556,7 @@
       "time": 160.517,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 1617.341,
+      "session_time": 1521.605,
       "interpolated": false,
       "position": 2
     },
@@ -2566,7 +2566,7 @@
       "time": 159.825,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 1617.747,
+      "session_time": 1533.949,
       "interpolated": false,
       "position": 3
     },
@@ -2576,7 +2576,7 @@
       "time": 159.679,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 1618.511,
+      "session_time": 1536.392,
       "interpolated": false,
       "position": 4
     },
@@ -2586,7 +2586,7 @@
       "time": 158.556,
       "compound": "HARD",
       "tyre_life": 3,
-      "session_time": 1608.237,
+      "session_time": 1536.929,
       "interpolated": false,
       "position": 5
     },
@@ -2596,7 +2596,7 @@
       "time": 158.238,
       "compound": "HARD",
       "tyre_life": 3,
-      "session_time": 1592.635,
+      "session_time": 1537.293,
       "interpolated": false,
       "position": 6
     },
@@ -2616,7 +2616,7 @@
       "time": 156.611,
       "compound": "HARD",
       "tyre_life": 3,
-      "session_time": 1604.42,
+      "session_time": 1538.011,
       "interpolated": false,
       "position": 8
     },
@@ -2656,7 +2656,7 @@
       "time": 152.455,
       "compound": "HARD",
       "tyre_life": 3,
-      "session_time": 1594.026,
+      "session_time": 1540.415,
       "interpolated": false,
       "position": 12
     },
@@ -2686,7 +2686,7 @@
       "time": 128.063,
       "compound": "MEDIUM",
       "tyre_life": 11,
-      "session_time": 1623.654,
+      "session_time": 1532.188,
       "interpolated": false,
       "position": 15
     },
@@ -2696,7 +2696,7 @@
       "time": 116.863,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 1624.36,
+      "session_time": 1536.485,
       "interpolated": false,
       "position": 16
     },
@@ -2706,7 +2706,7 @@
       "time": 115.259,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 1624.411,
+      "session_time": 1534.492,
       "interpolated": false,
       "position": 17
     },
@@ -2716,7 +2716,7 @@
       "time": 112.072,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 1610.108,
+      "session_time": 1542.34,
       "interpolated": false,
       "position": 18
     },
@@ -2726,7 +2726,7 @@
       "time": 109.224,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 1621.033,
+      "session_time": 1561.226,
       "interpolated": false,
       "position": 19
     },
@@ -2736,7 +2736,7 @@
       "time": 108.949,
       "compound": "HARD",
       "tyre_life": 2,
-      "session_time": 1618.473,
+      "session_time": 1561.549,
       "interpolated": false,
       "position": 20
     },
@@ -2756,7 +2756,7 @@
       "time": 104.849,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 1722.19,
+      "session_time": 1626.454,
       "interpolated": false,
       "position": 1
     },
@@ -2766,7 +2766,7 @@
       "time": 105.423,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 1723.17,
+      "session_time": 1639.372,
       "interpolated": false,
       "position": 2
     },
@@ -2776,7 +2776,7 @@
       "time": 106.383,
       "compound": "MEDIUM",
       "tyre_life": 4,
-      "session_time": 1723.578,
+      "session_time": 1633.053,
       "interpolated": false,
       "position": 3
     },
@@ -2786,7 +2786,7 @@
       "time": 107.028,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 1725.539,
+      "session_time": 1643.42,
       "interpolated": false,
       "position": 4
     },
@@ -2796,7 +2796,7 @@
       "time": 108.188,
       "compound": "HARD",
       "tyre_life": 4,
-      "session_time": 1716.425,
+      "session_time": 1645.117,
       "interpolated": false,
       "position": 5
     },
@@ -2806,7 +2806,7 @@
       "time": 109.171,
       "compound": "HARD",
       "tyre_life": 4,
-      "session_time": 1701.806,
+      "session_time": 1646.464,
       "interpolated": false,
       "position": 6
     },
@@ -2866,7 +2866,7 @@
       "time": 110.975,
       "compound": "MEDIUM",
       "tyre_life": 12,
-      "session_time": 1734.629,
+      "session_time": 1643.163,
       "interpolated": false,
       "position": 12
     },
@@ -2876,7 +2876,7 @@
       "time": 112.281,
       "compound": "HARD",
       "tyre_life": 4,
-      "session_time": 1706.307,
+      "session_time": 1652.696,
       "interpolated": false,
       "position": 13
     },
@@ -2886,7 +2886,7 @@
       "time": 110.825,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 1735.185,
+      "session_time": 1647.31,
       "interpolated": false,
       "position": 14
     },
@@ -2896,7 +2896,7 @@
       "time": 111.392,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 1735.803,
+      "session_time": 1645.884,
       "interpolated": false,
       "position": 15
     },
@@ -2916,7 +2916,7 @@
       "time": 111.557,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 1721.665,
+      "session_time": 1653.897,
       "interpolated": false,
       "position": 17
     },
@@ -2926,7 +2926,7 @@
       "time": 121.556,
       "compound": "HARD",
       "tyre_life": 4,
-      "session_time": 1725.976,
+      "session_time": 1659.567,
       "interpolated": false,
       "position": 18
     },
@@ -2936,7 +2936,7 @@
       "time": 106.611,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 1727.644,
+      "session_time": 1667.837,
       "interpolated": false,
       "position": 19
     },
@@ -2946,7 +2946,7 @@
       "time": 106.765,
       "compound": "HARD",
       "tyre_life": 3,
-      "session_time": 1725.238,
+      "session_time": 1668.314,
       "interpolated": false,
       "position": 20
     },
@@ -2966,7 +2966,7 @@
       "time": 103.456,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 1825.646,
+      "session_time": 1729.91,
       "interpolated": false,
       "position": 1
     },
@@ -2976,7 +2976,7 @@
       "time": 103.799,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 1826.969,
+      "session_time": 1743.171,
       "interpolated": false,
       "position": 2
     },
@@ -2986,7 +2986,7 @@
       "time": 104.307,
       "compound": "MEDIUM",
       "tyre_life": 5,
-      "session_time": 1827.885,
+      "session_time": 1737.36,
       "interpolated": false,
       "position": 3
     },
@@ -2996,7 +2996,7 @@
       "time": 104.34,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 1829.879,
+      "session_time": 1747.76,
       "interpolated": false,
       "position": 4
     },
@@ -3006,7 +3006,7 @@
       "time": 105.742,
       "compound": "HARD",
       "tyre_life": 5,
-      "session_time": 1822.167,
+      "session_time": 1750.859,
       "interpolated": false,
       "position": 5
     },
@@ -3016,7 +3016,7 @@
       "time": 105.948,
       "compound": "HARD",
       "tyre_life": 5,
-      "session_time": 1807.754,
+      "session_time": 1752.412,
       "interpolated": false,
       "position": 6
     },
@@ -3066,7 +3066,7 @@
       "time": 104.923,
       "compound": "MEDIUM",
       "tyre_life": 13,
-      "session_time": 1839.552,
+      "session_time": 1748.086,
       "interpolated": false,
       "position": 11
     },
@@ -3086,7 +3086,7 @@
       "time": 106.871,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 1842.056,
+      "session_time": 1754.181,
       "interpolated": false,
       "position": 13
     },
@@ -3096,7 +3096,7 @@
       "time": 107.355,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 1843.158,
+      "session_time": 1753.239,
       "interpolated": false,
       "position": 14
     },
@@ -3106,7 +3106,7 @@
       "time": 109.321,
       "compound": "HARD",
       "tyre_life": 5,
-      "session_time": 1815.628,
+      "session_time": 1762.017,
       "interpolated": false,
       "position": 15
     },
@@ -3116,7 +3116,7 @@
       "time": 107.872,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 1829.537,
+      "session_time": 1761.769,
       "interpolated": false,
       "position": 16
     },
@@ -3136,7 +3136,7 @@
       "time": 106.25,
       "compound": "HARD",
       "tyre_life": 5,
-      "session_time": 1832.226,
+      "session_time": 1765.817,
       "interpolated": false,
       "position": 18
     },
@@ -3146,7 +3146,7 @@
       "time": 105.557,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 1833.201,
+      "session_time": 1773.394,
       "interpolated": false,
       "position": 19
     },
@@ -3156,7 +3156,7 @@
       "time": 105.691,
       "compound": "HARD",
       "tyre_life": 4,
-      "session_time": 1830.929,
+      "session_time": 1774.005,
       "interpolated": false,
       "position": 20
     },
@@ -3176,7 +3176,7 @@
       "time": 102.227,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 1927.873,
+      "session_time": 1832.137,
       "interpolated": false,
       "position": 1
     },
@@ -3186,7 +3186,7 @@
       "time": 102.479,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 1929.448,
+      "session_time": 1845.65,
       "interpolated": false,
       "position": 2
     },
@@ -3196,7 +3196,7 @@
       "time": 102.901,
       "compound": "MEDIUM",
       "tyre_life": 6,
-      "session_time": 1930.786,
+      "session_time": 1840.261,
       "interpolated": false,
       "position": 3
     },
@@ -3206,7 +3206,7 @@
       "time": 103.392,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 1933.271,
+      "session_time": 1851.152,
       "interpolated": false,
       "position": 4
     },
@@ -3216,7 +3216,7 @@
       "time": 104.646,
       "compound": "HARD",
       "tyre_life": 6,
-      "session_time": 1926.813,
+      "session_time": 1855.505,
       "interpolated": false,
       "position": 5
     },
@@ -3226,7 +3226,7 @@
       "time": 104.693,
       "compound": "HARD",
       "tyre_life": 6,
-      "session_time": 1912.447,
+      "session_time": 1857.105,
       "interpolated": false,
       "position": 6
     },
@@ -3276,7 +3276,7 @@
       "time": 104.598,
       "compound": "MEDIUM",
       "tyre_life": 14,
-      "session_time": 1944.15,
+      "session_time": 1852.684,
       "interpolated": false,
       "position": 11
     },
@@ -3286,7 +3286,7 @@
       "time": 104.087,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 1946.143,
+      "session_time": 1858.268,
       "interpolated": false,
       "position": 12
     },
@@ -3306,7 +3306,7 @@
       "time": 104.926,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 1948.084,
+      "session_time": 1858.165,
       "interpolated": false,
       "position": 14
     },
@@ -3316,7 +3316,7 @@
       "time": 107.106,
       "compound": "HARD",
       "tyre_life": 6,
-      "session_time": 1922.734,
+      "session_time": 1869.123,
       "interpolated": false,
       "position": 15
     },
@@ -3326,7 +3326,7 @@
       "time": 106.619,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 1936.156,
+      "session_time": 1868.388,
       "interpolated": false,
       "position": 16
     },
@@ -3346,7 +3346,7 @@
       "time": 105.649,
       "compound": "HARD",
       "tyre_life": 6,
-      "session_time": 1937.875,
+      "session_time": 1871.466,
       "interpolated": false,
       "position": 18
     },
@@ -3356,7 +3356,7 @@
       "time": 104.397,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 1937.598,
+      "session_time": 1877.791,
       "interpolated": false,
       "position": 19
     },
@@ -3366,7 +3366,7 @@
       "time": 104.127,
       "compound": "HARD",
       "tyre_life": 5,
-      "session_time": 1935.056,
+      "session_time": 1878.132,
       "interpolated": false,
       "position": 20
     },
@@ -3386,7 +3386,7 @@
       "time": 101.198,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 2029.071,
+      "session_time": 1933.335,
       "interpolated": false,
       "position": 1
     },
@@ -3396,7 +3396,7 @@
       "time": 101.802,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 2031.25,
+      "session_time": 1947.452,
       "interpolated": false,
       "position": 2
     },
@@ -3406,7 +3406,7 @@
       "time": 101.93,
       "compound": "MEDIUM",
       "tyre_life": 7,
-      "session_time": 2032.716,
+      "session_time": 1942.191,
       "interpolated": false,
       "position": 3
     },
@@ -3416,7 +3416,7 @@
       "time": 103.02,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 2036.291,
+      "session_time": 1954.172,
       "interpolated": false,
       "position": 4
     },
@@ -3426,7 +3426,7 @@
       "time": 103.73,
       "compound": "HARD",
       "tyre_life": 7,
-      "session_time": 2030.543,
+      "session_time": 1959.235,
       "interpolated": false,
       "position": 5
     },
@@ -3436,7 +3436,7 @@
       "time": 103.794,
       "compound": "HARD",
       "tyre_life": 7,
-      "session_time": 2016.241,
+      "session_time": 1960.899,
       "interpolated": false,
       "position": 6
     },
@@ -3466,7 +3466,7 @@
       "time": 102.044,
       "compound": "MEDIUM",
       "tyre_life": 15,
-      "session_time": 2046.194,
+      "session_time": 1954.728,
       "interpolated": false,
       "position": 9
     },
@@ -3486,7 +3486,7 @@
       "time": 102.665,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 2048.808,
+      "session_time": 1960.933,
       "interpolated": false,
       "position": 11
     },
@@ -3496,7 +3496,7 @@
       "time": 102.023,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 2050.107,
+      "session_time": 1960.188,
       "interpolated": false,
       "position": 12
     },
@@ -3516,7 +3516,7 @@
       "time": 111.239,
       "compound": "HARD",
       "tyre_life": 7,
-      "session_time": 2033.973,
+      "session_time": 1980.362,
       "interpolated": false,
       "position": 14
     },
@@ -3526,7 +3526,7 @@
       "time": 104.953,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 2041.109,
+      "session_time": 1973.341,
       "interpolated": false,
       "position": 15
     },
@@ -3546,7 +3546,7 @@
       "time": 104.64,
       "compound": "HARD",
       "tyre_life": 7,
-      "session_time": 2042.515,
+      "session_time": 1976.106,
       "interpolated": false,
       "position": 17
     },
@@ -3556,7 +3556,7 @@
       "time": 103.302,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 2040.9,
+      "session_time": 1981.093,
       "interpolated": false,
       "position": 18
     },
@@ -3566,7 +3566,7 @@
       "time": 103.683,
       "compound": "HARD",
       "tyre_life": 6,
-      "session_time": 2038.739,
+      "session_time": 1981.815,
       "interpolated": false,
       "position": 19
     },
@@ -3596,7 +3596,7 @@
       "time": 100.98,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 2130.051,
+      "session_time": 2034.315,
       "interpolated": false,
       "position": 1
     },
@@ -3606,7 +3606,7 @@
       "time": 101.536,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 2132.786,
+      "session_time": 2048.988,
       "interpolated": false,
       "position": 2
     },
@@ -3616,7 +3616,7 @@
       "time": 101.337,
       "compound": "MEDIUM",
       "tyre_life": 8,
-      "session_time": 2134.053,
+      "session_time": 2043.528,
       "interpolated": false,
       "position": 3
     },
@@ -3626,7 +3626,7 @@
       "time": 102.518,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 2138.809,
+      "session_time": 2056.69,
       "interpolated": false,
       "position": 4
     },
@@ -3636,7 +3636,7 @@
       "time": 103.958,
       "compound": "HARD",
       "tyre_life": 8,
-      "session_time": 2134.501,
+      "session_time": 2063.193,
       "interpolated": false,
       "position": 5
     },
@@ -3646,7 +3646,7 @@
       "time": 103.707,
       "compound": "HARD",
       "tyre_life": 8,
-      "session_time": 2119.948,
+      "session_time": 2064.606,
       "interpolated": false,
       "position": 6
     },
@@ -3676,7 +3676,7 @@
       "time": 102.784,
       "compound": "MEDIUM",
       "tyre_life": 16,
-      "session_time": 2148.978,
+      "session_time": 2057.512,
       "interpolated": false,
       "position": 9
     },
@@ -3696,7 +3696,7 @@
       "time": 102.355,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 2151.163,
+      "session_time": 2063.288,
       "interpolated": false,
       "position": 11
     },
@@ -3706,7 +3706,7 @@
       "time": 101.896,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 2152.003,
+      "session_time": 2062.084,
       "interpolated": false,
       "position": 12
     },
@@ -3726,7 +3726,7 @@
       "time": 103.626,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 2144.735,
+      "session_time": 2076.967,
       "interpolated": false,
       "position": 14
     },
@@ -3746,7 +3746,7 @@
       "time": 104.573,
       "compound": "HARD",
       "tyre_life": 8,
-      "session_time": 2147.088,
+      "session_time": 2080.679,
       "interpolated": false,
       "position": 16
     },
@@ -3756,7 +3756,7 @@
       "time": 102.98,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 2143.88,
+      "session_time": 2084.073,
       "interpolated": false,
       "position": 17
     },
@@ -3766,7 +3766,7 @@
       "time": 103.557,
       "compound": "HARD",
       "tyre_life": 7,
-      "session_time": 2142.296,
+      "session_time": 2085.372,
       "interpolated": false,
       "position": 18
     },
@@ -3786,7 +3786,7 @@
       "time": 122.8,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 2156.773,
+      "session_time": 2103.162,
       "interpolated": false,
       "position": 20
     },
@@ -3806,7 +3806,7 @@
       "time": 100.953,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 2231.004,
+      "session_time": 2135.268,
       "interpolated": false,
       "position": 1
     },
@@ -3816,7 +3816,7 @@
       "time": 101.644,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 2234.43,
+      "session_time": 2150.632,
       "interpolated": false,
       "position": 2
     },
@@ -3826,7 +3826,7 @@
       "time": 101.388,
       "compound": "MEDIUM",
       "tyre_life": 9,
-      "session_time": 2235.441,
+      "session_time": 2144.916,
       "interpolated": false,
       "position": 3
     },
@@ -3836,7 +3836,7 @@
       "time": 101.867,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 2240.676,
+      "session_time": 2158.557,
       "interpolated": false,
       "position": 4
     },
@@ -3846,7 +3846,7 @@
       "time": 103.703,
       "compound": "HARD",
       "tyre_life": 9,
-      "session_time": 2238.204,
+      "session_time": 2166.896,
       "interpolated": false,
       "position": 5
     },
@@ -3856,7 +3856,7 @@
       "time": 103.278,
       "compound": "HARD",
       "tyre_life": 9,
-      "session_time": 2223.226,
+      "session_time": 2167.884,
       "interpolated": false,
       "position": 6
     },
@@ -3886,7 +3886,7 @@
       "time": 102.938,
       "compound": "MEDIUM",
       "tyre_life": 17,
-      "session_time": 2251.916,
+      "session_time": 2160.45,
       "interpolated": false,
       "position": 9
     },
@@ -3906,7 +3906,7 @@
       "time": 102.97,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 2254.133,
+      "session_time": 2166.258,
       "interpolated": false,
       "position": 11
     },
@@ -3916,7 +3916,7 @@
       "time": 102.138,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 2254.141,
+      "session_time": 2164.222,
       "interpolated": false,
       "position": 12
     },
@@ -3936,7 +3936,7 @@
       "time": 103.229,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 2247.964,
+      "session_time": 2180.196,
       "interpolated": false,
       "position": 14
     },
@@ -3946,7 +3946,7 @@
       "time": 103.731,
       "compound": "HARD",
       "tyre_life": 9,
-      "session_time": 2250.819,
+      "session_time": 2184.41,
       "interpolated": false,
       "position": 15
     },
@@ -3966,7 +3966,7 @@
       "time": 103.638,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 2247.518,
+      "session_time": 2187.711,
       "interpolated": false,
       "position": 17
     },
@@ -3976,7 +3976,7 @@
       "time": 103.045,
       "compound": "HARD",
       "tyre_life": 8,
-      "session_time": 2245.341,
+      "session_time": 2188.417,
       "interpolated": false,
       "position": 18
     },
@@ -3996,7 +3996,7 @@
       "time": 103.234,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 2260.007,
+      "session_time": 2206.396,
       "interpolated": false,
       "position": 20
     },
@@ -4016,7 +4016,7 @@
       "time": 101.386,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 2332.39,
+      "session_time": 2236.654,
       "interpolated": false,
       "position": 1
     },
@@ -4026,7 +4026,7 @@
       "time": 101.589,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 2336.019,
+      "session_time": 2252.221,
       "interpolated": false,
       "position": 2
     },
@@ -4036,7 +4036,7 @@
       "time": 101.415,
       "compound": "MEDIUM",
       "tyre_life": 10,
-      "session_time": 2336.856,
+      "session_time": 2246.331,
       "interpolated": false,
       "position": 3
     },
@@ -4046,7 +4046,7 @@
       "time": 102.045,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 2342.721,
+      "session_time": 2260.602,
       "interpolated": false,
       "position": 4
     },
@@ -4056,7 +4056,7 @@
       "time": 103.239,
       "compound": "HARD",
       "tyre_life": 10,
-      "session_time": 2341.443,
+      "session_time": 2270.135,
       "interpolated": false,
       "position": 5
     },
@@ -4066,7 +4066,7 @@
       "time": 103.059,
       "compound": "HARD",
       "tyre_life": 10,
-      "session_time": 2326.285,
+      "session_time": 2270.943,
       "interpolated": false,
       "position": 6
     },
@@ -4086,7 +4086,7 @@
       "time": 102.498,
       "compound": "MEDIUM",
       "tyre_life": 18,
-      "session_time": 2354.414,
+      "session_time": 2262.948,
       "interpolated": false,
       "position": 8
     },
@@ -4116,7 +4116,7 @@
       "time": 102.646,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 2356.779,
+      "session_time": 2268.904,
       "interpolated": false,
       "position": 11
     },
@@ -4126,7 +4126,7 @@
       "time": 103.147,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 2357.288,
+      "session_time": 2267.369,
       "interpolated": false,
       "position": 12
     },
@@ -4146,7 +4146,7 @@
       "time": 103.124,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 2351.088,
+      "session_time": 2283.32,
       "interpolated": false,
       "position": 14
     },
@@ -4156,7 +4156,7 @@
       "time": 103.716,
       "compound": "HARD",
       "tyre_life": 10,
-      "session_time": 2354.535,
+      "session_time": 2288.126,
       "interpolated": false,
       "position": 15
     },
@@ -4166,7 +4166,7 @@
       "time": 102.982,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 2350.5,
+      "session_time": 2290.693,
       "interpolated": false,
       "position": 16
     },
@@ -4176,7 +4176,7 @@
       "time": 103.109,
       "compound": "HARD",
       "tyre_life": 9,
-      "session_time": 2348.45,
+      "session_time": 2291.526,
       "interpolated": false,
       "position": 17
     },
@@ -4196,7 +4196,7 @@
       "time": 102.844,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 2362.851,
+      "session_time": 2309.24,
       "interpolated": false,
       "position": 19
     },
@@ -4226,7 +4226,7 @@
       "time": 101.102,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 2433.492,
+      "session_time": 2337.756,
       "interpolated": false,
       "position": 1
     },
@@ -4236,7 +4236,7 @@
       "time": 101.848,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 2437.867,
+      "session_time": 2354.069,
       "interpolated": false,
       "position": 2
     },
@@ -4246,7 +4246,7 @@
       "time": 101.576,
       "compound": "MEDIUM",
       "tyre_life": 11,
-      "session_time": 2438.432,
+      "session_time": 2347.907,
       "interpolated": false,
       "position": 3
     },
@@ -4256,7 +4256,7 @@
       "time": 102.128,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 2444.849,
+      "session_time": 2362.73,
       "interpolated": false,
       "position": 4
     },
@@ -4266,7 +4266,7 @@
       "time": 103.418,
       "compound": "HARD",
       "tyre_life": 11,
-      "session_time": 2444.861,
+      "session_time": 2373.553,
       "interpolated": false,
       "position": 5
     },
@@ -4276,7 +4276,7 @@
       "time": 103.822,
       "compound": "HARD",
       "tyre_life": 11,
-      "session_time": 2430.107,
+      "session_time": 2374.765,
       "interpolated": false,
       "position": 6
     },
@@ -4286,7 +4286,7 @@
       "time": 102.295,
       "compound": "MEDIUM",
       "tyre_life": 19,
-      "session_time": 2456.709,
+      "session_time": 2365.243,
       "interpolated": false,
       "position": 7
     },
@@ -4326,7 +4326,7 @@
       "time": 103.537,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 2460.316,
+      "session_time": 2372.441,
       "interpolated": false,
       "position": 11
     },
@@ -4336,7 +4336,7 @@
       "time": 103.477,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 2460.765,
+      "session_time": 2370.846,
       "interpolated": false,
       "position": 12
     },
@@ -4356,7 +4356,7 @@
       "time": 103.239,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 2454.327,
+      "session_time": 2386.559,
       "interpolated": false,
       "position": 14
     },
@@ -4366,7 +4366,7 @@
       "time": 103.466,
       "compound": "HARD",
       "tyre_life": 11,
-      "session_time": 2458.001,
+      "session_time": 2391.592,
       "interpolated": false,
       "position": 15
     },
@@ -4376,7 +4376,7 @@
       "time": 102.903,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 2453.403,
+      "session_time": 2393.596,
       "interpolated": false,
       "position": 16
     },
@@ -4386,7 +4386,7 @@
       "time": 103.208,
       "compound": "HARD",
       "tyre_life": 10,
-      "session_time": 2451.658,
+      "session_time": 2394.734,
       "interpolated": false,
       "position": 17
     },
@@ -4406,7 +4406,7 @@
       "time": 103.377,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 2466.228,
+      "session_time": 2412.617,
       "interpolated": false,
       "position": 19
     },
@@ -4436,7 +4436,7 @@
       "time": 101.154,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 2534.646,
+      "session_time": 2438.91,
       "interpolated": false,
       "position": 1
     },
@@ -4446,7 +4446,7 @@
       "time": 101.441,
       "compound": "MEDIUM",
       "tyre_life": 12,
-      "session_time": 2539.873,
+      "session_time": 2449.348,
       "interpolated": false,
       "position": 2
     },
@@ -4456,7 +4456,7 @@
       "time": 102.767,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 2540.634,
+      "session_time": 2456.836,
       "interpolated": false,
       "position": 3
     },
@@ -4466,7 +4466,7 @@
       "time": 102.406,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 2547.255,
+      "session_time": 2465.136,
       "interpolated": false,
       "position": 4
     },
@@ -4476,7 +4476,7 @@
       "time": 103.085,
       "compound": "HARD",
       "tyre_life": 12,
-      "session_time": 2547.946,
+      "session_time": 2476.638,
       "interpolated": false,
       "position": 5
     },
@@ -4486,7 +4486,7 @@
       "time": 102.49,
       "compound": "MEDIUM",
       "tyre_life": 20,
-      "session_time": 2559.199,
+      "session_time": 2467.733,
       "interpolated": false,
       "position": 6
     },
@@ -4496,7 +4496,7 @@
       "time": 103.142,
       "compound": "HARD",
       "tyre_life": 12,
-      "session_time": 2533.249,
+      "session_time": 2477.907,
       "interpolated": false,
       "position": 7
     },
@@ -4536,7 +4536,7 @@
       "time": 103.4,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 2564.165,
+      "session_time": 2474.246,
       "interpolated": false,
       "position": 11
     },
@@ -4546,7 +4546,7 @@
       "time": 104.452,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 2564.768,
+      "session_time": 2476.893,
       "interpolated": false,
       "position": 12
     },
@@ -4566,7 +4566,7 @@
       "time": 103.266,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 2557.593,
+      "session_time": 2489.825,
       "interpolated": false,
       "position": 14
     },
@@ -4576,7 +4576,7 @@
       "time": 103.287,
       "compound": "HARD",
       "tyre_life": 12,
-      "session_time": 2561.288,
+      "session_time": 2494.879,
       "interpolated": false,
       "position": 15
     },
@@ -4586,7 +4586,7 @@
       "time": 103.298,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 2556.701,
+      "session_time": 2496.894,
       "interpolated": false,
       "position": 16
     },
@@ -4596,7 +4596,7 @@
       "time": 103.52,
       "compound": "HARD",
       "tyre_life": 11,
-      "session_time": 2555.178,
+      "session_time": 2498.254,
       "interpolated": false,
       "position": 17
     },
@@ -4616,7 +4616,7 @@
       "time": 103.526,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 2569.754,
+      "session_time": 2516.143,
       "interpolated": false,
       "position": 19
     },
@@ -4646,7 +4646,7 @@
       "time": 101.263,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 2635.909,
+      "session_time": 2540.173,
       "interpolated": false,
       "position": 1
     },
@@ -4656,7 +4656,7 @@
       "time": 101.542,
       "compound": "MEDIUM",
       "tyre_life": 13,
-      "session_time": 2641.415,
+      "session_time": 2550.89,
       "interpolated": false,
       "position": 2
     },
@@ -4666,7 +4666,7 @@
       "time": 102.116,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 2642.75,
+      "session_time": 2558.952,
       "interpolated": false,
       "position": 3
     },
@@ -4676,7 +4676,7 @@
       "time": 102.271,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 2649.526,
+      "session_time": 2567.407,
       "interpolated": false,
       "position": 4
     },
@@ -4686,7 +4686,7 @@
       "time": 101.858,
       "compound": "MEDIUM",
       "tyre_life": 21,
-      "session_time": 2661.057,
+      "session_time": 2569.591,
       "interpolated": false,
       "position": 5
     },
@@ -4696,7 +4696,7 @@
       "time": 104.484,
       "compound": "HARD",
       "tyre_life": 13,
-      "session_time": 2652.43,
+      "session_time": 2581.122,
       "interpolated": false,
       "position": 6
     },
@@ -4706,7 +4706,7 @@
       "time": 103.73,
       "compound": "HARD",
       "tyre_life": 13,
-      "session_time": 2636.979,
+      "session_time": 2581.637,
       "interpolated": false,
       "position": 7
     },
@@ -4746,7 +4746,7 @@
       "time": 103.885,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 2668.05,
+      "session_time": 2578.131,
       "interpolated": false,
       "position": 11
     },
@@ -4756,7 +4756,7 @@
       "time": 103.684,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 2668.452,
+      "session_time": 2580.577,
       "interpolated": false,
       "position": 12
     },
@@ -4776,7 +4776,7 @@
       "time": 103.394,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 2660.987,
+      "session_time": 2593.219,
       "interpolated": false,
       "position": 14
     },
@@ -4786,7 +4786,7 @@
       "time": 104.017,
       "compound": "HARD",
       "tyre_life": 13,
-      "session_time": 2665.305,
+      "session_time": 2598.896,
       "interpolated": false,
       "position": 15
     },
@@ -4796,7 +4796,7 @@
       "time": 103.803,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 2660.504,
+      "session_time": 2600.697,
       "interpolated": false,
       "position": 16
     },
@@ -4806,7 +4806,7 @@
       "time": 104.025,
       "compound": "HARD",
       "tyre_life": 12,
-      "session_time": 2659.203,
+      "session_time": 2602.279,
       "interpolated": false,
       "position": 17
     },
@@ -4826,7 +4826,7 @@
       "time": 103.651,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 2673.405,
+      "session_time": 2619.794,
       "interpolated": false,
       "position": 19
     },
@@ -4856,7 +4856,7 @@
       "time": 101.409,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 2737.318,
+      "session_time": 2641.582,
       "interpolated": false,
       "position": 1
     },
@@ -4866,7 +4866,7 @@
       "time": 101.607,
       "compound": "MEDIUM",
       "tyre_life": 14,
-      "session_time": 2743.022,
+      "session_time": 2652.497,
       "interpolated": false,
       "position": 2
     },
@@ -4876,7 +4876,7 @@
       "time": 102.335,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 2745.085,
+      "session_time": 2661.287,
       "interpolated": false,
       "position": 3
     },
@@ -4886,7 +4886,7 @@
       "time": 102.452,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 2751.978,
+      "session_time": 2669.859,
       "interpolated": false,
       "position": 4
     },
@@ -4896,7 +4896,7 @@
       "time": 102.174,
       "compound": "MEDIUM",
       "tyre_life": 22,
-      "session_time": 2763.231,
+      "session_time": 2671.765,
       "interpolated": false,
       "position": 5
     },
@@ -4906,7 +4906,7 @@
       "time": 103.523,
       "compound": "HARD",
       "tyre_life": 14,
-      "session_time": 2755.953,
+      "session_time": 2684.645,
       "interpolated": false,
       "position": 6
     },
@@ -4916,7 +4916,7 @@
       "time": 103.675,
       "compound": "HARD",
       "tyre_life": 14,
-      "session_time": 2740.654,
+      "session_time": 2685.312,
       "interpolated": false,
       "position": 7
     },
@@ -4946,7 +4946,7 @@
       "time": 103.016,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 2771.066,
+      "session_time": 2681.147,
       "interpolated": false,
       "position": 10
     },
@@ -4956,7 +4956,7 @@
       "time": 103.579,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 2772.031,
+      "session_time": 2684.156,
       "interpolated": false,
       "position": 11
     },
@@ -4986,7 +4986,7 @@
       "time": 103.36,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 2764.347,
+      "session_time": 2696.579,
       "interpolated": false,
       "position": 14
     },
@@ -4996,7 +4996,7 @@
       "time": 104.447,
       "compound": "HARD",
       "tyre_life": 14,
-      "session_time": 2769.752,
+      "session_time": 2703.343,
       "interpolated": false,
       "position": 15
     },
@@ -5006,7 +5006,7 @@
       "time": 103.853,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 2764.357,
+      "session_time": 2704.55,
       "interpolated": false,
       "position": 16
     },
@@ -5016,7 +5016,7 @@
       "time": 103.629,
       "compound": "HARD",
       "tyre_life": 13,
-      "session_time": 2762.832,
+      "session_time": 2705.908,
       "interpolated": false,
       "position": 17
     },
@@ -5036,7 +5036,7 @@
       "time": 103.921,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 2777.326,
+      "session_time": 2723.715,
       "interpolated": false,
       "position": 19
     },
@@ -5066,7 +5066,7 @@
       "time": 101.335,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 2838.653,
+      "session_time": 2742.917,
       "interpolated": false,
       "position": 1
     },
@@ -5076,7 +5076,7 @@
       "time": 103.354,
       "compound": "MEDIUM",
       "tyre_life": 15,
-      "session_time": 2846.376,
+      "session_time": 2755.851,
       "interpolated": false,
       "position": 2
     },
@@ -5086,7 +5086,7 @@
       "time": 102.37,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 2847.455,
+      "session_time": 2763.657,
       "interpolated": false,
       "position": 3
     },
@@ -5096,7 +5096,7 @@
       "time": 102.434,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 2854.412,
+      "session_time": 2772.293,
       "interpolated": false,
       "position": 4
     },
@@ -5106,7 +5106,7 @@
       "time": 102.477,
       "compound": "MEDIUM",
       "tyre_life": 23,
-      "session_time": 2865.708,
+      "session_time": 2774.242,
       "interpolated": false,
       "position": 5
     },
@@ -5116,7 +5116,7 @@
       "time": 103.488,
       "compound": "HARD",
       "tyre_life": 15,
-      "session_time": 2859.441,
+      "session_time": 2788.133,
       "interpolated": false,
       "position": 6
     },
@@ -5126,7 +5126,7 @@
       "time": 103.801,
       "compound": "HARD",
       "tyre_life": 15,
-      "session_time": 2844.455,
+      "session_time": 2789.113,
       "interpolated": false,
       "position": 7
     },
@@ -5146,7 +5146,7 @@
       "time": 102.907,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 2873.973,
+      "session_time": 2784.054,
       "interpolated": false,
       "position": 9
     },
@@ -5166,7 +5166,7 @@
       "time": 104.044,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 2876.075,
+      "session_time": 2788.2,
       "interpolated": false,
       "position": 11
     },
@@ -5196,7 +5196,7 @@
       "time": 103.476,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 2867.823,
+      "session_time": 2800.055,
       "interpolated": false,
       "position": 14
     },
@@ -5206,7 +5206,7 @@
       "time": 103.793,
       "compound": "HARD",
       "tyre_life": 15,
-      "session_time": 2873.545,
+      "session_time": 2807.136,
       "interpolated": false,
       "position": 15
     },
@@ -5216,7 +5216,7 @@
       "time": 104.037,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 2868.394,
+      "session_time": 2808.587,
       "interpolated": false,
       "position": 16
     },
@@ -5226,7 +5226,7 @@
       "time": 110.26,
       "compound": "HARD",
       "tyre_life": 14,
-      "session_time": 2873.092,
+      "session_time": 2816.168,
       "interpolated": false,
       "position": 17
     },
@@ -5246,7 +5246,7 @@
       "time": 103.908,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 2881.234,
+      "session_time": 2827.623,
       "interpolated": false,
       "position": 19
     },
@@ -5276,7 +5276,7 @@
       "time": 101.553,
       "compound": "SOFT",
       "tyre_life": 16,
-      "session_time": 2940.206,
+      "session_time": 2844.47,
       "interpolated": false,
       "position": 1
     },
@@ -5286,7 +5286,7 @@
       "time": 102.031,
       "compound": "MEDIUM",
       "tyre_life": 16,
-      "session_time": 2948.407,
+      "session_time": 2857.882,
       "interpolated": false,
       "position": 2
     },
@@ -5296,7 +5296,7 @@
       "time": 102.708,
       "compound": "SOFT",
       "tyre_life": 16,
-      "session_time": 2950.163,
+      "session_time": 2866.365,
       "interpolated": false,
       "position": 3
     },
@@ -5306,7 +5306,7 @@
       "time": 102.768,
       "compound": "SOFT",
       "tyre_life": 16,
-      "session_time": 2957.18,
+      "session_time": 2875.061,
       "interpolated": false,
       "position": 4
     },
@@ -5316,7 +5316,7 @@
       "time": 101.727,
       "compound": "MEDIUM",
       "tyre_life": 24,
-      "session_time": 2967.435,
+      "session_time": 2875.969,
       "interpolated": false,
       "position": 5
     },
@@ -5326,7 +5326,7 @@
       "time": 104.109,
       "compound": "HARD",
       "tyre_life": 16,
-      "session_time": 2963.55,
+      "session_time": 2892.242,
       "interpolated": false,
       "position": 6
     },
@@ -5336,7 +5336,7 @@
       "time": 103.921,
       "compound": "HARD",
       "tyre_life": 16,
-      "session_time": 2948.376,
+      "session_time": 2893.034,
       "interpolated": false,
       "position": 7
     },
@@ -5356,7 +5356,7 @@
       "time": 103.167,
       "compound": "SOFT",
       "tyre_life": 16,
-      "session_time": 2977.14,
+      "session_time": 2887.221,
       "interpolated": false,
       "position": 9
     },
@@ -5366,7 +5366,7 @@
       "time": 102.719,
       "compound": "SOFT",
       "tyre_life": 16,
-      "session_time": 2978.794,
+      "session_time": 2890.919,
       "interpolated": false,
       "position": 10
     },
@@ -5406,7 +5406,7 @@
       "time": 103.815,
       "compound": "SOFT",
       "tyre_life": 16,
-      "session_time": 2971.638,
+      "session_time": 2903.87,
       "interpolated": false,
       "position": 14
     },
@@ -5416,7 +5416,7 @@
       "time": 104.226,
       "compound": "HARD",
       "tyre_life": 16,
-      "session_time": 2977.771,
+      "session_time": 2911.362,
       "interpolated": false,
       "position": 15
     },
@@ -5426,7 +5426,7 @@
       "time": 110.712,
       "compound": "SOFT",
       "tyre_life": 16,
-      "session_time": 2979.106,
+      "session_time": 2919.299,
       "interpolated": false,
       "position": 16
     },
@@ -5446,7 +5446,7 @@
       "time": 104.191,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 2985.425,
+      "session_time": 2931.814,
       "interpolated": false,
       "position": 18
     },
@@ -5466,7 +5466,7 @@
       "time": 122.943,
       "compound": "HARD",
       "tyre_life": 1,
-      "session_time": 2996.035,
+      "session_time": 2939.111,
       "interpolated": false,
       "position": 20
     },
@@ -5486,7 +5486,7 @@
       "time": 101.717,
       "compound": "SOFT",
       "tyre_life": 17,
-      "session_time": 3041.923,
+      "session_time": 2946.187,
       "interpolated": false,
       "position": 1
     },
@@ -5496,7 +5496,7 @@
       "time": 101.992,
       "compound": "MEDIUM",
       "tyre_life": 17,
-      "session_time": 3050.399,
+      "session_time": 2959.874,
       "interpolated": false,
       "position": 2
     },
@@ -5506,7 +5506,7 @@
       "time": 102.752,
       "compound": "SOFT",
       "tyre_life": 17,
-      "session_time": 3052.915,
+      "session_time": 2969.117,
       "interpolated": false,
       "position": 3
     },
@@ -5516,7 +5516,7 @@
       "time": 102.895,
       "compound": "SOFT",
       "tyre_life": 17,
-      "session_time": 3060.075,
+      "session_time": 2977.956,
       "interpolated": false,
       "position": 4
     },
@@ -5526,7 +5526,7 @@
       "time": 102.223,
       "compound": "MEDIUM",
       "tyre_life": 25,
-      "session_time": 3069.658,
+      "session_time": 2978.192,
       "interpolated": false,
       "position": 5
     },
@@ -5536,7 +5536,7 @@
       "time": 103.953,
       "compound": "HARD",
       "tyre_life": 17,
-      "session_time": 3067.503,
+      "session_time": 2996.195,
       "interpolated": false,
       "position": 6
     },
@@ -5546,7 +5546,7 @@
       "time": 103.994,
       "compound": "HARD",
       "tyre_life": 17,
-      "session_time": 3052.37,
+      "session_time": 2997.028,
       "interpolated": false,
       "position": 7
     },
@@ -5566,7 +5566,7 @@
       "time": 103.316,
       "compound": "SOFT",
       "tyre_life": 17,
-      "session_time": 3080.456,
+      "session_time": 2990.537,
       "interpolated": false,
       "position": 9
     },
@@ -5576,7 +5576,7 @@
       "time": 102.846,
       "compound": "SOFT",
       "tyre_life": 17,
-      "session_time": 3081.64,
+      "session_time": 2993.765,
       "interpolated": false,
       "position": 10
     },
@@ -5616,7 +5616,7 @@
       "time": 103.592,
       "compound": "SOFT",
       "tyre_life": 17,
-      "session_time": 3075.23,
+      "session_time": 3007.462,
       "interpolated": false,
       "position": 14
     },
@@ -5626,7 +5626,7 @@
       "time": 111.414,
       "compound": "HARD",
       "tyre_life": 17,
-      "session_time": 3089.185,
+      "session_time": 3022.776,
       "interpolated": false,
       "position": 15
     },
@@ -5646,7 +5646,7 @@
       "time": 104.078,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 3089.503,
+      "session_time": 3035.892,
       "interpolated": false,
       "position": 17
     },
@@ -5666,7 +5666,7 @@
       "time": 122.109,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 3101.215,
+      "session_time": 3041.408,
       "interpolated": false,
       "position": 19
     },
@@ -5676,7 +5676,7 @@
       "time": 100.996,
       "compound": "HARD",
       "tyre_life": 2,
-      "session_time": 3097.031,
+      "session_time": 3040.107,
       "interpolated": false,
       "position": 20
     },
@@ -5696,7 +5696,7 @@
       "time": 101.753,
       "compound": "SOFT",
       "tyre_life": 18,
-      "session_time": 3143.676,
+      "session_time": 3047.94,
       "interpolated": false,
       "position": 1
     },
@@ -5706,7 +5706,7 @@
       "time": 101.881,
       "compound": "MEDIUM",
       "tyre_life": 18,
-      "session_time": 3152.28,
+      "session_time": 3061.755,
       "interpolated": false,
       "position": 2
     },
@@ -5716,7 +5716,7 @@
       "time": 102.906,
       "compound": "SOFT",
       "tyre_life": 18,
-      "session_time": 3155.821,
+      "session_time": 3072.023,
       "interpolated": false,
       "position": 3
     },
@@ -5726,7 +5726,7 @@
       "time": 103.014,
       "compound": "SOFT",
       "tyre_life": 18,
-      "session_time": 3163.089,
+      "session_time": 3080.97,
       "interpolated": false,
       "position": 4
     },
@@ -5736,7 +5736,7 @@
       "time": 102.013,
       "compound": "MEDIUM",
       "tyre_life": 26,
-      "session_time": 3171.671,
+      "session_time": 3080.205,
       "interpolated": false,
       "position": 5
     },
@@ -5746,7 +5746,7 @@
       "time": 103.632,
       "compound": "HARD",
       "tyre_life": 18,
-      "session_time": 3171.135,
+      "session_time": 3099.827,
       "interpolated": false,
       "position": 6
     },
@@ -5766,7 +5766,7 @@
       "time": 104.696,
       "compound": "HARD",
       "tyre_life": 18,
-      "session_time": 3157.066,
+      "session_time": 3101.724,
       "interpolated": false,
       "position": 8
     },
@@ -5776,7 +5776,7 @@
       "time": 103.964,
       "compound": "SOFT",
       "tyre_life": 18,
-      "session_time": 3184.42,
+      "session_time": 3094.501,
       "interpolated": false,
       "position": 9
     },
@@ -5786,7 +5786,7 @@
       "time": 103.367,
       "compound": "SOFT",
       "tyre_life": 18,
-      "session_time": 3185.007,
+      "session_time": 3097.132,
       "interpolated": false,
       "position": 10
     },
@@ -5826,7 +5826,7 @@
       "time": 103.6,
       "compound": "SOFT",
       "tyre_life": 18,
-      "session_time": 3178.83,
+      "session_time": 3111.062,
       "interpolated": false,
       "position": 14
     },
@@ -5846,7 +5846,7 @@
       "time": 104.386,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 3193.889,
+      "session_time": 3140.278,
       "interpolated": false,
       "position": 16
     },
@@ -5866,7 +5866,7 @@
       "time": 102.437,
       "compound": "HARD",
       "tyre_life": 3,
-      "session_time": 3199.468,
+      "session_time": 3142.544,
       "interpolated": false,
       "position": 18
     },
@@ -5876,7 +5876,7 @@
       "time": 102.727,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 3203.942,
+      "session_time": 3144.135,
       "interpolated": false,
       "position": 19
     },
@@ -5886,7 +5886,7 @@
       "time": 122.489,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 3211.674,
+      "session_time": 3145.265,
       "interpolated": false,
       "position": 20
     },
@@ -5906,7 +5906,7 @@
       "time": 101.9,
       "compound": "SOFT",
       "tyre_life": 19,
-      "session_time": 3245.576,
+      "session_time": 3149.84,
       "interpolated": false,
       "position": 1
     },
@@ -5916,7 +5916,7 @@
       "time": 102.19,
       "compound": "MEDIUM",
       "tyre_life": 19,
-      "session_time": 3254.47,
+      "session_time": 3163.945,
       "interpolated": false,
       "position": 2
     },
@@ -5926,7 +5926,7 @@
       "time": 102.739,
       "compound": "SOFT",
       "tyre_life": 19,
-      "session_time": 3258.56,
+      "session_time": 3174.762,
       "interpolated": false,
       "position": 3
     },
@@ -5936,7 +5936,7 @@
       "time": 103.096,
       "compound": "SOFT",
       "tyre_life": 19,
-      "session_time": 3266.185,
+      "session_time": 3184.066,
       "interpolated": false,
       "position": 4
     },
@@ -5946,7 +5946,7 @@
       "time": 102.276,
       "compound": "MEDIUM",
       "tyre_life": 27,
-      "session_time": 3273.947,
+      "session_time": 3182.481,
       "interpolated": false,
       "position": 5
     },
@@ -5956,7 +5956,7 @@
       "time": 103.911,
       "compound": "HARD",
       "tyre_life": 19,
-      "session_time": 3275.046,
+      "session_time": 3203.738,
       "interpolated": false,
       "position": 6
     },
@@ -5976,7 +5976,7 @@
       "time": 109.954,
       "compound": "SOFT",
       "tyre_life": 19,
-      "session_time": 3294.374,
+      "session_time": 3204.455,
       "interpolated": false,
       "position": 8
     },
@@ -5986,7 +5986,7 @@
       "time": 105.131,
       "compound": "HARD",
       "tyre_life": 19,
-      "session_time": 3262.197,
+      "session_time": 3206.855,
       "interpolated": false,
       "position": 9
     },
@@ -5996,7 +5996,7 @@
       "time": 104.043,
       "compound": "SOFT",
       "tyre_life": 19,
-      "session_time": 3289.05,
+      "session_time": 3201.175,
       "interpolated": false,
       "position": 10
     },
@@ -6036,7 +6036,7 @@
       "time": 103.813,
       "compound": "SOFT",
       "tyre_life": 19,
-      "session_time": 3282.643,
+      "session_time": 3214.875,
       "interpolated": false,
       "position": 14
     },
@@ -6056,7 +6056,7 @@
       "time": 104.614,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 3298.503,
+      "session_time": 3244.892,
       "interpolated": false,
       "position": 16
     },
@@ -6076,7 +6076,7 @@
       "time": 102.429,
       "compound": "HARD",
       "tyre_life": 4,
-      "session_time": 3301.897,
+      "session_time": 3244.973,
       "interpolated": false,
       "position": 18
     },
@@ -6086,7 +6086,7 @@
       "time": 101.835,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 3305.777,
+      "session_time": 3245.97,
       "interpolated": false,
       "position": 19
     },
@@ -6096,7 +6096,7 @@
       "time": 101.738,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 3313.412,
+      "session_time": 3247.003,
       "interpolated": false,
       "position": 20
     },
@@ -6116,7 +6116,7 @@
       "time": 101.895,
       "compound": "SOFT",
       "tyre_life": 20,
-      "session_time": 3347.471,
+      "session_time": 3251.735,
       "interpolated": false,
       "position": 1
     },
@@ -6126,7 +6126,7 @@
       "time": 102.175,
       "compound": "MEDIUM",
       "tyre_life": 20,
-      "session_time": 3356.645,
+      "session_time": 3266.12,
       "interpolated": false,
       "position": 2
     },
@@ -6136,7 +6136,7 @@
       "time": 102.608,
       "compound": "SOFT",
       "tyre_life": 20,
-      "session_time": 3361.168,
+      "session_time": 3277.37,
       "interpolated": false,
       "position": 3
     },
@@ -6146,7 +6146,7 @@
       "time": 103.302,
       "compound": "SOFT",
       "tyre_life": 20,
-      "session_time": 3369.487,
+      "session_time": 3287.368,
       "interpolated": false,
       "position": 4
     },
@@ -6156,7 +6156,7 @@
       "time": 102.145,
       "compound": "MEDIUM",
       "tyre_life": 28,
-      "session_time": 3376.092,
+      "session_time": 3284.626,
       "interpolated": false,
       "position": 5
     },
@@ -6166,7 +6166,7 @@
       "time": 104.103,
       "compound": "HARD",
       "tyre_life": 20,
-      "session_time": 3379.149,
+      "session_time": 3307.841,
       "interpolated": false,
       "position": 6
     },
@@ -6186,7 +6186,7 @@
       "time": 103.079,
       "compound": "SOFT",
       "tyre_life": 20,
-      "session_time": 3392.129,
+      "session_time": 3304.254,
       "interpolated": false,
       "position": 8
     },
@@ -6196,7 +6196,7 @@
       "time": 112.013,
       "compound": "HARD",
       "tyre_life": 20,
-      "session_time": 3374.21,
+      "session_time": 3318.868,
       "interpolated": false,
       "position": 9
     },
@@ -6216,7 +6216,7 @@
       "time": 103.859,
       "compound": "SOFT",
       "tyre_life": 20,
-      "session_time": 3386.502,
+      "session_time": 3318.734,
       "interpolated": false,
       "position": 11
     },
@@ -6236,7 +6236,7 @@
       "time": 121.443,
       "compound": "SOFT",
       "tyre_life": 20,
-      "session_time": 3415.817,
+      "session_time": 3325.898,
       "interpolated": false,
       "position": 13
     },
@@ -6266,7 +6266,7 @@
       "time": 112.791,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 3411.294,
+      "session_time": 3357.683,
       "interpolated": false,
       "position": 16
     },
@@ -6286,7 +6286,7 @@
       "time": 103.596,
       "compound": "HARD",
       "tyre_life": 5,
-      "session_time": 3405.493,
+      "session_time": 3348.569,
       "interpolated": false,
       "position": 18
     },
@@ -6296,7 +6296,7 @@
       "time": 104.691,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 3410.468,
+      "session_time": 3350.661,
       "interpolated": false,
       "position": 19
     },
@@ -6306,7 +6306,7 @@
       "time": 104.253,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 3417.665,
+      "session_time": 3351.256,
       "interpolated": false,
       "position": 20
     },
@@ -6326,7 +6326,7 @@
       "time": 101.957,
       "compound": "SOFT",
       "tyre_life": 21,
-      "session_time": 3449.428,
+      "session_time": 3353.692,
       "interpolated": false,
       "position": 1
     },
@@ -6336,7 +6336,7 @@
       "time": 102.384,
       "compound": "MEDIUM",
       "tyre_life": 21,
-      "session_time": 3459.029,
+      "session_time": 3368.504,
       "interpolated": false,
       "position": 2
     },
@@ -6346,7 +6346,7 @@
       "time": 102.659,
       "compound": "SOFT",
       "tyre_life": 21,
-      "session_time": 3463.827,
+      "session_time": 3380.029,
       "interpolated": false,
       "position": 3
     },
@@ -6356,7 +6356,7 @@
       "time": 103.901,
       "compound": "SOFT",
       "tyre_life": 21,
-      "session_time": 3473.388,
+      "session_time": 3391.269,
       "interpolated": false,
       "position": 4
     },
@@ -6366,7 +6366,7 @@
       "time": 102.504,
       "compound": "MEDIUM",
       "tyre_life": 29,
-      "session_time": 3478.596,
+      "session_time": 3387.13,
       "interpolated": false,
       "position": 5
     },
@@ -6386,7 +6386,7 @@
       "time": 112.357,
       "compound": "HARD",
       "tyre_life": 21,
-      "session_time": 3491.506,
+      "session_time": 3420.198,
       "interpolated": false,
       "position": 7
     },
@@ -6396,7 +6396,7 @@
       "time": 103.625,
       "compound": "SOFT",
       "tyre_life": 21,
-      "session_time": 3495.754,
+      "session_time": 3407.879,
       "interpolated": false,
       "position": 8
     },
@@ -6416,7 +6416,7 @@
       "time": 103.929,
       "compound": "SOFT",
       "tyre_life": 21,
-      "session_time": 3490.431,
+      "session_time": 3422.663,
       "interpolated": false,
       "position": 10
     },
@@ -6436,7 +6436,7 @@
       "time": 101.804,
       "compound": "SOFT",
       "tyre_life": 21,
-      "session_time": 3517.621,
+      "session_time": 3427.702,
       "interpolated": false,
       "position": 12
     },
@@ -6456,7 +6456,7 @@
       "time": 123.293,
       "compound": "HARD",
       "tyre_life": 21,
-      "session_time": 3497.503,
+      "session_time": 3442.161,
       "interpolated": false,
       "position": 14
     },
@@ -6476,7 +6476,7 @@
       "time": 102.595,
       "compound": "HARD",
       "tyre_life": 6,
-      "session_time": 3508.088,
+      "session_time": 3451.164,
       "interpolated": false,
       "position": 16
     },
@@ -6486,7 +6486,7 @@
       "time": 102.436,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 3512.904,
+      "session_time": 3453.097,
       "interpolated": false,
       "position": 17
     },
@@ -6496,7 +6496,7 @@
       "time": 102.957,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 3520.622,
+      "session_time": 3454.213,
       "interpolated": false,
       "position": 18
     },
@@ -6516,7 +6516,7 @@
       "time": 123.283,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 3534.577,
+      "session_time": 3480.966,
       "interpolated": false,
       "position": 20
     },
@@ -6536,7 +6536,7 @@
       "time": 102.005,
       "compound": "SOFT",
       "tyre_life": 22,
-      "session_time": 3551.433,
+      "session_time": 3455.697,
       "interpolated": false,
       "position": 1
     },
@@ -6546,7 +6546,7 @@
       "time": 102.429,
       "compound": "MEDIUM",
       "tyre_life": 22,
-      "session_time": 3561.458,
+      "session_time": 3470.933,
       "interpolated": false,
       "position": 2
     },
@@ -6556,7 +6556,7 @@
       "time": 103.168,
       "compound": "SOFT",
       "tyre_life": 22,
-      "session_time": 3566.995,
+      "session_time": 3483.197,
       "interpolated": false,
       "position": 3
     },
@@ -6566,7 +6566,7 @@
       "time": 110.437,
       "compound": "SOFT",
       "tyre_life": 22,
-      "session_time": 3583.825,
+      "session_time": 3501.706,
       "interpolated": false,
       "position": 4
     },
@@ -6576,7 +6576,7 @@
       "time": 108.868,
       "compound": "MEDIUM",
       "tyre_life": 30,
-      "session_time": 3587.464,
+      "session_time": 3495.998,
       "interpolated": false,
       "position": 5
     },
@@ -6596,7 +6596,7 @@
       "time": 103.076,
       "compound": "SOFT",
       "tyre_life": 22,
-      "session_time": 3598.83,
+      "session_time": 3510.955,
       "interpolated": false,
       "position": 7
     },
@@ -6616,7 +6616,7 @@
       "time": 109.614,
       "compound": "SOFT",
       "tyre_life": 22,
-      "session_time": 3600.045,
+      "session_time": 3532.277,
       "interpolated": false,
       "position": 9
     },
@@ -6626,7 +6626,7 @@
       "time": 100.906,
       "compound": "SOFT",
       "tyre_life": 22,
-      "session_time": 3618.527,
+      "session_time": 3528.608,
       "interpolated": false,
       "position": 10
     },
@@ -6646,7 +6646,7 @@
       "time": 121.638,
       "compound": "HARD",
       "tyre_life": 22,
-      "session_time": 3613.144,
+      "session_time": 3541.836,
       "interpolated": false,
       "position": 12
     },
@@ -6666,7 +6666,7 @@
       "time": 102.282,
       "compound": "HARD",
       "tyre_life": 22,
-      "session_time": 3599.785,
+      "session_time": 3544.443,
       "interpolated": false,
       "position": 14
     },
@@ -6686,7 +6686,7 @@
       "time": 102.8,
       "compound": "HARD",
       "tyre_life": 7,
-      "session_time": 3610.888,
+      "session_time": 3553.964,
       "interpolated": false,
       "position": 16
     },
@@ -6696,7 +6696,7 @@
       "time": 102.674,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 3615.578,
+      "session_time": 3555.771,
       "interpolated": false,
       "position": 17
     },
@@ -6706,7 +6706,7 @@
       "time": 102.905,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 3623.527,
+      "session_time": 3557.118,
       "interpolated": false,
       "position": 18
     },
@@ -6726,7 +6726,7 @@
       "time": 102.284,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 3636.861,
+      "session_time": 3583.25,
       "interpolated": false,
       "position": 20
     },
@@ -6746,7 +6746,7 @@
       "time": 102.19,
       "compound": "SOFT",
       "tyre_life": 23,
-      "session_time": 3653.623,
+      "session_time": 3557.887,
       "interpolated": false,
       "position": 1
     },
@@ -6756,7 +6756,7 @@
       "time": 102.399,
       "compound": "MEDIUM",
       "tyre_life": 23,
-      "session_time": 3663.857,
+      "session_time": 3573.332,
       "interpolated": false,
       "position": 2
     },
@@ -6766,7 +6766,7 @@
       "time": 109.196,
       "compound": "SOFT",
       "tyre_life": 23,
-      "session_time": 3676.191,
+      "session_time": 3592.393,
       "interpolated": false,
       "position": 3
     },
@@ -6786,7 +6786,7 @@
       "time": 103.313,
       "compound": "SOFT",
       "tyre_life": 23,
-      "session_time": 3702.143,
+      "session_time": 3614.268,
       "interpolated": false,
       "position": 5
     },
@@ -6796,7 +6796,7 @@
       "time": 122.721,
       "compound": "SOFT",
       "tyre_life": 23,
-      "session_time": 3706.546,
+      "session_time": 3624.427,
       "interpolated": false,
       "position": 6
     },
@@ -6806,7 +6806,7 @@
       "time": 120.477,
       "compound": "MEDIUM",
       "tyre_life": 31,
-      "session_time": 3707.941,
+      "session_time": 3616.475,
       "interpolated": false,
       "position": 7
     },
@@ -6826,7 +6826,7 @@
       "time": 101.264,
       "compound": "SOFT",
       "tyre_life": 23,
-      "session_time": 3719.791,
+      "session_time": 3629.872,
       "interpolated": false,
       "position": 9
     },
@@ -6836,7 +6836,7 @@
       "time": 101.369,
       "compound": "HARD",
       "tyre_life": 23,
-      "session_time": 3714.513,
+      "session_time": 3643.205,
       "interpolated": false,
       "position": 10
     },
@@ -6846,7 +6846,7 @@
       "time": 103.669,
       "compound": "HARD",
       "tyre_life": 23,
-      "session_time": 3703.454,
+      "session_time": 3648.112,
       "interpolated": false,
       "position": 11
     },
@@ -6876,7 +6876,7 @@
       "time": 120.966,
       "compound": "SOFT",
       "tyre_life": 23,
-      "session_time": 3721.011,
+      "session_time": 3653.243,
       "interpolated": false,
       "position": 14
     },
@@ -6886,7 +6886,7 @@
       "time": 103.081,
       "compound": "HARD",
       "tyre_life": 8,
-      "session_time": 3713.969,
+      "session_time": 3657.045,
       "interpolated": false,
       "position": 15
     },
@@ -6896,7 +6896,7 @@
       "time": 103.238,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 3718.816,
+      "session_time": 3659.009,
       "interpolated": false,
       "position": 16
     },
@@ -6906,7 +6906,7 @@
       "time": 103.998,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 3727.525,
+      "session_time": 3661.116,
       "interpolated": false,
       "position": 17
     },
@@ -6936,7 +6936,7 @@
       "time": 103.002,
       "compound": "SOFT",
       "tyre_life": 16,
-      "session_time": 3739.863,
+      "session_time": 3686.252,
       "interpolated": false,
       "position": 20
     },
@@ -6956,7 +6956,7 @@
       "time": 108.881,
       "compound": "SOFT",
       "tyre_life": 24,
-      "session_time": 3762.504,
+      "session_time": 3666.768,
       "interpolated": false,
       "position": 1
     },
@@ -6966,7 +6966,7 @@
       "time": 109.078,
       "compound": "MEDIUM",
       "tyre_life": 24,
-      "session_time": 3772.935,
+      "session_time": 3682.41,
       "interpolated": false,
       "position": 2
     },
@@ -6976,7 +6976,7 @@
       "time": 120.98,
       "compound": "SOFT",
       "tyre_life": 24,
-      "session_time": 3797.171,
+      "session_time": 3713.373,
       "interpolated": false,
       "position": 3
     },
@@ -6996,7 +6996,7 @@
       "time": 103.222,
       "compound": "SOFT",
       "tyre_life": 24,
-      "session_time": 3805.365,
+      "session_time": 3717.49,
       "interpolated": false,
       "position": 5
     },
@@ -7006,7 +7006,7 @@
       "time": 100.627,
       "compound": "SOFT",
       "tyre_life": 24,
-      "session_time": 3807.173,
+      "session_time": 3725.054,
       "interpolated": false,
       "position": 6
     },
@@ -7016,7 +7016,7 @@
       "time": 100.178,
       "compound": "MEDIUM",
       "tyre_life": 32,
-      "session_time": 3808.119,
+      "session_time": 3716.653,
       "interpolated": false,
       "position": 7
     },
@@ -7026,7 +7026,7 @@
       "time": 101.04,
       "compound": "SOFT",
       "tyre_life": 24,
-      "session_time": 3820.831,
+      "session_time": 3730.912,
       "interpolated": false,
       "position": 8
     },
@@ -7036,7 +7036,7 @@
       "time": 101.936,
       "compound": "HARD",
       "tyre_life": 24,
-      "session_time": 3816.449,
+      "session_time": 3745.141,
       "interpolated": false,
       "position": 9
     },
@@ -7056,7 +7056,7 @@
       "time": 103.825,
       "compound": "HARD",
       "tyre_life": 24,
-      "session_time": 3807.279,
+      "session_time": 3751.937,
       "interpolated": false,
       "position": 11
     },
@@ -7076,7 +7076,7 @@
       "time": 101.283,
       "compound": "SOFT",
       "tyre_life": 24,
-      "session_time": 3822.294,
+      "session_time": 3754.526,
       "interpolated": false,
       "position": 13
     },
@@ -7096,7 +7096,7 @@
       "time": 103.058,
       "compound": "HARD",
       "tyre_life": 9,
-      "session_time": 3817.027,
+      "session_time": 3760.103,
       "interpolated": false,
       "position": 15
     },
@@ -7106,7 +7106,7 @@
       "time": 103.198,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 3822.014,
+      "session_time": 3762.207,
       "interpolated": false,
       "position": 16
     },
@@ -7116,7 +7116,7 @@
       "time": 103.219,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 3830.744,
+      "session_time": 3764.335,
       "interpolated": false,
       "position": 17
     },
@@ -7146,7 +7146,7 @@
       "time": 102.686,
       "compound": "SOFT",
       "tyre_life": 17,
-      "session_time": 3842.549,
+      "session_time": 3788.938,
       "interpolated": false,
       "position": 20
     },
@@ -7166,7 +7166,7 @@
       "time": 121.354,
       "compound": "SOFT",
       "tyre_life": 25,
-      "session_time": 3883.858,
+      "session_time": 3788.122,
       "interpolated": false,
       "position": 1
     },
@@ -7176,7 +7176,7 @@
       "time": 121.917,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 3894.852,
+      "session_time": 3804.327,
       "interpolated": false,
       "position": 2
     },
@@ -7186,7 +7186,7 @@
       "time": 100.715,
       "compound": "SOFT",
       "tyre_life": 25,
-      "session_time": 3897.886,
+      "session_time": 3814.088,
       "interpolated": false,
       "position": 3
     },
@@ -7196,7 +7196,7 @@
       "time": 109.548,
       "compound": "SOFT",
       "tyre_life": 25,
-      "session_time": 3914.913,
+      "session_time": 3827.038,
       "interpolated": false,
       "position": 4
     },
@@ -7206,7 +7206,7 @@
       "time": 101.297,
       "compound": "SOFT",
       "tyre_life": 25,
-      "session_time": 3908.47,
+      "session_time": 3826.351,
       "interpolated": false,
       "position": 5
     },
@@ -7216,7 +7216,7 @@
       "time": 100.906,
       "compound": "MEDIUM",
       "tyre_life": 33,
-      "session_time": 3909.025,
+      "session_time": 3817.559,
       "interpolated": false,
       "position": 6
     },
@@ -7226,7 +7226,7 @@
       "time": 101.328,
       "compound": "SOFT",
       "tyre_life": 25,
-      "session_time": 3922.159,
+      "session_time": 3832.24,
       "interpolated": false,
       "position": 7
     },
@@ -7236,7 +7236,7 @@
       "time": 101.799,
       "compound": "HARD",
       "tyre_life": 25,
-      "session_time": 3918.248,
+      "session_time": 3846.94,
       "interpolated": false,
       "position": 8
     },
@@ -7266,7 +7266,7 @@
       "time": 102.918,
       "compound": "HARD",
       "tyre_life": 25,
-      "session_time": 3910.197,
+      "session_time": 3854.855,
       "interpolated": false,
       "position": 11
     },
@@ -7286,7 +7286,7 @@
       "time": 101.849,
       "compound": "SOFT",
       "tyre_life": 25,
-      "session_time": 3924.143,
+      "session_time": 3856.375,
       "interpolated": false,
       "position": 13
     },
@@ -7306,7 +7306,7 @@
       "time": 102.816,
       "compound": "HARD",
       "tyre_life": 10,
-      "session_time": 3919.843,
+      "session_time": 3862.919,
       "interpolated": false,
       "position": 15
     },
@@ -7316,7 +7316,7 @@
       "time": 103.305,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 3925.319,
+      "session_time": 3865.512,
       "interpolated": false,
       "position": 16
     },
@@ -7326,7 +7326,7 @@
       "time": 103.399,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 3934.143,
+      "session_time": 3867.734,
       "interpolated": false,
       "position": 17
     },
@@ -7356,7 +7356,7 @@
       "time": 102.613,
       "compound": "SOFT",
       "tyre_life": 18,
-      "session_time": 3945.162,
+      "session_time": 3891.551,
       "interpolated": false,
       "position": 20
     },
@@ -7376,7 +7376,7 @@
       "time": 100.888,
       "compound": "SOFT",
       "tyre_life": 26,
-      "session_time": 3984.746,
+      "session_time": 3889.01,
       "interpolated": false,
       "position": 1
     },
@@ -7386,7 +7386,7 @@
       "time": 100.338,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 3995.19,
+      "session_time": 3904.665,
       "interpolated": false,
       "position": 2
     },
@@ -7396,7 +7396,7 @@
       "time": 101.082,
       "compound": "SOFT",
       "tyre_life": 26,
-      "session_time": 3998.968,
+      "session_time": 3915.17,
       "interpolated": false,
       "position": 3
     },
@@ -7406,7 +7406,7 @@
       "time": 100.369,
       "compound": "SOFT",
       "tyre_life": 26,
-      "session_time": 4008.839,
+      "session_time": 3926.72,
       "interpolated": false,
       "position": 4
     },
@@ -7416,7 +7416,7 @@
       "time": 101.158,
       "compound": "MEDIUM",
       "tyre_life": 34,
-      "session_time": 4010.183,
+      "session_time": 3918.717,
       "interpolated": false,
       "position": 5
     },
@@ -7426,7 +7426,7 @@
       "time": 101.165,
       "compound": "SOFT",
       "tyre_life": 26,
-      "session_time": 4023.324,
+      "session_time": 3933.405,
       "interpolated": false,
       "position": 6
     },
@@ -7436,7 +7436,7 @@
       "time": 102.01,
       "compound": "HARD",
       "tyre_life": 26,
-      "session_time": 4020.258,
+      "session_time": 3948.95,
       "interpolated": false,
       "position": 7
     },
@@ -7456,7 +7456,7 @@
       "time": 121.791,
       "compound": "SOFT",
       "tyre_life": 26,
-      "session_time": 4036.704,
+      "session_time": 3948.829,
       "interpolated": false,
       "position": 9
     },
@@ -7476,7 +7476,7 @@
       "time": 103.213,
       "compound": "HARD",
       "tyre_life": 26,
-      "session_time": 4013.41,
+      "session_time": 3958.068,
       "interpolated": false,
       "position": 11
     },
@@ -7486,7 +7486,7 @@
       "time": 101.761,
       "compound": "SOFT",
       "tyre_life": 26,
-      "session_time": 4025.904,
+      "session_time": 3958.136,
       "interpolated": false,
       "position": 12
     },
@@ -7516,7 +7516,7 @@
       "time": 103.287,
       "compound": "HARD",
       "tyre_life": 11,
-      "session_time": 4023.13,
+      "session_time": 3966.206,
       "interpolated": false,
       "position": 15
     },
@@ -7526,7 +7526,7 @@
       "time": 103.306,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 4028.625,
+      "session_time": 3968.818,
       "interpolated": false,
       "position": 16
     },
@@ -7536,7 +7536,7 @@
       "time": 103.486,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 4037.629,
+      "session_time": 3971.22,
       "interpolated": false,
       "position": 17
     },
@@ -7556,7 +7556,7 @@
       "time": 103.75,
       "compound": "SOFT",
       "tyre_life": 19,
-      "session_time": 4048.912,
+      "session_time": 3995.301,
       "interpolated": false,
       "position": 19
     },
@@ -7586,7 +7586,7 @@
       "time": 100.275,
       "compound": "SOFT",
       "tyre_life": 27,
-      "session_time": 4085.021,
+      "session_time": 3989.285,
       "interpolated": false,
       "position": 1
     },
@@ -7596,7 +7596,7 @@
       "time": 100.761,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 4095.951,
+      "session_time": 4005.426,
       "interpolated": false,
       "position": 2
     },
@@ -7606,7 +7606,7 @@
       "time": 100.853,
       "compound": "SOFT",
       "tyre_life": 27,
-      "session_time": 4099.821,
+      "session_time": 4016.023,
       "interpolated": false,
       "position": 3
     },
@@ -7616,7 +7616,7 @@
       "time": 101.494,
       "compound": "SOFT",
       "tyre_life": 27,
-      "session_time": 4110.333,
+      "session_time": 4028.214,
       "interpolated": false,
       "position": 4
     },
@@ -7626,7 +7626,7 @@
       "time": 101.432,
       "compound": "MEDIUM",
       "tyre_life": 35,
-      "session_time": 4111.615,
+      "session_time": 4020.149,
       "interpolated": false,
       "position": 5
     },
@@ -7636,7 +7636,7 @@
       "time": 101.456,
       "compound": "SOFT",
       "tyre_life": 27,
-      "session_time": 4124.78,
+      "session_time": 4034.861,
       "interpolated": false,
       "position": 6
     },
@@ -7656,7 +7656,7 @@
       "time": 102.626,
       "compound": "HARD",
       "tyre_life": 27,
-      "session_time": 4122.884,
+      "session_time": 4051.576,
       "interpolated": false,
       "position": 8
     },
@@ -7666,7 +7666,7 @@
       "time": 100.696,
       "compound": "SOFT",
       "tyre_life": 27,
-      "session_time": 4137.4,
+      "session_time": 4049.525,
       "interpolated": false,
       "position": 9
     },
@@ -7686,7 +7686,7 @@
       "time": 102.396,
       "compound": "SOFT",
       "tyre_life": 27,
-      "session_time": 4128.3,
+      "session_time": 4060.532,
       "interpolated": false,
       "position": 11
     },
@@ -7696,7 +7696,7 @@
       "time": 104.135,
       "compound": "HARD",
       "tyre_life": 27,
-      "session_time": 4117.545,
+      "session_time": 4062.203,
       "interpolated": false,
       "position": 12
     },
@@ -7726,7 +7726,7 @@
       "time": 103.362,
       "compound": "HARD",
       "tyre_life": 12,
-      "session_time": 4126.492,
+      "session_time": 4069.568,
       "interpolated": false,
       "position": 15
     },
@@ -7736,7 +7736,7 @@
       "time": 103.438,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 4132.063,
+      "session_time": 4072.256,
       "interpolated": false,
       "position": 16
     },
@@ -7746,7 +7746,7 @@
       "time": 103.97,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 4141.599,
+      "session_time": 4075.19,
       "interpolated": false,
       "position": 17
     },
@@ -7766,7 +7766,7 @@
       "time": 103.104,
       "compound": "SOFT",
       "tyre_life": 20,
-      "session_time": 4152.016,
+      "session_time": 4098.405,
       "interpolated": false,
       "position": 19
     },
@@ -7796,7 +7796,7 @@
       "time": 100.675,
       "compound": "SOFT",
       "tyre_life": 28,
-      "session_time": 4185.696,
+      "session_time": 4089.96,
       "interpolated": false,
       "position": 1
     },
@@ -7806,7 +7806,7 @@
       "time": 100.61,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 4196.561,
+      "session_time": 4106.036,
       "interpolated": false,
       "position": 2
     },
@@ -7816,7 +7816,7 @@
       "time": 100.766,
       "compound": "SOFT",
       "tyre_life": 28,
-      "session_time": 4200.587,
+      "session_time": 4116.789,
       "interpolated": false,
       "position": 3
     },
@@ -7826,7 +7826,7 @@
       "time": 101.237,
       "compound": "SOFT",
       "tyre_life": 28,
-      "session_time": 4211.57,
+      "session_time": 4129.451,
       "interpolated": false,
       "position": 4
     },
@@ -7836,7 +7836,7 @@
       "time": 101.183,
       "compound": "MEDIUM",
       "tyre_life": 36,
-      "session_time": 4212.798,
+      "session_time": 4121.332,
       "interpolated": false,
       "position": 5
     },
@@ -7846,7 +7846,7 @@
       "time": 101.399,
       "compound": "SOFT",
       "tyre_life": 28,
-      "session_time": 4226.179,
+      "session_time": 4136.26,
       "interpolated": false,
       "position": 6
     },
@@ -7866,7 +7866,7 @@
       "time": 102.279,
       "compound": "HARD",
       "tyre_life": 28,
-      "session_time": 4225.163,
+      "session_time": 4153.855,
       "interpolated": false,
       "position": 8
     },
@@ -7876,7 +7876,7 @@
       "time": 100.659,
       "compound": "SOFT",
       "tyre_life": 28,
-      "session_time": 4238.059,
+      "session_time": 4150.184,
       "interpolated": false,
       "position": 9
     },
@@ -7896,7 +7896,7 @@
       "time": 102.7,
       "compound": "SOFT",
       "tyre_life": 28,
-      "session_time": 4231.0,
+      "session_time": 4163.232,
       "interpolated": false,
       "position": 11
     },
@@ -7906,7 +7906,7 @@
       "time": 103.445,
       "compound": "HARD",
       "tyre_life": 28,
-      "session_time": 4220.99,
+      "session_time": 4165.648,
       "interpolated": false,
       "position": 12
     },
@@ -7936,7 +7936,7 @@
       "time": 103.092,
       "compound": "HARD",
       "tyre_life": 13,
-      "session_time": 4229.584,
+      "session_time": 4172.66,
       "interpolated": false,
       "position": 15
     },
@@ -7946,7 +7946,7 @@
       "time": 109.505,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 4241.568,
+      "session_time": 4181.761,
       "interpolated": false,
       "position": 16
     },
@@ -7956,7 +7956,7 @@
       "time": 104.597,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 4246.196,
+      "session_time": 4179.787,
       "interpolated": false,
       "position": 17
     },
@@ -7976,7 +7976,7 @@
       "time": 103.135,
       "compound": "SOFT",
       "tyre_life": 21,
-      "session_time": 4255.151,
+      "session_time": 4201.54,
       "interpolated": false,
       "position": 19
     },
@@ -8006,7 +8006,7 @@
       "time": 100.813,
       "compound": "SOFT",
       "tyre_life": 29,
-      "session_time": 4286.509,
+      "session_time": 4190.773,
       "interpolated": false,
       "position": 1
     },
@@ -8016,7 +8016,7 @@
       "time": 100.654,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 4297.215,
+      "session_time": 4206.69,
       "interpolated": false,
       "position": 2
     },
@@ -8026,7 +8026,7 @@
       "time": 101.0,
       "compound": "SOFT",
       "tyre_life": 29,
-      "session_time": 4301.587,
+      "session_time": 4217.789,
       "interpolated": false,
       "position": 3
     },
@@ -8036,7 +8036,7 @@
       "time": 101.48,
       "compound": "SOFT",
       "tyre_life": 29,
-      "session_time": 4313.05,
+      "session_time": 4230.931,
       "interpolated": false,
       "position": 4
     },
@@ -8046,7 +8046,7 @@
       "time": 101.021,
       "compound": "MEDIUM",
       "tyre_life": 37,
-      "session_time": 4313.819,
+      "session_time": 4222.353,
       "interpolated": false,
       "position": 5
     },
@@ -8056,7 +8056,7 @@
       "time": 101.549,
       "compound": "SOFT",
       "tyre_life": 29,
-      "session_time": 4327.728,
+      "session_time": 4237.809,
       "interpolated": false,
       "position": 6
     },
@@ -8076,7 +8076,7 @@
       "time": 102.469,
       "compound": "HARD",
       "tyre_life": 29,
-      "session_time": 4327.632,
+      "session_time": 4256.324,
       "interpolated": false,
       "position": 8
     },
@@ -8086,7 +8086,7 @@
       "time": 100.762,
       "compound": "SOFT",
       "tyre_life": 29,
-      "session_time": 4338.821,
+      "session_time": 4250.946,
       "interpolated": false,
       "position": 9
     },
@@ -8106,7 +8106,7 @@
       "time": 102.72,
       "compound": "SOFT",
       "tyre_life": 29,
-      "session_time": 4333.72,
+      "session_time": 4265.952,
       "interpolated": false,
       "position": 11
     },
@@ -8126,7 +8126,7 @@
       "time": 104.462,
       "compound": "HARD",
       "tyre_life": 29,
-      "session_time": 4325.452,
+      "session_time": 4270.11,
       "interpolated": false,
       "position": 13
     },
@@ -8146,7 +8146,7 @@
       "time": 109.56,
       "compound": "HARD",
       "tyre_life": 14,
-      "session_time": 4339.144,
+      "session_time": 4282.22,
       "interpolated": false,
       "position": 15
     },
@@ -8166,7 +8166,7 @@
       "time": 104.151,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 4350.347,
+      "session_time": 4283.938,
       "interpolated": false,
       "position": 17
     },
@@ -8176,7 +8176,7 @@
       "time": 124.252,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 4365.82,
+      "session_time": 4306.013,
       "interpolated": false,
       "position": 18
     },
@@ -8186,7 +8186,7 @@
       "time": 104.851,
       "compound": "SOFT",
       "tyre_life": 22,
-      "session_time": 4360.002,
+      "session_time": 4306.391,
       "interpolated": false,
       "position": 19
     },
@@ -8216,7 +8216,7 @@
       "time": 101.173,
       "compound": "SOFT",
       "tyre_life": 30,
-      "session_time": 4387.682,
+      "session_time": 4291.946,
       "interpolated": false,
       "position": 1
     },
@@ -8226,7 +8226,7 @@
       "time": 100.829,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 4398.044,
+      "session_time": 4307.519,
       "interpolated": false,
       "position": 2
     },
@@ -8236,7 +8236,7 @@
       "time": 101.212,
       "compound": "SOFT",
       "tyre_life": 30,
-      "session_time": 4402.799,
+      "session_time": 4319.001,
       "interpolated": false,
       "position": 3
     },
@@ -8246,7 +8246,7 @@
       "time": 101.683,
       "compound": "SOFT",
       "tyre_life": 30,
-      "session_time": 4414.733,
+      "session_time": 4332.614,
       "interpolated": false,
       "position": 4
     },
@@ -8256,7 +8256,7 @@
       "time": 101.612,
       "compound": "MEDIUM",
       "tyre_life": 38,
-      "session_time": 4415.431,
+      "session_time": 4323.965,
       "interpolated": false,
       "position": 5
     },
@@ -8266,7 +8266,7 @@
       "time": 101.455,
       "compound": "SOFT",
       "tyre_life": 30,
-      "session_time": 4429.183,
+      "session_time": 4339.264,
       "interpolated": false,
       "position": 6
     },
@@ -8286,7 +8286,7 @@
       "time": 100.741,
       "compound": "SOFT",
       "tyre_life": 30,
-      "session_time": 4439.562,
+      "session_time": 4351.687,
       "interpolated": false,
       "position": 8
     },
@@ -8296,7 +8296,7 @@
       "time": 103.208,
       "compound": "HARD",
       "tyre_life": 30,
-      "session_time": 4430.84,
+      "session_time": 4359.532,
       "interpolated": false,
       "position": 9
     },
@@ -8316,7 +8316,7 @@
       "time": 102.791,
       "compound": "SOFT",
       "tyre_life": 30,
-      "session_time": 4436.511,
+      "session_time": 4368.743,
       "interpolated": false,
       "position": 11
     },
@@ -8336,7 +8336,7 @@
       "time": 103.558,
       "compound": "HARD",
       "tyre_life": 30,
-      "session_time": 4429.01,
+      "session_time": 4373.668,
       "interpolated": false,
       "position": 13
     },
@@ -8366,7 +8366,7 @@
       "time": 103.888,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 4454.235,
+      "session_time": 4387.826,
       "interpolated": false,
       "position": 16
     },
@@ -8376,7 +8376,7 @@
       "time": 119.797,
       "compound": "HARD",
       "tyre_life": 15,
-      "session_time": 4458.941,
+      "session_time": 4402.017,
       "interpolated": false,
       "position": 17
     },
@@ -8386,7 +8386,7 @@
       "time": 101.791,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 4467.611,
+      "session_time": 4407.804,
       "interpolated": false,
       "position": 18
     },
@@ -8396,7 +8396,7 @@
       "time": 104.436,
       "compound": "SOFT",
       "tyre_life": 23,
-      "session_time": 4464.438,
+      "session_time": 4410.827,
       "interpolated": false,
       "position": 19
     },
@@ -8426,7 +8426,7 @@
       "time": 100.69,
       "compound": "SOFT",
       "tyre_life": 31,
-      "session_time": 4488.372,
+      "session_time": 4392.636,
       "interpolated": false,
       "position": 1
     },
@@ -8436,7 +8436,7 @@
       "time": 101.409,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 4499.453,
+      "session_time": 4408.928,
       "interpolated": false,
       "position": 2
     },
@@ -8446,7 +8446,7 @@
       "time": 101.412,
       "compound": "SOFT",
       "tyre_life": 31,
-      "session_time": 4504.211,
+      "session_time": 4420.413,
       "interpolated": false,
       "position": 3
     },
@@ -8456,7 +8456,7 @@
       "time": 101.186,
       "compound": "SOFT",
       "tyre_life": 31,
-      "session_time": 4515.919,
+      "session_time": 4433.8,
       "interpolated": false,
       "position": 4
     },
@@ -8466,7 +8466,7 @@
       "time": 101.596,
       "compound": "MEDIUM",
       "tyre_life": 39,
-      "session_time": 4517.027,
+      "session_time": 4425.561,
       "interpolated": false,
       "position": 5
     },
@@ -8476,7 +8476,7 @@
       "time": 101.902,
       "compound": "SOFT",
       "tyre_life": 31,
-      "session_time": 4531.085,
+      "session_time": 4441.166,
       "interpolated": false,
       "position": 6
     },
@@ -8496,7 +8496,7 @@
       "time": 100.892,
       "compound": "SOFT",
       "tyre_life": 31,
-      "session_time": 4540.454,
+      "session_time": 4452.579,
       "interpolated": false,
       "position": 8
     },
@@ -8506,7 +8506,7 @@
       "time": 102.643,
       "compound": "HARD",
       "tyre_life": 31,
-      "session_time": 4533.483,
+      "session_time": 4462.175,
       "interpolated": false,
       "position": 9
     },
@@ -8516,7 +8516,7 @@
       "time": 102.424,
       "compound": "SOFT",
       "tyre_life": 31,
-      "session_time": 4538.935,
+      "session_time": 4471.167,
       "interpolated": false,
       "position": 10
     },
@@ -8546,7 +8546,7 @@
       "time": 103.579,
       "compound": "HARD",
       "tyre_life": 31,
-      "session_time": 4532.589,
+      "session_time": 4477.247,
       "interpolated": false,
       "position": 13
     },
@@ -8576,7 +8576,7 @@
       "time": 103.818,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 4558.053,
+      "session_time": 4491.644,
       "interpolated": false,
       "position": 16
     },
@@ -8586,7 +8586,7 @@
       "time": 100.366,
       "compound": "HARD",
       "tyre_life": 16,
-      "session_time": 4559.307,
+      "session_time": 4502.383,
       "interpolated": false,
       "position": 17
     },
@@ -8596,7 +8596,7 @@
       "time": 101.514,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 4569.125,
+      "session_time": 4509.318,
       "interpolated": false,
       "position": 18
     },
@@ -8606,7 +8606,7 @@
       "time": 103.813,
       "compound": "SOFT",
       "tyre_life": 24,
-      "session_time": 4568.251,
+      "session_time": 4514.64,
       "interpolated": false,
       "position": 19
     },
@@ -8636,7 +8636,7 @@
       "time": 100.935,
       "compound": "SOFT",
       "tyre_life": 32,
-      "session_time": 4589.307,
+      "session_time": 4493.571,
       "interpolated": false,
       "position": 1
     },
@@ -8646,7 +8646,7 @@
       "time": 101.23,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 4600.683,
+      "session_time": 4510.158,
       "interpolated": false,
       "position": 2
     },
@@ -8656,7 +8656,7 @@
       "time": 101.491,
       "compound": "SOFT",
       "tyre_life": 32,
-      "session_time": 4605.702,
+      "session_time": 4521.904,
       "interpolated": false,
       "position": 3
     },
@@ -8666,7 +8666,7 @@
       "time": 101.7,
       "compound": "SOFT",
       "tyre_life": 32,
-      "session_time": 4617.619,
+      "session_time": 4535.5,
       "interpolated": false,
       "position": 4
     },
@@ -8676,7 +8676,7 @@
       "time": 101.175,
       "compound": "MEDIUM",
       "tyre_life": 40,
-      "session_time": 4618.202,
+      "session_time": 4526.736,
       "interpolated": false,
       "position": 5
     },
@@ -8686,7 +8686,7 @@
       "time": 101.875,
       "compound": "SOFT",
       "tyre_life": 32,
-      "session_time": 4632.96,
+      "session_time": 4543.041,
       "interpolated": false,
       "position": 6
     },
@@ -8706,7 +8706,7 @@
       "time": 101.013,
       "compound": "SOFT",
       "tyre_life": 32,
-      "session_time": 4641.467,
+      "session_time": 4553.592,
       "interpolated": false,
       "position": 8
     },
@@ -8716,7 +8716,7 @@
       "time": 102.576,
       "compound": "HARD",
       "tyre_life": 32,
-      "session_time": 4636.059,
+      "session_time": 4564.751,
       "interpolated": false,
       "position": 9
     },
@@ -8726,7 +8726,7 @@
       "time": 102.892,
       "compound": "SOFT",
       "tyre_life": 32,
-      "session_time": 4641.827,
+      "session_time": 4574.059,
       "interpolated": false,
       "position": 10
     },
@@ -8756,7 +8756,7 @@
       "time": 111.435,
       "compound": "HARD",
       "tyre_life": 32,
-      "session_time": 4644.024,
+      "session_time": 4588.682,
       "interpolated": false,
       "position": 13
     },
@@ -8786,7 +8786,7 @@
       "time": 103.679,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 4661.732,
+      "session_time": 4595.323,
       "interpolated": false,
       "position": 16
     },
@@ -8796,7 +8796,7 @@
       "time": 100.883,
       "compound": "HARD",
       "tyre_life": 17,
-      "session_time": 4660.19,
+      "session_time": 4603.266,
       "interpolated": false,
       "position": 17
     },
@@ -8806,7 +8806,7 @@
       "time": 101.708,
       "compound": "SOFT",
       "tyre_life": 16,
-      "session_time": 4670.833,
+      "session_time": 4611.026,
       "interpolated": false,
       "position": 18
     },
@@ -8816,7 +8816,7 @@
       "time": 104.365,
       "compound": "SOFT",
       "tyre_life": 25,
-      "session_time": 4672.616,
+      "session_time": 4619.005,
       "interpolated": false,
       "position": 19
     },
@@ -8846,7 +8846,7 @@
       "time": 100.965,
       "compound": "SOFT",
       "tyre_life": 33,
-      "session_time": 4690.272,
+      "session_time": 4594.536,
       "interpolated": false,
       "position": 1
     },
@@ -8856,7 +8856,7 @@
       "time": 101.691,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 4702.374,
+      "session_time": 4611.849,
       "interpolated": false,
       "position": 2
     },
@@ -8866,7 +8866,7 @@
       "time": 101.592,
       "compound": "SOFT",
       "tyre_life": 33,
-      "session_time": 4707.294,
+      "session_time": 4623.496,
       "interpolated": false,
       "position": 3
     },
@@ -8876,7 +8876,7 @@
       "time": 101.557,
       "compound": "SOFT",
       "tyre_life": 33,
-      "session_time": 4719.176,
+      "session_time": 4637.057,
       "interpolated": false,
       "position": 4
     },
@@ -8886,7 +8886,7 @@
       "time": 101.675,
       "compound": "MEDIUM",
       "tyre_life": 41,
-      "session_time": 4719.877,
+      "session_time": 4628.411,
       "interpolated": false,
       "position": 5
     },
@@ -8896,7 +8896,7 @@
       "time": 101.765,
       "compound": "SOFT",
       "tyre_life": 33,
-      "session_time": 4734.725,
+      "session_time": 4644.806,
       "interpolated": false,
       "position": 6
     },
@@ -8916,7 +8916,7 @@
       "time": 101.493,
       "compound": "SOFT",
       "tyre_life": 33,
-      "session_time": 4742.96,
+      "session_time": 4655.085,
       "interpolated": false,
       "position": 8
     },
@@ -8926,7 +8926,7 @@
       "time": 103.046,
       "compound": "HARD",
       "tyre_life": 33,
-      "session_time": 4739.105,
+      "session_time": 4667.797,
       "interpolated": false,
       "position": 9
     },
@@ -8936,7 +8936,7 @@
       "time": 102.903,
       "compound": "SOFT",
       "tyre_life": 33,
-      "session_time": 4744.73,
+      "session_time": 4676.962,
       "interpolated": false,
       "position": 10
     },
@@ -8986,7 +8986,7 @@
       "time": 117.96,
       "compound": "SOFT",
       "tyre_life": 16,
-      "session_time": 4779.692,
+      "session_time": 4713.283,
       "interpolated": false,
       "position": 15
     },
@@ -8996,7 +8996,7 @@
       "time": 112.062,
       "compound": "HARD",
       "tyre_life": 18,
-      "session_time": 4772.252,
+      "session_time": 4715.328,
       "interpolated": false,
       "position": 16
     },
@@ -9006,7 +9006,7 @@
       "time": 135.35,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 4779.374,
+      "session_time": 4724.032,
       "interpolated": false,
       "position": 17
     },
@@ -9016,7 +9016,7 @@
       "time": 114.915,
       "compound": "SOFT",
       "tyre_life": 17,
-      "session_time": 4785.748,
+      "session_time": 4725.941,
       "interpolated": false,
       "position": 18
     },
@@ -9046,7 +9046,7 @@
       "time": 117.083,
       "compound": "SOFT",
       "tyre_life": 34,
-      "session_time": 4807.355,
+      "session_time": 4711.619,
       "interpolated": false,
       "position": 1
     },
@@ -9056,7 +9056,7 @@
       "time": 117.598,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 4819.972,
+      "session_time": 4729.447,
       "interpolated": false,
       "position": 2
     },
@@ -9066,7 +9066,7 @@
       "time": 118.639,
       "compound": "SOFT",
       "tyre_life": 34,
-      "session_time": 4825.933,
+      "session_time": 4742.135,
       "interpolated": false,
       "position": 3
     },
@@ -9076,7 +9076,7 @@
       "time": 124.013,
       "compound": "SOFT",
       "tyre_life": 34,
-      "session_time": 4843.189,
+      "session_time": 4761.07,
       "interpolated": false,
       "position": 4
     },
@@ -9086,7 +9086,7 @@
       "time": 129.124,
       "compound": "MEDIUM",
       "tyre_life": 42,
-      "session_time": 4849.001,
+      "session_time": 4757.535,
       "interpolated": false,
       "position": 5
     },
@@ -9096,7 +9096,7 @@
       "time": 132.814,
       "compound": "SOFT",
       "tyre_life": 34,
-      "session_time": 4867.539,
+      "session_time": 4777.62,
       "interpolated": false,
       "position": 6
     },
@@ -9116,7 +9116,7 @@
       "time": 129.662,
       "compound": "SOFT",
       "tyre_life": 34,
-      "session_time": 4872.622,
+      "session_time": 4784.747,
       "interpolated": false,
       "position": 8
     },
@@ -9126,7 +9126,7 @@
       "time": 131.435,
       "compound": "HARD",
       "tyre_life": 34,
-      "session_time": 4870.54,
+      "session_time": 4799.232,
       "interpolated": false,
       "position": 9
     },
@@ -9136,7 +9136,7 @@
       "time": 134.926,
       "compound": "SOFT",
       "tyre_life": 34,
-      "session_time": 4879.656,
+      "session_time": 4811.888,
       "interpolated": false,
       "position": 10
     },
@@ -9176,7 +9176,7 @@
       "time": 134.46,
       "compound": "HARD",
       "tyre_life": 19,
-      "session_time": 4906.712,
+      "session_time": 4849.788,
       "interpolated": false,
       "position": 14
     },
@@ -9196,7 +9196,7 @@
       "time": 164.244,
       "compound": "SOFT",
       "tyre_life": 17,
-      "session_time": 4943.936,
+      "session_time": 4877.527,
       "interpolated": false,
       "position": 16
     },
@@ -9206,7 +9206,7 @@
       "time": 133.589,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 4912.963,
+      "session_time": 4857.621,
       "interpolated": false,
       "position": 17
     },
@@ -9216,7 +9216,7 @@
       "time": 134.379,
       "compound": "SOFT",
       "tyre_life": 18,
-      "session_time": 4920.127,
+      "session_time": 4860.32,
       "interpolated": false,
       "position": 18
     },
@@ -9246,7 +9246,7 @@
       "time": 136.465,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 4956.437,
+      "session_time": 4865.912,
       "interpolated": false,
       "position": 1
     },
@@ -9256,7 +9256,7 @@
       "time": 151.476,
       "compound": "SOFT",
       "tyre_life": 35,
-      "session_time": 4958.831,
+      "session_time": 4863.095,
       "interpolated": false,
       "position": 2
     },
@@ -9266,7 +9266,7 @@
       "time": 138.656,
       "compound": "SOFT",
       "tyre_life": 35,
-      "session_time": 4964.589,
+      "session_time": 4880.791,
       "interpolated": false,
       "position": 3
     },
@@ -9276,7 +9276,7 @@
       "time": 138.31,
       "compound": "SOFT",
       "tyre_life": 35,
-      "session_time": 4981.499,
+      "session_time": 4899.38,
       "interpolated": false,
       "position": 4
     },
@@ -9296,7 +9296,7 @@
       "time": 150.167,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 4999.168,
+      "session_time": 4907.702,
       "interpolated": false,
       "position": 6
     },
@@ -9306,7 +9306,7 @@
       "time": 135.183,
       "compound": "SOFT",
       "tyre_life": 35,
-      "session_time": 5007.805,
+      "session_time": 4919.93,
       "interpolated": false,
       "position": 7
     },
@@ -9316,7 +9316,7 @@
       "time": 135.005,
       "compound": "HARD",
       "tyre_life": 35,
-      "session_time": 5005.545,
+      "session_time": 4934.237,
       "interpolated": false,
       "position": 8
     },
@@ -9326,7 +9326,7 @@
       "time": 151.087,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 5018.626,
+      "session_time": 4928.707,
       "interpolated": false,
       "position": 9
     },
@@ -9336,7 +9336,7 @@
       "time": 134.607,
       "compound": "SOFT",
       "tyre_life": 35,
-      "session_time": 5014.263,
+      "session_time": 4946.495,
       "interpolated": false,
       "position": 10
     },
@@ -9376,7 +9376,7 @@
       "time": 134.647,
       "compound": "HARD",
       "tyre_life": 20,
-      "session_time": 5041.359,
+      "session_time": 4984.435,
       "interpolated": false,
       "position": 14
     },
@@ -9396,7 +9396,7 @@
       "time": 133.851,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 5046.814,
+      "session_time": 4991.472,
       "interpolated": false,
       "position": 16
     },
@@ -9406,7 +9406,7 @@
       "time": 133.719,
       "compound": "SOFT",
       "tyre_life": 19,
-      "session_time": 5053.846,
+      "session_time": 4994.039,
       "interpolated": false,
       "position": 17
     },
@@ -9416,7 +9416,7 @@
       "time": 135.217,
       "compound": "SOFT",
       "tyre_life": 18,
-      "session_time": 5079.153,
+      "session_time": 5012.744,
       "interpolated": false,
       "position": 18
     },
@@ -9446,7 +9446,7 @@
       "time": 135.018,
       "compound": "SOFT",
       "tyre_life": 36,
-      "session_time": 5093.849,
+      "session_time": 4998.113,
       "interpolated": false,
       "position": 1
     },
@@ -9456,7 +9456,7 @@
       "time": 151.234,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 5107.671,
+      "session_time": 5017.146,
       "interpolated": false,
       "position": 2
     },
@@ -9466,7 +9466,7 @@
       "time": 150.623,
       "compound": "SOFT",
       "tyre_life": 36,
-      "session_time": 5115.212,
+      "session_time": 5031.414,
       "interpolated": false,
       "position": 3
     },
@@ -9476,7 +9476,7 @@
       "time": 151.936,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 5133.435,
+      "session_time": 5051.316,
       "interpolated": false,
       "position": 4
     },
@@ -9496,7 +9496,7 @@
       "time": 136.606,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 5135.774,
+      "session_time": 5044.308,
       "interpolated": false,
       "position": 6
     },
@@ -9506,7 +9506,7 @@
       "time": 138.13,
       "compound": "SOFT",
       "tyre_life": 36,
-      "session_time": 5145.935,
+      "session_time": 5058.06,
       "interpolated": false,
       "position": 7
     },
@@ -9516,7 +9516,7 @@
       "time": 139.227,
       "compound": "HARD",
       "tyre_life": 36,
-      "session_time": 5144.772,
+      "session_time": 5073.464,
       "interpolated": false,
       "position": 8
     },
@@ -9526,7 +9526,7 @@
       "time": 133.83,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 5152.456,
+      "session_time": 5062.537,
       "interpolated": false,
       "position": 9
     },
@@ -9536,7 +9536,7 @@
       "time": 139.243,
       "compound": "SOFT",
       "tyre_life": 36,
-      "session_time": 5153.506,
+      "session_time": 5085.738,
       "interpolated": false,
       "position": 10
     },
@@ -9576,7 +9576,7 @@
       "time": 134.963,
       "compound": "HARD",
       "tyre_life": 21,
-      "session_time": 5176.322,
+      "session_time": 5119.398,
       "interpolated": false,
       "position": 14
     },
@@ -9596,7 +9596,7 @@
       "time": 133.511,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 5180.325,
+      "session_time": 5124.983,
       "interpolated": false,
       "position": 16
     },
@@ -9606,7 +9606,7 @@
       "time": 136.983,
       "compound": "SOFT",
       "tyre_life": 20,
-      "session_time": 5190.829,
+      "session_time": 5131.022,
       "interpolated": false,
       "position": 17
     },
@@ -9616,7 +9616,7 @@
       "time": 150.676,
       "compound": "SOFT",
       "tyre_life": 19,
-      "session_time": 5229.829,
+      "session_time": 5163.42,
       "interpolated": false,
       "position": 18
     },
@@ -9646,7 +9646,7 @@
       "time": 151.001,
       "compound": "SOFT",
       "tyre_life": 37,
-      "session_time": 5244.85,
+      "session_time": 5149.114,
       "interpolated": false,
       "position": 1
     },
@@ -9656,7 +9656,7 @@
       "time": 140.144,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 5247.815,
+      "session_time": 5157.29,
       "interpolated": false,
       "position": 2
     },
@@ -9666,7 +9666,7 @@
       "time": 134.529,
       "compound": "SOFT",
       "tyre_life": 37,
-      "session_time": 5249.741,
+      "session_time": 5165.943,
       "interpolated": false,
       "position": 3
     },
@@ -9676,7 +9676,7 @@
       "time": 133.181,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 5266.616,
+      "session_time": 5184.497,
       "interpolated": false,
       "position": 4
     },
@@ -9686,7 +9686,7 @@
       "time": 132.15,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 5267.924,
+      "session_time": 5176.458,
       "interpolated": false,
       "position": 5
     },
@@ -9696,7 +9696,7 @@
       "time": 132.657,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 5285.113,
+      "session_time": 5195.194,
       "interpolated": false,
       "position": 6
     },
@@ -9716,7 +9716,7 @@
       "time": 150.189,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 5296.124,
+      "session_time": 5208.249,
       "interpolated": false,
       "position": 8
     },
@@ -9726,7 +9726,7 @@
       "time": 151.754,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 5296.526,
+      "session_time": 5225.218,
       "interpolated": false,
       "position": 9
     },
@@ -9736,7 +9736,7 @@
       "time": 150.999,
       "compound": "SOFT",
       "tyre_life": 37,
-      "session_time": 5304.505,
+      "session_time": 5236.737,
       "interpolated": false,
       "position": 10
     },
@@ -9776,7 +9776,7 @@
       "time": 131.062,
       "compound": "HARD",
       "tyre_life": 22,
-      "session_time": 5307.384,
+      "session_time": 5250.46,
       "interpolated": false,
       "position": 14
     },
@@ -9796,7 +9796,7 @@
       "time": 131.017,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 5311.342,
+      "session_time": 5256.0,
       "interpolated": false,
       "position": 16
     },
@@ -9806,7 +9806,7 @@
       "time": 150.103,
       "compound": "SOFT",
       "tyre_life": 21,
-      "session_time": 5340.932,
+      "session_time": 5281.125,
       "interpolated": false,
       "position": 17
     },
@@ -9816,7 +9816,7 @@
       "time": 144.92,
       "compound": "SOFT",
       "tyre_life": 20,
-      "session_time": 5374.749,
+      "session_time": 5308.34,
       "interpolated": false,
       "position": 18
     },
@@ -9846,7 +9846,7 @@
       "time": 147.148,
       "compound": "SOFT",
       "tyre_life": 38,
-      "session_time": 5391.998,
+      "session_time": 5296.262,
       "interpolated": false,
       "position": 1
     },
@@ -9856,7 +9856,7 @@
       "time": 145.311,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 5393.126,
+      "session_time": 5302.601,
       "interpolated": false,
       "position": 2
     },
@@ -9866,7 +9866,7 @@
       "time": 145.099,
       "compound": "SOFT",
       "tyre_life": 38,
-      "session_time": 5394.84,
+      "session_time": 5311.042,
       "interpolated": false,
       "position": 3
     },
@@ -9876,7 +9876,7 @@
       "time": 129.246,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 5395.862,
+      "session_time": 5313.743,
       "interpolated": false,
       "position": 4
     },
@@ -9886,7 +9886,7 @@
       "time": 129.173,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 5397.097,
+      "session_time": 5305.631,
       "interpolated": false,
       "position": 5
     },
@@ -9896,7 +9896,7 @@
       "time": 113.77,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 5398.883,
+      "session_time": 5308.964,
       "interpolated": false,
       "position": 6
     },
@@ -9916,7 +9916,7 @@
       "time": 111.777,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 5407.901,
+      "session_time": 5320.026,
       "interpolated": false,
       "position": 8
     },
@@ -9926,7 +9926,7 @@
       "time": 110.707,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 5407.233,
+      "session_time": 5335.925,
       "interpolated": false,
       "position": 9
     },
@@ -9936,7 +9936,7 @@
       "time": 112.313,
       "compound": "SOFT",
       "tyre_life": 38,
-      "session_time": 5416.818,
+      "session_time": 5349.05,
       "interpolated": false,
       "position": 10
     },
@@ -9976,7 +9976,7 @@
       "time": 107.821,
       "compound": "HARD",
       "tyre_life": 23,
-      "session_time": 5415.205,
+      "session_time": 5358.281,
       "interpolated": false,
       "position": 14
     },
@@ -9996,7 +9996,7 @@
       "time": 107.939,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 5419.281,
+      "session_time": 5363.939,
       "interpolated": false,
       "position": 16
     },
@@ -10006,7 +10006,7 @@
       "time": 101.693,
       "compound": "SOFT",
       "tyre_life": 22,
-      "session_time": 5442.625,
+      "session_time": 5382.818,
       "interpolated": false,
       "position": 17
     },
@@ -10016,7 +10016,7 @@
       "time": 102.908,
       "compound": "SOFT",
       "tyre_life": 21,
-      "session_time": 5477.657,
+      "session_time": 5411.248,
       "interpolated": false,
       "position": 18
     },
@@ -10046,7 +10046,7 @@
       "time": 150.137,
       "compound": "SOFT",
       "tyre_life": 39,
-      "session_time": 5542.135,
+      "session_time": 5446.399,
       "interpolated": false,
       "position": 1
     },
@@ -10056,7 +10056,7 @@
       "time": 150.198,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 5543.324,
+      "session_time": 5452.799,
       "interpolated": false,
       "position": 2
     },
@@ -10066,7 +10066,7 @@
       "time": 150.068,
       "compound": "SOFT",
       "tyre_life": 39,
-      "session_time": 5544.908,
+      "session_time": 5461.11,
       "interpolated": false,
       "position": 3
     },
@@ -10076,7 +10076,7 @@
       "time": 150.271,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 5546.133,
+      "session_time": 5464.014,
       "interpolated": false,
       "position": 4
     },
@@ -10086,7 +10086,7 @@
       "time": 149.879,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 5546.976,
+      "session_time": 5455.51,
       "interpolated": false,
       "position": 5
     },
@@ -10096,7 +10096,7 @@
       "time": 150.087,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 5548.97,
+      "session_time": 5459.051,
       "interpolated": false,
       "position": 6
     },
@@ -10116,7 +10116,7 @@
       "time": 144.589,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 5552.49,
+      "session_time": 5464.615,
       "interpolated": false,
       "position": 8
     },
@@ -10126,7 +10126,7 @@
       "time": 135.196,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 5542.429,
+      "session_time": 5471.121,
       "interpolated": false,
       "position": 9
     },
@@ -10136,7 +10136,7 @@
       "time": 125.427,
       "compound": "SOFT",
       "tyre_life": 39,
-      "session_time": 5542.245,
+      "session_time": 5474.477,
       "interpolated": false,
       "position": 10
     },
@@ -10176,7 +10176,7 @@
       "time": 120.178,
       "compound": "HARD",
       "tyre_life": 24,
-      "session_time": 5535.383,
+      "session_time": 5478.459,
       "interpolated": false,
       "position": 14
     },
@@ -10196,7 +10196,7 @@
       "time": 119.698,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 5538.979,
+      "session_time": 5483.637,
       "interpolated": false,
       "position": 16
     },
@@ -10206,7 +10206,7 @@
       "time": 104.63,
       "compound": "SOFT",
       "tyre_life": 23,
-      "session_time": 5547.255,
+      "session_time": 5487.448,
       "interpolated": false,
       "position": 17
     },
@@ -10216,7 +10216,7 @@
       "time": 102.167,
       "compound": "SOFT",
       "tyre_life": 22,
-      "session_time": 5579.824,
+      "session_time": 5513.415,
       "interpolated": false,
       "position": 18
     },
@@ -10246,7 +10246,7 @@
       "time": 150.166,
       "compound": "SOFT",
       "tyre_life": 40,
-      "session_time": 5692.301,
+      "session_time": 5596.565,
       "interpolated": false,
       "position": 1
     },
@@ -10256,7 +10256,7 @@
       "time": 149.726,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 5693.05,
+      "session_time": 5602.525,
       "interpolated": false,
       "position": 2
     },
@@ -10266,7 +10266,7 @@
       "time": 149.476,
       "compound": "SOFT",
       "tyre_life": 40,
-      "session_time": 5694.384,
+      "session_time": 5610.586,
       "interpolated": false,
       "position": 3
     },
@@ -10276,7 +10276,7 @@
       "time": 149.136,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 5695.269,
+      "session_time": 5613.15,
       "interpolated": false,
       "position": 4
     },
@@ -10286,7 +10286,7 @@
       "time": 149.109,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 5696.085,
+      "session_time": 5604.619,
       "interpolated": false,
       "position": 5
     },
@@ -10296,7 +10296,7 @@
       "time": 148.305,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 5697.275,
+      "session_time": 5607.356,
       "interpolated": false,
       "position": 6
     },
@@ -10316,7 +10316,7 @@
       "time": 148.656,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 5701.146,
+      "session_time": 5613.271,
       "interpolated": false,
       "position": 8
     },
@@ -10326,7 +10326,7 @@
       "time": 149.263,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 5691.692,
+      "session_time": 5620.384,
       "interpolated": false,
       "position": 9
     },
@@ -10336,7 +10336,7 @@
       "time": 146.546,
       "compound": "SOFT",
       "tyre_life": 40,
-      "session_time": 5688.791,
+      "session_time": 5621.023,
       "interpolated": false,
       "position": 10
     },
@@ -10376,7 +10376,7 @@
       "time": 147.232,
       "compound": "HARD",
       "tyre_life": 25,
-      "session_time": 5682.615,
+      "session_time": 5625.691,
       "interpolated": false,
       "position": 14
     },
@@ -10396,7 +10396,7 @@
       "time": 144.919,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 5683.898,
+      "session_time": 5628.556,
       "interpolated": false,
       "position": 16
     },
@@ -10406,7 +10406,7 @@
       "time": 142.075,
       "compound": "SOFT",
       "tyre_life": 24,
-      "session_time": 5689.33,
+      "session_time": 5629.523,
       "interpolated": false,
       "position": 17
     },
@@ -10416,7 +10416,7 @@
       "time": 117.802,
       "compound": "SOFT",
       "tyre_life": 23,
-      "session_time": 5697.626,
+      "session_time": 5631.217,
       "interpolated": false,
       "position": 18
     },
@@ -10446,7 +10446,7 @@
       "time": 145.454,
       "compound": "SOFT",
       "tyre_life": 41,
-      "session_time": 5837.755,
+      "session_time": 5742.019,
       "interpolated": false,
       "position": 1
     },
@@ -10456,7 +10456,7 @@
       "time": 145.542,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 5838.592,
+      "session_time": 5748.067,
       "interpolated": false,
       "position": 2
     },
@@ -10466,7 +10466,7 @@
       "time": 144.167,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 5839.436,
+      "session_time": 5757.317,
       "interpolated": false,
       "position": 3
     },
@@ -10476,7 +10476,7 @@
       "time": 143.882,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 5839.967,
+      "session_time": 5748.501,
       "interpolated": false,
       "position": 4
     },
@@ -10486,7 +10486,7 @@
       "time": 143.965,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 5841.24,
+      "session_time": 5751.321,
       "interpolated": false,
       "position": 5
     },
@@ -10506,7 +10506,7 @@
       "time": 141.984,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 5833.676,
+      "session_time": 5762.368,
       "interpolated": false,
       "position": 7
     },
@@ -10516,7 +10516,7 @@
       "time": 142.07,
       "compound": "SOFT",
       "tyre_life": 41,
-      "session_time": 5830.861,
+      "session_time": 5763.093,
       "interpolated": false,
       "position": 8
     },
@@ -10546,7 +10546,7 @@
       "time": 148.854,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 5850.0,
+      "session_time": 5762.125,
       "interpolated": false,
       "position": 11
     },
@@ -10566,7 +10566,7 @@
       "time": 143.698,
       "compound": "HARD",
       "tyre_life": 26,
-      "session_time": 5826.313,
+      "session_time": 5769.389,
       "interpolated": false,
       "position": 13
     },
@@ -10586,7 +10586,7 @@
       "time": 143.576,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 5827.474,
+      "session_time": 5772.132,
       "interpolated": false,
       "position": 15
     },
@@ -10596,7 +10596,7 @@
       "time": 143.526,
       "compound": "SOFT",
       "tyre_life": 25,
-      "session_time": 5832.856,
+      "session_time": 5773.049,
       "interpolated": false,
       "position": 16
     },
@@ -10606,7 +10606,7 @@
       "time": 143.206,
       "compound": "SOFT",
       "tyre_life": 24,
-      "session_time": 5840.832,
+      "session_time": 5774.423,
       "interpolated": false,
       "position": 17
     },
@@ -10636,7 +10636,7 @@
       "time": 159.363,
       "compound": "SOFT",
       "tyre_life": 42,
-      "session_time": 5997.118,
+      "session_time": 5901.382,
       "interpolated": false,
       "position": 1
     },
@@ -10646,7 +10646,7 @@
       "time": 159.443,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 5998.035,
+      "session_time": 5907.51,
       "interpolated": false,
       "position": 2
     },
@@ -10656,7 +10656,7 @@
       "time": 159.031,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 5998.467,
+      "session_time": 5916.348,
       "interpolated": false,
       "position": 3
     },
@@ -10666,7 +10666,7 @@
       "time": 159.14,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 5999.107,
+      "session_time": 5907.641,
       "interpolated": false,
       "position": 4
     },
@@ -10676,7 +10676,7 @@
       "time": 158.849,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 6000.089,
+      "session_time": 5910.17,
       "interpolated": false,
       "position": 5
     },
@@ -10696,7 +10696,7 @@
       "time": 156.197,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 5989.873,
+      "session_time": 5918.565,
       "interpolated": false,
       "position": 7
     },
@@ -10706,7 +10706,7 @@
       "time": 155.227,
       "compound": "SOFT",
       "tyre_life": 42,
-      "session_time": 5986.088,
+      "session_time": 5918.32,
       "interpolated": false,
       "position": 8
     },
@@ -10736,7 +10736,7 @@
       "time": 152.182,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 6002.182,
+      "session_time": 5914.307,
       "interpolated": false,
       "position": 11
     },
@@ -10756,7 +10756,7 @@
       "time": 150.474,
       "compound": "HARD",
       "tyre_life": 27,
-      "session_time": 5976.787,
+      "session_time": 5919.863,
       "interpolated": false,
       "position": 13
     },
@@ -10776,7 +10776,7 @@
       "time": 149.539,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 5977.013,
+      "session_time": 5921.671,
       "interpolated": false,
       "position": 15
     },
@@ -10786,7 +10786,7 @@
       "time": 148.525,
       "compound": "SOFT",
       "tyre_life": 26,
-      "session_time": 5981.381,
+      "session_time": 5921.574,
       "interpolated": false,
       "position": 16
     },
@@ -10796,7 +10796,7 @@
       "time": 147.574,
       "compound": "SOFT",
       "tyre_life": 25,
-      "session_time": 5988.406,
+      "session_time": 5921.997,
       "interpolated": false,
       "position": 17
     },
@@ -10826,7 +10826,7 @@
       "time": 98.423,
       "compound": "SOFT",
       "tyre_life": 43,
-      "session_time": 6095.541,
+      "session_time": 5999.805,
       "interpolated": false,
       "position": 1
     },
@@ -10836,7 +10836,7 @@
       "time": 98.589,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 6096.624,
+      "session_time": 6006.099,
       "interpolated": false,
       "position": 2
     },
@@ -10846,7 +10846,7 @@
       "time": 99.792,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 6098.259,
+      "session_time": 6016.14,
       "interpolated": false,
       "position": 3
     },
@@ -10856,7 +10856,7 @@
       "time": 99.625,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 6098.732,
+      "session_time": 6007.266,
       "interpolated": false,
       "position": 4
     },
@@ -10866,7 +10866,7 @@
       "time": 99.61,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 6099.699,
+      "session_time": 6009.78,
       "interpolated": false,
       "position": 5
     },
@@ -10886,7 +10886,7 @@
       "time": 101.107,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 6090.98,
+      "session_time": 6019.672,
       "interpolated": false,
       "position": 7
     },
@@ -10896,7 +10896,7 @@
       "time": 101.626,
       "compound": "SOFT",
       "tyre_life": 43,
-      "session_time": 6087.714,
+      "session_time": 6019.946,
       "interpolated": false,
       "position": 8
     },
@@ -10916,7 +10916,7 @@
       "time": 101.437,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 6103.619,
+      "session_time": 6015.744,
       "interpolated": false,
       "position": 10
     },
@@ -10956,7 +10956,7 @@
       "time": 103.377,
       "compound": "HARD",
       "tyre_life": 28,
-      "session_time": 6080.164,
+      "session_time": 6023.24,
       "interpolated": false,
       "position": 14
     },
@@ -10966,7 +10966,7 @@
       "time": 102.878,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 6079.891,
+      "session_time": 6024.549,
       "interpolated": false,
       "position": 15
     },
@@ -10976,7 +10976,7 @@
       "time": 103.233,
       "compound": "SOFT",
       "tyre_life": 27,
-      "session_time": 6084.614,
+      "session_time": 6024.807,
       "interpolated": false,
       "position": 16
     },
@@ -10986,7 +10986,7 @@
       "time": 104.003,
       "compound": "SOFT",
       "tyre_life": 26,
-      "session_time": 6092.409,
+      "session_time": 6026.0,
       "interpolated": false,
       "position": 17
     },
@@ -11016,7 +11016,7 @@
       "time": 98.529,
       "compound": "SOFT",
       "tyre_life": 44,
-      "session_time": 6194.07,
+      "session_time": 6098.334,
       "interpolated": false,
       "position": 1
     },
@@ -11026,7 +11026,7 @@
       "time": 98.866,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 6195.49,
+      "session_time": 6104.965,
       "interpolated": false,
       "position": 2
     },
@@ -11036,7 +11036,7 @@
       "time": 98.61,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 6197.342,
+      "session_time": 6105.876,
       "interpolated": false,
       "position": 3
     },
@@ -11046,7 +11046,7 @@
       "time": 100.526,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 6198.785,
+      "session_time": 6116.666,
       "interpolated": false,
       "position": 4
     },
@@ -11056,7 +11056,7 @@
       "time": 99.396,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 6199.095,
+      "session_time": 6109.176,
       "interpolated": false,
       "position": 5
     },
@@ -11076,7 +11076,7 @@
       "time": 100.254,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 6191.234,
+      "session_time": 6119.926,
       "interpolated": false,
       "position": 7
     },
@@ -11086,7 +11086,7 @@
       "time": 100.745,
       "compound": "SOFT",
       "tyre_life": 44,
-      "session_time": 6188.459,
+      "session_time": 6120.691,
       "interpolated": false,
       "position": 8
     },
@@ -11096,7 +11096,7 @@
       "time": 100.684,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 6204.303,
+      "session_time": 6116.428,
       "interpolated": false,
       "position": 9
     },
@@ -11146,7 +11146,7 @@
       "time": 101.796,
       "compound": "HARD",
       "tyre_life": 29,
-      "session_time": 6181.96,
+      "session_time": 6125.036,
       "interpolated": false,
       "position": 14
     },
@@ -11156,7 +11156,7 @@
       "time": 102.062,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 6181.953,
+      "session_time": 6126.611,
       "interpolated": false,
       "position": 15
     },
@@ -11166,7 +11166,7 @@
       "time": 102.074,
       "compound": "SOFT",
       "tyre_life": 28,
-      "session_time": 6186.688,
+      "session_time": 6126.881,
       "interpolated": false,
       "position": 16
     },
@@ -11176,7 +11176,7 @@
       "time": 102.183,
       "compound": "SOFT",
       "tyre_life": 27,
-      "session_time": 6194.592,
+      "session_time": 6128.183,
       "interpolated": false,
       "position": 17
     },
@@ -11206,7 +11206,7 @@
       "time": 98.614,
       "compound": "SOFT",
       "tyre_life": 45,
-      "session_time": 6292.684,
+      "session_time": 6196.948,
       "interpolated": false,
       "position": 1
     },
@@ -11216,7 +11216,7 @@
       "time": 98.904,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 6294.394,
+      "session_time": 6203.869,
       "interpolated": false,
       "position": 2
     },
@@ -11226,7 +11226,7 @@
       "time": 99.103,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 6296.445,
+      "session_time": 6204.979,
       "interpolated": false,
       "position": 3
     },
@@ -11236,7 +11236,7 @@
       "time": 99.336,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 6298.431,
+      "session_time": 6208.512,
       "interpolated": false,
       "position": 4
     },
@@ -11246,7 +11246,7 @@
       "time": 100.92,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 6299.705,
+      "session_time": 6217.586,
       "interpolated": false,
       "position": 5
     },
@@ -11266,7 +11266,7 @@
       "time": 100.73,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 6291.964,
+      "session_time": 6220.656,
       "interpolated": false,
       "position": 7
     },
@@ -11276,7 +11276,7 @@
       "time": 100.353,
       "compound": "SOFT",
       "tyre_life": 45,
-      "session_time": 6288.812,
+      "session_time": 6221.044,
       "interpolated": false,
       "position": 8
     },
@@ -11286,7 +11286,7 @@
       "time": 99.97,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 6304.273,
+      "session_time": 6216.398,
       "interpolated": false,
       "position": 9
     },
@@ -11336,7 +11336,7 @@
       "time": 102.292,
       "compound": "HARD",
       "tyre_life": 30,
-      "session_time": 6284.252,
+      "session_time": 6227.328,
       "interpolated": false,
       "position": 14
     },
@@ -11346,7 +11346,7 @@
       "time": 102.4,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 6284.353,
+      "session_time": 6229.011,
       "interpolated": false,
       "position": 15
     },
@@ -11356,7 +11356,7 @@
       "time": 102.486,
       "compound": "SOFT",
       "tyre_life": 29,
-      "session_time": 6289.174,
+      "session_time": 6229.367,
       "interpolated": false,
       "position": 16
     },
@@ -11366,7 +11366,7 @@
       "time": 102.641,
       "compound": "SOFT",
       "tyre_life": 28,
-      "session_time": 6297.233,
+      "session_time": 6230.824,
       "interpolated": false,
       "position": 17
     },
@@ -11396,7 +11396,7 @@
       "time": 98.22,
       "compound": "SOFT",
       "tyre_life": 46,
-      "session_time": 6390.904,
+      "session_time": 6295.168,
       "interpolated": false,
       "position": 1
     },
@@ -11406,7 +11406,7 @@
       "time": 98.93,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 6393.211,
+      "session_time": 6297.475,
       "interpolated": false,
       "position": 2
     },
@@ -11416,7 +11416,7 @@
       "time": 99.445,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 6395.823,
+      "session_time": 6300.087,
       "interpolated": false,
       "position": 3
     },
@@ -11426,7 +11426,7 @@
       "time": 99.808,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 6398.162,
+      "session_time": 6302.426,
       "interpolated": false,
       "position": 4
     },
@@ -11436,7 +11436,7 @@
       "time": 99.819,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 6399.475,
+      "session_time": 6303.739,
       "interpolated": false,
       "position": 5
     },
@@ -11446,7 +11446,7 @@
       "time": 99.956,
       "compound": "HARD",
       "tyre_life": 22,
-      "session_time": 6400.358,
+      "session_time": 6304.622,
       "interpolated": false,
       "position": 6
     },
@@ -11456,7 +11456,7 @@
       "time": 100.969,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 6403.657,
+      "session_time": 6307.921,
       "interpolated": false,
       "position": 7
     },
@@ -11466,7 +11466,7 @@
       "time": 100.559,
       "compound": "SOFT",
       "tyre_life": 46,
-      "session_time": 6404.276,
+      "session_time": 6308.54,
       "interpolated": false,
       "position": 8
     },
@@ -11476,7 +11476,7 @@
       "time": 100.718,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 6404.897,
+      "session_time": 6309.161,
       "interpolated": false,
       "position": 9
     },
@@ -11486,7 +11486,7 @@
       "time": 100.315,
       "compound": "SOFT",
       "tyre_life": 27,
-      "session_time": 6406.832,
+      "session_time": 6311.096,
       "interpolated": false,
       "position": 10
     },
@@ -11496,7 +11496,7 @@
       "time": 102.072,
       "compound": "SOFT",
       "tyre_life": 23,
-      "session_time": 6408.308,
+      "session_time": 6312.572,
       "interpolated": false,
       "position": 11
     },
@@ -11506,7 +11506,7 @@
       "time": 101.463,
       "compound": "SOFT",
       "tyre_life": 27,
-      "session_time": 6408.956,
+      "session_time": 6313.22,
       "interpolated": false,
       "position": 12
     },
@@ -11516,7 +11516,7 @@
       "time": 101.544,
       "compound": "MEDIUM",
       "tyre_life": 46,
-      "session_time": 6409.901,
+      "session_time": 6314.165,
       "interpolated": false,
       "position": 13
     },
@@ -11526,7 +11526,7 @@
       "time": 102.615,
       "compound": "HARD",
       "tyre_life": 31,
-      "session_time": 6413.209,
+      "session_time": 6317.473,
       "interpolated": false,
       "position": 14
     },
@@ -11536,7 +11536,7 @@
       "time": 102.115,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 6413.436,
+      "session_time": 6317.7,
       "interpolated": false,
       "position": 15
     },
@@ -11546,7 +11546,7 @@
       "time": 102.37,
       "compound": "SOFT",
       "tyre_life": 30,
-      "session_time": 6414.219,
+      "session_time": 6318.483,
       "interpolated": false,
       "position": 16
     },
@@ -11556,7 +11556,7 @@
       "time": 103.112,
       "compound": "SOFT",
       "tyre_life": 29,
-      "session_time": 6416.335,
+      "session_time": 6320.599,
       "interpolated": false,
       "position": 17
     },
@@ -11566,7 +11566,7 @@
       "time": 103.354,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 6419.137,
+      "session_time": 6323.401,
       "interpolated": false,
       "position": 18
     },
@@ -11576,7 +11576,7 @@
       "time": 103.417,
       "compound": "SOFT",
       "tyre_life": 16,
-      "session_time": 6420.214,
+      "session_time": 6324.478,
       "interpolated": false,
       "position": 19
     }
@@ -23031,8 +23031,8 @@
         "start_lap": 1,
         "end_lap": 9,
         "laps_count": 9,
-        "avg_pace": 136.279,
-        "fuel_corrected_pace": 133.529
+        "avg_pace": 110.544,
+        "fuel_corrected_pace": 107.794
       },
       {
         "driver": "NOR",
@@ -23096,8 +23096,8 @@
         "start_lap": 1,
         "end_lap": 2,
         "laps_count": 2,
-        "avg_pace": 142.524,
-        "fuel_corrected_pace": 139.582
+        "avg_pace": 111.727,
+        "fuel_corrected_pace": 108.785
       },
       {
         "driver": "BOR",
@@ -23148,8 +23148,8 @@
         "start_lap": 45,
         "end_lap": 55,
         "laps_count": 11,
-        "avg_pace": 103.612,
-        "fuel_corrected_pace": 103.337
+        "avg_pace": 103.359,
+        "fuel_corrected_pace": 103.084
       },
       {
         "driver": "HAD",
@@ -23161,8 +23161,8 @@
         "start_lap": 1,
         "end_lap": 9,
         "laps_count": 9,
-        "avg_pace": 128.0,
-        "fuel_corrected_pace": 125.25
+        "avg_pace": 109.802,
+        "fuel_corrected_pace": 107.052
       },
       {
         "driver": "HAD",
@@ -23200,8 +23200,8 @@
         "start_lap": 1,
         "end_lap": 2,
         "laps_count": 2,
-        "avg_pace": 164.41,
-        "fuel_corrected_pace": 161.468
+        "avg_pace": 111.13,
+        "fuel_corrected_pace": 108.188
       },
       {
         "driver": "GAS",
@@ -23213,8 +23213,8 @@
         "start_lap": 3,
         "end_lap": 9,
         "laps_count": 7,
-        "avg_pace": 129.342,
-        "fuel_corrected_pace": 126.647
+        "avg_pace": 111.13,
+        "fuel_corrected_pace": 108.435
       },
       {
         "driver": "GAS",
@@ -23226,8 +23226,8 @@
         "start_lap": 10,
         "end_lap": 25,
         "laps_count": 16,
-        "avg_pace": 103.947,
-        "fuel_corrected_pace": 101.885
+        "avg_pace": 104.807,
+        "fuel_corrected_pace": 102.745
       },
       {
         "driver": "GAS",
@@ -23239,8 +23239,8 @@
         "start_lap": 26,
         "end_lap": 55,
         "laps_count": 30,
-        "avg_pace": 103.085,
-        "fuel_corrected_pace": 102.287
+        "avg_pace": 103.093,
+        "fuel_corrected_pace": 102.296
       },
       {
         "driver": "PER",
@@ -23252,8 +23252,8 @@
         "start_lap": 1,
         "end_lap": 2,
         "laps_count": 2,
-        "avg_pace": 140.729,
-        "fuel_corrected_pace": 137.787
+        "avg_pace": 114.604,
+        "fuel_corrected_pace": 111.662
       },
       {
         "driver": "PER",
@@ -23265,8 +23265,8 @@
         "start_lap": 3,
         "end_lap": 9,
         "laps_count": 7,
-        "avg_pace": 113.544,
-        "fuel_corrected_pace": 110.849
+        "avg_pace": 113.767,
+        "fuel_corrected_pace": 111.072
       },
       {
         "driver": "PER",
@@ -23317,8 +23317,8 @@
         "start_lap": 40,
         "end_lap": 55,
         "laps_count": 16,
-        "avg_pace": 105.039,
-        "fuel_corrected_pace": 104.627
+        "avg_pace": 105.395,
+        "fuel_corrected_pace": 104.983
       },
       {
         "driver": "ANT",
@@ -23330,8 +23330,8 @@
         "start_lap": 1,
         "end_lap": 9,
         "laps_count": 9,
-        "avg_pace": 126.397,
-        "fuel_corrected_pace": 123.647
+        "avg_pace": 108.702,
+        "fuel_corrected_pace": 105.952
       },
       {
         "driver": "ANT",
@@ -23382,8 +23382,8 @@
         "start_lap": 1,
         "end_lap": 9,
         "laps_count": 9,
-        "avg_pace": 136.033,
-        "fuel_corrected_pace": 133.283
+        "avg_pace": 110.429,
+        "fuel_corrected_pace": 107.679
       },
       {
         "driver": "ALO",
@@ -23408,8 +23408,8 @@
         "start_lap": 1,
         "end_lap": 3,
         "laps_count": 3,
-        "avg_pace": 167.981,
-        "fuel_corrected_pace": 165.066
+        "avg_pace": 110.385,
+        "fuel_corrected_pace": 107.47
       },
       {
         "driver": "LEC",
@@ -23421,8 +23421,8 @@
         "start_lap": 4,
         "end_lap": 9,
         "laps_count": 6,
-        "avg_pace": 121.278,
-        "fuel_corrected_pace": 118.611
+        "avg_pace": 110.385,
+        "fuel_corrected_pace": 107.718
       },
       {
         "driver": "LEC",
@@ -23434,8 +23434,8 @@
         "start_lap": 10,
         "end_lap": 43,
         "laps_count": 34,
-        "avg_pace": 102.501,
-        "fuel_corrected_pace": 100.934
+        "avg_pace": 102.767,
+        "fuel_corrected_pace": 101.2
       },
       {
         "driver": "LEC",
@@ -23460,8 +23460,8 @@
         "start_lap": 1,
         "end_lap": 2,
         "laps_count": 2,
-        "avg_pace": 141.943,
-        "fuel_corrected_pace": 139.001
+        "avg_pace": 111.169,
+        "fuel_corrected_pace": 108.227
       },
       {
         "driver": "STR",
@@ -23473,8 +23473,8 @@
         "start_lap": 3,
         "end_lap": 9,
         "laps_count": 7,
-        "avg_pace": 124.192,
-        "fuel_corrected_pace": 121.497
+        "avg_pace": 111.169,
+        "fuel_corrected_pace": 108.474
       },
       {
         "driver": "STR",
@@ -23486,8 +23486,8 @@
         "start_lap": 10,
         "end_lap": 28,
         "laps_count": 19,
-        "avg_pace": 104.188,
-        "fuel_corrected_pace": 102.208
+        "avg_pace": 104.623,
+        "fuel_corrected_pace": 102.643
       },
       {
         "driver": "STR",
@@ -23512,8 +23512,8 @@
         "start_lap": 1,
         "end_lap": 9,
         "laps_count": 9,
-        "avg_pace": 127.268,
-        "fuel_corrected_pace": 124.518
+        "avg_pace": 111.025,
+        "fuel_corrected_pace": 108.275
       },
       {
         "driver": "ALB",
@@ -23551,8 +23551,8 @@
         "start_lap": 1,
         "end_lap": 2,
         "laps_count": 2,
-        "avg_pace": 141.981,
-        "fuel_corrected_pace": 139.038
+        "avg_pace": 111.046,
+        "fuel_corrected_pace": 108.104
       },
       {
         "driver": "HUL",
@@ -23603,8 +23603,8 @@
         "start_lap": 1,
         "end_lap": 9,
         "laps_count": 9,
-        "avg_pace": 127.776,
-        "fuel_corrected_pace": 125.026
+        "avg_pace": 110.609,
+        "fuel_corrected_pace": 107.859
       },
       {
         "driver": "LAW",
@@ -23642,8 +23642,8 @@
         "start_lap": 1,
         "end_lap": 9,
         "laps_count": 9,
-        "avg_pace": 126.158,
-        "fuel_corrected_pace": 123.408
+        "avg_pace": 111.631,
+        "fuel_corrected_pace": 108.881
       },
       {
         "driver": "OCO",
@@ -23655,8 +23655,8 @@
         "start_lap": 10,
         "end_lap": 41,
         "laps_count": 32,
-        "avg_pace": 104.025,
-        "fuel_corrected_pace": 102.403
+        "avg_pace": 104.299,
+        "fuel_corrected_pace": 102.677
       },
       {
         "driver": "OCO",
@@ -23668,8 +23668,8 @@
         "start_lap": 42,
         "end_lap": 55,
         "laps_count": 14,
-        "avg_pace": 102.364,
-        "fuel_corrected_pace": 102.007
+        "avg_pace": 103.479,
+        "fuel_corrected_pace": 103.121
       },
       {
         "driver": "LIN",
@@ -23681,8 +23681,8 @@
         "start_lap": 1,
         "end_lap": 9,
         "laps_count": 9,
-        "avg_pace": 124.603,
-        "fuel_corrected_pace": 121.853
+        "avg_pace": 111.441,
+        "fuel_corrected_pace": 108.691
       },
       {
         "driver": "LIN",
@@ -23720,8 +23720,8 @@
         "start_lap": 1,
         "end_lap": 2,
         "laps_count": 2,
-        "avg_pace": 154.45,
-        "fuel_corrected_pace": 151.507
+        "avg_pace": 110.859,
+        "fuel_corrected_pace": 107.916
       },
       {
         "driver": "COL",
@@ -23733,8 +23733,8 @@
         "start_lap": 3,
         "end_lap": 9,
         "laps_count": 7,
-        "avg_pace": 130.911,
-        "fuel_corrected_pace": 128.216
+        "avg_pace": 110.859,
+        "fuel_corrected_pace": 108.164
       },
       {
         "driver": "COL",
@@ -23746,8 +23746,8 @@
         "start_lap": 10,
         "end_lap": 55,
         "laps_count": 46,
-        "avg_pace": 102.99,
-        "fuel_corrected_pace": 101.752
+        "avg_pace": 103.567,
+        "fuel_corrected_pace": 102.329
       },
       {
         "driver": "HAM",
@@ -23759,8 +23759,8 @@
         "start_lap": 1,
         "end_lap": 43,
         "laps_count": 43,
-        "avg_pace": 102.07,
-        "fuel_corrected_pace": 100.255
+        "avg_pace": 102.313,
+        "fuel_corrected_pace": 100.498
       },
       {
         "driver": "HAM",
@@ -23785,8 +23785,8 @@
         "start_lap": 1,
         "end_lap": 9,
         "laps_count": 9,
-        "avg_pace": 127.822,
-        "fuel_corrected_pace": 125.072
+        "avg_pace": 111.073,
+        "fuel_corrected_pace": 108.323
       },
       {
         "driver": "SAI",
@@ -23811,8 +23811,8 @@
         "start_lap": 27,
         "end_lap": 55,
         "laps_count": 29,
-        "avg_pace": 103.444,
-        "fuel_corrected_pace": 102.674
+        "avg_pace": 103.354,
+        "fuel_corrected_pace": 102.584
       },
       {
         "driver": "RUS",
@@ -23824,8 +23824,8 @@
         "start_lap": 1,
         "end_lap": 2,
         "laps_count": 2,
-        "avg_pace": 174.952,
-        "fuel_corrected_pace": 172.01
+        "avg_pace": 109.337,
+        "fuel_corrected_pace": 106.395
       },
       {
         "driver": "RUS",
@@ -23850,8 +23850,8 @@
         "start_lap": 10,
         "end_lap": 49,
         "laps_count": 40,
-        "avg_pace": 102.12,
-        "fuel_corrected_pace": 100.718
+        "avg_pace": 102.364,
+        "fuel_corrected_pace": 100.962
       },
       {
         "driver": "BOT",
@@ -23876,8 +23876,8 @@
         "start_lap": 1,
         "end_lap": 2,
         "laps_count": 2,
-        "avg_pace": 143.055,
-        "fuel_corrected_pace": 140.113
+        "avg_pace": 110.523,
+        "fuel_corrected_pace": 107.581
       },
       {
         "driver": "PIA",
@@ -23889,8 +23889,8 @@
         "start_lap": 3,
         "end_lap": 9,
         "laps_count": 7,
-        "avg_pace": 126.986,
-        "fuel_corrected_pace": 124.291
+        "avg_pace": 110.523,
+        "fuel_corrected_pace": 107.828
       },
       {
         "driver": "PIA",
@@ -23902,8 +23902,8 @@
         "start_lap": 10,
         "end_lap": 34,
         "laps_count": 25,
-        "avg_pace": 103.914,
-        "fuel_corrected_pace": 102.099
+        "avg_pace": 104.21,
+        "fuel_corrected_pace": 102.395
       },
       {
         "driver": "PIA",
@@ -23928,8 +23928,8 @@
         "start_lap": 1,
         "end_lap": 10,
         "laps_count": 10,
-        "avg_pace": 137.532,
-        "fuel_corrected_pace": 134.81
+        "avg_pace": 112.191,
+        "fuel_corrected_pace": 109.469
       },
       {
         "driver": "BEA",
@@ -23941,8 +23941,8 @@
         "start_lap": 11,
         "end_lap": 24,
         "laps_count": 14,
-        "avg_pace": 104.033,
-        "fuel_corrected_pace": 101.971
+        "avg_pace": 104.89,
+        "fuel_corrected_pace": 102.828
       },
       {
         "driver": "BEA",
@@ -23954,8 +23954,8 @@
         "start_lap": 25,
         "end_lap": 55,
         "laps_count": 31,
-        "avg_pace": 102.865,
-        "fuel_corrected_pace": 102.04
+        "avg_pace": 103.539,
+        "fuel_corrected_pace": 102.714
       }
     ],
     "pit_stops": [
@@ -24590,7 +24590,7 @@
         "rank": 1,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6390.904,
+        "duration": 6295.168,
         "gap_to_leader": 0.0,
         "is_dnf": false,
         "is_dns": false
@@ -24604,7 +24604,7 @@
         "rank": 2,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6393.211,
+        "duration": 6297.475,
         "gap_to_leader": 2.307,
         "is_dnf": false,
         "is_dns": false
@@ -24618,7 +24618,7 @@
         "rank": 3,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6395.823,
+        "duration": 6300.087,
         "gap_to_leader": 4.919,
         "is_dnf": false,
         "is_dns": false
@@ -24632,7 +24632,7 @@
         "rank": 4,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6398.162,
+        "duration": 6302.426,
         "gap_to_leader": 7.258,
         "is_dnf": false,
         "is_dns": false
@@ -24646,7 +24646,7 @@
         "rank": 5,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6399.475,
+        "duration": 6303.739,
         "gap_to_leader": 8.571,
         "is_dnf": false,
         "is_dns": false
@@ -24660,7 +24660,7 @@
         "rank": 6,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6400.358,
+        "duration": 6304.622,
         "gap_to_leader": 9.454,
         "is_dnf": false,
         "is_dns": false
@@ -24674,7 +24674,7 @@
         "rank": 7,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6403.657,
+        "duration": 6307.921,
         "gap_to_leader": 12.753,
         "is_dnf": false,
         "is_dns": false
@@ -24688,7 +24688,7 @@
         "rank": 8,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6404.276,
+        "duration": 6308.54,
         "gap_to_leader": 13.372,
         "is_dnf": false,
         "is_dns": false
@@ -24702,7 +24702,7 @@
         "rank": 9,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6404.897,
+        "duration": 6309.161,
         "gap_to_leader": 13.993,
         "is_dnf": false,
         "is_dns": false
@@ -24716,7 +24716,7 @@
         "rank": 10,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6406.832,
+        "duration": 6311.096,
         "gap_to_leader": 15.928,
         "is_dnf": false,
         "is_dns": false
@@ -24730,7 +24730,7 @@
         "rank": 11,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6408.308,
+        "duration": 6312.572,
         "gap_to_leader": 17.404,
         "is_dnf": false,
         "is_dns": false
@@ -24744,7 +24744,7 @@
         "rank": 12,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6408.956,
+        "duration": 6313.22,
         "gap_to_leader": 18.052,
         "is_dnf": false,
         "is_dns": false
@@ -24758,7 +24758,7 @@
         "rank": 13,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6409.901,
+        "duration": 6314.165,
         "gap_to_leader": 18.997,
         "is_dnf": false,
         "is_dns": false
@@ -24772,7 +24772,7 @@
         "rank": 14,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6413.209,
+        "duration": 6317.473,
         "gap_to_leader": 22.305,
         "is_dnf": false,
         "is_dns": false
@@ -24786,7 +24786,7 @@
         "rank": 15,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6413.436,
+        "duration": 6317.7,
         "gap_to_leader": 22.532,
         "is_dnf": false,
         "is_dns": false
@@ -24800,7 +24800,7 @@
         "rank": 16,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6414.219,
+        "duration": 6318.483,
         "gap_to_leader": 23.315,
         "is_dnf": false,
         "is_dns": false
@@ -24814,7 +24814,7 @@
         "rank": 17,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6416.335,
+        "duration": 6320.599,
         "gap_to_leader": 25.431,
         "is_dnf": false,
         "is_dns": false
@@ -24828,7 +24828,7 @@
         "rank": 18,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6419.137,
+        "duration": 6323.401,
         "gap_to_leader": 28.233,
         "is_dnf": false,
         "is_dns": false
@@ -24842,7 +24842,7 @@
         "rank": 19,
         "laps_completed": 55,
         "status": "FINISHER",
-        "duration": 6420.214,
+        "duration": 6324.478,
         "gap_to_leader": 29.31,
         "is_dnf": false,
         "is_dns": false
@@ -24856,7 +24856,7 @@
         "rank": 20,
         "laps_completed": 49,
         "status": "DNF",
-        "duration": 5694.384,
+        "duration": 5610.586,
         "gap_to_leader": "DNF",
         "is_dnf": true,
         "is_dns": false
@@ -24870,7 +24870,7 @@
         "rank": 21,
         "laps_completed": 41,
         "status": "DNF",
-        "duration": 4672.616,
+        "duration": 4619.005,
         "gap_to_leader": "DNF",
         "is_dnf": true,
         "is_dns": false
@@ -24884,7 +24884,7 @@
         "rank": 22,
         "laps_completed": 7,
         "status": "DNF",
-        "duration": 971.226,
+        "duration": 921.614,
         "gap_to_leader": "DNF",
         "is_dnf": true,
         "is_dns": false

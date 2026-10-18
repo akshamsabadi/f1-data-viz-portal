@@ -23022,8 +23022,8 @@
         "start_lap": 22,
         "end_lap": 23,
         "laps_count": 2,
-        "avg_pace": 128.828,
-        "fuel_corrected_pace": 127.151
+        "avg_pace": 104.728,
+        "fuel_corrected_pace": 103.05
       },
       {
         "driver": "ALO",
@@ -23087,8 +23087,8 @@
         "start_lap": 22,
         "end_lap": 24,
         "laps_count": 3,
-        "avg_pace": 119.869,
-        "fuel_corrected_pace": 118.219
+        "avg_pace": 104.958,
+        "fuel_corrected_pace": 103.308
       },
       {
         "driver": "STR",
@@ -23139,8 +23139,8 @@
         "start_lap": 46,
         "end_lap": 49,
         "laps_count": 4,
-        "avg_pace": 120.247,
-        "fuel_corrected_pace": 119.945
+        "avg_pace": 103.448,
+        "fuel_corrected_pace": 103.145
       },
       {
         "driver": "ALB",
@@ -23386,8 +23386,8 @@
         "start_lap": 20,
         "end_lap": 52,
         "laps_count": 33,
-        "avg_pace": 97.182,
-        "fuel_corrected_pace": 96.247
+        "avg_pace": 97.267,
+        "fuel_corrected_pace": 96.332
       },
       {
         "driver": "PIA",

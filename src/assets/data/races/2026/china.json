@@ -21745,7 +21745,7 @@
         "stop_number": 1,
         "from_compound": "HARD",
         "to_compound": "MEDIUM",
-        "stationary_s": 16.1,
+        "stationary_s": 12.0,
         "pit_loss_s": 37.36
       },
       {
@@ -21757,7 +21757,7 @@
         "stop_number": 2,
         "from_compound": "MEDIUM",
         "to_compound": "SOFT",
-        "stationary_s": 26.9,
+        "stationary_s": 12.0,
         "pit_loss_s": 38.0
       }
     ],

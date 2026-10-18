@@ -679,16 +679,35 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
         lap_times_sorted = sorted(float(l["time"]) for l in laps if float(l.get("time") or 0) > 0)
         field_median = lap_times_sorted[len(lap_times_sorted) // 2]
         min_allowed_lap = field_median * 0.85
+        max_allowed_lap = field_median * 1.85
         unrealistic_laps = [
             (l["driver"], l["lap"], l["time"])
             for l in laps
-            if float(l["time"]) < min_allowed_lap
+            if float(l["time"]) < min_allowed_lap or float(l["time"]) > max_allowed_lap
         ]
         assert not unrealistic_laps, (
-            f"{gp_id}: unrealistic fast lap times (< {min_allowed_lap:.2f}s): {unrealistic_laps[:5]}"
+            f"{gp_id}: unrealistic lap times (outside [{min_allowed_lap:.2f}s, {max_allowed_lap:.2f}s]): {unrealistic_laps[:5]}"
         )
 
         stints = data.get("race_telemetry", {}).get("stints", [])
+        unrealistic_stints = [
+            (s["driver"], s["stint"], s["avg_pace"])
+            for s in stints
+            if float(s["avg_pace"]) < min_allowed_lap or float(s["avg_pace"]) > field_median * 1.35
+        ]
+        assert not unrealistic_stints, (
+            f"{gp_id}: unrealistic stint avg_pace: {unrealistic_stints[:5]}"
+        )
+
+        pits = data.get("race_telemetry", {}).get("pit_stops", [])
+        unrealistic_pits = [
+            (p["driver"], p["lap"], p["stationary_s"])
+            for p in pits
+            if float(p["stationary_s"]) < 1.8 or float(p["stationary_s"]) > 12.0
+        ]
+        assert not unrealistic_pits, (
+            f"{gp_id}: unrealistic pit stop stationary_s: {unrealistic_pits[:5]}"
+        )
         laps_per_driver: dict[str, int] = {}
         for l in laps:
             laps_per_driver[l["driver"]] = laps_per_driver.get(l["driver"], 0) + 1

@@ -1,6 +1,6 @@
 import { calculateDriverClassification } from './standings.js';
 
-const _CHART_MARGIN = { top: 24, right: 72, bottom: 44, left: 64 };
+const _CHART_MARGIN = { top: 24, right: 72, bottom: 44, left: 76 };
 const _MIN_CONTAINER_WIDTH_PX = 360;
 const _DEFAULT_CONTAINER_WIDTH_PX = 860;
 const _CHART_HEIGHT_PX = 440;
@@ -17,10 +17,12 @@ const _LEADER_LINE_STROKE_WIDTH_PX = 1.5;
 const _LEADER_LINE_DASH_ARRAY = '4,4';
 const _LEADER_LINE_STROKE_COLOR = 'rgba(255, 255, 255, 0.35)';
 const _END_LABEL_OFFSET_X_PX = 6;
+const _MIN_END_LABEL_SEPARATION_PX = 12;
+const _END_LABEL_HALO_STROKE_WIDTH_PX = 3;
 const _MAX_X_AXIS_TICKS = 12;
 const _Y_AXIS_TICKS = 8;
 const _X_AXIS_TITLE_OFFSET_Y_PX = 36;
-const _Y_AXIS_TITLE_OFFSET_Y_PX = -48;
+const _Y_AXIS_TITLE_OFFSET_Y_PX = -58;
 const _ACTIVE_OPACITY = 1;
 const _RESTING_OPACITY = 0.85;
 const _DIMMED_OPACITY = 0.14;
@@ -268,7 +270,7 @@ function _findClosestLapPoint(series, targetLap) {
  * @returns {Array<{driver: string, color: string, lap: number, gap: number, x: number, y: number}>} Visible end-label descriptors.
  */
 function _buildVisibleEndLabelData(seriesByDriver, xScale, yScale, yMax) {
-    return seriesByDriver
+    const rawLabels = seriesByDriver
         .map((series) => {
             const lastPt = series.points[series.points.length - 1];
             return {
@@ -280,7 +282,25 @@ function _buildVisibleEndLabelData(seriesByDriver, xScale, yScale, yMax) {
                 y: yScale(lastPt.gap)
             };
         })
-        .filter((d) => d.gap <= yMax);
+        .filter((d) => d.gap <= yMax)
+        .sort((a, b) => a.y - b.y);
+
+    const maxY = yScale.range()[1] ?? _CHART_HEIGHT_PX;
+    for (let i = 1; i < rawLabels.length; i++) {
+        if (rawLabels[i].y - rawLabels[i - 1].y < _MIN_END_LABEL_SEPARATION_PX) {
+            rawLabels[i].y = rawLabels[i - 1].y + _MIN_END_LABEL_SEPARATION_PX;
+        }
+    }
+    if (rawLabels.length > 0 && rawLabels[rawLabels.length - 1].y > maxY) {
+        rawLabels[rawLabels.length - 1].y = maxY;
+        for (let i = rawLabels.length - 2; i >= 0; i--) {
+            if (rawLabels[i + 1].y - rawLabels[i].y < _MIN_END_LABEL_SEPARATION_PX) {
+                rawLabels[i].y = Math.max(0, rawLabels[i + 1].y - _MIN_END_LABEL_SEPARATION_PX);
+            }
+        }
+    }
+
+    return rawLabels;
 }
 
 /**
@@ -622,6 +642,10 @@ function _renderWormEndLabels(
         .attr('y', (d) => d.y)
         .attr('dy', '0.35em')
         .attr('fill', (d) => d.color)
+        .style('paint-order', 'stroke')
+        .attr('stroke', 'var(--bg-dark)')
+        .attr('stroke-width', _END_LABEL_HALO_STROKE_WIDTH_PX)
+        .attr('stroke-linejoin', 'round')
         .style('font-family', 'Montserrat, sans-serif')
         .style('font-size', '10px')
         .style('font-weight', '700')

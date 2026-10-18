@@ -12837,161 +12837,161 @@
     {
       "driver": "LIN",
       "lap": 67,
-      "time": 2128.227,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 7614.172,
-      "interpolated": false,
+      "session_time": 5595.035,
+      "interpolated": true,
       "position": 8
     },
     {
       "driver": "ALB",
       "lap": 67,
-      "time": 2129.247,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 7616.745,
-      "interpolated": false,
+      "session_time": 5596.588,
+      "interpolated": true,
       "position": 9
     },
     {
       "driver": "SAI",
       "lap": 67,
-      "time": 2131.146,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 7619.677,
-      "interpolated": false,
+      "session_time": 5597.621,
+      "interpolated": true,
       "position": 10
     },
     {
       "driver": "OCO",
       "lap": 67,
-      "time": 2131.095,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 7621.624,
-      "interpolated": false,
+      "session_time": 5599.619,
+      "interpolated": true,
       "position": 11
     },
     {
       "driver": "HUL",
       "lap": 67,
-      "time": 2131.749,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 7624.197,
-      "interpolated": false,
+      "session_time": 5601.538,
+      "interpolated": true,
       "position": 12
     },
     {
       "driver": "COL",
       "lap": 67,
-      "time": 2130.267,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 7625.533,
-      "interpolated": false,
+      "session_time": 5604.356,
+      "interpolated": true,
       "position": 13
     },
     {
       "driver": "ALO",
       "lap": 67,
-      "time": 2130.175,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 7628.72,
-      "interpolated": false,
+      "session_time": 5607.635,
+      "interpolated": true,
       "position": 14
     },
     {
       "driver": "PER",
       "lap": 67,
-      "time": 2133.296,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 7632.238,
-      "interpolated": false,
+      "session_time": 5608.032,
+      "interpolated": true,
       "position": 15
     },
     {
       "driver": "BOR",
       "lap": 67,
-      "time": 2136.863,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 7617.417,
-      "interpolated": false,
+      "session_time": 5589.644,
+      "interpolated": true,
       "position": 16
     },
     {
       "driver": "ANT",
       "lap": 68,
-      "time": 2262.703,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 7739.105,
-      "interpolated": false,
+      "session_time": 5585.492,
+      "interpolated": true,
       "position": 1
     },
     {
       "driver": "HAM",
       "lap": 68,
-      "time": 2264.58,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 7742.283,
-      "interpolated": false,
+      "session_time": 5586.793,
+      "interpolated": true,
       "position": 2
     },
     {
       "driver": "HAD",
       "lap": 68,
-      "time": 2264.229,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 7744.842,
-      "interpolated": false,
+      "session_time": 5589.703,
+      "interpolated": true,
       "position": 3
     },
     {
       "driver": "RUS",
       "lap": 68,
-      "time": 2264.333,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 7747.785,
-      "interpolated": false,
+      "session_time": 5592.542,
+      "interpolated": true,
       "position": 4
     },
     {
       "driver": "GAS",
       "lap": 68,
-      "time": 2255.531,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 7750.311,
-      "interpolated": false,
+      "session_time": 5603.87,
+      "interpolated": true,
       "position": 5
     },
     {
       "driver": "PIA",
       "lap": 68,
-      "time": 2255.888,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 7753.589,
-      "interpolated": false,
+      "session_time": 5606.791,
+      "interpolated": true,
       "position": 6
     },
     {
       "driver": "LAW",
       "lap": 68,
-      "time": 2253.624,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 7756.316,
-      "interpolated": false,
+      "session_time": 5611.782,
+      "interpolated": true,
       "position": 7
     },
     {
@@ -13000,7 +13000,7 @@
       "time": 145.523,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 7759.695,
+      "session_time": 5740.558,
       "interpolated": false,
       "position": 8
     },
@@ -13010,7 +13010,7 @@
       "time": 145.09,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 7761.835,
+      "session_time": 5741.678,
       "interpolated": false,
       "position": 9
     },
@@ -13020,7 +13020,7 @@
       "time": 145.003,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 7764.68,
+      "session_time": 5742.624,
       "interpolated": false,
       "position": 10
     },
@@ -13030,7 +13030,7 @@
       "time": 145.286,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 7766.91,
+      "session_time": 5744.905,
       "interpolated": false,
       "position": 11
     },
@@ -13040,48 +13040,48 @@
       "time": 145.851,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 7770.048,
+      "session_time": 5747.389,
       "interpolated": false,
       "position": 12
     },
     {
       "driver": "COL",
       "lap": 68,
-      "time": 150.288,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 7775.821,
-      "interpolated": false,
+      "session_time": 5713.446,
+      "interpolated": true,
       "position": 13
     },
     {
       "driver": "ALO",
       "lap": 68,
-      "time": 150.326,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 7779.046,
-      "interpolated": false,
+      "session_time": 5716.725,
+      "interpolated": true,
       "position": 14
     },
     {
       "driver": "PER",
       "lap": 68,
-      "time": 149.156,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 7781.394,
-      "interpolated": false,
+      "session_time": 5717.122,
+      "interpolated": true,
       "position": 15
     },
     {
       "driver": "BOR",
       "lap": 68,
-      "time": 146.26,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 1,
-      "session_time": 7763.677,
-      "interpolated": false,
+      "session_time": 5698.734,
+      "interpolated": true,
       "position": 16
     },
     {
@@ -13090,7 +13090,7 @@
       "time": 103.473,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 7842.578,
+      "session_time": 5688.965,
       "interpolated": false,
       "position": 1
     },
@@ -13100,7 +13100,7 @@
       "time": 102.193,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 7844.476,
+      "session_time": 5688.986,
       "interpolated": false,
       "position": 2
     },
@@ -13110,7 +13110,7 @@
       "time": 100.52,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 7845.362,
+      "session_time": 5690.223,
       "interpolated": false,
       "position": 3
     },
@@ -13120,7 +13120,7 @@
       "time": 98.312,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 7846.097,
+      "session_time": 5690.854,
       "interpolated": false,
       "position": 4
     },
@@ -13130,7 +13130,7 @@
       "time": 96.522,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 7846.833,
+      "session_time": 5700.392,
       "interpolated": false,
       "position": 5
     },
@@ -13140,7 +13140,7 @@
       "time": 95.91,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 7849.499,
+      "session_time": 5702.701,
       "interpolated": false,
       "position": 6
     },
@@ -13150,7 +13150,7 @@
       "time": 95.103,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 7851.419,
+      "session_time": 5706.885,
       "interpolated": false,
       "position": 7
     },
@@ -13160,7 +13160,7 @@
       "time": 92.743,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 7852.438,
+      "session_time": 5833.301,
       "interpolated": false,
       "position": 8
     },
@@ -13170,7 +13170,7 @@
       "time": 92.833,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 7854.668,
+      "session_time": 5834.511,
       "interpolated": false,
       "position": 9
     },
@@ -13180,7 +13180,7 @@
       "time": 92.832,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 7857.512,
+      "session_time": 5835.456,
       "interpolated": false,
       "position": 10
     },
@@ -13190,7 +13190,7 @@
       "time": 91.519,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 7858.429,
+      "session_time": 5836.424,
       "interpolated": false,
       "position": 11
     },
@@ -13200,7 +13200,7 @@
       "time": 89.974,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 7860.022,
+      "session_time": 5837.363,
       "interpolated": false,
       "position": 12
     },
@@ -13210,7 +13210,7 @@
       "time": 89.741,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 7865.562,
+      "session_time": 5803.187,
       "interpolated": false,
       "position": 13
     },
@@ -13220,7 +13220,7 @@
       "time": 89.317,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 7868.363,
+      "session_time": 5806.042,
       "interpolated": false,
       "position": 14
     },
@@ -13230,7 +13230,7 @@
       "time": 87.787,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 7869.181,
+      "session_time": 5804.909,
       "interpolated": false,
       "position": 15
     },
@@ -13240,138 +13240,138 @@
       "time": 87.452,
       "compound": "SOFT",
       "tyre_life": 2,
-      "session_time": 7851.129,
+      "session_time": 5786.186,
       "interpolated": false,
       "position": 16
     },
     {
       "driver": "ANT",
       "lap": 70,
-      "time": 167.311,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 8009.889,
-      "interpolated": false,
+      "session_time": 5798.055,
+      "interpolated": true,
       "position": 1
     },
     {
       "driver": "HAM",
       "lap": 70,
-      "time": 166.096,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 8010.572,
-      "interpolated": false,
+      "session_time": 5798.076,
+      "interpolated": true,
       "position": 2
     },
     {
       "driver": "HAD",
       "lap": 70,
-      "time": 165.867,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 8011.229,
-      "interpolated": false,
+      "session_time": 5799.313,
+      "interpolated": true,
       "position": 3
     },
     {
       "driver": "RUS",
       "lap": 70,
-      "time": 165.35,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 8011.447,
-      "interpolated": false,
+      "session_time": 5799.944,
+      "interpolated": true,
       "position": 4
     },
     {
       "driver": "GAS",
       "lap": 70,
-      "time": 164.928,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 8011.761,
-      "interpolated": false,
+      "session_time": 5809.482,
+      "interpolated": true,
       "position": 5
     },
     {
       "driver": "PIA",
       "lap": 70,
-      "time": 162.66,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 8012.159,
-      "interpolated": false,
+      "session_time": 5811.791,
+      "interpolated": true,
       "position": 6
     },
     {
       "driver": "LAW",
       "lap": 70,
-      "time": 160.996,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 8012.415,
-      "interpolated": false,
+      "session_time": 5815.975,
+      "interpolated": true,
       "position": 7
     },
     {
       "driver": "LIN",
       "lap": 70,
-      "time": 160.218,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 8012.656,
-      "interpolated": false,
+      "session_time": 5942.391,
+      "interpolated": true,
       "position": 8
     },
     {
       "driver": "ALB",
       "lap": 70,
-      "time": 158.036,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 8012.704,
-      "interpolated": false,
+      "session_time": 5943.601,
+      "interpolated": true,
       "position": 9
     },
     {
       "driver": "SAI",
       "lap": 70,
-      "time": 155.371,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 8012.883,
-      "interpolated": false,
+      "session_time": 5944.546,
+      "interpolated": true,
       "position": 10
     },
     {
       "driver": "OCO",
       "lap": 70,
-      "time": 154.821,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 8013.25,
-      "interpolated": false,
+      "session_time": 5945.514,
+      "interpolated": true,
       "position": 11
     },
     {
       "driver": "HUL",
       "lap": 70,
-      "time": 153.488,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 8013.51,
-      "interpolated": false,
+      "session_time": 5946.453,
+      "interpolated": true,
       "position": 12
     },
     {
       "driver": "COL",
       "lap": 70,
-      "time": 147.871,
+      "time": 109.09,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 8013.433,
-      "interpolated": false,
+      "session_time": 5912.277,
+      "interpolated": true,
       "position": 13
     },
     {
@@ -13380,7 +13380,7 @@
       "time": 145.293,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 8013.656,
+      "session_time": 5951.335,
       "interpolated": false,
       "position": 14
     },
@@ -13390,7 +13390,7 @@
       "time": 144.525,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 8013.706,
+      "session_time": 5949.434,
       "interpolated": false,
       "position": 15
     },
@@ -13400,7 +13400,7 @@
       "time": 143.7,
       "compound": "SOFT",
       "tyre_life": 3,
-      "session_time": 7994.829,
+      "session_time": 5929.886,
       "interpolated": false,
       "position": 16
     },
@@ -13410,7 +13410,7 @@
       "time": 80.271,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 8090.16,
+      "session_time": 5878.326,
       "interpolated": false,
       "position": 1
     },
@@ -13420,7 +13420,7 @@
       "time": 81.009,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 8091.581,
+      "session_time": 5879.085,
       "interpolated": false,
       "position": 2
     },
@@ -13430,7 +13430,7 @@
       "time": 84.856,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 8096.303,
+      "session_time": 5884.8,
       "interpolated": false,
       "position": 3
     },
@@ -13440,7 +13440,7 @@
       "time": 86.19,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 8097.951,
+      "session_time": 5895.672,
       "interpolated": false,
       "position": 4
     },
@@ -13450,7 +13450,7 @@
       "time": 88.042,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 8099.271,
+      "session_time": 5887.355,
       "interpolated": false,
       "position": 5
     },
@@ -13460,7 +13460,7 @@
       "time": 87.966,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 8100.125,
+      "session_time": 5899.757,
       "interpolated": false,
       "position": 6
     },
@@ -13470,7 +13470,7 @@
       "time": 88.68,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 8101.095,
+      "session_time": 5904.655,
       "interpolated": false,
       "position": 7
     },
@@ -13480,7 +13480,7 @@
       "time": 89.062,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 8101.718,
+      "session_time": 6031.453,
       "interpolated": false,
       "position": 8
     },
@@ -13490,7 +13490,7 @@
       "time": 89.804,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 8102.508,
+      "session_time": 6033.405,
       "interpolated": false,
       "position": 9
     },
@@ -13500,7 +13500,7 @@
       "time": 89.192,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 8102.702,
+      "session_time": 6035.645,
       "interpolated": false,
       "position": 10
     },
@@ -13510,7 +13510,7 @@
       "time": 89.856,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 8103.106,
+      "session_time": 6035.37,
       "interpolated": false,
       "position": 11
     },
@@ -13520,7 +13520,7 @@
       "time": 89.934,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 8103.64,
+      "session_time": 6039.368,
       "interpolated": false,
       "position": 12
     },
@@ -13530,7 +13530,7 @@
       "time": 90.552,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 8104.208,
+      "session_time": 6041.887,
       "interpolated": false,
       "position": 13
     },
@@ -13540,7 +13540,7 @@
       "time": 94.851,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 8089.68,
+      "session_time": 6024.737,
       "interpolated": false,
       "position": 14
     },
@@ -13550,7 +13550,7 @@
       "time": 99.346,
       "compound": "SOFT",
       "tyre_life": 4,
-      "session_time": 8112.779,
+      "session_time": 6011.623,
       "interpolated": false,
       "position": 15
     },
@@ -13560,7 +13560,7 @@
       "time": 75.737,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 8165.897,
+      "session_time": 5954.063,
       "interpolated": false,
       "position": 1
     },
@@ -13570,7 +13570,7 @@
       "time": 75.469,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 8167.05,
+      "session_time": 5954.554,
       "interpolated": false,
       "position": 2
     },
@@ -13580,7 +13580,7 @@
       "time": 88.255,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 8184.558,
+      "session_time": 5973.055,
       "interpolated": false,
       "position": 3
     },
@@ -13590,7 +13590,7 @@
       "time": 77.461,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 8175.412,
+      "session_time": 5973.133,
       "interpolated": false,
       "position": 4
     },
@@ -13600,7 +13600,7 @@
       "time": 78.497,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 8177.768,
+      "session_time": 5965.852,
       "interpolated": false,
       "position": 5
     },
@@ -13610,7 +13610,7 @@
       "time": 78.759,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 8178.884,
+      "session_time": 5978.516,
       "interpolated": false,
       "position": 6
     },
@@ -13620,7 +13620,7 @@
       "time": 79.113,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 8180.208,
+      "session_time": 5983.768,
       "interpolated": false,
       "position": 7
     },
@@ -13630,7 +13630,7 @@
       "time": 79.275,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 8180.993,
+      "session_time": 6110.728,
       "interpolated": false,
       "position": 8
     },
@@ -13640,7 +13640,7 @@
       "time": 79.754,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 8182.456,
+      "session_time": 6115.399,
       "interpolated": false,
       "position": 9
     },
@@ -13650,7 +13650,7 @@
       "time": 81.351,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 8183.859,
+      "session_time": 6114.756,
       "interpolated": false,
       "position": 10
     },
@@ -13660,7 +13660,7 @@
       "time": 81.025,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 8184.131,
+      "session_time": 6116.395,
       "interpolated": false,
       "position": 11
     },
@@ -13670,7 +13670,7 @@
       "time": 80.966,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 8184.606,
+      "session_time": 6120.334,
       "interpolated": false,
       "position": 12
     },
@@ -13680,7 +13680,7 @@
       "time": 80.898,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 8185.106,
+      "session_time": 6122.785,
       "interpolated": false,
       "position": 13
     },
@@ -13690,7 +13690,7 @@
       "time": 77.484,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 8167.164,
+      "session_time": 6102.221,
       "interpolated": false,
       "position": 14
     },
@@ -13700,7 +13700,7 @@
       "time": 79.699,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 8192.478,
+      "session_time": 6091.322,
       "interpolated": false,
       "position": 15
     },
@@ -13710,7 +13710,7 @@
       "time": 74.585,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 8240.482,
+      "session_time": 6028.648,
       "interpolated": false,
       "position": 1
     },
@@ -13720,7 +13720,7 @@
       "time": 74.969,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 8242.019,
+      "session_time": 6029.523,
       "interpolated": false,
       "position": 2
     },
@@ -13730,7 +13730,7 @@
       "time": 76.054,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 8251.466,
+      "session_time": 6049.187,
       "interpolated": false,
       "position": 3
     },
@@ -13740,7 +13740,7 @@
       "time": 76.813,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 8254.581,
+      "session_time": 6042.665,
       "interpolated": false,
       "position": 4
     },
@@ -13750,7 +13750,7 @@
       "time": 76.688,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 8255.572,
+      "session_time": 6055.204,
       "interpolated": false,
       "position": 5
     },
@@ -13760,7 +13760,7 @@
       "time": 77.645,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 8257.853,
+      "session_time": 6061.413,
       "interpolated": false,
       "position": 6
     },
@@ -13770,7 +13770,7 @@
       "time": 78.393,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 8259.386,
+      "session_time": 6189.121,
       "interpolated": false,
       "position": 7
     },
@@ -13780,7 +13780,7 @@
       "time": 78.158,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 8262.017,
+      "session_time": 6192.914,
       "interpolated": false,
       "position": 8
     },
@@ -13790,7 +13790,7 @@
       "time": 80.075,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 8262.531,
+      "session_time": 6195.474,
       "interpolated": false,
       "position": 9
     },
@@ -13800,7 +13800,7 @@
       "time": 79.121,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 8263.252,
+      "session_time": 6195.516,
       "interpolated": false,
       "position": 10
     },
@@ -13810,7 +13810,7 @@
       "time": 79.857,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 8264.463,
+      "session_time": 6200.191,
       "interpolated": false,
       "position": 11
     },
@@ -13820,7 +13820,7 @@
       "time": 80.15,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 8265.256,
+      "session_time": 6202.935,
       "interpolated": false,
       "position": 12
     },
@@ -13830,7 +13830,7 @@
       "time": 79.306,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 8246.47,
+      "session_time": 6181.527,
       "interpolated": false,
       "position": 13
     },
@@ -13840,7 +13840,7 @@
       "time": 81.885,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 8266.443,
+      "session_time": 6054.94,
       "interpolated": false,
       "position": 14
     },
@@ -13850,7 +13850,7 @@
       "time": 78.642,
       "compound": "SOFT",
       "tyre_life": 6,
-      "session_time": 8271.12,
+      "session_time": 6169.964,
       "interpolated": false,
       "position": 15
     },
@@ -13860,7 +13860,7 @@
       "time": 73.958,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 8314.44,
+      "session_time": 6102.606,
       "interpolated": false,
       "position": 1
     },
@@ -13870,7 +13870,7 @@
       "time": 74.643,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 8316.662,
+      "session_time": 6104.166,
       "interpolated": false,
       "position": 2
     },
@@ -13880,7 +13880,7 @@
       "time": 76.599,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 8328.065,
+      "session_time": 6125.786,
       "interpolated": false,
       "position": 3
     },
@@ -13890,7 +13890,7 @@
       "time": 76.628,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 8331.209,
+      "session_time": 6119.293,
       "interpolated": false,
       "position": 4
     },
@@ -13900,7 +13900,7 @@
       "time": 76.187,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 8331.759,
+      "session_time": 6131.391,
       "interpolated": false,
       "position": 5
     },
@@ -13910,7 +13910,7 @@
       "time": 76.396,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 8334.249,
+      "session_time": 6137.809,
       "interpolated": false,
       "position": 6
     },
@@ -13920,7 +13920,7 @@
       "time": 76.789,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 8336.175,
+      "session_time": 6265.91,
       "interpolated": false,
       "position": 7
     },
@@ -13930,7 +13930,7 @@
       "time": 76.776,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 8338.793,
+      "session_time": 6269.69,
       "interpolated": false,
       "position": 8
     },
@@ -13940,7 +13940,7 @@
       "time": 76.748,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 8339.279,
+      "session_time": 6272.222,
       "interpolated": false,
       "position": 9
     },
@@ -13950,7 +13950,7 @@
       "time": 77.222,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 8340.474,
+      "session_time": 6272.738,
       "interpolated": false,
       "position": 10
     },
@@ -13960,7 +13960,7 @@
       "time": 77.518,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 8341.981,
+      "session_time": 6277.709,
       "interpolated": false,
       "position": 11
     },
@@ -13970,7 +13970,7 @@
       "time": 78.301,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 8343.557,
+      "session_time": 6281.236,
       "interpolated": false,
       "position": 12
     },
@@ -13980,7 +13980,7 @@
       "time": 78.224,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 8324.694,
+      "session_time": 6259.751,
       "interpolated": false,
       "position": 13
     },
@@ -13990,7 +13990,7 @@
       "time": 78.158,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 8344.601,
+      "session_time": 6133.098,
       "interpolated": false,
       "position": 14
     },
@@ -14000,7 +14000,7 @@
       "time": 76.316,
       "compound": "SOFT",
       "tyre_life": 7,
-      "session_time": 8347.436,
+      "session_time": 6246.28,
       "interpolated": false,
       "position": 15
     },
@@ -14010,7 +14010,7 @@
       "time": 74.008,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 8388.448,
+      "session_time": 6176.614,
       "interpolated": false,
       "position": 1
     },
@@ -14020,7 +14020,7 @@
       "time": 74.726,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 8391.388,
+      "session_time": 6178.892,
       "interpolated": false,
       "position": 2
     },
@@ -14030,7 +14030,7 @@
       "time": 76.296,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 8404.361,
+      "session_time": 6202.082,
       "interpolated": false,
       "position": 3
     },
@@ -14040,7 +14040,7 @@
       "time": 76.088,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 8407.297,
+      "session_time": 6195.381,
       "interpolated": false,
       "position": 4
     },
@@ -14050,7 +14050,7 @@
       "time": 76.258,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 8408.017,
+      "session_time": 6207.649,
       "interpolated": false,
       "position": 5
     },
@@ -14060,7 +14060,7 @@
       "time": 76.047,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 8410.296,
+      "session_time": 6213.856,
       "interpolated": false,
       "position": 6
     },
@@ -14070,7 +14070,7 @@
       "time": 76.245,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 8412.42,
+      "session_time": 6342.155,
       "interpolated": false,
       "position": 7
     },
@@ -14080,7 +14080,7 @@
       "time": 76.476,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 8415.269,
+      "session_time": 6346.166,
       "interpolated": false,
       "position": 8
     },
@@ -14090,7 +14090,7 @@
       "time": 76.353,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 8415.632,
+      "session_time": 6348.575,
       "interpolated": false,
       "position": 9
     },
@@ -14100,7 +14100,7 @@
       "time": 76.952,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 8417.426,
+      "session_time": 6349.69,
       "interpolated": false,
       "position": 10
     },
@@ -14110,7 +14110,7 @@
       "time": 77.393,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 8419.374,
+      "session_time": 6355.102,
       "interpolated": false,
       "position": 11
     },
@@ -14120,7 +14120,7 @@
       "time": 78.056,
       "compound": "SOFT",
       "tyre_life": 16,
-      "session_time": 8421.613,
+      "session_time": 6359.292,
       "interpolated": false,
       "position": 12
     },
@@ -14130,7 +14130,7 @@
       "time": 77.897,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 8402.591,
+      "session_time": 6337.648,
       "interpolated": false,
       "position": 13
     },
@@ -14140,7 +14140,7 @@
       "time": 77.905,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 8422.506,
+      "session_time": 6211.003,
       "interpolated": false,
       "position": 14
     },
@@ -14150,7 +14150,7 @@
       "time": 76.531,
       "compound": "SOFT",
       "tyre_life": 8,
-      "session_time": 8423.967,
+      "session_time": 6322.811,
       "interpolated": false,
       "position": 15
     },
@@ -14160,7 +14160,7 @@
       "time": 73.481,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 8461.929,
+      "session_time": 6250.095,
       "interpolated": false,
       "position": 1
     },
@@ -14170,7 +14170,7 @@
       "time": 75.049,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 8466.437,
+      "session_time": 6253.941,
       "interpolated": false,
       "position": 2
     },
@@ -14180,7 +14180,7 @@
       "time": 75.899,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 8480.26,
+      "session_time": 6277.981,
       "interpolated": false,
       "position": 3
     },
@@ -14190,7 +14190,7 @@
       "time": 75.898,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 8483.195,
+      "session_time": 6271.279,
       "interpolated": false,
       "position": 4
     },
@@ -14200,7 +14200,7 @@
       "time": 75.816,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 8483.833,
+      "session_time": 6283.465,
       "interpolated": false,
       "position": 5
     },
@@ -14210,7 +14210,7 @@
       "time": 75.754,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 8486.05,
+      "session_time": 6289.61,
       "interpolated": false,
       "position": 6
     },
@@ -14220,7 +14220,7 @@
       "time": 75.908,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 8488.328,
+      "session_time": 6418.063,
       "interpolated": false,
       "position": 7
     },
@@ -14230,7 +14230,7 @@
       "time": 76.604,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 8491.873,
+      "session_time": 6422.77,
       "interpolated": false,
       "position": 8
     },
@@ -14240,7 +14240,7 @@
       "time": 76.734,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 8492.366,
+      "session_time": 6425.309,
       "interpolated": false,
       "position": 9
     },
@@ -14250,7 +14250,7 @@
       "time": 76.992,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 8494.418,
+      "session_time": 6426.682,
       "interpolated": false,
       "position": 10
     },
@@ -14260,7 +14260,7 @@
       "time": 77.117,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 8496.491,
+      "session_time": 6432.219,
       "interpolated": false,
       "position": 11
     },
@@ -14270,7 +14270,7 @@
       "time": 77.276,
       "compound": "SOFT",
       "tyre_life": 17,
-      "session_time": 8498.889,
+      "session_time": 6436.568,
       "interpolated": false,
       "position": 12
     },
@@ -14280,7 +14280,7 @@
       "time": 77.588,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 8480.179,
+      "session_time": 6415.236,
       "interpolated": false,
       "position": 13
     },
@@ -14290,7 +14290,7 @@
       "time": 77.596,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 8500.102,
+      "session_time": 6288.599,
       "interpolated": false,
       "position": 14
     },
@@ -14300,7 +14300,7 @@
       "time": 77.519,
       "compound": "SOFT",
       "tyre_life": 9,
-      "session_time": 8501.486,
+      "session_time": 6400.33,
       "interpolated": false,
       "position": 15
     },
@@ -14310,7 +14310,7 @@
       "time": 73.728,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 8535.657,
+      "session_time": 6323.823,
       "interpolated": false,
       "position": 1
     },
@@ -14320,7 +14320,7 @@
       "time": 75.33,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 8541.767,
+      "session_time": 6329.271,
       "interpolated": false,
       "position": 2
     },
@@ -14330,7 +14330,7 @@
       "time": 75.497,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 8555.757,
+      "session_time": 6353.478,
       "interpolated": false,
       "position": 3
     },
@@ -14340,7 +14340,7 @@
       "time": 75.669,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 8558.864,
+      "session_time": 6346.948,
       "interpolated": false,
       "position": 4
     },
@@ -14350,7 +14350,7 @@
       "time": 75.846,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 8559.679,
+      "session_time": 6359.311,
       "interpolated": false,
       "position": 5
     },
@@ -14360,7 +14360,7 @@
       "time": 75.893,
       "compound": "SOFT",
       "tyre_life": 16,
-      "session_time": 8561.943,
+      "session_time": 6365.503,
       "interpolated": false,
       "position": 6
     },
@@ -14370,7 +14370,7 @@
       "time": 75.92,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 8564.248,
+      "session_time": 6493.983,
       "interpolated": false,
       "position": 7
     },
@@ -14380,7 +14380,7 @@
       "time": 76.406,
       "compound": "SOFT",
       "tyre_life": 16,
-      "session_time": 8568.279,
+      "session_time": 6499.176,
       "interpolated": false,
       "position": 8
     },
@@ -14390,7 +14390,7 @@
       "time": 76.49,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 8568.856,
+      "session_time": 6501.799,
       "interpolated": false,
       "position": 9
     },
@@ -14400,7 +14400,7 @@
       "time": 76.914,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 8571.332,
+      "session_time": 6503.596,
       "interpolated": false,
       "position": 10
     },
@@ -14410,7 +14410,7 @@
       "time": 76.894,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 8573.385,
+      "session_time": 6509.113,
       "interpolated": false,
       "position": 11
     },
@@ -14420,7 +14420,7 @@
       "time": 77.12,
       "compound": "SOFT",
       "tyre_life": 18,
-      "session_time": 8576.009,
+      "session_time": 6513.688,
       "interpolated": false,
       "position": 12
     },
@@ -14430,7 +14430,7 @@
       "time": 77.104,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 8557.283,
+      "session_time": 6492.34,
       "interpolated": false,
       "position": 13
     },
@@ -14440,7 +14440,7 @@
       "time": 77.27,
       "compound": "SOFT",
       "tyre_life": 14,
-      "session_time": 8577.372,
+      "session_time": 6365.869,
       "interpolated": false,
       "position": 14
     },
@@ -14450,7 +14450,7 @@
       "time": 77.095,
       "compound": "SOFT",
       "tyre_life": 10,
-      "session_time": 8578.581,
+      "session_time": 6477.425,
       "interpolated": false,
       "position": 15
     },
@@ -14460,7 +14460,7 @@
       "time": 75.614,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 8611.271,
+      "session_time": 6399.437,
       "interpolated": false,
       "position": 1
     },
@@ -14470,7 +14470,7 @@
       "time": 75.791,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 8617.542,
+      "session_time": 6405.708,
       "interpolated": false,
       "position": 2
     },
@@ -14480,7 +14480,7 @@
       "time": 75.773,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 8634.665,
+      "session_time": 6422.831,
       "interpolated": false,
       "position": 3
     },
@@ -14490,7 +14490,7 @@
       "time": 75.862,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 8635.532,
+      "session_time": 6423.698,
       "interpolated": false,
       "position": 4
     },
@@ -14500,7 +14500,7 @@
       "time": 75.963,
       "compound": "SOFT",
       "tyre_life": 17,
-      "session_time": 8637.824,
+      "session_time": 6425.99,
       "interpolated": false,
       "position": 5
     },
@@ -14510,7 +14510,7 @@
       "time": 75.96,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 8640.281,
+      "session_time": 6428.447,
       "interpolated": false,
       "position": 6
     },
@@ -14520,7 +14520,7 @@
       "time": 75.881,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 8641.64,
+      "session_time": 6429.806,
       "interpolated": false,
       "position": 7
     },
@@ -14530,7 +14530,7 @@
       "time": 76.393,
       "compound": "SOFT",
       "tyre_life": 17,
-      "session_time": 8644.684,
+      "session_time": 6432.85,
       "interpolated": false,
       "position": 8
     },
@@ -14540,7 +14540,7 @@
       "time": 77.057,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 8648.411,
+      "session_time": 6436.577,
       "interpolated": false,
       "position": 9
     },
@@ -14550,7 +14550,7 @@
       "time": 77.14,
       "compound": "SOFT",
       "tyre_life": 19,
-      "session_time": 8653.17,
+      "session_time": 6441.336,
       "interpolated": false,
       "position": 10
     },
@@ -14560,7 +14560,7 @@
       "time": 77.312,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 8654.019,
+      "session_time": 6442.185,
       "interpolated": false,
       "position": 11
     },
@@ -14570,7 +14570,7 @@
       "time": 77.257,
       "compound": "SOFT",
       "tyre_life": 15,
-      "session_time": 8654.624,
+      "session_time": 6442.79,
       "interpolated": false,
       "position": 12
     },
@@ -14580,7 +14580,7 @@
       "time": 76.511,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 8655.373,
+      "session_time": 6443.539,
       "interpolated": false,
       "position": 13
     },
@@ -14590,7 +14590,7 @@
       "time": 76.654,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 8660.235,
+      "session_time": 6448.401,
       "interpolated": false,
       "position": 14
     },
@@ -14600,7 +14600,7 @@
       "time": 76.891,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 8660.424,
+      "session_time": 6448.59,
       "interpolated": false,
       "position": 15
     }
@@ -26694,8 +26694,8 @@
         "start_lap": 59,
         "end_lap": 64,
         "laps_count": 6,
-        "avg_pace": 81.984,
-        "fuel_corrected_pace": 81.076
+        "avg_pace": 82.93,
+        "fuel_corrected_pace": 82.023
       },
       {
         "driver": "BOR",
@@ -26707,8 +26707,8 @@
         "start_lap": 65,
         "end_lap": 66,
         "laps_count": 2,
-        "avg_pace": 110.173,
-        "fuel_corrected_pace": 109.486
+        "avg_pace": 87.233,
+        "fuel_corrected_pace": 86.546
       },
       {
         "driver": "BOR",
@@ -26811,8 +26811,8 @@
         "start_lap": 66,
         "end_lap": 67,
         "laps_count": 2,
-        "avg_pace": 110.405,
-        "fuel_corrected_pace": 109.773
+        "avg_pace": 85.088,
+        "fuel_corrected_pace": 84.456
       },
       {
         "driver": "GAS",
@@ -26863,8 +26863,8 @@
         "start_lap": 59,
         "end_lap": 67,
         "laps_count": 9,
-        "avg_pace": 82.431,
-        "fuel_corrected_pace": 81.606
+        "avg_pace": 83.848,
+        "fuel_corrected_pace": 83.023
       },
       {
         "driver": "PER",
@@ -26902,8 +26902,8 @@
         "start_lap": 37,
         "end_lap": 60,
         "laps_count": 24,
-        "avg_pace": 76.452,
-        "fuel_corrected_pace": 74.829
+        "avg_pace": 76.713,
+        "fuel_corrected_pace": 75.09
       },
       {
         "driver": "ANT",
@@ -26915,8 +26915,8 @@
         "start_lap": 61,
         "end_lap": 67,
         "laps_count": 7,
-        "avg_pace": 120.892,
-        "fuel_corrected_pace": 120.122
+        "avg_pace": 83.295,
+        "fuel_corrected_pace": 82.525
       },
       {
         "driver": "ANT",
@@ -27006,8 +27006,8 @@
         "start_lap": 60,
         "end_lap": 64,
         "laps_count": 5,
-        "avg_pace": 112.585,
-        "fuel_corrected_pace": 111.705
+        "avg_pace": 83.662,
+        "fuel_corrected_pace": 82.782
       },
       {
         "driver": "STR",
@@ -27292,8 +27292,8 @@
         "start_lap": 65,
         "end_lap": 66,
         "laps_count": 2,
-        "avg_pace": 111.256,
-        "fuel_corrected_pace": 110.569
+        "avg_pace": 86.472,
+        "fuel_corrected_pace": 85.784
       },
       {
         "driver": "COL",
@@ -27344,8 +27344,8 @@
         "start_lap": 60,
         "end_lap": 67,
         "laps_count": 8,
-        "avg_pace": 112.581,
-        "fuel_corrected_pace": 111.784
+        "avg_pace": 83.595,
+        "fuel_corrected_pace": 82.797
       },
       {
         "driver": "HAM",
@@ -27396,8 +27396,8 @@
         "start_lap": 67,
         "end_lap": 70,
         "laps_count": 4,
-        "avg_pace": 631.088,
-        "fuel_corrected_pace": 630.565
+        "avg_pace": 86.281,
+        "fuel_corrected_pace": 85.759
       },
       {
         "driver": "RUS",
@@ -28120,7 +28120,7 @@
         "rank": 1,
         "laps_completed": 78,
         "status": "FINISHER",
-        "duration": 8611.271,
+        "duration": 6399.437,
         "gap_to_leader": 0.0,
         "is_dnf": false,
         "is_dns": false
@@ -28134,7 +28134,7 @@
         "rank": 2,
         "laps_completed": 78,
         "status": "FINISHER",
-        "duration": 8617.542,
+        "duration": 6405.708,
         "gap_to_leader": 6.271,
         "is_dnf": false,
         "is_dns": false
@@ -28148,7 +28148,7 @@
         "rank": 3,
         "laps_completed": 78,
         "status": "FINISHER",
-        "duration": 8634.665,
+        "duration": 6422.831,
         "gap_to_leader": 23.394,
         "is_dnf": false,
         "is_dns": false
@@ -28162,7 +28162,7 @@
         "rank": 4,
         "laps_completed": 78,
         "status": "FINISHER",
-        "duration": 8635.532,
+        "duration": 6423.698,
         "gap_to_leader": 24.261,
         "is_dnf": false,
         "is_dns": false
@@ -28176,7 +28176,7 @@
         "rank": 5,
         "laps_completed": 78,
         "status": "FINISHER",
-        "duration": 8637.824,
+        "duration": 6425.99,
         "gap_to_leader": 26.553,
         "is_dnf": false,
         "is_dns": false
@@ -28190,7 +28190,7 @@
         "rank": 6,
         "laps_completed": 78,
         "status": "FINISHER",
-        "duration": 8640.281,
+        "duration": 6428.447,
         "gap_to_leader": 29.01,
         "is_dnf": false,
         "is_dns": false
@@ -28204,7 +28204,7 @@
         "rank": 7,
         "laps_completed": 78,
         "status": "FINISHER",
-        "duration": 8641.64,
+        "duration": 6429.806,
         "gap_to_leader": 30.369,
         "is_dnf": false,
         "is_dns": false
@@ -28218,7 +28218,7 @@
         "rank": 8,
         "laps_completed": 78,
         "status": "FINISHER",
-        "duration": 8644.684,
+        "duration": 6432.85,
         "gap_to_leader": 33.413,
         "is_dnf": false,
         "is_dns": false
@@ -28232,7 +28232,7 @@
         "rank": 9,
         "laps_completed": 78,
         "status": "FINISHER",
-        "duration": 8648.411,
+        "duration": 6436.577,
         "gap_to_leader": 37.14,
         "is_dnf": false,
         "is_dns": false
@@ -28246,7 +28246,7 @@
         "rank": 10,
         "laps_completed": 78,
         "status": "FINISHER",
-        "duration": 8653.17,
+        "duration": 6441.336,
         "gap_to_leader": 41.899,
         "is_dnf": false,
         "is_dns": false
@@ -28260,7 +28260,7 @@
         "rank": 11,
         "laps_completed": 78,
         "status": "FINISHER",
-        "duration": 8654.019,
+        "duration": 6442.185,
         "gap_to_leader": 42.748,
         "is_dnf": false,
         "is_dns": false
@@ -28274,7 +28274,7 @@
         "rank": 12,
         "laps_completed": 78,
         "status": "FINISHER",
-        "duration": 8654.624,
+        "duration": 6442.79,
         "gap_to_leader": 43.353,
         "is_dnf": false,
         "is_dns": false
@@ -28288,7 +28288,7 @@
         "rank": 13,
         "laps_completed": 78,
         "status": "FINISHER",
-        "duration": 8655.373,
+        "duration": 6443.539,
         "gap_to_leader": 44.102,
         "is_dnf": false,
         "is_dns": false
@@ -28302,7 +28302,7 @@
         "rank": 14,
         "laps_completed": 78,
         "status": "FINISHER",
-        "duration": 8660.235,
+        "duration": 6448.401,
         "gap_to_leader": 48.964,
         "is_dnf": false,
         "is_dns": false
@@ -28316,7 +28316,7 @@
         "rank": 15,
         "laps_completed": 78,
         "status": "FINISHER",
-        "duration": 8660.424,
+        "duration": 6448.59,
         "gap_to_leader": 49.153,
         "is_dnf": false,
         "is_dns": false
@@ -28330,7 +28330,7 @@
         "rank": 16,
         "laps_completed": 70,
         "status": "DNF",
-        "duration": 8012.883,
+        "duration": 5944.546,
         "gap_to_leader": "DNF",
         "is_dnf": true,
         "is_dns": false
