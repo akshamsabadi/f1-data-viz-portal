@@ -66,7 +66,7 @@ const _NEAREST_TURN_THRESHOLD_PCT = 2.2;
 const _DEAD_EVEN_DELTA_THRESHOLD_S = 0.0005;
 const _SEGMENT_TIME_EPSILON_S = 0.000001;
 
-const _ACTIVE_TURN_MARKER_COLOR = '#ff1801';
+const _ACTIVE_TURN_MARKER_COLOR = '#ffffff';
 const _ACTIVE_TURN_MARKER_WIDTH_PX = 2.2;
 const _DEFAULT_TURN_MARKER_WIDTH_PX = 1;
 const _ACTIVE_TURN_LABEL_COLOR = '#ffffff';
@@ -474,7 +474,7 @@ function _createDriverSelectControl(roleLabel, results, selectedDriver, onChange
     arrowEl.style.height = '0';
     arrowEl.style.borderLeft = '4px solid transparent';
     arrowEl.style.borderRight = '4px solid transparent';
-    arrowEl.style.borderTop = '5px solid var(--accent)';
+    arrowEl.style.borderTop = '5px solid var(--text-muted)';
 
     selectWrap.appendChild(selectEl);
     selectWrap.appendChild(arrowEl);
@@ -496,11 +496,11 @@ function _createVsBadgeElement() {
     vsBadge.style.fontFamily = 'Montserrat, sans-serif';
     vsBadge.style.fontSize = '0.7rem';
     vsBadge.style.fontWeight = '700';
-    vsBadge.style.color = 'var(--accent)';
+    vsBadge.style.color = 'var(--text-muted)';
     vsBadge.style.padding = '0.15rem 0.4rem';
     vsBadge.style.borderRadius = '4px';
-    vsBadge.style.background = 'rgba(225, 6, 0, 0.12)';
-    vsBadge.style.border = '1px solid rgba(225, 6, 0, 0.3)';
+    vsBadge.style.background = 'rgba(255, 255, 255, 0.05)';
+    vsBadge.style.border = '1px solid rgba(255, 255, 255, 0.12)';
     vsBadge.textContent = 'VS';
     return vsBadge;
 }

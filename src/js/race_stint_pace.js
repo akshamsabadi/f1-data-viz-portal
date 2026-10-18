@@ -356,10 +356,10 @@ function _buildStintPaceControls(controlsContainer, activeMetric, onMetricChange
             const isSelected = key === currentMetric;
             btn.classList.toggle('inactive', !isSelected);
             btn.style.borderColor = isSelected
-                ? 'var(--accent)'
+                ? 'rgba(255, 255, 255, 0.35)'
                 : 'rgba(255, 255, 255, 0.08)';
             btn.style.background = isSelected
-                ? 'rgba(225, 6, 0, 0.18)'
+                ? 'rgba(255, 255, 255, 0.1)'
                 : 'rgba(0, 0, 0, 0.25)';
             btn.style.color = isSelected ? '#ffffff' : 'var(--text-muted)';
         });

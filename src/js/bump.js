@@ -27,14 +27,14 @@ const _DNF_DASH_ARRAY = '3,3';
 const _TOOLTIP_OFFSET_X_PX = 15;
 const _TOOLTIP_OFFSET_Y_PX = -30;
 
-const _PLAYHEAD_COLOR = '#38bdf8';
+const _PLAYHEAD_COLOR = '#e5e7eb';
 const _PLAYHEAD_STROKE_WIDTH_PX = 1.8;
 const _PLAYHEAD_DASH_ARRAY = '5,3';
 const _PLAYHEAD_PILL_WIDTH_PX = 46;
 const _PLAYHEAD_PILL_HEIGHT_PX = 15;
 const _PLAYHEAD_PILL_Y_OFFSET_PX = -17;
 const _PLAYHEAD_PILL_RADIUS_PX = 3;
-const _PLAYHEAD_PILL_BG_FILL = 'rgba(15, 23, 42, 0.96)';
+const _PLAYHEAD_PILL_BG_FILL = 'rgba(17, 17, 24, 0.96)';
 
 let _externalBumpFocusHandler = null;
 let _bumpPlayheadHandler = null;

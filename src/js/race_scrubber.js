@@ -1,5 +1,5 @@
 import { calculateDriverClassification } from './standings.js';
-import { setRaceStrategyPlayheadLap, analyzePitStopTactics } from './race_strategy.js';
+import { setRaceStrategyPlayheadLap } from './race_strategy.js';
 import { setRaceWormPlayheadLap } from './race_worm.js';
 import { setBumpPlayheadLap } from './bump.js';
 
@@ -354,14 +354,28 @@ function _createTrackLoopSampler(points) {
  */
 function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrackPoint) {
     const gridMap = _buildStartingGridMap(data, classification);
-    const { byKey: tacticsByKey, list: tacticsList } = analyzePitStopTactics(data);
 
     const pitsByLap = new Map();
-    tacticsList.forEach((tactic) => {
-        if (!pitsByLap.has(tactic.lap)) {
-            pitsByLap.set(tactic.lap, new Set());
+    const rawPitStops = data.race_telemetry?.pit_stops || [];
+    rawPitStops.forEach((stop) => {
+        const lapNum = Number(stop.lap);
+        if (!stop.driver || !Number.isFinite(lapNum) || lapNum < 1) return;
+        if (!pitsByLap.has(lapNum)) {
+            pitsByLap.set(lapNum, new Set());
         }
-        pitsByLap.get(tactic.lap).add(tactic.driver);
+        pitsByLap.get(lapNum).add(stop.driver);
+    });
+    const stintsByDriver = d3.group(data.race_telemetry?.stints || [], (s) => s.driver);
+    stintsByDriver.forEach((driverStints, driverCode) => {
+        const sorted = driverStints.slice().sort((a, b) => Number(a.stint) - Number(b.stint));
+        for (let i = 0; i < sorted.length - 1; i++) {
+            const lapNum = Number(sorted[i].end_lap);
+            if (!Number.isFinite(lapNum) || lapNum < 1) continue;
+            if (!pitsByLap.has(lapNum)) {
+                pitsByLap.set(lapNum, new Set());
+            }
+            pitsByLap.get(lapNum).add(driverCode);
+        }
     });
 
     const positiveLapTimes = validLaps
@@ -420,7 +434,6 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
                 gapLabel: gridPos === 1 ? 'POLE' : `GRID P${gridPos}`,
                 isRetired: Boolean(entry.isDns),
                 isPitting: false,
-                tactic: null,
                 pct,
                 normalOffset,
                 x: coords.x,
@@ -473,7 +486,6 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
             const prev = lastKnownStateByDriver.get(code);
             const rec = lapsByDriver.get(code)?.get(lap);
             const isPitting = pitsOnLap.has(code);
-            const tactic = tacticsByKey.get(`${code}-${lap}`) || null;
 
             const isRetiredOnLap =
                 Boolean(entry.isDns) ||
@@ -495,7 +507,6 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
                     gapLabel: entry.isDns ? 'DNS' : 'OUT',
                     isRetired: true,
                     isPitting: false,
-                    tactic: null,
                     pct: prev.pct,
                     normalOffset: 0,
                     x: coords.x,
@@ -539,7 +550,6 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
                     gapLabel: isPitting ? 'PIT' : `+${gapSeconds.toFixed(3)}s`,
                     isRetired: false,
                     isPitting,
-                    tactic,
                     pct,
                     normalOffset: 0,
                     x: 0,
@@ -564,7 +574,6 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
                 gapLabel: `+${lapsDown}L`,
                 isRetired: false,
                 isPitting: false,
-                tactic: null,
                 pct: prev.pct,
                 normalOffset: 0,
                 x: 0,
@@ -673,11 +682,11 @@ function _buildHeaderControls(controlsContainer, handlers) {
             const isSelected = key === selectedKey;
             btn.classList.toggle('active', isSelected);
             btn.style.borderColor = isSelected
-                ? 'var(--accent)'
-                : 'rgba(255, 255, 255, 0.12)';
+                ? 'rgba(255, 255, 255, 0.35)'
+                : 'rgba(255, 255, 255, 0.1)';
             btn.style.background = isSelected
-                ? 'rgba(225, 6, 0, 0.2)'
-                : 'rgba(0, 0, 0, 0.28)';
+                ? 'rgba(255, 255, 255, 0.12)'
+                : 'rgba(0, 0, 0, 0.25)';
             btn.style.color = isSelected ? '#ffffff' : 'var(--text-muted)';
         });
     };
@@ -718,11 +727,11 @@ function _buildHeaderControls(controlsContainer, handlers) {
         playBtn.textContent = isPlaying ? '⏸ PAUSE' : '▶ PLAY';
         playBtn.classList.toggle('playing', isPlaying);
         playBtn.style.borderColor = isPlaying
-            ? '#38bdf8'
-            : 'rgba(255, 255, 255, 0.18)';
+            ? 'rgba(255, 255, 255, 0.45)'
+            : 'rgba(255, 255, 255, 0.2)';
         playBtn.style.background = isPlaying
-            ? 'rgba(56, 189, 248, 0.18)'
-            : 'rgba(225, 6, 0, 0.22)';
+            ? 'rgba(255, 255, 255, 0.16)'
+            : 'rgba(255, 255, 255, 0.08)';
     };
 
     const updateStatusPill = (statusKey) => {
@@ -789,13 +798,13 @@ function _populateRadarCarTooltip(tooltipNode, car, currentLap) {
 
     const children = [headerDiv, statusLine, trackRefLine];
 
-    if (car.isPitting && car.tactic) {
+    if (car.isPitting) {
         const pitLine = document.createElement('div');
         pitLine.style.marginTop = '4px';
         pitLine.style.fontSize = '0.75rem';
         pitLine.style.fontWeight = '700';
-        pitLine.style.color = car.tactic.color || '#f59e0b';
-        pitLine.textContent = `PIT STOP: ${car.tactic.badgeLabel} — ${car.tactic.detailText}`;
+        pitLine.style.color = '#f59e0b';
+        pitLine.textContent = `PIT STOP ON LAP ${currentLap}`;
         children.push(pitLine);
     }
 
@@ -1169,7 +1178,7 @@ function _renderTowerRows(towerListEl, drivers, focusedDriver, onSelectDriver) {
         posSpan.style.fontFamily = 'Montserrat, sans-serif';
         posSpan.style.fontSize = '0.74rem';
         posSpan.style.fontWeight = '700';
-        posSpan.style.color = d.pos === 1 ? '#34d399' : 'var(--text-muted)';
+        posSpan.style.color = d.pos === 1 ? '#ffffff' : 'var(--text-muted)';
         posSpan.textContent = `P${d.pos}`;
 
         const colorBar = document.createElement('span');
@@ -1228,7 +1237,7 @@ function _renderTowerRows(towerListEl, drivers, focusedDriver, onSelectDriver) {
         gapSpan.style.color = d.isPitting
             ? '#f59e0b'
             : d.pos === 1
-              ? '#34d399'
+              ? '#ffffff'
               : 'var(--text-primary)';
         gapSpan.textContent = d.gapLabel;
 
@@ -1361,7 +1370,7 @@ export function renderRaceScrubber(data) {
     lapBadge.style.fontSize = '0.84rem';
     lapBadge.style.fontWeight = '800';
     lapBadge.style.minWidth = '210px';
-    lapBadge.style.color = '#38bdf8';
+    lapBadge.style.color = '#f3f4f6';
 
     const rangeSlider = document.createElement('input');
     rangeSlider.type = 'range';
@@ -1373,7 +1382,7 @@ export function renderRaceScrubber(data) {
     rangeSlider.style.flex = '1';
     rangeSlider.style.minWidth = '180px';
     rangeSlider.style.cursor = 'pointer';
-    rangeSlider.style.accentColor = '#e10600';
+    rangeSlider.style.accentColor = '#d1d5db';
 
     const chipsContainer = document.createElement('div');
     chipsContainer.className = 'replay-summary-chips';

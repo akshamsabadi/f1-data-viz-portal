@@ -126,7 +126,7 @@ function _computeDriverSegments(entry, mode) {
  */
 function _buildProgrammeLegendControls(legendContainer, activeMode, onModeChange) {
     if (!legendContainer) return;
-    legendContainer.innerHTML = '';
+    legendContainer.replaceChildren();
 
     const modes = [
         { id: _MODE_COMPOUND, label: 'BY TYRE COMPOUND' },
@@ -137,8 +137,8 @@ function _buildProgrammeLegendControls(legendContainer, activeMode, onModeChange
         const btn = document.createElement('div');
         btn.className = 'legend-item';
         const isSelected = activeMode === m.id;
-        btn.style.borderColor = isSelected ? 'var(--accent)' : 'rgba(255, 255, 255, 0.12)';
-        btn.style.background = isSelected ? 'rgba(225, 6, 0, 0.18)' : 'rgba(0, 0, 0, 0.25)';
+        btn.style.borderColor = isSelected ? 'rgba(255, 255, 255, 0.35)' : 'rgba(255, 255, 255, 0.12)';
+        btn.style.background = isSelected ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.25)';
         btn.style.color = isSelected ? '#ffffff' : 'var(--text-muted)';
         btn.style.fontWeight = '700';
         btn.textContent = m.label;

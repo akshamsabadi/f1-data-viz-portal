@@ -33,14 +33,14 @@ const _TOOLTIP_OFFSET_Y_PX = -28;
 const _VIEW_MODE_LEAD = 'lead';
 const _VIEW_MODE_FULL = 'full';
 
-const _PLAYHEAD_COLOR = '#38bdf8';
+const _PLAYHEAD_COLOR = '#e5e7eb';
 const _PLAYHEAD_STROKE_WIDTH_PX = 1.8;
 const _PLAYHEAD_DASH_ARRAY = '5,3';
 const _PLAYHEAD_PILL_WIDTH_PX = 46;
 const _PLAYHEAD_PILL_HEIGHT_PX = 15;
 const _PLAYHEAD_PILL_Y_OFFSET_PX = -18;
 const _PLAYHEAD_PILL_RADIUS_PX = 3;
-const _PLAYHEAD_PILL_BG_FILL = 'rgba(15, 23, 42, 0.96)';
+const _PLAYHEAD_PILL_BG_FILL = 'rgba(17, 17, 24, 0.96)';
 
 let _externalWormFocusHandler = null;
 let _wormPlayheadHandler = null;
@@ -307,10 +307,10 @@ function _buildWormControls(controlsContainer, activeMode, onModeChange) {
             const isSelected = key === currentMode;
             btn.classList.toggle('inactive', !isSelected);
             btn.style.borderColor = isSelected
-                ? 'var(--accent)'
+                ? 'rgba(255, 255, 255, 0.35)'
                 : 'rgba(255, 255, 255, 0.08)';
             btn.style.background = isSelected
-                ? 'rgba(225, 6, 0, 0.18)'
+                ? 'rgba(255, 255, 255, 0.1)'
                 : 'rgba(0, 0, 0, 0.25)';
             btn.style.color = isSelected ? '#ffffff' : 'var(--text-muted)';
         });

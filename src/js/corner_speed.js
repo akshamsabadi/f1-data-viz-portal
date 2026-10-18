@@ -988,7 +988,7 @@ function _createTrackGhostCarsLayer(svg, points) {
         .attr('height', _LIVE_HUD_HEIGHT_PX)
         .attr('rx', 5)
         .attr('fill', 'rgba(12, 12, 18, 0.92)')
-        .attr('stroke', 'rgba(255, 24, 1, 0.65)')
+        .attr('stroke', 'rgba(255, 255, 255, 0.28)')
         .attr('stroke-width', 1.2);
 
     hudGroup
@@ -996,7 +996,7 @@ function _createTrackGhostCarsLayer(svg, points) {
         .attr('cx', 12)
         .attr('cy', _LIVE_HUD_HEIGHT_PX / 2)
         .attr('r', 4)
-        .attr('fill', '#ff1801');
+        .attr('fill', '#e5e7eb');
 
     const hudText = hudGroup
         .append('text')
@@ -1408,14 +1408,14 @@ function _renderCircuitTrackMapPanel(mapWrapper, data, turnDataByNumber, onMapTu
                 const fastestCorner = td?.corners
                     ?.slice()
                     .sort((a, b) => b.speed - a.speed)[0];
-                return fastestCorner?.color || '#ff1801';
+                return fastestCorner?.color || '#ffffff';
             });
 
         pulseRings
             .style('display', (tg) => (tg.turn === activeTurnNumber ? null : 'none'))
             .attr('stroke', (tg) => {
                 const td = turnDataByNumber.get(tg.turn);
-                return _CATEGORY_ACCENT_COLORS[td?.category?.key] || '#ff1801';
+                return _CATEGORY_ACCENT_COLORS[td?.category?.key] || '#ffffff';
             });
 
         apexDots
@@ -1434,7 +1434,9 @@ function _renderCircuitTrackMapPanel(mapWrapper, data, turnDataByNumber, onMapTu
                     : _TURN_BADGE_RADIUS_PX
             )
             .attr('fill', (tg) =>
-                tg.turn === activeTurnNumber ? '#ff1801' : 'rgba(16, 16, 24, 0.94)'
+                tg.turn === activeTurnNumber
+                    ? 'rgba(255, 255, 255, 0.18)'
+                    : 'rgba(16, 16, 24, 0.94)'
             )
             .attr('stroke', (tg) => {
                 if (tg.turn === activeTurnNumber) return '#ffffff';
