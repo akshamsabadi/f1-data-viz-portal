@@ -27,6 +27,28 @@ const _FASTEST_DELTA_COLOR = '#34d399';
 const _TOOLTIP_OFFSET_X_PX = 15;
 const _TOOLTIP_OFFSET_Y_PX = -30;
 
+const _SECTOR_COLORS = {
+    S1: '#ef4444',
+    S2: '#38bdf8',
+    S3: '#eab308'
+};
+const _CATEGORY_ACCENT_COLORS = {
+    Slow: '#38bdf8',
+    Medium: '#facc15',
+    Fast: '#4ade80'
+};
+const _TRACK_VIEWBOX_W = 1000;
+const _TRACK_VIEWBOX_H = 560;
+const _TRACK_OUTER_CASING_WIDTH_PX = 16;
+const _TRACK_BED_WIDTH_PX = 10;
+const _TRACK_SECTOR_LINE_WIDTH_PX = 4.2;
+const _TRACK_ACTIVE_ARC_WIDTH_PX = 11.5;
+const _TURN_APEX_RADIUS_PX = 4.8;
+const _TURN_APEX_ACTIVE_RADIUS_PX = 8.2;
+const _TURN_BADGE_RADIUS_PX = 11.5;
+const _TURN_BADGE_ACTIVE_RADIUS_PX = 14.5;
+const _INSPECTOR_TOP_TEAMS_LIMIT = 5;
+
 let _externalTeamFocusHandler = null;
 
 /**
@@ -221,11 +243,13 @@ function _createCategoryColumn(parentContainer, columnData) {
  *
  * @param {HTMLElement} columnContainer - Category column container holding turn cards.
  * @param {{turn: number, minSpeed: number, maxSpeed: number, category: {key: string, label: string, cssClass: string}}} turnData - Turn metadata.
- * @returns {HTMLDivElement} Inner chart container `div.turn-chart-mount` where the SVG will be mounted.
+ * @param {Function} onHoverTurn - Callback invoked with `(turnNumber)` on hover or `(null)` on leave.
+ * @returns {{cardEl: HTMLDivElement, chartDiv: HTMLDivElement}} Outer `.turn-subplot-card` and inner `.turn-chart-mount`.
  */
-function _createTurnSubplotCard(columnContainer, turnData) {
+function _createTurnSubplotCard(columnContainer, turnData, onHoverTurn) {
     const subplotWrap = document.createElement('div');
     subplotWrap.className = 'subplot-container turn-subplot-card';
+    subplotWrap.dataset.turn = String(turnData.turn);
 
     const header = document.createElement('div');
     header.className = 'subplot-title turn-subplot-header';
@@ -246,9 +270,17 @@ function _createTurnSubplotCard(columnContainer, turnData) {
     const chartDiv = document.createElement('div');
     chartDiv.className = 'turn-chart-mount';
     subplotWrap.appendChild(chartDiv);
+
+    subplotWrap.addEventListener('mouseenter', () => {
+        if (onHoverTurn) onHoverTurn(turnData.turn);
+    });
+    subplotWrap.addEventListener('mouseleave', () => {
+        if (onHoverTurn) onHoverTurn(null);
+    });
+
     columnContainer.appendChild(subplotWrap);
 
-    return chartDiv;
+    return { cardEl: subplotWrap, chartDiv };
 }
 
 /**
@@ -383,7 +415,7 @@ function _populateCornerTooltipContent(tooltipNode, cornerEntry, category, faste
  * @param {Object} tooltip - D3 selection for the shared tooltip element.
  * @returns {Object} D3 selection of rendered `.team-node` groups.
  */
-function _renderTurnCornerNodes(svg, turnData, width, tooltip) {
+function _renderTurnCornerNodes(svg, turnData, width, tooltip, onHoverTurn) {
     const { corners, category, maxSpeed: fastestInTurn } = turnData;
     const nodes = svg
         .selectAll('.team-node')
@@ -397,6 +429,7 @@ function _renderTurnCornerNodes(svg, turnData, width, tooltip) {
         })
         .style('cursor', 'pointer')
         .on('mouseover', (event, d) => {
+            if (onHoverTurn) onHoverTurn(turnData.turn);
             const teamColor = d.color || 'var(--accent)';
             _populateCornerTooltipContent(tooltip.node(), d, category, fastestInTurn);
 
@@ -439,9 +472,10 @@ function _renderTurnCornerNodes(svg, turnData, width, tooltip) {
  * @param {HTMLDivElement} chartDiv - Mounted `.turn-chart-mount` container with final grid column width.
  * @param {{turn: number, minSpeed: number, maxSpeed: number, category: {key: string}, corners: Array<Object>}} turnData - Turn data and speed bounds.
  * @param {Object} tooltip - D3 selection for the shared tooltip element.
+ * @param {Function} onHoverTurn - Callback invoked with `(turnNumber)` when hovering a node.
  * @returns {Object} D3 selection of rendered nodes in this turn subplot.
  */
-function _drawTurnSubplotSvg(chartDiv, turnData, tooltip) {
+function _drawTurnSubplotSvg(chartDiv, turnData, tooltip, onHoverTurn) {
     const width = Math.max(
         _MIN_SUBPLOT_WIDTH_PX,
         chartDiv.clientWidth - _TURN_SUBPLOT_MARGIN.left - _TURN_SUBPLOT_MARGIN.right
@@ -471,7 +505,7 @@ function _drawTurnSubplotSvg(chartDiv, turnData, tooltip) {
     _renderTurnAxesAndGrid(svg, xScale, height);
     _renderTurnRangeBar(svg, xScale, turnData.minSpeed, turnData.maxSpeed, centerY);
     _positionTurnNodesTrueSpeed(turnData.corners, xScale, centerY);
-    return _renderTurnCornerNodes(svg, turnData, width, tooltip);
+    return _renderTurnCornerNodes(svg, turnData, width, tooltip, onHoverTurn);
 }
 
 /**
@@ -516,17 +550,516 @@ function _applyCornerTeamStyles(subplotNodeSelections, activeTeams, highlightedT
 }
 
 /**
- * Renders the Corner Speeds chart organized into three columns (`Slow`, `Medium`, `Fast`),
- * with an individual auto-scaled subplot card per turn (`Turn 1..N`) inside its category column.
- * Mounts all columns and turn cards into the CSS Grid before measuring their widths so SVG dimensions match the layout.
+ * Resolves the `track_map` geometry object from `data.track_map` or builds a procedural
+ * closed-loop fallback when `track_map` is absent.
  *
- * @param {Object} data - Race telemetry payload containing `corners`.
+ * @param {Object} data - Grand Prix telemetry payload.
+ * @param {Array<Object>} allTurnsData - Sorted turn metadata objects.
+ * @returns {{points: Array<[number, number]>, s1_end_idx: number, s2_end_idx: number, turns: Array<Object>}} Track map geometry.
+ */
+function _resolveTrackMapData(data, allTurnsData) {
+    if (
+        data.track_map &&
+        Array.isArray(data.track_map.points) &&
+        data.track_map.points.length >= 20 &&
+        Array.isArray(data.track_map.turns) &&
+        data.track_map.turns.length > 0
+    ) {
+        return data.track_map;
+    }
+
+    const numPoints = 180;
+    const cx = _TRACK_VIEWBOX_W / 2;
+    const cy = _TRACK_VIEWBOX_H / 2;
+    const points = [];
+    for (let i = 0; i < numPoints; i++) {
+        const theta = (i / numPoints) * Math.PI * 2;
+        const rScale = 1 + 0.2 * Math.cos(2 * theta) + 0.1 * Math.sin(3 * theta);
+        const x = Number((cx + rScale * 340 * Math.cos(theta)).toFixed(1));
+        const y = Number((cy + rScale * 195 * Math.sin(theta)).toFixed(1));
+        points.push([x, y]);
+    }
+
+    const totalTurns = Math.max(1, allTurnsData.length);
+    const turns = allTurnsData.map((t, index) => {
+        const idx = Math.min(
+            numPoints - 2,
+            Math.max(2, Math.round(((index + 0.5) / totalTurns) * (numPoints - 4)))
+        );
+        const [x, y] = points[idx];
+        const dx = x - cx;
+        const dy = y - cy;
+        const len = Math.hypot(dx, dy) || 1;
+        return {
+            turn: t.turn,
+            idx,
+            pct: Number(((idx / numPoints) * 100).toFixed(1)),
+            x,
+            y,
+            label_x: Number((x + (dx / len) * 28).toFixed(1)),
+            label_y: Number((y + (dy / len) * 28).toFixed(1)),
+            arc_start_idx: Math.max(0, idx - 3),
+            arc_end_idx: Math.min(numPoints - 1, idx + 3)
+        };
+    });
+
+    return {
+        points,
+        s1_end_idx: Math.round(numPoints * 0.33),
+        s2_end_idx: Math.round(numPoints * 0.67),
+        turns
+    };
+}
+
+/**
+ * Determines which FIA Sector (`S1`, `S2`, or `S3`) a point index belongs to.
+ *
+ * @param {number} idx - Point index along the track loop.
+ * @param {number} s1EndIdx - End index of Sector 1.
+ * @param {number} s2EndIdx - End index of Sector 2.
+ * @returns {'S1'|'S2'|'S3'} Sector identifier.
+ */
+function _resolveTurnSectorKey(idx, s1EndIdx, s2EndIdx) {
+    if (idx <= s1EndIdx) return 'S1';
+    if (idx <= s2EndIdx) return 'S2';
+    return 'S3';
+}
+
+/**
+ * Populates the right-hand Corner Telemetry Inspector card for the currently active turn.
+ *
+ * @param {HTMLElement} inspectorEl - Mounted `.circuit-turn-inspector` container.
+ * @param {Object} turnData - Turn telemetry stats (`turn`, `minSpeed`, `maxSpeed`, `category`, `corners`).
+ * @param {Object| undefined} turnGeo - Turn geometry entry (`idx`, `pct`).
+ * @param {number} s1EndIdx - Sector 1 boundary index.
+ * @param {number} s2EndIdx - Sector 2 boundary index.
+ * @returns {void}
+ */
+function _populateTurnInspectorCard(inspectorEl, turnData, turnGeo, s1EndIdx, s2EndIdx) {
+    if (!inspectorEl || !turnData) return;
+
+    const topBlock = document.createElement('div');
+
+    const headerRow = document.createElement('div');
+    headerRow.className = 'inspector-header-row';
+
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'inspector-turn-title';
+    titleSpan.textContent = `TURN ${turnData.turn}`;
+
+    const catBadge = document.createElement('span');
+    catBadge.className = `turn-category-badge ${turnData.category.cssClass}`;
+    catBadge.textContent = turnData.category.label;
+
+    headerRow.append(titleSpan, catBadge);
+
+    const sectorKey = _resolveTurnSectorKey(turnGeo?.idx ?? 0, s1EndIdx, s2EndIdx);
+    const metaRow = document.createElement('div');
+    metaRow.className = 'inspector-meta-row';
+
+    const sectorSpan = document.createElement('span');
+    sectorSpan.style.color = _SECTOR_COLORS[sectorKey];
+    sectorSpan.style.fontWeight = '700';
+    sectorSpan.textContent = `SECTOR ${sectorKey.slice(1)}`;
+
+    const pctSpan = document.createElement('span');
+    pctSpan.textContent = `${(turnGeo?.pct ?? 0).toFixed(0)}% Lap Distance`;
+
+    const rangeSpan = document.createElement('span');
+    rangeSpan.textContent = `Range: ${turnData.minSpeed.toFixed(0)}–${turnData.maxSpeed.toFixed(0)} km/h`;
+
+    metaRow.append(sectorSpan, document.createTextNode('·'), pctSpan, document.createTextNode('·'), rangeSpan);
+    topBlock.append(headerRow, metaRow);
+
+    const leaderboard = document.createElement('div');
+    leaderboard.className = 'inspector-leaderboard';
+
+    const sortedCorners = turnData.corners
+        .slice()
+        .sort((a, b) => b.speed - a.speed)
+        .slice(0, _INSPECTOR_TOP_TEAMS_LIMIT);
+    const fastestSpeed = sortedCorners[0]?.speed ?? turnData.maxSpeed;
+
+    sortedCorners.forEach((entry, idx) => {
+        const row = document.createElement('div');
+        row.className = 'inspector-team-row';
+
+        const rankSpan = document.createElement('span');
+        rankSpan.className = 'inspector-rank';
+        rankSpan.textContent = `P${idx + 1}`;
+
+        const teamWrap = document.createElement('div');
+        teamWrap.className = 'inspector-team-name';
+        const swatch = document.createElement('span');
+        swatch.className = 'inspector-team-swatch';
+        swatch.style.backgroundColor = entry.color || 'var(--accent)';
+        teamWrap.append(swatch, document.createTextNode(entry.team));
+
+        const speedSpan = document.createElement('span');
+        speedSpan.className = 'inspector-speed-val';
+        speedSpan.textContent = `${entry.speed.toFixed(1)} km/h`;
+
+        const delta = fastestSpeed - entry.speed;
+        const deltaSpan = document.createElement('span');
+        deltaSpan.className = 'inspector-delta-val';
+        if (delta <= 0.01) {
+            deltaSpan.style.color = _FASTEST_DELTA_COLOR;
+            deltaSpan.textContent = 'FASTEST';
+        } else {
+            deltaSpan.textContent = `-${delta.toFixed(1)}`;
+        }
+
+        row.append(rankSpan, teamWrap, speedSpan, deltaSpan);
+        leaderboard.appendChild(row);
+    });
+
+    const hintDiv = document.createElement('div');
+    hintDiv.className = 'inspector-hint';
+    hintDiv.textContent = '// HOVER ANY TURN CARD BELOW OR CLICK A CORNER ON THE TRACK MAP';
+
+    inspectorEl.replaceChildren(topBlock, leaderboard, hintDiv);
+}
+
+/**
+ * Renders the interactive FIA Circuit Track Map SVG and live Corner Telemetry Inspector panel,
+ * returning a controller function `setActiveTurn(turnNumber)` that highlights the corresponding
+ * corner on the circuit map and updates the inspector card.
+ *
+ * @param {HTMLElement|null} mapWrapper - `#circuit-track-map` container element.
+ * @param {Object} data - Grand Prix telemetry payload.
+ * @param {Map<number, Object>} turnDataByNumber - Map of turn number to computed turn telemetry stats.
+ * @param {Function} onMapTurnHover - Callback invoked when hovering/clicking a turn directly on the map.
+ * @returns {Function} `setActiveTurn(turnNumber)` visual state updater.
+ */
+function _renderCircuitTrackMapPanel(mapWrapper, data, turnDataByNumber, onMapTurnHover) {
+    if (!mapWrapper) return () => {};
+    mapWrapper.replaceChildren();
+
+    const allTurnsData = Array.from(turnDataByNumber.values()).sort((a, b) => a.turn - b.turn);
+    if (allTurnsData.length === 0) return () => {};
+
+    const trackMap = _resolveTrackMapData(data, allTurnsData);
+    const { points, s1_end_idx: s1EndIdx, s2_end_idx: s2EndIdx, turns: turnGeometries } = trackMap;
+    const turnGeoByNumber = new Map(turnGeometries.map((tg) => [tg.turn, tg]));
+
+    const mapStage = document.createElement('div');
+    mapStage.className = 'circuit-map-stage';
+
+    const topBar = document.createElement('div');
+    topBar.className = 'circuit-map-topbar';
+
+    const subtitle = document.createElement('span');
+    subtitle.className = 'circuit-map-subtitle';
+    const gpName = data.race_info?.gp || 'Circuit';
+    subtitle.textContent = `// FIA CIRCUIT TELEMETRY MAP · ${gpName.toUpperCase()} (${allTurnsData.length} TURNS)`;
+
+    const sectorPills = document.createElement('div');
+    sectorPills.className = 'circuit-sector-pills';
+    [
+        { key: 'S1', label: 'Sector 1', color: _SECTOR_COLORS.S1 },
+        { key: 'S2', label: 'Sector 2', color: _SECTOR_COLORS.S2 },
+        { key: 'S3', label: 'Sector 3', color: _SECTOR_COLORS.S3 }
+    ].forEach(({ label, color }) => {
+        const pill = document.createElement('span');
+        pill.className = 'circuit-sector-pill';
+        const dot = document.createElement('span');
+        dot.className = 'circuit-sector-dot';
+        dot.style.backgroundColor = color;
+        pill.append(dot, document.createTextNode(label));
+        sectorPills.appendChild(pill);
+    });
+
+    topBar.append(subtitle, sectorPills);
+    mapStage.appendChild(topBar);
+
+    const svgMount = document.createElement('div');
+    mapStage.appendChild(svgMount);
+
+    const inspectorEl = document.createElement('div');
+    inspectorEl.className = 'circuit-turn-inspector';
+
+    mapWrapper.append(mapStage, inspectorEl);
+
+    const svg = d3
+        .select(svgMount)
+        .append('svg')
+        .attr('class', 'circuit-map-svg')
+        .attr('viewBox', `0 0 ${_TRACK_VIEWBOX_W} ${_TRACK_VIEWBOX_H}`)
+        .attr('preserveAspectRatio', 'xMidYMid meet');
+
+    const closedLine = d3
+        .line()
+        .x((d) => d[0])
+        .y((d) => d[1])
+        .curve(d3.curveCatmullRomClosed.alpha(0.5));
+
+    const openLine = d3
+        .line()
+        .x((d) => d[0])
+        .y((d) => d[1])
+        .curve(d3.curveCatmullRom.alpha(0.5));
+
+    // 1. Track outer kerb casing & dark asphalt bed
+    svg.append('path')
+        .datum(points)
+        .attr('fill', 'none')
+        .attr('stroke', 'rgba(255, 255, 255, 0.14)')
+        .attr('stroke-width', _TRACK_OUTER_CASING_WIDTH_PX)
+        .attr('stroke-linejoin', 'round')
+        .attr('d', closedLine);
+
+    svg.append('path')
+        .datum(points)
+        .attr('fill', 'none')
+        .attr('stroke', '#12121b')
+        .attr('stroke-width', _TRACK_BED_WIDTH_PX)
+        .attr('stroke-linejoin', 'round')
+        .attr('d', closedLine);
+
+    // 2. Sector 1 / Sector 2 / Sector 3 colored racing line segments
+    const s1Points = points.slice(0, s1EndIdx + 1);
+    const s2Points = points.slice(s1EndIdx, s2EndIdx + 1);
+    const s3Points = [...points.slice(s2EndIdx), points[0]];
+
+    [
+        { pts: s1Points, color: _SECTOR_COLORS.S1 },
+        { pts: s2Points, color: _SECTOR_COLORS.S2 },
+        { pts: s3Points, color: _SECTOR_COLORS.S3 }
+    ].forEach(({ pts, color }) => {
+        if (pts.length >= 2) {
+            svg.append('path')
+                .datum(pts)
+                .attr('class', 'track-sector-path')
+                .attr('fill', 'none')
+                .attr('stroke', color)
+                .attr('stroke-width', _TRACK_SECTOR_LINE_WIDTH_PX)
+                .attr('stroke-linecap', 'round')
+                .attr('opacity', 0.88)
+                .attr('d', openLine);
+        }
+    });
+
+    // 3. Start / Finish Line marker at points[0]
+    if (points.length >= 3) {
+        const [sx, sy] = points[0];
+        const [nxPt, nyPt] = points[2];
+        const angleDeg = (Math.atan2(nyPt - sy, nxPt - sx) * 180) / Math.PI;
+        const sfGroup = svg
+            .append('g')
+            .attr('class', 'start-finish-marker')
+            .attr('transform', `translate(${sx},${sy}) rotate(${angleDeg})`);
+
+        sfGroup
+            .append('line')
+            .attr('x1', 0)
+            .attr('y1', -11)
+            .attr('x2', 0)
+            .attr('y2', 11)
+            .attr('stroke', '#ffffff')
+            .attr('stroke-width', 3.5);
+
+        sfGroup
+            .append('polygon')
+            .attr('points', '7,-5 16,0 7,5')
+            .attr('fill', '#ffffff');
+    }
+
+    // 4. Per-turn highlighted corner arc segments
+    const arcLayer = svg.append('g').attr('class', 'track-corner-arcs');
+    const arcPaths = arcLayer
+        .selectAll('path.track-corner-arc')
+        .data(turnGeometries)
+        .enter()
+        .append('path')
+        .attr('class', 'track-corner-arc')
+        .attr('fill', 'none')
+        .attr('stroke-linecap', 'round')
+        .attr('stroke', (tg) => {
+            const td = turnDataByNumber.get(tg.turn);
+            const catKey = td?.category?.key || 'Medium';
+            return _CATEGORY_ACCENT_COLORS[catKey] || '#ff1801';
+        })
+        .attr('stroke-width', _TRACK_ACTIVE_ARC_WIDTH_PX)
+        .attr('opacity', 0)
+        .attr('d', (tg) => {
+            const start = Math.max(0, tg.arc_start_idx ?? Math.max(0, tg.idx - 3));
+            const end = Math.min(
+                points.length - 1,
+                tg.arc_end_idx ?? Math.min(points.length - 1, tg.idx + 3)
+            );
+            const slice = points.slice(start, end + 1);
+            return slice.length >= 2 ? openLine(slice) : null;
+        });
+
+    // 5. Interactive Turn Apex Nodes & Outward Callout Badges (T1..TN)
+    const turnsLayer = svg.append('g').attr('class', 'track-turns-layer');
+    const turnGroups = turnsLayer
+        .selectAll('g.track-turn-node')
+        .data(turnGeometries)
+        .enter()
+        .append('g')
+        .attr('class', 'track-turn-node')
+        .style('cursor', 'pointer')
+        .on('mouseenter', (_event, tg) => {
+            onMapTurnHover(tg.turn);
+        })
+        .on('mouseleave', () => {
+            onMapTurnHover(null);
+        })
+        .on('click', (_event, tg) => {
+            onMapTurnHover(tg.turn, true);
+        });
+
+    turnGroups
+        .append('line')
+        .attr('class', 'turn-leader-line')
+        .attr('x1', (tg) => tg.x)
+        .attr('y1', (tg) => tg.y)
+        .attr('x2', (tg) => tg.label_x)
+        .attr('y2', (tg) => tg.label_y)
+        .attr('stroke', 'rgba(255, 255, 255, 0.35)')
+        .attr('stroke-width', 1.2);
+
+    const pulseRings = turnGroups
+        .append('circle')
+        .attr('class', 'track-turn-pulse-ring')
+        .attr('cx', (tg) => tg.x)
+        .attr('cy', (tg) => tg.y)
+        .attr('r', _TURN_APEX_ACTIVE_RADIUS_PX)
+        .attr('fill', 'none')
+        .attr('stroke', '#ff1801')
+        .attr('stroke-width', 2.5)
+        .style('display', 'none');
+
+    const apexDots = turnGroups
+        .append('circle')
+        .attr('class', 'turn-apex-dot')
+        .attr('cx', (tg) => tg.x)
+        .attr('cy', (tg) => tg.y)
+        .attr('r', _TURN_APEX_RADIUS_PX)
+        .attr('fill', (tg) => {
+            const td = turnDataByNumber.get(tg.turn);
+            return _CATEGORY_ACCENT_COLORS[td?.category?.key] || '#ffffff';
+        })
+        .attr('stroke', '#0d0d14')
+        .attr('stroke-width', 1.6);
+
+    const badgeCircles = turnGroups
+        .append('circle')
+        .attr('class', 'turn-badge-circle')
+        .attr('cx', (tg) => tg.label_x)
+        .attr('cy', (tg) => tg.label_y)
+        .attr('r', _TURN_BADGE_RADIUS_PX)
+        .attr('fill', 'rgba(16, 16, 24, 0.94)')
+        .attr('stroke', (tg) => {
+            const td = turnDataByNumber.get(tg.turn);
+            return _CATEGORY_ACCENT_COLORS[td?.category?.key] || 'rgba(255, 255, 255, 0.4)';
+        })
+        .attr('stroke-width', 1.4);
+
+    const badgeTexts = turnGroups
+        .append('text')
+        .attr('class', 'turn-badge-text')
+        .attr('x', (tg) => tg.label_x)
+        .attr('y', (tg) => tg.label_y)
+        .attr('dy', '0.35em')
+        .attr('text-anchor', 'middle')
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-size', '9px')
+        .style('font-weight', '800')
+        .attr('fill', '#f3f4f6')
+        .text((tg) => `T${tg.turn}`);
+
+    const defaultTurnNumber = allTurnsData[0].turn;
+
+    const updateMapHighlight = (activeTurnNumber) => {
+        const effectiveTurn = activeTurnNumber ?? defaultTurnNumber;
+        const activeTurnData = turnDataByNumber.get(effectiveTurn) || allTurnsData[0];
+        const activeTurnGeo = turnGeoByNumber.get(effectiveTurn) || turnGeometries[0];
+
+        _populateTurnInspectorCard(
+            inspectorEl,
+            activeTurnData,
+            activeTurnGeo,
+            s1EndIdx,
+            s2EndIdx
+        );
+
+        const hasExplicitHighlight = activeTurnNumber !== null && activeTurnNumber !== undefined;
+
+        arcPaths
+            .attr('opacity', (tg) => (tg.turn === activeTurnNumber ? 0.95 : 0))
+            .attr('stroke', (tg) => {
+                const td = turnDataByNumber.get(tg.turn);
+                const fastestCorner = td?.corners
+                    ?.slice()
+                    .sort((a, b) => b.speed - a.speed)[0];
+                return fastestCorner?.color || '#ff1801';
+            });
+
+        pulseRings
+            .style('display', (tg) => (tg.turn === activeTurnNumber ? null : 'none'))
+            .attr('stroke', (tg) => {
+                const td = turnDataByNumber.get(tg.turn);
+                return _CATEGORY_ACCENT_COLORS[td?.category?.key] || '#ff1801';
+            });
+
+        apexDots
+            .attr('r', (tg) =>
+                tg.turn === activeTurnNumber
+                    ? _TURN_APEX_ACTIVE_RADIUS_PX
+                    : _TURN_APEX_RADIUS_PX
+            )
+            .attr('stroke', (tg) => (tg.turn === activeTurnNumber ? '#ffffff' : '#0d0d14'))
+            .attr('stroke-width', (tg) => (tg.turn === activeTurnNumber ? 2.4 : 1.6));
+
+        badgeCircles
+            .attr('r', (tg) =>
+                tg.turn === activeTurnNumber
+                    ? _TURN_BADGE_ACTIVE_RADIUS_PX
+                    : _TURN_BADGE_RADIUS_PX
+            )
+            .attr('fill', (tg) =>
+                tg.turn === activeTurnNumber ? '#ff1801' : 'rgba(16, 16, 24, 0.94)'
+            )
+            .attr('stroke', (tg) => {
+                if (tg.turn === activeTurnNumber) return '#ffffff';
+                const td = turnDataByNumber.get(tg.turn);
+                return _CATEGORY_ACCENT_COLORS[td?.category?.key] || 'rgba(255, 255, 255, 0.4)';
+            })
+            .attr('stroke-width', (tg) => (tg.turn === activeTurnNumber ? 2.2 : 1.4));
+
+        badgeTexts
+            .style('font-size', (tg) => (tg.turn === activeTurnNumber ? '10.5px' : '9px'))
+            .attr('fill', '#ffffff');
+
+        turnGroups.attr('opacity', (tg) =>
+            !hasExplicitHighlight || tg.turn === activeTurnNumber ? 1 : 0.42
+        );
+
+        if (hasExplicitHighlight) {
+            turnGroups.filter((tg) => tg.turn === activeTurnNumber).raise();
+        }
+    };
+
+    updateMapHighlight(null);
+    return updateMapHighlight;
+}
+
+/**
+ * Renders the Corner Speeds chart organized into three columns (`Slow`, `Medium`, `Fast`),
+ * with an interactive FIA Circuit Track Map above and an individual auto-scaled subplot card
+ * per turn (`Turn 1..N`) inside its category column.
+ *
+ * @param {Object} data - Race telemetry payload containing `corners` and `track_map`.
  * @returns {void}
  */
 export function renderCornerSpeed(data) {
     const container = document.getElementById('corner-speed-chart');
+    const mapWrapper = document.getElementById('circuit-track-map');
     const legendContainer = document.getElementById('corner-speed-legend');
     container.replaceChildren();
+    if (mapWrapper) mapWrapper.replaceChildren();
     if (legendContainer) legendContainer.replaceChildren();
 
     if (!data.corners || data.corners.length === 0) {
@@ -546,23 +1079,60 @@ export function renderCornerSpeed(data) {
     const activeTeams = new Set(teams.map((t) => t.team));
     let hoveredLegendTeam = null;
     let externalFocusedTeam = null;
+    let pinnedTurnNumber = null;
 
     const categoryColumns = _groupTurnsIntoCategoryColumns(data.corners);
-    const tooltip = d3.select('#tooltip');
+    const turnDataByNumber = new Map();
+    categoryColumns.forEach((col) => {
+        col.turns.forEach((td) => {
+            turnDataByNumber.set(td.turn, td);
+        });
+    });
 
+    const tooltip = d3.select('#tooltip');
     const mountedTurnCards = [];
+    let updateTrackMapHighlight = () => {};
+
+    const syncActiveTurnState = (hoveredTurnNumber) => {
+        const effectiveTurn = hoveredTurnNumber ?? pinnedTurnNumber;
+        updateTrackMapHighlight(effectiveTurn);
+        mountedTurnCards.forEach(({ cardEl, turnData }) => {
+            cardEl.classList.toggle('turn-card-active', turnData.turn === effectiveTurn);
+        });
+    };
+
+    updateTrackMapHighlight = _renderCircuitTrackMapPanel(
+        mapWrapper,
+        data,
+        turnDataByNumber,
+        (mapTurnNumber, isClick = false) => {
+            if (isClick && mapTurnNumber !== null) {
+                pinnedTurnNumber = pinnedTurnNumber === mapTurnNumber ? null : mapTurnNumber;
+            }
+            syncActiveTurnState(mapTurnNumber);
+        }
+    );
+
     categoryColumns.forEach((columnData) => {
         const columnEl = _createCategoryColumn(container, columnData);
         columnData.turns.forEach((turnData) => {
+            const { cardEl, chartDiv } = _createTurnSubplotCard(
+                columnEl,
+                turnData,
+                (hoveredTurn) => syncActiveTurnState(hoveredTurn)
+            );
             mountedTurnCards.push({
                 turnData,
-                chartDiv: _createTurnSubplotCard(columnEl, turnData)
+                cardEl,
+                chartDiv
             });
         });
     });
 
     const subplotNodeSelections = mountedTurnCards.map(({ chartDiv, turnData }) =>
-        _drawTurnSubplotSvg(chartDiv, turnData, tooltip)
+        _drawTurnSubplotSvg(chartDiv, turnData, tooltip, (hoveredTurn) =>
+            syncActiveTurnState(hoveredTurn)
+        )
     );
 
     const refreshTeamStyles = () => {

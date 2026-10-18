@@ -11,7 +11,7 @@ from __future__ import annotations
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 import glob
 import json
 import math
@@ -147,6 +147,18 @@ _MIN_STINT_BOUNDARY_LAPS: Final[int] = 6
 _MIN_OBSERVED_PIT_SPIKE_S: Final[float] = 17.5
 _MAX_OBSERVED_PIT_SPIKE_S: Final[float] = 32.0
 _MIN_SPRINT_LAPS: Final[int] = 15
+
+# --- Circuit Track Map Constants ---
+_TRACK_MAP_POINTS_COUNT: Final[int] = 180
+_TRACK_MAP_VIEWBOX_WIDTH: Final[float] = 1000.0
+_TRACK_MAP_VIEWBOX_HEIGHT: Final[float] = 560.0
+_TRACK_MAP_PADDING_X: Final[float] = 74.0
+_TRACK_MAP_PADDING_Y: Final[float] = 62.0
+_TRACK_MAP_LABEL_OFFSET_PX: Final[float] = 28.0
+_TRACK_MAP_ARC_HALF_WINDOW: Final[int] = 3
+_MIN_LOCATION_SAMPLE_POINTS: Final[int] = 80
+_DEFAULT_S1_SPLIT_PCT: Final[float] = 32.5
+_DEFAULT_S2_SPLIT_PCT: Final[float] = 66.5
 
 _SPRINT_WEEKEND_STEMS: Final[frozenset[str]] = frozenset(
     {
@@ -3401,6 +3413,407 @@ def _synthesize_offline_sprint_sessions(
     }
 
 
+def _fetch_openf1_location_window(
+    session_key: int,
+    driver_number: int,
+    start_iso: str,
+    end_iso: str,
+) -> list[dict[str, Any]]:
+    """Queries OpenF1 ``/v1/location`` for a driver's GPS points within a lap window.
+
+    Args:
+        session_key: OpenF1 session key.
+        driver_number: Car number to query.
+        start_iso: ISO-8601 lap start timestamp.
+        end_iso: ISO-8601 lap end timestamp.
+
+    Returns:
+        List of OpenF1 location sample dicts containing ``x`` and ``y``.
+    """
+    url = (
+        f"{_OPENF1_BASE_URL}/location?session_key={session_key}"
+        f"&driver_number={driver_number}&date>={start_iso}&date<={end_iso}"
+    )
+    for attempt in range(_API_MAX_ATTEMPTS):
+        try:
+            time.sleep(_API_DELAY_SECONDS)
+            response = requests.get(url, timeout=_API_TIMEOUT_SECONDS)
+            if response.status_code == _HTTP_OK:
+                payload = response.json()
+                return payload if isinstance(payload, list) else []
+            if response.status_code in _API_RETRY_STATUS_CODES:
+                time.sleep(_API_RATE_LIMIT_BACKOFF_BASE_S * (attempt + 1))
+                continue
+        except Exception as err:
+            print(f"  Warning: OpenF1 location request failed ({session_key}): {err}")
+            time.sleep(_API_ERROR_BACKOFF_BASE_S * (attempt + 1))
+    return []
+
+
+def _extract_flying_lap_xy_points(
+    session_key: int | None,
+    openf1_laps: Sequence[Mapping[str, Any]] | None,
+) -> tuple[list[tuple[float, float]], float, float]:
+    """Extracts raw GPS ``(x, y)`` coordinates and sector split percentages from a flying lap.
+
+    Args:
+        session_key: OpenF1 session identifier.
+        openf1_laps: Raw OpenF1 lap dicts for the session.
+
+    Returns:
+        Tuple ``(raw_xy, s1_pct, s2_pct)``.
+    """
+    if session_key is None or not openf1_laps:
+        return [], _DEFAULT_S1_SPLIT_PCT, _DEFAULT_S2_SPLIT_PCT
+
+    candidates = [
+        lap
+        for lap in openf1_laps
+        if isinstance(lap, Mapping)
+        and lap.get("date_start")
+        and lap.get("lap_duration")
+        and lap.get("driver_number") is not None
+        and not lap.get("is_pit_out_lap")
+        and _MIN_QUALI_LAP_S < float(lap["lap_duration"]) < _MAX_QUALI_LAP_S
+    ]
+    candidates.sort(key=lambda item: float(item["lap_duration"]))
+
+    for best_lap in candidates[:4]:
+        dur = float(best_lap["lap_duration"])
+        s1_dur = float(best_lap.get("duration_sector_1") or (dur * 0.325))
+        s2_dur = float(best_lap.get("duration_sector_2") or (dur * 0.340))
+        s1_pct = round(max(18.0, min(45.0, (s1_dur / dur) * 100.0)), 1)
+        s2_pct = round(
+            max(s1_pct + 18.0, min(84.0, ((s1_dur + s2_dur) / dur) * 100.0)), 1
+        )
+
+        start_dt = datetime.fromisoformat(
+            str(best_lap["date_start"]).replace("Z", "+00:00")
+        )
+        end_dt = start_dt + timedelta(seconds=dur + 0.35)
+        start_str = start_dt.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
+        end_str = end_dt.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
+
+        samples = _fetch_openf1_location_window(
+            session_key=session_key,
+            driver_number=int(best_lap["driver_number"]),
+            start_iso=start_str,
+            end_iso=end_str,
+        )
+        raw_xy: list[tuple[float, float]] = []
+        for pt in samples:
+            rx = pt.get("x")
+            ry = pt.get("y")
+            if rx is None or ry is None:
+                continue
+            fx, fy = float(rx), float(ry)
+            if abs(fx) < 1e-3 and abs(fy) < 1e-3:
+                continue
+            if not raw_xy or math.hypot(fx - raw_xy[-1][0], fy - raw_xy[-1][1]) > 1.5:
+                raw_xy.append((fx, fy))
+
+        if len(raw_xy) >= _MIN_LOCATION_SAMPLE_POINTS:
+            return raw_xy, s1_pct, s2_pct
+
+    return [], _DEFAULT_S1_SPLIT_PCT, _DEFAULT_S2_SPLIT_PCT
+
+
+def _build_procedural_circuit_xy(
+    gp_name: str,
+    turns_count: int,
+) -> list[tuple[float, float]]:
+    """Generates a deterministic closed circuit loop when offline.
+
+    Args:
+        gp_name: Display name of the Grand Prix.
+        turns_count: Number of corners on the circuit.
+
+    Returns:
+        Sequence of 2D ``(x, y)`` coordinates tracing a realistic closed circuit.
+    """
+    phase_1 = _seeded_unit_float(f"{gp_name}_map_p1") * math.tau
+    phase_2 = _seeded_unit_float(f"{gp_name}_map_p2") * math.tau
+    phase_3 = _seeded_unit_float(f"{gp_name}_map_p3") * math.tau
+    points: list[tuple[float, float]] = []
+    sample_count = _TRACK_MAP_POINTS_COUNT
+    harm_k = max(3, min(7, turns_count // 3))
+
+    for idx in range(sample_count):
+        theta = (idx / sample_count) * math.tau
+        radius = (
+            1.0
+            + 0.24 * math.cos(2.0 * theta + phase_1)
+            + 0.14 * math.sin(3.0 * theta + phase_2)
+            + 0.09 * math.cos(harm_k * theta + phase_3)
+        )
+        x_val = radius * 1.45 * math.cos(theta)
+        y_val = radius * 0.92 * math.sin(theta)
+        points.append((x_val, y_val))
+    return points
+
+
+def _normalize_and_resample_track_loop(
+    raw_xy: Sequence[tuple[float, float]],
+    num_points: int = _TRACK_MAP_POINTS_COUNT,
+) -> list[tuple[float, float]]:
+    """Normalizes a closed circuit loop into the target SVG viewBox and resamples equidistantly.
+
+    Rotates the loop along its principal axis so the circuit's longer dimension aligns
+    horizontally across the ``1000 x 560`` canvas while preserving true aspect ratio.
+
+    Args:
+        raw_xy: Input sequence of ``(x, y)`` coordinates.
+        num_points: Number of evenly-spaced perimeter points to output.
+
+    Returns:
+        List of ``(x, y)`` tuples rounded to 1 decimal place inside ``1000 x 560``.
+    """
+    mean_x = sum(pt[0] for pt in raw_xy) / len(raw_xy)
+    mean_y = sum(pt[1] for pt in raw_xy) / len(raw_xy)
+    centered = [(pt[0] - mean_x, pt[1] - mean_y) for pt in raw_xy]
+
+    cov_xx = sum(px * px for px, _ in centered) / len(centered)
+    cov_yy = sum(py * py for _, py in centered) / len(centered)
+    cov_xy = sum(px * py for px, py in centered) / len(centered)
+    angle = 0.5 * math.atan2(2.0 * cov_xy, cov_xx - cov_yy)
+    cos_a = math.cos(-angle)
+    sin_a = math.sin(-angle)
+    rotated = [
+        (px * cos_a - py * sin_a, -(px * sin_a + py * cos_a))
+        for px, py in centered
+    ]
+
+    closed = list(rotated) + [rotated[0]]
+    cum_dist = [0.0]
+    for idx in range(1, len(closed)):
+        seg_len = math.hypot(
+            closed[idx][0] - closed[idx - 1][0],
+            closed[idx][1] - closed[idx - 1][1],
+        )
+        cum_dist.append(cum_dist[-1] + seg_len)
+
+    total_length = max(cum_dist[-1], 1e-6)
+    resampled: list[tuple[float, float]] = []
+    seg_ptr = 0
+    for idx in range(num_points):
+        target_d = (idx / num_points) * total_length
+        while seg_ptr < len(cum_dist) - 2 and cum_dist[seg_ptr + 1] < target_d:
+            seg_ptr += 1
+        d0 = cum_dist[seg_ptr]
+        d1 = cum_dist[seg_ptr + 1]
+        frac = (target_d - d0) / max(d1 - d0, 1e-6)
+        x_interp = closed[seg_ptr][0] + frac * (
+            closed[seg_ptr + 1][0] - closed[seg_ptr][0]
+        )
+        y_interp = closed[seg_ptr][1] + frac * (
+            closed[seg_ptr + 1][1] - closed[seg_ptr][1]
+        )
+        resampled.append((x_interp, y_interp))
+
+    smoothed: list[tuple[float, float]] = []
+    for idx in range(num_points):
+        p_prev = resampled[(idx - 1) % num_points]
+        p_curr = resampled[idx]
+        p_next = resampled[(idx + 1) % num_points]
+        smoothed.append(
+            (
+                0.22 * p_prev[0] + 0.56 * p_curr[0] + 0.22 * p_next[0],
+                0.22 * p_prev[1] + 0.56 * p_curr[1] + 0.22 * p_next[1],
+            )
+        )
+
+    xs = [pt[0] for pt in smoothed]
+    ys = [pt[1] for pt in smoothed]
+    min_x, max_x = min(xs), max(xs)
+    min_y, max_y = min(ys), max(ys)
+    span_x = max(max_x - min_x, 1e-6)
+    span_y = max(max_y - min_y, 1e-6)
+
+    avail_w = _TRACK_MAP_VIEWBOX_WIDTH - 2.0 * _TRACK_MAP_PADDING_X
+    avail_h = _TRACK_MAP_VIEWBOX_HEIGHT - 2.0 * _TRACK_MAP_PADDING_Y
+    scale = min(avail_w / span_x, avail_h / span_y)
+    offset_x = (_TRACK_MAP_VIEWBOX_WIDTH - span_x * scale) / 2.0
+    offset_y = (_TRACK_MAP_VIEWBOX_HEIGHT - span_y * scale) / 2.0
+
+    return [
+        (
+            round(offset_x + (px - min_x) * scale, 1),
+            round(offset_y + (py - min_y) * scale, 1),
+        )
+        for px, py in smoothed
+    ]
+
+
+def _locate_turn_apexes_on_track(
+    points: Sequence[tuple[float, float]],
+    turns_count: int,
+) -> list[dict[str, Any]]:
+    """Identifies the ``1..turns_count`` corner apexes around the resampled track loop.
+
+    Finds local curvature peaks around the closed loop so each turn ``T1..TN`` sits on
+    a genuine bend of the circuit in ascending track-distance order, with an outward
+    normal offset for its ``T{k}`` callout badge.
+
+    Args:
+        points: Normalized ``(x, y)`` loop points of length ``M``.
+        turns_count: Total number of turns on the circuit.
+
+    Returns:
+        List of turn metadata dicts ``{turn, idx, pct, x, y, label_x, label_y, arc_start_idx, arc_end_idx}``.
+    """
+    num_pts = len(points)
+    cx = sum(pt[0] for pt in points) / num_pts
+    cy = sum(pt[1] for pt in points) / num_pts
+
+    curvatures: list[float] = []
+    step = 3
+    for idx in range(num_pts):
+        p_prev = points[(idx - step) % num_pts]
+        p_curr = points[idx]
+        p_next = points[(idx + step) % num_pts]
+        v1x, v1y = p_curr[0] - p_prev[0], p_curr[1] - p_prev[1]
+        v2x, v2y = p_next[0] - p_curr[0], p_next[1] - p_curr[1]
+        ang1 = math.atan2(v1y, v1x)
+        ang2 = math.atan2(v2y, v2x)
+        diff = abs((ang2 - ang1 + math.pi) % math.tau - math.pi)
+        curvatures.append(diff)
+
+    min_sep = max(3, num_pts // (turns_count * 2 + 2))
+    ranked_indices = sorted(
+        range(4, num_pts - 3),
+        key=lambda i: curvatures[i],
+        reverse=True,
+    )
+    selected_indices: list[int] = []
+    for candidate_idx in ranked_indices:
+        if len(selected_indices) >= turns_count:
+            break
+        if all(
+            min(
+                abs(candidate_idx - existing),
+                num_pts - abs(candidate_idx - existing),
+            )
+            >= min_sep
+            for existing in selected_indices
+        ):
+            selected_indices.append(candidate_idx)
+
+    while len(selected_indices) < turns_count:
+        fallback_idx = int(
+            round(((len(selected_indices) + 0.5) / turns_count) * (num_pts - 8))
+        ) + 4
+        if fallback_idx not in selected_indices:
+            selected_indices.append(fallback_idx)
+        else:
+            selected_indices.append((fallback_idx + 2) % num_pts)
+
+    selected_indices.sort()
+
+    turns_meta: list[dict[str, Any]] = []
+    placed_labels: list[tuple[float, float]] = []
+    for turn_num, idx in enumerate(selected_indices, start=1):
+        px, py = points[idx]
+        p_prev = points[(idx - 2) % num_pts]
+        p_next = points[(idx + 2) % num_pts]
+        tx, ty = p_next[0] - p_prev[0], p_next[1] - p_prev[1]
+        t_len = max(math.hypot(tx, ty), 1e-6)
+        nx, ny = -ty / t_len, tx / t_len
+
+        if (px - cx) * nx + (py - cy) * ny < 0:
+            nx, ny = -nx, -ny
+
+        lx = px + nx * _TRACK_MAP_LABEL_OFFSET_PX
+        ly = py + ny * _TRACK_MAP_LABEL_OFFSET_PX
+
+        for prev_lx, prev_ly in placed_labels:
+            if math.hypot(lx - prev_lx, ly - prev_ly) < 22.0:
+                lx = px - nx * (_TRACK_MAP_LABEL_OFFSET_PX + 4.0)
+                ly = py - ny * (_TRACK_MAP_LABEL_OFFSET_PX + 4.0)
+                break
+
+        lx = max(24.0, min(_TRACK_MAP_VIEWBOX_WIDTH - 24.0, lx))
+        ly = max(22.0, min(_TRACK_MAP_VIEWBOX_HEIGHT - 22.0, ly))
+        placed_labels.append((lx, ly))
+
+        turns_meta.append(
+            {
+                "turn": turn_num,
+                "idx": idx,
+                "pct": round((idx / num_pts) * 100.0, 1),
+                "x": round(px, 1),
+                "y": round(py, 1),
+                "label_x": round(lx, 1),
+                "label_y": round(ly, 1),
+                "arc_start_idx": max(0, idx - _TRACK_MAP_ARC_HALF_WINDOW),
+                "arc_end_idx": min(num_pts - 1, idx + _TRACK_MAP_ARC_HALF_WINDOW),
+            }
+        )
+
+    return turns_meta
+
+
+def _build_circuit_track_map(
+    gp_name: str,
+    turns_count: int,
+    session_key: int | None = None,
+    openf1_laps: Sequence[Mapping[str, Any]] | None = None,
+    fetch_live: bool = False,
+) -> dict[str, Any]:
+    """Builds the ``track_map`` block with circuit loop geometry, sector splits, and turn apexes.
+
+    Uses real OpenF1 ``/v1/location`` GPS coordinates when ``fetch_live=True`` and falls
+    back to a deterministic procedural circuit loop when offline.
+
+    Args:
+        gp_name: Display name of the Grand Prix.
+        turns_count: Number of corners on the circuit.
+        session_key: Optional OpenF1 session key for querying ``/v1/location``.
+        openf1_laps: Optional OpenF1 lap records for selecting a clean flying lap.
+        fetch_live: Whether live OpenF1 queries are enabled.
+
+    Returns:
+        Dictionary containing ``viewBox``, ``points``, ``s1_end_idx``, ``s2_end_idx``, and ``turns``.
+    """
+    raw_xy: list[tuple[float, float]] = []
+    s1_pct = _DEFAULT_S1_SPLIT_PCT
+    s2_pct = _DEFAULT_S2_SPLIT_PCT
+
+    if fetch_live and session_key is not None and openf1_laps:
+        raw_xy, s1_pct, s2_pct = _extract_flying_lap_xy_points(
+            session_key=session_key,
+            openf1_laps=openf1_laps,
+        )
+
+    is_real_gps = len(raw_xy) >= _MIN_LOCATION_SAMPLE_POINTS
+    if not is_real_gps:
+        raw_xy = _build_procedural_circuit_xy(gp_name, turns_count)
+
+    normalized_points = _normalize_and_resample_track_loop(
+        raw_xy, num_points=_TRACK_MAP_POINTS_COUNT
+    )
+    turns_meta = _locate_turn_apexes_on_track(normalized_points, turns_count)
+    num_pts = len(normalized_points)
+    s1_end_idx = max(10, min(num_pts - 20, int(round((s1_pct / 100.0) * num_pts))))
+    s2_end_idx = max(
+        s1_end_idx + 10,
+        min(num_pts - 8, int(round((s2_pct / 100.0) * num_pts))),
+    )
+
+    return {
+        "viewBox": [
+            0,
+            0,
+            int(_TRACK_MAP_VIEWBOX_WIDTH),
+            int(_TRACK_MAP_VIEWBOX_HEIGHT),
+        ],
+        "source": "openf1_gps" if is_real_gps else "procedural",
+        "s1_end_idx": s1_end_idx,
+        "s2_end_idx": s2_end_idx,
+        "points": [[pt[0], pt[1]] for pt in normalized_points],
+        "turns": turns_meta,
+    }
+
+
 def generate_weekend_telemetry(
     json_path: str,
     profiles_path: str | None = None,
@@ -3505,6 +3918,25 @@ def generate_weekend_telemetry(
     race_data["qualifying"] = qualifying_block
     if qualifying_block.get("corners"):
         race_data["corners"] = qualifying_block["corners"]
+
+    turns_count = max(
+        1,
+        len(
+            {
+                int(c.get("turn", 1))
+                for c in (race_data.get("corners") or [])
+                if isinstance(c, Mapping)
+            }
+        )
+        or int(track_profile.get("turns", _DEFAULT_TURNS_COUNT)),
+    )
+    race_data["track_map"] = _build_circuit_track_map(
+        gp_name=gp_name,
+        turns_count=turns_count,
+        session_key=session_map.get("Qualifying") or session_map.get("Race"),
+        openf1_laps=quali_laps_raw,
+        fetch_live=fetch_live,
+    )
 
     prac_laps_raw, prac_stints_raw, prac_results_raw = (
         _fetch_practice_session_inputs(session_map)

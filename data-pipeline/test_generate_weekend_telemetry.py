@@ -547,7 +547,10 @@ def test_generate_weekend_telemetry_live_sprint_and_enrich_all_races(
             ]
         return []
 
-    with patch("generate_weekend_telemetry._fetch_openf1_json", side_effect=_fake_fetch):
+    with (
+        patch("generate_weekend_telemetry._fetch_openf1_json", side_effect=_fake_fetch),
+        patch("generate_weekend_telemetry._fetch_openf1_location_window", return_value=[]),
+    ):
         enriched_list = enrich_all_races(races_dir=str(tmp_path), fetch_live=False)
         assert len(enriched_list) == 1
         assert enriched_list[0]["is_sprint_weekend"] is True
@@ -747,3 +750,15 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
             assert not sp_one_lap, (
                 f"{gp_id}: 1-lap sprint stint artifacts: {sp_one_lap}"
             )
+
+        # Guardrail for circuit track_map geometry and turn apexes
+        track_map = data.get("track_map", {})
+        assert len(track_map.get("points", [])) >= 100, (
+            f"{gp_id}: missing or incomplete track_map.points"
+        )
+        turns_in_corners = sorted({int(c["turn"]) for c in data.get("corners", [])})
+        turns_in_map = [int(t["turn"]) for t in track_map.get("turns", [])]
+        assert turns_in_map == turns_in_corners, (
+            f"{gp_id}: track_map.turns ({turns_in_map}) != corners turns ({turns_in_corners})"
+        )
+

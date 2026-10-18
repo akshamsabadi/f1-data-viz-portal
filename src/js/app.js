@@ -15,7 +15,7 @@ import { renderRaceWorm } from './race_worm.js';
 import { renderRacePitStops } from './race_pitstops.js';
 import { renderRaceStintPace } from './race_stint_pace.js';
 
-const APP_VERSION = 'v1.18.5';
+const APP_VERSION = 'v1.18.6';
 
 const _DEFAULT_SESSION = 'race';
 const _PANEL_KEYS = ['practice', 'qualifying', 'race'];
