@@ -266,3 +266,48 @@ def test_pure_helpers_top_five_filtering_and_deterministic_speed() -> None:
         _resolve_track_profile("Unknown GP", {"monaco": {"turns": 19, "base_speed": 100, "variation": 40}})
         == _DEFAULT_TRACK_PROFILE
     )
+
+
+def test_corner_speeds_prevent_slow_team_resonance_and_match_country_profiles() -> None:
+    """Verifies golden-angle corner variance prevents slow teams from beating pole team in most corners."""
+    profiles = _load_track_profiles(
+        str(Path(__file__).resolve().parent / "track_profiles.json")
+    )
+    for gp_name, expected_turns in (
+        ("China Grand Prix", 16),
+        ("Chinese Grand Prix", 16),
+        ("Japan Grand Prix", 18),
+        ("Canada Grand Prix", 14),
+        ("Singapore Grand Prix", 19),
+    ):
+        prof = _resolve_track_profile(gp_name, profiles)
+        assert prof["turns"] == expected_turns
+
+    singapore_profile = _resolve_track_profile("Singapore Grand Prix", profiles)
+    teams_info = {
+        "Red Bull Racing": {"drivers": ["VER", "LAW"], "color": "#3671C6"},
+        "Ferrari": {"drivers": ["LEC", "HAM"], "color": "#E8002D"},
+        "Mercedes": {"drivers": ["RUS", "ANT"], "color": "#00E3C0"},
+        "McLaren": {"drivers": ["NOR", "PIA"], "color": "#FE7B04"},
+        "Haas F1 Team": {"drivers": ["BEA", "OCO"], "color": "#FEFEFE"},
+    }
+    team_perf = {
+        "Red Bull Racing": 91.373,
+        "Ferrari": 91.427,
+        "Mercedes": 91.562,
+        "McLaren": 91.712,
+        "Haas F1 Team": 92.908,
+    }
+    corners = _generate_corners_data(singapore_profile, team_perf, teams_info)
+    by_turn: dict[int, dict[str, float]] = {}
+    for item in corners:
+        by_turn.setdefault(int(item["turn"]), {})[str(item["team"])] = float(
+            item["speed"]
+        )
+    haas_wins_vs_rbr = sum(
+        1
+        for turn_speeds in by_turn.values()
+        if turn_speeds["Haas F1 Team"] > turn_speeds["Red Bull Racing"]
+    )
+    assert haas_wins_vs_rbr == 0
+

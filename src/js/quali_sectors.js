@@ -20,7 +20,8 @@ const _LOLLIPOP_BAR_OPACITY = 0.25;
 const _SECTOR_STATUS_COLORS = {
     purple: '#b138ff',
     green: '#00d27a',
-    yellow: '#ffb800'
+    yellow: '#ffb800',
+    none: 'rgba(255, 255, 255, 0.18)'
 };
 const _PILL_TEXT_COLOR = '#ffffff';
 const _LOLLIPOP_HEAD_STROKE_COLOR = '#ffffff';
@@ -93,7 +94,7 @@ export function setQualiSectorsExternalFocus(driverCode) {
  * @returns {string} Formatted lap time string.
  */
 function _formatLapTime(seconds) {
-    if (!Number.isFinite(seconds) || seconds <= 0) return 'N/A';
+    if (!Number.isFinite(seconds) || seconds <= 0) return 'NO TIME';
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = (seconds % 60).toFixed(3);
     if (minutes > 0) {
@@ -109,7 +110,8 @@ function _formatLapTime(seconds) {
  * @returns {string} Hex color code.
  */
 function _getSectorStatusColor(status) {
-    const key = String(status || 'yellow').toLowerCase();
+    if (!status) return _SECTOR_STATUS_COLORS.none;
+    const key = String(status).toLowerCase();
     return _SECTOR_STATUS_COLORS[key] || _SECTOR_STATUS_COLORS.yellow;
 }
 
@@ -144,6 +146,9 @@ function _buildDriverColorMap(data) {
  * @returns {number} Time left on the table (`best_time - ideal_lap`) in seconds.
  */
 function _computeTimeLeftOnTable(entry) {
+    if (!Number.isFinite(entry.best_time) || !Number.isFinite(entry.ideal_lap)) {
+        return 0;
+    }
     return Math.max(0, entry.time_left_on_table ?? entry.best_time - entry.ideal_lap);
 }
 
@@ -263,20 +268,28 @@ function _buildTooltipSectorRow(sectorNum, actualSeconds, idealSeconds, status) 
     row.style.fontSize = '0.8rem';
     row.style.marginBottom = '2px';
 
+    const hasSectorTime = Number.isFinite(actualSeconds) && Number.isFinite(idealSeconds);
     const statusColor = _getSectorStatusColor(status);
-    const sectorLoss = Math.max(0, (actualSeconds || 0) - (idealSeconds || 0));
+    const sectorLoss = hasSectorTime ? Math.max(0, actualSeconds - idealSeconds) : 0;
     const hasSectorLoss = sectorLoss > _SECTOR_LOSS_EPSILON_S;
 
     const left = document.createElement('span');
     left.style.fontWeight = '700';
-    left.style.color = statusColor;
-    left.textContent = `SECTOR ${sectorNum} (${String(status).toUpperCase()})`;
+    left.style.color = hasSectorTime ? statusColor : 'var(--text-muted)';
+    left.textContent = hasSectorTime
+        ? `SECTOR ${sectorNum} (${String(status).toUpperCase()})`
+        : `SECTOR ${sectorNum} (NO TIME)`;
 
     const right = document.createElement('span');
     right.style.fontWeight = '600';
-    right.textContent = hasSectorLoss
-        ? `${actualSeconds.toFixed(3)}s (Ideal ${idealSeconds.toFixed(3)}s, +${sectorLoss.toFixed(3)}s)`
-        : `${actualSeconds.toFixed(3)}s (Optimal)`;
+    if (!hasSectorTime) {
+        right.style.color = 'var(--text-muted)';
+        right.textContent = 'NO TIME';
+    } else {
+        right.textContent = hasSectorLoss
+            ? `${actualSeconds.toFixed(3)}s (Ideal ${idealSeconds.toFixed(3)}s, +${sectorLoss.toFixed(3)}s)`
+            : `${actualSeconds.toFixed(3)}s (Optimal)`;
+    }
 
     row.appendChild(left);
     row.appendChild(right);
@@ -307,25 +320,33 @@ function _populateSectorsTooltip(tooltipNode, entry) {
     teamSpan.textContent = entry.team;
     header.appendChild(teamSpan);
 
+    const hasValidLap = Number.isFinite(entry.best_time) && Number.isFinite(entry.ideal_lap);
     const lapCompare = document.createElement('div');
     lapCompare.style.marginTop = '5px';
     lapCompare.style.paddingTop = '4px';
     lapCompare.style.borderTop = '1px solid rgba(255, 255, 255, 0.1)';
     lapCompare.style.fontSize = '0.8rem';
     lapCompare.style.fontWeight = '600';
-    lapCompare.textContent = `Ideal: ${_formatLapTime(entry.ideal_lap)} → Actual: ${_formatLapTime(entry.best_time)}`;
+    lapCompare.textContent = hasValidLap
+        ? `Ideal: ${_formatLapTime(entry.ideal_lap)} → Actual: ${_formatLapTime(entry.best_time)}`
+        : 'Ideal: NO TIME → Actual: NO TIME';
 
     const potentialLine = document.createElement('div');
     potentialLine.style.fontSize = '0.8rem';
     potentialLine.style.fontWeight = '700';
     potentialLine.style.marginTop = '2px';
 
-    const timeLeft = _computeTimeLeftOnTable(entry);
-    const isNearOptimalLap = timeLeft <= _OPTIMAL_TIME_LEFT_THRESHOLD_S;
-    potentialLine.style.color = isNearOptimalLap
-        ? _SECTOR_STATUS_COLORS.green
-        : _SECTOR_STATUS_COLORS.yellow;
-    potentialLine.textContent = `Time Left on Table: +${timeLeft.toFixed(3)}s potential (${(timeLeft * _MS_PER_SECOND).toFixed(0)} ms)`;
+    if (hasValidLap) {
+        const timeLeft = _computeTimeLeftOnTable(entry);
+        const isNearOptimalLap = timeLeft <= _OPTIMAL_TIME_LEFT_THRESHOLD_S;
+        potentialLine.style.color = isNearOptimalLap
+            ? _SECTOR_STATUS_COLORS.green
+            : _SECTOR_STATUS_COLORS.yellow;
+        potentialLine.textContent = `Time Left on Table: +${timeLeft.toFixed(3)}s potential (${(timeLeft * _MS_PER_SECOND).toFixed(0)} ms)`;
+    } else {
+        potentialLine.style.color = 'var(--text-muted)';
+        potentialLine.textContent = 'Time Left on Table: NO FLYING LAP RECORDED';
+    }
 
     const sectorRows = _SECTOR_DEFINITIONS.map((def) =>
         _buildTooltipSectorRow(def.number, entry[def.timeKey], entry[def.idealKey], entry[def.statusKey])
@@ -548,7 +569,11 @@ function _renderIdealVsActualReadout(rowGroups, rowHeight, layoutMetrics) {
         .style('font-family', 'Titillium Web, sans-serif')
         .style('font-size', '10.5px')
         .style('font-weight', '600')
-        .text((d) => `${_formatLapTime(d.ideal_lap)} → ${_formatLapTime(d.best_time)}`);
+        .text((d) =>
+            Number.isFinite(d.best_time) && Number.isFinite(d.ideal_lap)
+                ? `${_formatLapTime(d.ideal_lap)} → ${_formatLapTime(d.best_time)}`
+                : 'NO TIME'
+        );
 }
 
 /**
@@ -569,7 +594,9 @@ function _renderTimeLeftLollipops(rowGroups, xScale, rowHeight, layoutMetrics, c
         .attr('x', lollipopStartX)
         .attr('y', rowHeight * _LOLLIPOP_BAR_Y_RATIO)
         .attr('width', (d) =>
-            Math.max(_LOLLIPOP_BAR_MIN_WIDTH_PX, xScale(_computeTimeLeftOnTable(d)))
+            Number.isFinite(d.best_time)
+                ? Math.max(_LOLLIPOP_BAR_MIN_WIDTH_PX, xScale(_computeTimeLeftOnTable(d)))
+                : 0
         )
         .attr('height', Math.max(_LOLLIPOP_BAR_MIN_HEIGHT_PX, rowHeight * _LOLLIPOP_BAR_HEIGHT_RATIO))
         .attr('rx', _LOLLIPOP_BAR_CORNER_RADIUS_PX)
@@ -583,7 +610,8 @@ function _renderTimeLeftLollipops(rowGroups, xScale, rowHeight, layoutMetrics, c
         .attr('y1', rowHeight / 2)
         .attr('y2', rowHeight / 2)
         .attr('stroke', (d) => colorMap.get(d.driver) || d.color || 'var(--accent)')
-        .attr('stroke-width', _LOLLIPOP_STEM_STROKE_WIDTH_PX);
+        .attr('stroke-width', _LOLLIPOP_STEM_STROKE_WIDTH_PX)
+        .style('display', (d) => (Number.isFinite(d.best_time) ? null : 'none'));
 
     rowGroups
         .append('circle')
@@ -592,17 +620,21 @@ function _renderTimeLeftLollipops(rowGroups, xScale, rowHeight, layoutMetrics, c
         .attr('r', _LOLLIPOP_HEAD_RADIUS_PX)
         .attr('fill', (d) => colorMap.get(d.driver) || d.color || 'var(--accent)')
         .attr('stroke', _LOLLIPOP_HEAD_STROKE_COLOR)
-        .attr('stroke-width', _LOLLIPOP_HEAD_STROKE_WIDTH_PX);
+        .attr('stroke-width', _LOLLIPOP_HEAD_STROKE_WIDTH_PX)
+        .style('display', (d) => (Number.isFinite(d.best_time) ? null : 'none'));
 
     rowGroups
         .append('text')
         .attr('x', (d) =>
-            lollipopStartX + xScale(_computeTimeLeftOnTable(d)) + _LOLLIPOP_LABEL_X_OFFSET_PX
+            Number.isFinite(d.best_time)
+                ? lollipopStartX + xScale(_computeTimeLeftOnTable(d)) + _LOLLIPOP_LABEL_X_OFFSET_PX
+                : lollipopStartX
         )
         .attr('y', rowHeight / 2)
         .attr('dy', '0.35em')
         .attr('text-anchor', 'start')
         .attr('fill', (d) => {
+            if (!Number.isFinite(d.best_time)) return 'var(--text-muted)';
             const isNearOptimalLap =
                 _computeTimeLeftOnTable(d) <= _OPTIMAL_TIME_LEFT_THRESHOLD_S;
             return isNearOptimalLap ? _SECTOR_STATUS_COLORS.green : 'var(--text-primary)';
@@ -611,6 +643,7 @@ function _renderTimeLeftLollipops(rowGroups, xScale, rowHeight, layoutMetrics, c
         .style('font-size', '11px')
         .style('font-weight', '700')
         .text((d) => {
+            if (!Number.isFinite(d.best_time)) return 'NO TIME';
             const timeLeft = _computeTimeLeftOnTable(d);
             return `+${timeLeft.toFixed(3)}s (${(timeLeft * _MS_PER_SECOND).toFixed(0)}ms)`;
         });

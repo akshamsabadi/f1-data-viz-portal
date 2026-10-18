@@ -69,7 +69,7 @@ export function setQualiTeammateExternalFocus(driverCode) {
  * @returns {string} Formatted lap time string.
  */
 function _formatLapTime(seconds) {
-    if (!Number.isFinite(seconds) || seconds <= 0) return 'N/A';
+    if (!Number.isFinite(seconds) || seconds <= 0) return 'NO TIME';
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = (seconds % 60).toFixed(3);
     if (minutes > 0) {
@@ -125,7 +125,7 @@ function _enrichTeammateDeltas(rawDeltas, teamColorMap) {
 function _computeTeammateDeltaDomainBound(deltas) {
     const maxDelta = Math.max(
         _MIN_MAX_DELTA_FLOOR_S,
-        d3.max(deltas, (d) => d.delta_s) || _DEFAULT_MAX_DELTA_S
+        d3.max(deltas, (d) => (Number.isFinite(d.delta_s) ? d.delta_s : 0)) || _DEFAULT_MAX_DELTA_S
     );
     return maxDelta * _DOMAIN_PADDING_FACTOR;
 }
@@ -249,7 +249,10 @@ function _populateTeammateTooltip(tooltipNode, entry, teamColor) {
     deltaSummary.style.fontSize = '0.8rem';
     deltaSummary.style.fontWeight = '700';
     deltaSummary.style.color = 'var(--text-primary)';
-    deltaSummary.textContent = `Teammate Delta: +${entry.delta_s.toFixed(3)}s (${(entry.delta_s * _MS_PER_SECOND).toFixed(0)} ms)`;
+    const hasValidDelta = Number.isFinite(entry.delta_s);
+    deltaSummary.textContent = hasValidDelta
+        ? `Teammate Delta: +${entry.delta_s.toFixed(3)}s (${(entry.delta_s * _MS_PER_SECOND).toFixed(0)} ms)`
+        : 'Teammate Delta: NO TIME SET';
 
     tooltipNode.replaceChildren(header, fasterLine, slowerLine, deltaSummary);
 }
@@ -399,9 +402,13 @@ function _renderDivergingDeltaBars(rowGroups, xScale, centerX, barHeight) {
     rowGroups
         .append('rect')
         .attr('class', 'faster-bar')
-        .attr('x', (d) => xScale(-d.delta_s))
+        .attr('x', (d) => (Number.isFinite(d.delta_s) ? xScale(-d.delta_s) : centerX))
         .attr('y', _BAR_VERTICAL_INSET_PX)
-        .attr('width', (d) => Math.max(_BAR_MIN_WIDTH_PX, centerX - xScale(-d.delta_s)))
+        .attr('width', (d) =>
+            Number.isFinite(d.delta_s)
+                ? Math.max(_BAR_MIN_WIDTH_PX, centerX - xScale(-d.delta_s))
+                : 0
+        )
         .attr('height', rectHeight)
         .attr('rx', _BAR_CORNER_RADIUS_PX)
         .attr('fill', (d) => d.resolvedColor)
@@ -412,7 +419,11 @@ function _renderDivergingDeltaBars(rowGroups, xScale, centerX, barHeight) {
         .attr('class', 'slower-bar-base')
         .attr('x', centerX)
         .attr('y', _BAR_VERTICAL_INSET_PX)
-        .attr('width', (d) => Math.max(_BAR_MIN_WIDTH_PX, xScale(d.delta_s) - centerX))
+        .attr('width', (d) =>
+            Number.isFinite(d.delta_s)
+                ? Math.max(_BAR_MIN_WIDTH_PX, xScale(d.delta_s) - centerX)
+                : 0
+        )
         .attr('height', rectHeight)
         .attr('rx', _BAR_CORNER_RADIUS_PX)
         .attr('fill', (d) => d.resolvedColor)
@@ -426,7 +437,11 @@ function _renderDivergingDeltaBars(rowGroups, xScale, centerX, barHeight) {
         .attr('class', 'slower-bar-stripes')
         .attr('x', centerX)
         .attr('y', _BAR_VERTICAL_INSET_PX)
-        .attr('width', (d) => Math.max(_BAR_MIN_WIDTH_PX, xScale(d.delta_s) - centerX))
+        .attr('width', (d) =>
+            Number.isFinite(d.delta_s)
+                ? Math.max(_BAR_MIN_WIDTH_PX, xScale(d.delta_s) - centerX)
+                : 0
+        )
         .attr('height', rectHeight)
         .attr('rx', _BAR_CORNER_RADIUS_PX)
         .attr('fill', `url(#${_STRIPE_PATTERN_ID})`);
@@ -444,7 +459,10 @@ function _renderDivergingDeltaBars(rowGroups, xScale, centerX, barHeight) {
 function _renderDriverDeltaBadges(rowGroups, xScale, width, barHeight) {
     rowGroups
         .append('text')
-        .attr('x', (d) => Math.max(_BADGE_EDGE_CLAMP_PX, xScale(-d.delta_s) - _BADGE_HORIZONTAL_GAP_PX))
+        .attr('x', (d) => {
+            const safeDelta = Number.isFinite(d.delta_s) ? d.delta_s : 0;
+            return Math.max(_BADGE_EDGE_CLAMP_PX, xScale(-safeDelta) - _BADGE_HORIZONTAL_GAP_PX);
+        })
         .attr('y', barHeight / 2)
         .attr('dy', '0.35em')
         .attr('text-anchor', 'end')
@@ -452,13 +470,21 @@ function _renderDriverDeltaBadges(rowGroups, xScale, width, barHeight) {
         .style('font-family', 'Titillium Web, sans-serif')
         .style('font-size', '11.5px')
         .style('font-weight', '700')
-        .text((d) => `${d.faster_driver} (P${d.faster_grid})`);
+        .text((d) =>
+            Number.isFinite(d.faster_time)
+                ? `${d.faster_driver} (P${d.faster_grid})`
+                : `${d.faster_driver} (P${d.faster_grid}) NO TIME`
+        );
 
     rowGroups
         .append('text')
-        .attr('x', (d) =>
-            Math.min(width - _BADGE_EDGE_CLAMP_PX, xScale(d.delta_s) + _BADGE_HORIZONTAL_GAP_PX)
-        )
+        .attr('x', (d) => {
+            const safeDelta = Number.isFinite(d.delta_s) ? d.delta_s : 0;
+            return Math.min(
+                width - _BADGE_EDGE_CLAMP_PX,
+                xScale(safeDelta) + _BADGE_HORIZONTAL_GAP_PX
+            );
+        })
         .attr('y', barHeight / 2)
         .attr('dy', '0.35em')
         .attr('text-anchor', 'start')
@@ -466,7 +492,11 @@ function _renderDriverDeltaBadges(rowGroups, xScale, width, barHeight) {
         .style('font-family', 'Titillium Web, sans-serif')
         .style('font-size', '11.5px')
         .style('font-weight', '700')
-        .text((d) => `${d.slower_driver} (P${d.slower_grid}) +${d.delta_s.toFixed(3)}s`);
+        .text((d) =>
+            Number.isFinite(d.delta_s)
+                ? `${d.slower_driver} (P${d.slower_grid}) +${d.delta_s.toFixed(3)}s`
+                : `${d.slower_driver} (P${d.slower_grid}) NO TIME`
+        );
 }
 
 /**

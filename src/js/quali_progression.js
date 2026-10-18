@@ -184,6 +184,9 @@ function _formatDriverGapBadgeText(entry) {
     }
     const isTopTenFinisher = entry.eliminated_in === 'Q3' || entry.eliminated_in === 'SQ3';
     const stageSuffix = !isTopTenFinisher ? ` [${entry.eliminated_in}]` : '';
+    if (!Number.isFinite(entry.best_time) || !Number.isFinite(entry.gap_to_pole)) {
+        return `NO TIME${stageSuffix}`;
+    }
     return `+${entry.gap_to_pole.toFixed(3)}s${stageSuffix}`;
 }
 
@@ -297,11 +300,16 @@ function _buildTooltipStageRow(label, timeVal, badgeColor) {
     left.style.fontWeight = '700';
     left.textContent = label;
 
-    const hasStageTime = Boolean(timeVal);
+    const hasStageTime = Number.isFinite(timeVal) && timeVal > 0;
+    const isFirstStage = label.endsWith('1');
     const right = document.createElement('span');
     right.style.fontWeight = '600';
     right.style.color = hasStageTime ? 'var(--text-primary)' : 'var(--text-muted)';
-    right.textContent = hasStageTime ? _formatLapTime(timeVal, 3) : 'ELIMINATED';
+    right.textContent = hasStageTime
+        ? _formatLapTime(timeVal, 3)
+        : isFirstStage
+          ? 'NO TIME'
+          : 'ELIMINATED';
 
     line.appendChild(left);
     line.appendChild(right);
@@ -351,9 +359,12 @@ function _populateProgressionTooltip(tooltipNode, entry, teamColor, stagePrefix 
         ? ` | ${stagePrefix}1→Best: -${progressionGain.toFixed(3)}s`
         : '';
 
+    const hasBestTime = Number.isFinite(entry.best_time) && Number.isFinite(entry.gap_to_pole);
     summary.textContent = isPolePosition
         ? `POLE POSITION (${_formatLapTime(entry.best_time, 3)})${gainText}`
-        : `Gap to Pole: +${entry.gap_to_pole.toFixed(3)}s${gainText}`;
+        : hasBestTime
+          ? `Gap to Pole: +${entry.gap_to_pole.toFixed(3)}s${gainText}`
+          : `NO TIME SET [${entry.eliminated_in}]`;
 
     tooltipNode.replaceChildren(
         header,

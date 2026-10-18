@@ -1462,10 +1462,11 @@ export function renderQualiTrace(data) {
     container.replaceChildren();
     if (controlsContainer) controlsContainer.replaceChildren();
 
+    const traces = data.qualifying?.traces;
     const results = (data.qualifying?.results || [])
+        .filter((r) => Boolean(traces?.drivers?.[r.driver]))
         .slice()
         .sort((a, b) => a.grid_pos - b.grid_pos);
-    const traces = data.qualifying?.traces;
 
     const hasValidTraceData =
         results.length >= 2 &&

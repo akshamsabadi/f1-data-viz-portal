@@ -303,6 +303,94 @@ def test_build_qualifying_telemetry_honors_official_session_result() -> None:
     assert quali["results"][1]["best_time"] == 89.3
 
 
+def test_qualifying_null_for_no_valid_flying_lap_and_pit_out_filter() -> None:
+    """Verifies drivers without a valid flying lap receive null times and do not corrupt sectors or corner speeds."""
+    payload = _create_sample_gp_payload()
+    drivers = [
+        {"code": "RUS", "name": "George Russell", "team": "Mercedes", "color": "#00e3c0"},
+        {"code": "BOT", "name": "Valtteri Bottas", "team": "Cadillac", "color": "#909090"},
+        {"code": "PER", "name": "Sergio Perez", "team": "Cadillac", "color": "#909090"},
+    ]
+    num_to_code = {63: "RUS", 77: "BOT", 11: "PER"}
+    openf1_quali_laps = [
+        {
+            "driver_number": 63,
+            "lap_number": 2,
+            "lap_duration": 91.520,
+            "duration_sector_1": 24.500,
+            "duration_sector_2": 27.520,
+            "duration_sector_3": 39.500,
+            "is_pit_out_lap": False,
+            "date_start": "2026-03-20T07:05:00Z",
+        },
+        {
+            "driver_number": 77,
+            "lap_number": 2,
+            "lap_duration": 95.436,
+            "duration_sector_1": 25.500,
+            "duration_sector_2": 28.936,
+            "duration_sector_3": 41.000,
+            "is_pit_out_lap": False,
+            "date_start": "2026-03-20T07:05:10Z",
+        },
+        # PER out-lap with partial sectors (should be ignored)
+        {
+            "driver_number": 11,
+            "lap_number": 1,
+            "lap_duration": None,
+            "duration_sector_1": None,
+            "duration_sector_2": 29.013,
+            "duration_sector_3": 37.903,
+            "is_pit_out_lap": True,
+            "date_start": "2026-03-20T07:02:00Z",
+        },
+        # PER glitched/aborted 62s lap (outside [pole*0.96, pole*1.07], should be rejected)
+        {
+            "driver_number": 11,
+            "lap_number": 2,
+            "lap_duration": 62.006,
+            "duration_sector_1": 17.204,
+            "duration_sector_2": 26.296,
+            "duration_sector_3": 18.506,
+            "is_pit_out_lap": False,
+            "date_start": "2026-03-20T07:04:00Z",
+        },
+    ]
+    openf1_quali_results = [
+        {"driver_number": 63, "position": 1, "duration": [92.100, 91.800, 91.520]},
+        {"driver_number": 77, "position": 2, "duration": [95.436, None, None]},
+        {"driver_number": 11, "position": 3, "duration": [None, None, None]},
+    ]
+    quali = _build_qualifying_telemetry(
+        gp_name="Chinese Grand Prix",
+        drivers=drivers,
+        driver_pace={"RUS": 96.0, "BOT": 98.0, "PER": 98.2},
+        track_profile={"turns": 16, "base_speed": 145, "variation": 60},
+        race_laps=payload["laps"],
+        openf1_quali_laps=openf1_quali_laps,
+        openf1_quali_results=openf1_quali_results,
+        num_to_code=num_to_code,
+        stage_prefix="SQ",
+    )
+    by_drv = {r["driver"]: r for r in quali["results"]}
+    assert by_drv["PER"]["best_time"] is None
+    assert by_drv["PER"]["q1_time"] is None
+    assert by_drv["PER"]["q2_time"] is None
+    assert by_drv["PER"]["q3_time"] is None
+    assert by_drv["PER"]["s1"] is None
+    assert by_drv["PER"]["s2"] is None
+    assert by_drv["PER"]["s3"] is None
+    assert by_drv["PER"]["ideal_lap"] is None
+    assert by_drv["PER"]["gap_to_pole"] is None
+    assert "PER" not in quali["traces"]["drivers"]
+    cadillac_battle = next(b for b in quali["teammate_deltas"] if b["team"] == "Cadillac")
+    assert cadillac_battle["delta_s"] is None
+    assert cadillac_battle["faster_driver"] == "BOT"
+    # Verify Mercedes beats Cadillac in Turn 1 corner speed
+    t1_speeds = {c["team"]: c["speed"] for c in quali["corners"] if c["turn"] == 1}
+    assert t1_speeds["Mercedes"] > t1_speeds["Cadillac"]
+
+
 def test_build_qualifying_telemetry_with_phase_starts_and_twenty_drivers() -> None:
     """Verifies Q1/Q2/Q3 elimination cutoffs across 20 drivers and phase timestamps."""
     base_payload = _create_sample_gp_payload()
@@ -675,6 +763,29 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
         prac_cls = data.get("practice", {}).get("classification", [])
         assert len(prac_cls) >= 18, f"{gp_id}: missing practice classification"
         assert [r["rank"] for r in prac_cls] == list(range(1, len(prac_cls) + 1))
+        prac_long_runs = [float(r["long_run_avg"]) for r in prac_cls if r.get("long_run_avg") is not None]
+        assert max(prac_long_runs) - min(prac_long_runs) <= 6.5, (
+            f"{gp_id}: practice long_run_avg spread too large ({max(prac_long_runs) - min(prac_long_runs):.3f}s)"
+        )
+        prac_traps = [float(r["speed_trap_kmh"]) for r in prac_cls if r.get("speed_trap_kmh") is not None]
+        assert max(prac_traps) - min(prac_traps) <= 35.0, (
+            f"{gp_id}: practice speed_trap_kmh spread too large ({min(prac_traps)}..{max(prac_traps)} km/h)"
+        )
+
+        # Guardrail for Qualifying valid flying laps vs null No-Time rows
+        q_pole = float(quali_results[0]["best_time"])
+        for qr in quali_results:
+            if qr["best_time"] is None:
+                assert qr["s1"] is None and qr["s2"] is None and qr["s3"] is None
+                assert qr["ideal_lap"] is None
+                assert qr["gap_to_pole"] is None
+            else:
+                bt = float(qr["best_time"])
+                assert q_pole <= bt <= q_pole * 1.12, (
+                    f"{gp_id}: unrealistic qualifying best_time for {qr['driver']}: {bt} vs pole {q_pole}"
+                )
+                assert qr["s1"] + qr["s2"] + qr["s3"] == pytest.approx(bt, abs=0.05)
+                assert float(qr["gap_to_pole"]) >= 0.0
 
         lap_times_sorted = sorted(float(l["time"]) for l in laps if float(l.get("time") or 0) > 0)
         field_median = lap_times_sorted[len(lap_times_sorted) // 2]
@@ -720,9 +831,14 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
             f"{gp_id}: 1-lap tyre stint artifacts detected: {one_lap_stints}"
         )
 
-        lap1_positions = sorted(int(l["position"]) for l in laps if int(l["lap"]) == 1)
+        lap1_laps = [l for l in laps if int(l["lap"]) == 1]
+        lap1_positions = sorted(int(l["position"]) for l in lap1_laps)
         assert lap1_positions == list(range(1, len(lap1_positions) + 1)), (
             f"{gp_id}: invalid Lap 1 positions: {lap1_positions}"
+        )
+        lap1_session_times = [float(l["session_time"]) for l in lap1_laps]
+        assert max(lap1_session_times) - min(lap1_session_times) <= 35.0, (
+            f"{gp_id}: Lap 1 session_time spread ({max(lap1_session_times) - min(lap1_session_times):.2f}s) exceeds 35.0s"
         )
 
         if data.get("is_sprint_weekend"):
@@ -731,6 +847,19 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
             assert [r["grid_pos"] for r in sq_results] == list(
                 range(1, len(sq_results) + 1)
             )
+            sq_pole = float(sq_results[0]["best_time"])
+            for sqr in sq_results:
+                if sqr["best_time"] is None:
+                    assert sqr["s1"] is None and sqr["s2"] is None and sqr["s3"] is None
+                    assert sqr["ideal_lap"] is None
+                    assert sqr["gap_to_pole"] is None
+                else:
+                    sq_bt = float(sqr["best_time"])
+                    assert sq_pole <= sq_bt <= sq_pole * 1.12, (
+                        f"{gp_id}: unrealistic sprint_qualifying best_time for {sqr['driver']}: {sq_bt} vs pole {sq_pole}"
+                    )
+                    assert sqr["s1"] + sqr["s2"] + sqr["s3"] == pytest.approx(sq_bt, abs=0.05)
+                    assert float(sqr["gap_to_pole"]) >= 0.0
             sprint = data.get("sprint", {})
             sp_total = int(sprint.get("total_laps", 0))
             sp_winner = sprint.get("winner")

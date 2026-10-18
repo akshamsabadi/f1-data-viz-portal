@@ -437,10 +437,12 @@ function _renderPracticeStandingsRows(container, classification) {
     classification.forEach((entry, index) => {
         const code = entry.driver;
         const compoundColor = _COMPOUND_COLORS[entry.compound] || _DEFAULT_COMPOUND_COLOR;
-        const gapText =
-            index === 0
-                ? formatSessionDuration(entry.best_lap)
-                : `+${Number(entry.gap_to_p1).toFixed(3)}s`;
+        const hasBestLap = Number.isFinite(entry.best_lap) && entry.best_lap > 0;
+        const gapText = !hasBestLap
+            ? 'NO TIME'
+            : index === 0
+              ? formatSessionDuration(entry.best_lap)
+              : `+${Number(entry.gap_to_p1).toFixed(3)}s`;
         const detailText = `${entry.total_laps} Laps`;
         const driverObj = { code, team: entry.team, color: entry.color };
         const row = _createStandingsRowElement(driverObj, index, gapText, detailText, {
@@ -470,11 +472,15 @@ function _renderQualifyingStandingsRows(container, qualifyingData, activeSession
 
     results.forEach((entry, index) => {
         const code = entry.driver;
-        const gapHtml =
-            index === 0
-                ? formatSessionDuration(entry.best_time)
-                : `+${Number(entry.gap_to_pole).toFixed(3)}s`;
-        const detailHtml = `${entry.eliminated_in} · ${formatSessionDuration(entry.best_time)}`;
+        const hasBestTime = Number.isFinite(entry.best_time) && entry.best_time > 0;
+        const gapHtml = !hasBestTime
+            ? 'NO TIME'
+            : index === 0
+              ? formatSessionDuration(entry.best_time)
+              : `+${Number(entry.gap_to_pole).toFixed(3)}s`;
+        const detailHtml = hasBestTime
+            ? `${entry.eliminated_in} · ${formatSessionDuration(entry.best_time)}`
+            : `${entry.eliminated_in} · NO TIME`;
         const driverObj = { code, team: entry.team, color: entry.color };
         const row = _createStandingsRowElement(driverObj, index, gapHtml, detailHtml);
         container.appendChild(row);

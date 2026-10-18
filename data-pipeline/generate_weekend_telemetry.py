@@ -8,7 +8,7 @@ falling back to circuit-and-grid-informed deterministic models when offline.
 
 from __future__ import annotations
 
-from collections import defaultdict
+from collections import Counter, defaultdict
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -79,7 +79,8 @@ _MAX_CLEAN_RACE_LAP_S: Final[float] = 165.0
 _LAP1_STANDING_START_OVERHEAD_S: Final[float] = 3.5
 _LAP1_DEFAULT_GRID_STEP_S: Final[float] = 0.42
 _LAP1_MIN_GRID_GAP_STEP_S: Final[float] = 0.28
-_LAP1_MAX_RAW_GAP_S: Final[float] = 16.5
+_LAP1_MAX_RAW_GAP_S: Final[float] = 16.0
+_LAP1_MAX_ADJACENT_GAP_JUMP_S: Final[float] = 4.5
 _LAP1_MIN_MONOTONIC_STEP_S: Final[float] = 0.12
 _LAP1_INITIAL_OFFSET_S: Final[float] = 0.15
 _POSITION_LOOKUP_OFFSET_S: Final[float] = 2.0
@@ -104,8 +105,14 @@ _FUEL_BURN_EFFECT_SEC_PER_LAP: Final[float] = 0.055
 # --- Practice Synthesis & Telemetry Bounds ---
 _MIN_PRACTICE_LAP_S: Final[float] = 55.0
 _MAX_PRACTICE_LAP_S: Final[float] = 160.0
+_PRACTICE_FLYING_LAP_RATIO: Final[float] = 1.12
+_MIN_POLE_ANCHOR_RATIO: Final[float] = 0.88
+_MIN_FLYING_POLE_RATIO: Final[float] = 0.95
+_MAX_PRACTICE_PACE_RATIO_S: Final[float] = 4.2
+_MAX_CLEAN_PACE_MEDIAN_RATIO: Final[float] = 1.08
 _MIN_SPEED_TRAP_KMH: Final[float] = 220.0
 _MAX_SPEED_TRAP_KMH: Final[float] = 375.0
+_MAX_TRAP_OUTLIER_DROP_KMH: Final[float] = 15.0
 _MIN_REAL_COMPOUND_LAPS_SUM: Final[int] = 12
 _PRACTICE_SAMPLE_LAP_LIMIT: Final[int] = 250
 _DEGRADATION_CURVE_MAX_AGE: Final[int] = 14
@@ -126,7 +133,7 @@ _Q2_CUTOFF_RANK: Final[int] = 16
 _MIN_QUALI_LAP_S: Final[float] = 50.0
 _MAX_QUALI_LAP_S: Final[float] = 150.0
 _MAX_QUALI_RESULT_LAP_S: Final[float] = 160.0
-_QUALI_FLYING_LAP_RATIO: Final[float] = 1.12
+_QUALI_FLYING_LAP_RATIO: Final[float] = 1.07
 _MIN_SECTOR_TIME_S: Final[float] = 10.0
 _MAX_SECTOR_TIME_S: Final[float] = 65.0
 _SECTOR_SUM_TOLERANCE_S: Final[float] = 0.25
@@ -231,6 +238,8 @@ class _RealPracticeMetrics:
     official_pos_by_code: Mapping[str, int]
     speed_trap_by_code: Mapping[str, float]
     compound_counts_by_code: Mapping[str, Mapping[str, int]]
+    has_real_practice: bool = False
+    known_driver_codes: frozenset[str] = frozenset()
 
 
 @dataclass(frozen=True)
@@ -254,8 +263,10 @@ class _RealQualifyingMetrics:
     q_times_by_code: Mapping[str, Mapping[int, float | None]]
     official_pos_by_code: Mapping[str, int]
     best_sectors_by_code: Mapping[str, Mapping[str, float]]
-    lap_sectors_by_code: Mapping[str, tuple[float | None, float | None, float | None]]
+    lap_sectors_by_code: Mapping[Any, tuple[float | None, float | None, float | None]]
     has_real_quali: bool
+    real_s1_ratio: float | None = None
+    real_s2_ratio: float | None = None
 
 
 @dataclass(frozen=True)
@@ -624,10 +635,10 @@ def _determine_lap1_crossing_order(
         lap1_ordered_codes = sorted(
             ordered_codes,
             key=lambda code: (
+                end_ts_by_code_lap.get((code, 1), float("inf")),
                 _lookup_fia_position_at_timestamp(
                     code, t_ref_lap1, pos_timeline_by_code, official_rank_by_code
                 ),
-                end_ts_by_code_lap.get((code, 1), float("inf")),
                 official_rank_by_code.get(code, _UNRANKED_POSITION),
             ),
         )
@@ -654,14 +665,24 @@ def _determine_lap1_crossing_order(
             lap1_t = leader_lap1_time
         else:
             crossing_ts = end_ts_by_code_lap.get((code, 1))
+            prev_gap = max(0.0, prev_lap1_t - leader_lap1_time)
             if crossing_ts is not None and leader_lap1_end_ts is not None:
                 raw_gap1 = crossing_ts - leader_lap1_end_ts
-                gap1 = max(
-                    idx_c * _LAP1_MIN_GRID_GAP_STEP_S,
-                    min(_LAP1_MAX_RAW_GAP_S, raw_gap1),
-                )
+                if (
+                    0.0 <= raw_gap1 <= _LAP1_MAX_RAW_GAP_S
+                    and (raw_gap1 - prev_gap) <= _LAP1_MAX_ADJACENT_GAP_JUMP_S
+                ):
+                    gap1 = max(idx_c * _LAP1_MIN_GRID_GAP_STEP_S, raw_gap1)
+                else:
+                    gap1 = max(
+                        idx_c * _LAP1_MIN_GRID_GAP_STEP_S,
+                        prev_gap + _LAP1_DEFAULT_GRID_STEP_S,
+                    )
             else:
-                gap1 = idx_c * _LAP1_DEFAULT_GRID_STEP_S
+                gap1 = max(
+                    idx_c * _LAP1_DEFAULT_GRID_STEP_S,
+                    prev_gap + _LAP1_DEFAULT_GRID_STEP_S,
+                )
             lap1_t = max(
                 prev_lap1_t + _LAP1_MIN_MONOTONIC_STEP_S,
                 leader_lap1_time + gap1,
@@ -961,14 +982,15 @@ def _assign_per_lap_positions(
             t_ref = ts_list[0] + _POSITION_LOOKUP_OFFSET_S
             lap_group.sort(
                 key=lambda item: (
+                    float(item["session_time"]),
+                    context.end_ts_by_code_lap.get(
+                        (str(item["driver"]), lap_no), float("inf")
+                    ),
                     _lookup_fia_position_at_timestamp(
                         str(item["driver"]),
                         t_ref,
                         context.pos_timeline_by_code,
                         context.official_rank_by_code,
-                    ),
-                    context.end_ts_by_code_lap.get(
-                        (str(item["driver"]), lap_no), float("inf")
                     ),
                     context.official_rank_by_code.get(
                         str(item["driver"]), _UNRANKED_POSITION
@@ -978,6 +1000,7 @@ def _assign_per_lap_positions(
         elif context.end_ts_by_lap.get(lap_no):
             lap_group.sort(
                 key=lambda item: (
+                    float(item["session_time"]),
                     context.end_ts_by_code_lap.get(
                         (str(item["driver"]), lap_no), float("inf")
                     ),
@@ -1352,21 +1375,46 @@ def _compute_driver_baseline_pace(
     Returns:
         Mapping from three-letter driver code to baseline pace in seconds.
     """
+    positive_times = [
+        float(lap_record.get("time", 0.0))
+        for lap_record in laps
+        if float(lap_record.get("time", 0.0)) > _MIN_CLEAN_RACE_LAP_S
+    ]
+    field_median = (
+        statistics.median(positive_times)
+        if positive_times
+        else _DEFAULT_LAP_TIME_S
+    )
+    min_clean_lap = field_median * _MIN_VALID_LAP_RATIO
+    max_clean_lap = field_median * _MAX_CLEAN_PACE_MEDIAN_RATIO
+
     laps_by_driver: dict[str, list[float]] = defaultdict(list)
     for lap_record in laps:
         lap_time = float(lap_record.get("time", 0.0))
-        if lap_time > 0 and not lap_record.get("interpolated", False):
+        if (
+            min_clean_lap <= lap_time <= max_clean_lap
+            and not lap_record.get("interpolated", False)
+        ):
             laps_by_driver[str(lap_record["driver"])].append(lap_time)
 
     for lap_record in laps:
         driver_code = str(lap_record["driver"])
         lap_time = float(lap_record.get("time", 0.0))
-        if not laps_by_driver[driver_code] and lap_time > 0:
+        if (
+            not laps_by_driver[driver_code]
+            and min_clean_lap <= lap_time <= max_clean_lap
+        ):
             laps_by_driver[driver_code].append(lap_time)
+
+    if not any(laps_by_driver.values()):
+        for lap_record in laps:
+            lap_time = float(lap_record.get("time", 0.0))
+            if lap_time > 0:
+                laps_by_driver[str(lap_record["driver"])].append(lap_time)
 
     all_clean_times = [t for times in laps_by_driver.values() for t in times]
     global_fallback = (
-        min(all_clean_times) if all_clean_times else _DEFAULT_LAP_TIME_S
+        min(all_clean_times) if all_clean_times else field_median
     )
 
     driver_pace: dict[str, float] = {}
@@ -1417,6 +1465,7 @@ def _extract_real_practice_metrics(
     openf1_practice_stints: Sequence[Mapping[str, Any]] | None,
     openf1_practice_results: Sequence[Mapping[str, Any]] | None,
     num_to_code: Mapping[int, str] | None,
+    practice_pole_base: float = _DEFAULT_POLE_TIME_S,
 ) -> _RealPracticeMetrics:
     """Extracts per-driver best laps, speed traps, positions, and stint counts from OpenF1 practice data.
 
@@ -1425,6 +1474,7 @@ def _extract_real_practice_metrics(
         openf1_practice_stints: Raw OpenF1 practice stint records, or None.
         openf1_practice_results: Official OpenF1 practice result records, or None.
         num_to_code: Mapping from driver number to three-letter code, or None.
+        practice_pole_base: Expected practice pole baseline in seconds.
 
     Returns:
         Populated ``_RealPracticeMetrics`` instance.
@@ -1436,49 +1486,95 @@ def _extract_real_practice_metrics(
         lambda: {"SOFT": 0, "MEDIUM": 0, "HARD": 0}
     )
 
+    min_anchor_lap = max(
+        _MIN_PRACTICE_LAP_S, practice_pole_base * _MIN_POLE_ANCHOR_RATIO
+    )
+    official_durations = [
+        float(res_row["duration"])
+        for res_row in (openf1_practice_results or [])
+        if isinstance(res_row.get("duration"), (int, float))
+        and min_anchor_lap < float(res_row["duration"]) < _MAX_PRACTICE_LAP_S
+    ]
+    min_flying_prac_lap = min_anchor_lap
+    max_flying_prac_lap = _MAX_PRACTICE_LAP_S
+
     if openf1_practice_laps and num_to_code:
+        valid_prac_durations = [
+            float(lap["lap_duration"])
+            for lap in openf1_practice_laps
+            if lap.get("lap_duration") is not None
+            and not lap.get("is_pit_out_lap")
+            and min_anchor_lap
+            < float(lap["lap_duration"])
+            < _MAX_PRACTICE_LAP_S
+        ]
+        ref_pole_candidates = official_durations or valid_prac_durations
+        if ref_pole_candidates:
+            ref_pole = min(ref_pole_candidates)
+            min_flying_prac_lap = max(
+                _MIN_PRACTICE_LAP_S, ref_pole * _MIN_FLYING_POLE_RATIO
+            )
+            max_flying_prac_lap = ref_pole * _PRACTICE_FLYING_LAP_RATIO
+
         for lap_rec in openf1_practice_laps:
             d_num = lap_rec.get("driver_number")
             code = num_to_code.get(int(d_num)) if d_num is not None else None
             if not code:
                 continue
             dur = lap_rec.get("lap_duration")
-            if (
+            is_valid_flying = (
                 dur is not None
-                and _MIN_PRACTICE_LAP_S < float(dur) < _MAX_PRACTICE_LAP_S
-            ):
+                and not lap_rec.get("is_pit_out_lap")
+                and min_flying_prac_lap <= float(dur) <= max_flying_prac_lap
+            )
+            if is_valid_flying:
                 f_dur = float(dur)
                 if code not in real_best_lap or f_dur < real_best_lap[code]:
                     real_best_lap[code] = f_dur
-            for sp_key in ("st_speed", "i2_speed", "i1_speed"):
-                sp_val = lap_rec.get(sp_key)
-                if (
-                    sp_val is not None
-                    and _MIN_SPEED_TRAP_KMH
-                    < float(sp_val)
-                    < _MAX_SPEED_TRAP_KMH
-                ):
+                for sp_key in ("st_speed", "i2_speed", "i1_speed"):
+                    sp_val = lap_rec.get(sp_key)
                     if (
-                        code not in real_speed_trap
-                        or float(sp_val) > real_speed_trap[code]
+                        sp_val is not None
+                        and _MIN_SPEED_TRAP_KMH
+                        < float(sp_val)
+                        < _MAX_SPEED_TRAP_KMH
                     ):
-                        real_speed_trap[code] = float(sp_val)
+                        if (
+                            code not in real_speed_trap
+                            or float(sp_val) > real_speed_trap[code]
+                        ):
+                            real_speed_trap[code] = float(sp_val)
+
+    if len(real_speed_trap) >= 3:
+        median_trap = statistics.median(real_speed_trap.values())
+        real_speed_trap = {
+            code: trap
+            for code, trap in real_speed_trap.items()
+            if trap >= median_trap - _MAX_TRAP_OUTLIER_DROP_KMH
+        }
 
     if openf1_practice_results and num_to_code:
+        if official_durations and max_flying_prac_lap == _MAX_PRACTICE_LAP_S:
+            ref_pole = min(official_durations)
+            min_flying_prac_lap = max(
+                _MIN_PRACTICE_LAP_S, ref_pole * _MIN_FLYING_POLE_RATIO
+            )
+            max_flying_prac_lap = ref_pole * _PRACTICE_FLYING_LAP_RATIO
         for res_row in openf1_practice_results:
             d_num = res_row.get("driver_number")
             code = num_to_code.get(int(d_num)) if d_num is not None else None
             if not code:
                 continue
             pos = _parse_int_position(res_row.get("position"))
-            if pos is not None:
+            if pos is not None and code not in official_prac_pos:
                 official_prac_pos[code] = pos
             dur = res_row.get("duration")
             if (
                 isinstance(dur, (int, float))
-                and _MIN_PRACTICE_LAP_S < float(dur) < _MAX_PRACTICE_LAP_S
+                and min_flying_prac_lap <= float(dur) <= max_flying_prac_lap
             ):
-                real_best_lap[code] = float(dur)
+                if code not in real_best_lap or float(dur) < real_best_lap[code]:
+                    real_best_lap[code] = float(dur)
 
     if openf1_practice_stints and num_to_code:
         for stint_rec in openf1_practice_stints:
@@ -1499,6 +1595,10 @@ def _extract_real_practice_metrics(
         official_pos_by_code=official_prac_pos,
         speed_trap_by_code=real_speed_trap,
         compound_counts_by_code=real_comp_counts,
+        has_real_practice=bool(real_best_lap),
+        known_driver_codes=frozenset(num_to_code.values())
+        if num_to_code
+        else frozenset(),
     )
 
 
@@ -1603,12 +1703,56 @@ def _build_practice_driver_entry(
     color = str(driver["color"])
     seed_key = f"{circuit_ctx.gp_name}_{code}_practice"
 
-    pace_ratio = (
+    raw_pace_ratio = (
         driver_pace.get(code, circuit_ctx.fastest_baseline + 1.5)
         - circuit_ctx.fastest_baseline
     )
+    pace_ratio = max(0.0, min(_MAX_PRACTICE_PACE_RATIO_S, raw_pace_ratio))
     practice_jitter = (_seeded_unit_float(seed_key) - 0.45) * 0.42
-    best_lap = round(
+
+    u_comp = _seeded_unit_float(f"{seed_key}_comp")
+    best_compound = (
+        "SOFT" if u_comp < 0.78 else ("MEDIUM" if u_comp < 0.93 else "HARD")
+    )
+    long_run_compound = (
+        "MEDIUM" if _seeded_unit_float(f"{seed_key}_lrc") < 0.65 else "HARD"
+    )
+
+    if (
+        metrics.has_real_practice
+        and code in metrics.known_driver_codes
+        and code not in metrics.best_lap_by_code
+    ):
+        c_counts = metrics.compound_counts_by_code.get(code)
+        soft_laps = int(c_counts["SOFT"]) if c_counts else 0
+        medium_laps = int(c_counts["MEDIUM"]) if c_counts else 0
+        hard_laps = int(c_counts["HARD"]) if c_counts else 0
+        total_laps = soft_laps + medium_laps + hard_laps
+        entry = {
+            "driver": code,
+            "name": str(driver.get("name", code)),
+            "team": team,
+            "color": color,
+            "best_lap": None,
+            "compound": best_compound,
+            "total_laps": total_laps,
+            "short_run_laps": total_laps,
+            "long_run_laps": 0,
+            "compound_laps": {
+                "SOFT": soft_laps,
+                "MEDIUM": medium_laps,
+                "HARD": hard_laps,
+            },
+            "speed_trap_kmh": None,
+            "mean_corner_kmh": None,
+            "long_run_compound": long_run_compound,
+            "long_run_avg": None,
+            "long_run_q25": None,
+            "long_run_q75": None,
+        }
+        return entry, []
+
+    best_lap: float | None = round(
         metrics.best_lap_by_code.get(
             code,
             circuit_ctx.practice_pole_base
@@ -1616,11 +1760,6 @@ def _build_practice_driver_entry(
             + max(-0.18, practice_jitter),
         ),
         _TIME_DECIMALS,
-    )
-
-    u_comp = _seeded_unit_float(f"{seed_key}_comp")
-    best_compound = (
-        "SOFT" if u_comp < 0.78 else ("MEDIUM" if u_comp < 0.93 else "HARD")
     )
 
     c_counts = metrics.compound_counts_by_code.get(code)
@@ -1650,7 +1789,7 @@ def _build_practice_driver_entry(
         _circuit_top_speed_from_pace(
             circuit_ctx.circuit_top_speed_base,
             circuit_ctx.fastest_baseline,
-            driver_pace.get(code, circuit_ctx.fastest_baseline),
+            circuit_ctx.fastest_baseline + pace_ratio,
             aero_trim,
         )
     )
@@ -1658,9 +1797,6 @@ def _build_practice_driver_entry(
         metrics.speed_trap_by_code.get(code, fallback_trap), _SPEED_DECIMALS
     )
 
-    long_run_compound = (
-        "MEDIUM" if _seeded_unit_float(f"{seed_key}_lrc") < 0.65 else "HARD"
-    )
     stint_len = 10 + int(_seeded_unit_float(f"{seed_key}_lrlen") * 5)
 
     driver_stint_laps, driver_long_run_times = _extract_real_practice_stint_laps(
@@ -1811,9 +1947,14 @@ def _build_practice_telemetry(
         openf1_practice_stints=openf1_practice_stints,
         openf1_practice_results=openf1_practice_results,
         num_to_code=num_to_code,
+        practice_pole_base=practice_pole_base,
     )
     if metrics.best_lap_by_code:
         practice_pole_base = min(metrics.best_lap_by_code.values())
+    if metrics.speed_trap_by_code:
+        circuit_top_speed_base = statistics.median(
+            metrics.speed_trap_by_code.values()
+        )
 
     deg_rates = {
         "SOFT": round(0.078 + (variation / 2500.0), _TIME_DECIMALS),
@@ -1844,26 +1985,30 @@ def _build_practice_telemetry(
         raw_entries.append(entry)
         stint_laps.extend(drv_stint_laps)
 
-    if metrics.official_pos_by_code:
-        raw_entries.sort(
-            key=lambda item: (
-                metrics.official_pos_by_code.get(
-                    str(item["driver"]), _UNRANKED_POSITION
-                ),
-                float(item["best_lap"]),
-            )
+    raw_entries.sort(
+        key=lambda item: (
+            0 if item["best_lap"] is not None else 1,
+            float(item["best_lap"])
+            if item["best_lap"] is not None
+            else float("inf"),
+            metrics.official_pos_by_code.get(
+                str(item["driver"]), _UNRANKED_POSITION
+            ),
         )
-    else:
-        raw_entries.sort(key=lambda item: float(item["best_lap"]))
-
-    p1_best = (
-        float(raw_entries[0]["best_lap"]) if raw_entries else practice_pole_base
     )
+
+    valid_best_laps = [
+        float(e["best_lap"]) for e in raw_entries if e["best_lap"] is not None
+    ]
+    p1_best = valid_best_laps[0] if valid_best_laps else practice_pole_base
     for idx, entry in enumerate(raw_entries):
         entry["rank"] = idx + 1
-        entry["gap_to_p1"] = round(
-            max(0.0, float(entry["best_lap"]) - p1_best), _TIME_DECIMALS
-        )
+        if entry["best_lap"] is not None:
+            entry["gap_to_p1"] = round(
+                max(0.0, float(entry["best_lap"]) - p1_best), _TIME_DECIMALS
+            )
+        else:
+            entry["gap_to_p1"] = None
 
     degradation_slopes = _build_degradation_slopes(
         practice_pole_base=practice_pole_base,
@@ -1912,12 +2057,15 @@ def _build_qualifying_telemetry_traces(
             }
         )
 
+    valid_results = [r for r in results if r.get("best_time") is not None]
     pole_time = (
-        float(results[0]["best_time"]) if results else _DEFAULT_POLE_TIME_S
+        float(valid_results[0]["best_time"])
+        if valid_results
+        else _DEFAULT_POLE_TIME_S
     )
     drivers_traces: dict[str, dict[str, list[float]]] = {}
 
-    for res in results:
+    for res in valid_results:
         code = str(res["driver"])
         best_time = float(res["best_time"])
         total_delta = best_time - pole_time
@@ -2040,7 +2188,37 @@ def _extract_real_qualifying_metrics(
     real_best_sectors: dict[str, dict[str, float]] = {
         str(d["code"]): {} for d in drivers
     }
-    real_lap_sectors: dict[str, tuple[float | None, float | None, float | None]] = {}
+    real_lap_sectors: dict[
+        Any, tuple[float | None, float | None, float | None]
+    ] = {}
+    min_anchor_quali_lap = max(
+        _MIN_QUALI_LAP_S, pole_target * _MIN_POLE_ANCHOR_RATIO
+    )
+    official_quali_durations: list[float] = []
+    if openf1_quali_results:
+        for res_row in openf1_quali_results:
+            dur_val = res_row.get("duration")
+            if isinstance(dur_val, list):
+                for stage_t in dur_val:
+                    if (
+                        isinstance(stage_t, (int, float))
+                        and min_anchor_quali_lap
+                        < float(stage_t)
+                        < _MAX_QUALI_LAP_S
+                    ):
+                        official_quali_durations.append(float(stage_t))
+
+    min_flying_lap = min_anchor_quali_lap
+    max_flying_lap = _MAX_QUALI_RESULT_LAP_S
+    if official_quali_durations:
+        min_session_lap = min(official_quali_durations)
+        min_flying_lap = max(
+            _MIN_QUALI_LAP_S, min_session_lap * _MIN_FLYING_POLE_RATIO
+        )
+        max_flying_lap = min_session_lap * _QUALI_FLYING_LAP_RATIO
+
+    s1_ratios: list[float] = []
+    s2_ratios: list[float] = []
 
     if openf1_quali_laps and num_to_code:
         phase_starts: dict[int, str] = {}
@@ -2050,16 +2228,23 @@ def _extract_real_qualifying_metrics(
                 if int(qp) not in phase_starts:
                     phase_starts[int(qp)] = str(event["date"])
 
-        valid_durations = [
-            float(lap["lap_duration"])
-            for lap in openf1_quali_laps
-            if lap.get("lap_duration") is not None
-            and _MIN_QUALI_LAP_S < float(lap["lap_duration"]) < _MAX_QUALI_LAP_S
-        ]
-        min_session_lap = (
-            min(valid_durations) if valid_durations else pole_target
-        )
-        max_flying_lap = min_session_lap * _QUALI_FLYING_LAP_RATIO
+        if not official_quali_durations:
+            valid_durations = [
+                float(lap["lap_duration"])
+                for lap in openf1_quali_laps
+                if lap.get("lap_duration") is not None
+                and not lap.get("is_pit_out_lap")
+                and min_anchor_quali_lap
+                < float(lap["lap_duration"])
+                < _MAX_QUALI_LAP_S
+            ]
+            min_session_lap = (
+                min(valid_durations) if valid_durations else pole_target
+            )
+            min_flying_lap = max(
+                _MIN_QUALI_LAP_S, min_session_lap * _MIN_FLYING_POLE_RATIO
+            )
+            max_flying_lap = min_session_lap * _QUALI_FLYING_LAP_RATIO
 
         for lap_rec in openf1_quali_laps:
             d_num = lap_rec.get("driver_number")
@@ -2067,31 +2252,54 @@ def _extract_real_qualifying_metrics(
             if not code or code not in real_q_times:
                 continue
 
-            for s_idx, s_field in enumerate(
-                ("duration_sector_1", "duration_sector_2", "duration_sector_3"),
-                start=1,
-            ):
-                s_val = lap_rec.get(s_field)
-                if (
-                    s_val is not None
-                    and _MIN_SECTOR_TIME_S < float(s_val) < _MAX_SECTOR_TIME_S
-                ):
-                    s_key = f"s{s_idx}"
-                    if (
-                        s_key not in real_best_sectors[code]
-                        or float(s_val) < real_best_sectors[code][s_key]
-                    ):
-                        real_best_sectors[code][s_key] = float(s_val)
-
             dur = lap_rec.get("lap_duration")
             ds = str(lap_rec.get("date_start") or "")
             if (
                 dur is None
-                or float(dur) <= _MIN_QUALI_LAP_S
+                or lap_rec.get("is_pit_out_lap")
+                or float(dur) < min_flying_lap
                 or float(dur) > max_flying_lap
             ):
                 continue
             f_dur = round(float(dur), _TIME_DECIMALS)
+
+            s1_raw = (
+                float(lap_rec["duration_sector_1"])
+                if lap_rec.get("duration_sector_1") is not None
+                else None
+            )
+            s2_raw = (
+                float(lap_rec["duration_sector_2"])
+                if lap_rec.get("duration_sector_2") is not None
+                else None
+            )
+            s3_raw = (
+                float(lap_rec["duration_sector_3"])
+                if lap_rec.get("duration_sector_3") is not None
+                else None
+            )
+            if (
+                s1_raw is not None
+                and s2_raw is not None
+                and s3_raw is not None
+                and abs((s1_raw + s2_raw + s3_raw) - f_dur)
+                < _SECTOR_SUM_TOLERANCE_S
+            ):
+                for s_idx, s_val in (
+                    (1, s1_raw),
+                    (2, s2_raw),
+                    (3, s3_raw),
+                ):
+                    if _MIN_SECTOR_TIME_S < s_val < _MAX_SECTOR_TIME_S:
+                        s_key = f"s{s_idx}"
+                        if (
+                            s_key not in real_best_sectors[code]
+                            or s_val < real_best_sectors[code][s_key]
+                        ):
+                            real_best_sectors[code][s_key] = s_val
+                real_lap_sectors[(code, f_dur)] = (s1_raw, s2_raw, s3_raw)
+                s1_ratios.append(s1_raw / f_dur)
+                s2_ratios.append(s2_raw / f_dur)
 
             if phase_starts.get(3) and ds >= phase_starts[3]:
                 phase = 3
@@ -2112,17 +2320,7 @@ def _extract_real_qualifying_metrics(
                         and real_q_times[code][3] is None
                     )
                 ):
-                    real_lap_sectors[code] = (
-                        float(lap_rec["duration_sector_1"])
-                        if lap_rec.get("duration_sector_1") is not None
-                        else None,
-                        float(lap_rec["duration_sector_2"])
-                        if lap_rec.get("duration_sector_2") is not None
-                        else None,
-                        float(lap_rec["duration_sector_3"])
-                        if lap_rec.get("duration_sector_3") is not None
-                        else None,
-                    )
+                    real_lap_sectors[code] = (s1_raw, s2_raw, s3_raw)
 
     if openf1_quali_results and num_to_code:
         for res_row in openf1_quali_results:
@@ -2139,15 +2337,20 @@ def _extract_real_qualifying_metrics(
                     stage_t = dur_val[phase_idx]
                     if (
                         isinstance(stage_t, (int, float))
-                        and _MIN_QUALI_LAP_S
-                        < float(stage_t)
-                        < _MAX_QUALI_RESULT_LAP_S
+                        and min_flying_lap
+                        <= float(stage_t)
+                        <= max_flying_lap
                     ):
                         real_q_times[code][phase_idx + 1] = round(
                             float(stage_t), _TIME_DECIMALS
                         )
-                    elif stage_t is None:
+                    else:
                         real_q_times[code][phase_idx + 1] = None
+                if all(
+                    v is None for v in real_q_times[code].values()
+                ):
+                    real_best_sectors[code].clear()
+                    real_lap_sectors.pop(code, None)
 
     has_real_quali = bool(official_quali_pos) or any(
         qt[3] is not None or qt[2] is not None or qt[1] is not None
@@ -2160,6 +2363,8 @@ def _extract_real_qualifying_metrics(
         best_sectors_by_code=real_best_sectors,
         lap_sectors_by_code=real_lap_sectors,
         has_real_quali=has_real_quali,
+        real_s1_ratio=statistics.median(s1_ratios) if s1_ratios else None,
+        real_s2_ratio=statistics.median(s2_ratios) if s2_ratios else None,
     )
 
 
@@ -2240,7 +2445,7 @@ def _resolve_driver_stage_times(
     grid_pos: int,
     seed_base: str,
     synth_ctx: _QualifyingSynthesisContext,
-) -> tuple[str, float | None, float | None, float | None, float]:
+) -> tuple[str, float | None, float | None, float | None, float | None]:
     """Resolves Q1, Q2, Q3, best_time, and elimination stage for a single driver.
 
     Args:
@@ -2259,42 +2464,24 @@ def _resolve_driver_stage_times(
     pole_target = synth_ctx.pole_target
     stage_prefix = synth_ctx.stage_prefix
 
-    if synth_ctx.metrics.has_real_quali and (
-        qt[1] is not None or qt[2] is not None or qt[3] is not None
-    ):
+    if synth_ctx.metrics.has_real_quali:
         q1_time = qt[1]
         q2_time = qt[2] if grid_pos <= _Q2_CUTOFF_RANK else None
         q3_time = qt[3] if grid_pos <= _Q3_CUTOFF_RANK else None
 
         if grid_pos <= _Q3_CUTOFF_RANK:
             eliminated_in = f"{stage_prefix}3"
-            best_time = float(q3_time or q2_time or q1_time or pole_target)
-            if q3_time is None:
-                q3_time = best_time
-            if q2_time is None:
-                q2_time = round(best_time + 0.25, _TIME_DECIMALS)
-            if q1_time is None:
-                q1_time = round(q2_time + 0.35, _TIME_DECIMALS)
+            best_stage = q3_time or q2_time or q1_time
         elif grid_pos <= _Q2_CUTOFF_RANK:
             eliminated_in = f"{stage_prefix}2"
-            best_time = float(q2_time or q1_time or (pole_target + 1.2))
             q3_time = None
-            if q2_time is None:
-                q2_time = best_time
-            if q1_time is None:
-                q1_time = round(q2_time + 0.28, _TIME_DECIMALS)
+            best_stage = q2_time or q1_time
         else:
             eliminated_in = f"{stage_prefix}1"
             q3_time = None
             q2_time = None
-            best_time = float(
-                q1_time
-                or round(
-                    pole_target + 1.85 + (grid_pos - _Q2_CUTOFF_RANK) * 0.14,
-                    _TIME_DECIMALS,
-                )
-            )
-            q1_time = best_time
+            best_stage = q1_time
+        best_time = float(best_stage) if best_stage is not None else None
         return eliminated_in, q1_time, q2_time, q3_time, best_time
 
     gap_base = idx * 0.082 + _seeded_unit_float(f"{seed_base}_gap") * 0.04
@@ -2371,6 +2558,8 @@ def _resolve_driver_sectors(
         Tuple of ``(s1, s2, s3, ideal_s1, ideal_s2, ideal_s3)``.
     """
     raw_s1, raw_s2, raw_s3 = synth_ctx.metrics.lap_sectors_by_code.get(
+        (code, best_time)
+    ) or synth_ctx.metrics.lap_sectors_by_code.get(
         code, (None, None, None)
     )
     if (
@@ -2444,6 +2633,36 @@ def _build_qualifying_results_rows(
                 synth_ctx=synth_ctx,
             )
         )
+        if best_time is None:
+            results.append(
+                {
+                    "driver": code,
+                    "name": str(driver.get("name", code)),
+                    "team": team,
+                    "color": color,
+                    "grid_pos": grid_pos,
+                    "eliminated_in": eliminated_in,
+                    "q1_time": q1_time,
+                    "q2_time": q2_time,
+                    "q3_time": q3_time,
+                    "best_time": None,
+                    "gap_to_pole": None,
+                    "compound": "SOFT",
+                    "s1": None,
+                    "s2": None,
+                    "s3": None,
+                    "ideal_s1": None,
+                    "ideal_s2": None,
+                    "ideal_s3": None,
+                    "s1_status": None,
+                    "s2_status": None,
+                    "s3_status": None,
+                    "ideal_lap": None,
+                    "time_left_on_table": None,
+                }
+            )
+            continue
+
         s1, s2, s3, ideal_s1, ideal_s2, ideal_s3 = _resolve_driver_sectors(
             code=code,
             best_time=best_time,
@@ -2509,23 +2728,42 @@ def _assign_fia_sector_statuses(
     Returns:
         Resolved pole lap time in seconds.
     """
-    if not results:
+    valid_rows = [r for r in results if r.get("best_time") is not None]
+    if not valid_rows:
         return pole_target
 
-    pole_time = float(results[0]["best_time"])
-    min_s1 = min(float(r["s1"]) for r in results)
-    min_s2 = min(float(r["s2"]) for r in results)
-    min_s3 = min(float(r["s3"]) for r in results)
+    pole_time = float(valid_rows[0]["best_time"])
+    s1_vals = [float(r["s1"]) for r in valid_rows if r.get("s1") is not None]
+    s2_vals = [float(r["s2"]) for r in valid_rows if r.get("s2") is not None]
+    s3_vals = [float(r["s3"]) for r in valid_rows if r.get("s3") is not None]
+    min_s1 = min(s1_vals) if s1_vals else None
+    min_s2 = min(s2_vals) if s2_vals else None
+    min_s3 = min(s3_vals) if s3_vals else None
 
     for row in results:
+        if row.get("best_time") is None:
+            row["gap_to_pole"] = None
+            continue
         row["gap_to_pole"] = round(
             float(row["best_time"]) - pole_time, _TIME_DECIMALS
         )
-        if abs(float(row["s1"]) - min_s1) < _PURPLE_SECTOR_TOLERANCE_S:
+        if (
+            min_s1 is not None
+            and row.get("s1") is not None
+            and abs(float(row["s1"]) - min_s1) < _PURPLE_SECTOR_TOLERANCE_S
+        ):
             row["s1_status"] = "purple"
-        if abs(float(row["s2"]) - min_s2) < _PURPLE_SECTOR_TOLERANCE_S:
+        if (
+            min_s2 is not None
+            and row.get("s2") is not None
+            and abs(float(row["s2"]) - min_s2) < _PURPLE_SECTOR_TOLERANCE_S
+        ):
             row["s2_status"] = "purple"
-        if abs(float(row["s3"]) - min_s3) < _PURPLE_SECTOR_TOLERANCE_S:
+        if (
+            min_s3 is not None
+            and row.get("s3") is not None
+            and abs(float(row["s3"]) - min_s3) < _PURPLE_SECTOR_TOLERANCE_S
+        ):
             row["s3_status"] = "purple"
     return pole_time
 
@@ -2588,13 +2826,23 @@ def _build_teammate_qualifying_deltas(
     teammate_deltas: list[dict[str, Any]] = []
     for team_name, team_drivers in by_team.items():
         sorted_pair = sorted(
-            team_drivers, key=lambda item: int(item["grid_pos"])
+            team_drivers,
+            key=lambda item: (
+                0 if item.get("best_time") is not None else 1,
+                int(item["grid_pos"]),
+            ),
         )
         faster = sorted_pair[0]
         slower = sorted_pair[-1]
-        delta_s = round(
-            max(0.0, float(slower["best_time"]) - float(faster["best_time"])),
-            _TIME_DECIMALS,
+        faster_bt = faster.get("best_time")
+        slower_bt = slower.get("best_time")
+        delta_s = (
+            round(
+                max(0.0, float(slower_bt) - float(faster_bt)),
+                _TIME_DECIMALS,
+            )
+            if faster_bt is not None and slower_bt is not None
+            else None
         )
         teammate_deltas.append(
             {
@@ -2604,8 +2852,12 @@ def _build_teammate_qualifying_deltas(
                 "slower_driver": str(slower["driver"]),
                 "faster_grid": int(faster["grid_pos"]),
                 "slower_grid": int(slower["grid_pos"]),
-                "faster_time": float(faster["best_time"]),
-                "slower_time": float(slower["best_time"]),
+                "faster_time": (
+                    float(faster_bt) if faster_bt is not None else None
+                ),
+                "slower_time": (
+                    float(slower_bt) if slower_bt is not None else None
+                ),
                 "delta_s": delta_s,
             }
         )
@@ -2673,8 +2925,8 @@ def _build_qualifying_telemetry(
         gp_name=gp_name,
         stage_prefix=stage_prefix,
         pole_target=pole_target,
-        s1_ratio=s1_ratio,
-        s2_ratio=s2_ratio,
+        s1_ratio=metrics.real_s1_ratio or s1_ratio,
+        s2_ratio=metrics.real_s2_ratio or s2_ratio,
         metrics=metrics,
     )
     results = _build_qualifying_results_rows(ordered_drivers, synth_ctx)
@@ -2683,10 +2935,21 @@ def _build_qualifying_telemetry(
     teammate_deltas, by_team = _build_teammate_qualifying_deltas(results)
 
     teams_info = _group_drivers_by_team(drivers)
-    quali_team_perf = {
-        team_name: min(float(r["best_time"]) for r in team_rows)
-        for team_name, team_rows in by_team.items()
-    }
+    quali_team_perf: dict[str, float] = {}
+    for team_name, team_rows in by_team.items():
+        valid_team_times = [
+            float(r["best_time"])
+            for r in team_rows
+            if r.get("best_time") is not None
+        ]
+        if valid_team_times:
+            quali_team_perf[team_name] = min(valid_team_times)
+        else:
+            quali_team_perf[team_name] = min(
+                driver_pace.get(str(r["driver"]), fastest_baseline + 2.5)
+                * _QUALI_POLE_RATIO
+                for r in team_rows
+            )
     quali_corners = _generate_corners_data(
         track_profile, quali_team_perf, teams_info
     )
@@ -3029,9 +3292,18 @@ def _build_stints_and_pit_stops(
             stint_num = s_idx + 1
             start_lap = int(group[0]["lap"])
             end_lap = int(group[-1]["lap"])
-            comp = str(group[0].get("compound", "MEDIUM"))
-            if comp == "UNKNOWN":
+            valid_comps = [
+                str(lap.get("compound", "UNKNOWN"))
+                for lap in group
+                if str(lap.get("compound", "UNKNOWN")) != "UNKNOWN"
+            ]
+            if valid_comps:
+                comp = Counter(valid_comps).most_common(1)[0][0]
+            else:
                 comp = "MEDIUM" if stint_num == 1 else "HARD"
+            for lap_rec in group:
+                if isinstance(lap_rec, dict):
+                    lap_rec["compound"] = comp
 
             clean_group_times = [
                 float(lap["time"])
@@ -3264,23 +3536,20 @@ def _fetch_practice_session_inputs(
     """
     prac_laps_raw: list[dict[str, Any]] = []
     prac_stints_raw: list[dict[str, Any]] = []
-    prac_results_raw: list[dict[str, Any]] | None = None
+    prac_results_raw: list[dict[str, Any]] = []
 
     for p_name in ("Practice 2", "Practice 1", "Practice 3"):
         if p_name in session_map:
             p_sk = session_map[p_name]
-            if not prac_results_raw:
-                prac_results_raw = _fetch_openf1_json(
-                    "session_result", {"session_key": p_sk}
-                )
+            prac_results_raw.extend(
+                _fetch_openf1_json("session_result", {"session_key": p_sk})
+            )
             prac_laps_raw.extend(
                 _fetch_openf1_json("laps", {"session_key": p_sk})
             )
             prac_stints_raw.extend(
                 _fetch_openf1_json("stints", {"session_key": p_sk})
             )
-            if len(prac_laps_raw) > _PRACTICE_SAMPLE_LAP_LIMIT:
-                break
 
     return (
         prac_laps_raw or None,
@@ -3891,7 +4160,6 @@ def generate_weekend_telemetry(
         )
     )
     track_profile = _resolve_track_profile(gp_name, track_profiles)
-    driver_pace = _compute_driver_baseline_pace(drivers, laps)
 
     session_map: dict[str, int] = {}
     if fetch_live:
@@ -3909,6 +4177,52 @@ def generate_weekend_telemetry(
         if fetch_live and session_map
         else ({}, {})
     )
+
+    race_laps_raw = (
+        _fetch_openf1_json("laps", {"session_key": session_map["Race"]})
+        if fetch_live and "Race" in session_map
+        else None
+    )
+    race_stints_raw = (
+        _fetch_openf1_json("stints", {"session_key": session_map["Race"]})
+        if fetch_live and "Race" in session_map
+        else None
+    )
+    race_pos_raw = (
+        _fetch_openf1_json("position", {"session_key": session_map["Race"]})
+        if fetch_live and "Race" in session_map
+        else None
+    )
+    race_results_raw = (
+        _fetch_openf1_json(
+            "session_result", {"session_key": session_map["Race"]}
+        )
+        if fetch_live and "Race" in session_map
+        else None
+    )
+    if race_laps_raw and drivers_dict_by_num:
+        laps, total_laps = process_laps_data(
+            laps_data=race_laps_raw,
+            drivers_dict=drivers_dict_by_num,
+            stints_data=race_stints_raw or [],
+        )
+    race_classification: list[dict[str, Any]] = []
+    if race_results_raw and num_to_code:
+        laps, total_laps, official_winner, race_classification = (
+            _calibrate_race_laps_with_session_result(
+                laps=laps,
+                drivers=drivers,
+                openf1_session_result=race_results_raw,
+                num_to_code=num_to_code,
+                openf1_raw_laps=race_laps_raw,
+                openf1_positions=race_pos_raw,
+            )
+        )
+        race_data["laps"] = laps
+        race_data["race_info"]["total_laps"] = total_laps
+        race_data["race_info"]["winner"] = official_winner
+
+    driver_pace = _compute_driver_baseline_pace(drivers, laps)
 
     quali_laps_raw = (
         _fetch_openf1_json("laps", {"session_key": session_map["Qualifying"]})
@@ -3980,50 +4294,6 @@ def generate_weekend_telemetry(
         openf1_practice_results=prac_results_raw,
         num_to_code=num_to_code or None,
     )
-
-    race_laps_raw = (
-        _fetch_openf1_json("laps", {"session_key": session_map["Race"]})
-        if fetch_live and "Race" in session_map
-        else None
-    )
-    race_stints_raw = (
-        _fetch_openf1_json("stints", {"session_key": session_map["Race"]})
-        if fetch_live and "Race" in session_map
-        else None
-    )
-    race_pos_raw = (
-        _fetch_openf1_json("position", {"session_key": session_map["Race"]})
-        if fetch_live and "Race" in session_map
-        else None
-    )
-    race_results_raw = (
-        _fetch_openf1_json(
-            "session_result", {"session_key": session_map["Race"]}
-        )
-        if fetch_live and "Race" in session_map
-        else None
-    )
-    if race_laps_raw and drivers_dict_by_num:
-        laps, total_laps = process_laps_data(
-            laps_data=race_laps_raw,
-            drivers_dict=drivers_dict_by_num,
-            stints_data=race_stints_raw or [],
-        )
-    race_classification: list[dict[str, Any]] = []
-    if race_results_raw and num_to_code:
-        laps, total_laps, official_winner, race_classification = (
-            _calibrate_race_laps_with_session_result(
-                laps=laps,
-                drivers=drivers,
-                openf1_session_result=race_results_raw,
-                num_to_code=num_to_code,
-                openf1_raw_laps=race_laps_raw,
-                openf1_positions=race_pos_raw,
-            )
-        )
-        race_data["laps"] = laps
-        race_data["race_info"]["total_laps"] = total_laps
-        race_data["race_info"]["winner"] = official_winner
 
     race_pits_raw = (
         _fetch_openf1_json("pit", {"session_key": session_map["Race"]})

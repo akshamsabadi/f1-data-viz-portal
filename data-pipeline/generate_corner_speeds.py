@@ -21,7 +21,12 @@ _DEFAULT_TRACK_PROFILE: Final[dict[str, int]] = {
     "variation": 60,
 }
 _TOP_CLEAN_LAPS_COUNT: Final[int] = 5
-_CORNER_VARIANCE_AMPLITUDE_KMH: Final[float] = 3.0
+_CORNER_VARIANCE_AMPLITUDE_KMH: Final[float] = 1.1
+_GOLDEN_ANGLE_RAD: Final[float] = 2.399963229728653
+_PACE_DELTA_SENSITIVITY: Final[float] = 1.6
+_FNV1A_OFFSET_BASIS: Final[int] = 2166136261
+_FNV1A_PRIME: Final[int] = 16777619
+_FNV1A_MODULO: Final[int] = 0xFFFFFFFF
 _SPEED_ROUNDING_DECIMALS: Final[int] = 1
 _JSON_INDENT_SPACES: Final[int] = 2
 _DEFAULT_RACES_RELATIVE_DIR: Final[tuple[str, ...]] = (
@@ -140,6 +145,21 @@ def _calculate_team_top_lap_averages(
     return team_performance
 
 
+def _team_phase_radians(team_name: str) -> float:
+    """Computes a well-distributed [0, 2π) phase offset for a constructor.
+
+    Args:
+        team_name: Name of the constructor team.
+
+    Returns:
+        Phase angle in radians in the interval [0, 2π).
+    """
+    hash_val = _FNV1A_OFFSET_BASIS
+    for character in team_name:
+        hash_val = ((hash_val ^ ord(character)) * _FNV1A_PRIME) & _FNV1A_MODULO
+    return (hash_val % 10000) / 10000.0 * (2.0 * math.pi)
+
+
 def _calculate_single_corner_speed(
     turn_base_speed: float,
     time_delta_ratio: float,
@@ -159,11 +179,13 @@ def _calculate_single_corner_speed(
     Returns:
         Simulated corner speed in km/h rounded to ``_SPEED_ROUNDING_DECIMALS``.
     """
-    team_seed = sum(ord(character) for character in team_name)
+    team_phase = _team_phase_radians(team_name)
     corner_variance = (
-        math.cos(turn_number * team_seed) * _CORNER_VARIANCE_AMPLITUDE_KMH
+        math.cos(turn_number * _GOLDEN_ANGLE_RAD + team_phase)
+        * _CORNER_VARIANCE_AMPLITUDE_KMH
     )
-    raw_corner_speed = (turn_base_speed * time_delta_ratio) + corner_variance
+    effective_ratio = 1.0 - (1.0 - time_delta_ratio) * _PACE_DELTA_SENSITIVITY
+    raw_corner_speed = (turn_base_speed * effective_ratio) + corner_variance
     return round(raw_corner_speed, _SPEED_ROUNDING_DECIMALS)
 
 
