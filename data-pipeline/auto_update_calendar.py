@@ -1,5 +1,7 @@
 """Automated pipeline script to discover and ingest new OpenF1 race sessions."""
 
+from __future__ import annotations
+
 from collections.abc import Mapping
 import json
 import os
@@ -19,6 +21,7 @@ _OPENF1_SESSIONS_URL: Final[str] = (
 )
 _REQUEST_TIMEOUT_SECONDS: Final[int] = 15
 _HTTP_OK: Final[int] = 200
+_JSON_INDENT_SPACES: Final[int] = 2
 _CATALUNYA_GP_NAME: Final[str] = "Barcelona-Catalunya Grand Prix"
 _MADRING_GP_NAME: Final[str] = "Spanish Grand Prix (Madring)"
 _SPAIN_IDENTIFIERS: Final[tuple[str, ...]] = ("spain", "catalunya")
@@ -89,7 +92,7 @@ def _save_manifest(manifest_path: str, manifest: Mapping[str, Any]) -> None:
         manifest: The manifest data mapping to serialize.
     """
     with open(manifest_path, "w", encoding="utf-8") as manifest_file:
-        json.dump(manifest, manifest_file, indent=2)
+        json.dump(manifest, manifest_file, indent=_JSON_INDENT_SPACES)
     print("\nManifest updated and saved successfully.")
 
 

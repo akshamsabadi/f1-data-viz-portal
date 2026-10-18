@@ -1,5 +1,7 @@
 """Unit tests for the synthetic F1 race generator (`generate_mock_race.py`)."""
 
+from __future__ import annotations
+
 import json
 from pathlib import Path
 import random

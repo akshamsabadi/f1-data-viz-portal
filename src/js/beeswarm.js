@@ -5,19 +5,32 @@ const _CHART_HEIGHT_PX = 600;
 const _COMPOUND_ORDER = ['SOFT', 'MEDIUM', 'HARD', 'INTERMEDIATE', 'WET', 'UNKNOWN'];
 const _COMPOUND_COLORS = ['#ef4444', '#eab308', '#fafafa', '#22c55e', '#3b82f6', '#a1a1aa'];
 const _UNKNOWN_COMPOUND_SORT_INDEX = 99;
+
+const _Q1_QUANTILE = 0.25;
+const _MEDIAN_QUANTILE = 0.5;
+const _Q3_QUANTILE = 0.75;
 const _IQR_OUTLIER_MULTIPLIER = 1.5;
 const _TIME_AXIS_PADDING_RATIO = 0.05;
+
 const _SIMULATION_TICKS = 120;
 const _POINT_RADIUS_PX = 3.5;
 const _POINT_HOVER_RADIUS_PX = 6;
+const _DEFAULT_POINT_STROKE_WIDTH_PX = 1;
+const _HOVER_POINT_STROKE_WIDTH_PX = 2;
 const _COLLIDE_RADIUS_PX = 4;
 const _X_FORCE_STRENGTH = 0.2;
 const _Y_FORCE_STRENGTH = 1;
 const _MEDIAN_HALF_WIDTH_PX = 20;
+
 const _ACTIVE_OPACITY = 1;
 const _DIMMED_OPACITY = 0.08;
 const _DIMMED_LABEL_OPACITY = 0.35;
+
 const _AXIS_TICK_COUNT = 10;
+const _DRIVER_LABEL_FONT_SIZE = '12px';
+const _X_AXIS_TITLE_OFFSET_Y_PX = 40;
+const _Y_AXIS_TITLE_OFFSET_Y_PX = -45;
+
 const _TOOLTIP_OFFSET_X_PX = 15;
 const _TOOLTIP_OFFSET_Y_PX = -30;
 
@@ -138,8 +151,8 @@ function _buildCompoundLegend(legendContainer, laps, colorScale, activeCompounds
  */
 function _filterOutlierLaps(laps, showOutliers) {
     const sortedTimes = laps.map((d) => d.time).sort(d3.ascending);
-    const q1 = d3.quantile(sortedTimes, 0.25);
-    const q3 = d3.quantile(sortedTimes, 0.75);
+    const q1 = d3.quantile(sortedTimes, _Q1_QUANTILE);
+    const q3 = d3.quantile(sortedTimes, _Q3_QUANTILE);
     const iqr = q3 - q1;
     const maxAllowedTime = q3 + _IQR_OUTLIER_MULTIPLIER * iqr;
 
@@ -164,10 +177,37 @@ function _calculateDriverMedians(orderedDrivers, laps) {
             if (driverTimes.length === 0) return null;
             return {
                 driver,
-                median: d3.quantile(driverTimes, 0.5)
+                median: d3.quantile(driverTimes, _MEDIAN_QUANTILE)
             };
         })
         .filter((entry) => entry !== null);
+}
+
+/**
+ * Creates the horizontal driver point scale and vertical lap time linear scale.
+ *
+ * @param {Array<string>} orderedDrivers - Ordered driver codes.
+ * @param {Array<{time: number}>} laps - Filtered lap records.
+ * @param {number} width - Inner plot width in pixels.
+ * @param {number} height - Inner plot height in pixels.
+ * @returns {{xScale: Function, yScale: Function}} D3 scales for X and Y axes.
+ */
+function _createBeeswarmScales(orderedDrivers, laps, width, height) {
+    const xScale = d3
+        .scalePoint()
+        .domain(orderedDrivers)
+        .range([0, width])
+        .padding(1);
+
+    const timeExtent = d3.extent(laps, (d) => d.time);
+    const timePadding = (timeExtent[1] - timeExtent[0]) * _TIME_AXIS_PADDING_RATIO;
+
+    const yScale = d3
+        .scaleLinear()
+        .domain([timeExtent[0] - timePadding, timeExtent[1] + timePadding])
+        .range([height, 0]);
+
+    return { xScale, yScale };
 }
 
 /**
@@ -230,13 +270,13 @@ function _renderAxesAndGrid(
         .style('fill', (d) => driverColorMap[d] || 'var(--text-muted)')
         .style('font-family', 'Montserrat, sans-serif')
         .style('font-weight', '700')
-        .style('font-size', '12px')
+        .style('font-size', _DRIVER_LABEL_FONT_SIZE)
         .on('click', (event, driverCode) => onDriverClick(driverCode));
 
     xAxisGroup
         .append('text')
         .attr('x', width)
-        .attr('y', 40)
+        .attr('y', _X_AXIS_TITLE_OFFSET_Y_PX)
         .attr('fill', 'var(--text-muted)')
         .attr('text-anchor', 'end')
         .style('font-family', 'Montserrat, sans-serif')
@@ -252,7 +292,7 @@ function _renderAxesAndGrid(
     yAxisGroup
         .append('text')
         .attr('transform', 'rotate(-90)')
-        .attr('y', -45)
+        .attr('y', _Y_AXIS_TITLE_OFFSET_Y_PX)
         .attr('x', 0)
         .attr('fill', 'var(--text-muted)')
         .attr('text-anchor', 'end')
@@ -261,6 +301,30 @@ function _renderAxesAndGrid(
         .text('LAP TIME (S)');
 
     return driverLabels;
+}
+
+/**
+ * Renders horizontal per-driver median lap time indicator bars.
+ *
+ * @param {Object} mediansGroup - D3 selection for the medians layer.
+ * @param {Array<{driver: string, median: number}>} medians - Per-driver median descriptors.
+ * @param {Function} xScale - D3 point scale for drivers.
+ * @param {Function} yScale - D3 linear scale for lap times.
+ * @param {Object<string, string>} driverColorMap - Lookup map of driver code to team color.
+ * @returns {Object} D3 selection of `.median-line` elements.
+ */
+function _renderMedianLines(mediansGroup, medians, xScale, yScale, driverColorMap) {
+    return mediansGroup
+        .selectAll('line.median-line')
+        .data(medians)
+        .enter()
+        .append('line')
+        .attr('class', 'median-line')
+        .attr('x1', (d) => xScale(d.driver) - _MEDIAN_HALF_WIDTH_PX)
+        .attr('x2', (d) => xScale(d.driver) + _MEDIAN_HALF_WIDTH_PX)
+        .attr('y1', (d) => yScale(d.median))
+        .attr('y2', (d) => yScale(d.median))
+        .attr('stroke', (d) => driverColorMap[d.driver] || 'var(--text-muted)');
 }
 
 /**
@@ -285,7 +349,7 @@ function _renderPoints(pointsGroup, simulationNodes, colorScale, driverColorMap,
         .attr('r', _POINT_RADIUS_PX)
         .attr('fill', (d) => colorScale(d.compound.toUpperCase()))
         .attr('stroke', 'var(--bg-dark)')
-        .attr('stroke-width', 1)
+        .attr('stroke-width', _DEFAULT_POINT_STROKE_WIDTH_PX)
         .on('mouseover', (event, d) => {
             const compoundColor = colorScale(d.compound.toUpperCase());
             const teamColor = driverColorMap[d.driver] || 'var(--accent)';
@@ -310,14 +374,14 @@ function _renderPoints(pointsGroup, simulationNodes, colorScale, driverColorMap,
 
             d3.select(event.currentTarget)
                 .attr('stroke', '#ffffff')
-                .attr('stroke-width', 2)
+                .attr('stroke-width', _HOVER_POINT_STROKE_WIDTH_PX)
                 .attr('r', _POINT_HOVER_RADIUS_PX);
         })
         .on('mouseout', (event) => {
             tooltip.classed('hidden', true);
             d3.select(event.currentTarget)
                 .attr('stroke', 'var(--bg-dark)')
-                .attr('stroke-width', 1)
+                .attr('stroke-width', _DEFAULT_POINT_STROKE_WIDTH_PX)
                 .attr('r', _POINT_RADIUS_PX);
         });
 }
@@ -430,20 +494,7 @@ export function renderBeeswarm(data) {
         axesGroup.selectAll('*').remove();
 
         const lapsToUse = _filterOutlierLaps(data.laps, showOutliers);
-
-        const xScale = d3
-            .scalePoint()
-            .domain(orderedDrivers)
-            .range([0, width])
-            .padding(1);
-
-        const timeExtent = d3.extent(lapsToUse, (d) => d.time);
-        const timePadding = (timeExtent[1] - timeExtent[0]) * _TIME_AXIS_PADDING_RATIO;
-
-        const yScale = d3
-            .scaleLinear()
-            .domain([timeExtent[0] - timePadding, timeExtent[1] + timePadding])
-            .range([height, 0]);
+        const { xScale, yScale } = _createBeeswarmScales(orderedDrivers, lapsToUse, width, height);
 
         currentDriverLabels = _renderAxesAndGrid(
             gridGroup,
@@ -460,17 +511,13 @@ export function renderBeeswarm(data) {
         );
 
         const medians = _calculateDriverMedians(orderedDrivers, lapsToUse);
-        currentMedianLines = mediansGroup
-            .selectAll('line.median-line')
-            .data(medians)
-            .enter()
-            .append('line')
-            .attr('class', 'median-line')
-            .attr('x1', (d) => xScale(d.driver) - _MEDIAN_HALF_WIDTH_PX)
-            .attr('x2', (d) => xScale(d.driver) + _MEDIAN_HALF_WIDTH_PX)
-            .attr('y1', (d) => yScale(d.median))
-            .attr('y2', (d) => yScale(d.median))
-            .attr('stroke', (d) => driverColorMap[d.driver] || 'var(--text-muted)');
+        currentMedianLines = _renderMedianLines(
+            mediansGroup,
+            medians,
+            xScale,
+            yScale,
+            driverColorMap
+        );
 
         _runBeeswarmSimulation(lapsToUse, xScale, yScale);
 

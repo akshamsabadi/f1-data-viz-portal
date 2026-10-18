@@ -5,6 +5,8 @@ This module generates deterministic or randomized mock race telemetry datasets
 writes the resulting JSON payload to disk.
 """
 
+from __future__ import annotations
+
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 import json
@@ -26,6 +28,7 @@ _PIT_STOP_TYRE_LIFE_THRESHOLD: Final[int] = 20
 _PIT_STOP_PROBABILITY_THRESHOLD: Final[float] = 0.8
 _PIT_STOP_PENALTY_SECONDS: Final[float] = 25.0
 _TIME_ROUNDING_DECIMALS: Final[int] = 3
+_JSON_INDENT_SPACES: Final[int] = 2
 
 _DEFAULT_DRIVERS: Final[tuple[dict[str, str], ...]] = (
     {"code": "VER", "name": "Max Verstappen", "team": "Red Bull", "color": "#3671C6"},
@@ -257,7 +260,7 @@ def _write_race_payload(out_path: str, payload: Mapping[str, Any]) -> None:
     if parent_dir:
         os.makedirs(parent_dir, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as file_handle:
-        json.dump(payload, file_handle, indent=2)
+        json.dump(payload, file_handle, indent=_JSON_INDENT_SPACES)
 
 
 def generate_mock_race(

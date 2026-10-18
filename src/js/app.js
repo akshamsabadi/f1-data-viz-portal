@@ -15,7 +15,15 @@ import { renderRaceWorm } from './race_worm.js';
 import { renderRacePitStops } from './race_pitstops.js';
 import { renderRaceStintPace } from './race_stint_pace.js';
 
-const APP_VERSION = 'v1.18.4';
+const APP_VERSION = 'v1.18.5';
+
+const _DEFAULT_SESSION = 'race';
+const _PANEL_KEYS = ['practice', 'qualifying', 'race'];
+const _SPRINT_SESSION_KEYS = new Set(['sprint_qualifying', 'sprint']);
+const _MANIFEST_PATH = 'src/assets/data/races_manifest.json';
+const _DATA_BASE_DIR = 'src/assets/data';
+const _SPRINT_PROGRESSION_TITLE = 'SQ1 / SQ2 / SQ3 Knockout Progression';
+const _QUALI_PROGRESSION_TITLE = 'Q1 / Q2 / Q3 Knockout Progression';
 
 const _OFFICIAL_TEAM_COLORS = {
     'Ferrari': '#e30002',
@@ -48,9 +56,34 @@ const _RESIZE_THRESHOLD_PX = 10;
 const _RESIZE_DEBOUNCE_MS = 150;
 
 let _currentData = null;
-let _activeSession = 'race';
+let _activeSession = _DEFAULT_SESSION;
 let _resizeTimeout = null;
 let _lastWidth = 0;
+
+/**
+ * Checks whether a session key corresponds to a Sprint weekend session (`sprint_qualifying` or `sprint`).
+ *
+ * @param {string} sessionKey - Session identifier.
+ * @returns {boolean} True when the session is a Sprint session.
+ */
+function _isSprintSession(sessionKey) {
+    return _SPRINT_SESSION_KEYS.has(sessionKey);
+}
+
+/**
+ * Checks whether a Grand Prix payload contains Sprint weekend telemetry.
+ *
+ * @param {Object|null} grandPrixData - Enriched Grand Prix payload.
+ * @returns {boolean} True when Sprint tabs should be enabled.
+ */
+function _hasSprintSessions(grandPrixData) {
+    return Boolean(
+        grandPrixData &&
+            (grandPrixData.is_sprint_weekend ||
+                grandPrixData.sprint_qualifying ||
+                grandPrixData.sprint)
+    );
+}
 
 /**
  * Toggles the visibility of the telemetry loading overlay.
@@ -184,7 +217,7 @@ function _syncSessionTabUI(sessionKey) {
     }
 
     const activePanelKey = _resolvePanelKeyForSession(sessionKey);
-    ['practice', 'qualifying', 'race'].forEach((panelKey) => {
+    _PANEL_KEYS.forEach((panelKey) => {
         const panel = document.getElementById(`tab-panel-${panelKey}`);
         if (panel) {
             panel.classList.toggle('hidden', panelKey !== activePanelKey);
@@ -195,8 +228,8 @@ function _syncSessionTabUI(sessionKey) {
     if (progTitleEl) {
         progTitleEl.textContent =
             sessionKey === 'sprint_qualifying'
-                ? 'SQ1 / SQ2 / SQ3 Knockout Progression'
-                : 'Q1 / Q2 / Q3 Knockout Progression';
+                ? _SPRINT_PROGRESSION_TITLE
+                : _QUALI_PROGRESSION_TITLE;
     }
 
     const eyebrowEl = document.getElementById('session-eyebrow');
@@ -218,9 +251,7 @@ function _syncSessionTabUI(sessionKey) {
  * @returns {void}
  */
 function _updateSprintTabsAvailability(data) {
-    const isSprintWeekend = Boolean(
-        data && (data.is_sprint_weekend || data.sprint_qualifying || data.sprint)
-    );
+    const isSprintWeekend = _hasSprintSessions(data);
     document.querySelectorAll('.sprint-only-tab').forEach((btn) => {
         btn.classList.toggle('hidden', !isSprintWeekend);
     });
@@ -228,18 +259,15 @@ function _updateSprintTabsAvailability(data) {
     const sessionSelector = document.getElementById('session-selector');
     if (sessionSelector) {
         Array.from(sessionSelector.options).forEach((opt) => {
-            if (opt.value === 'sprint_qualifying' || opt.value === 'sprint') {
+            if (_isSprintSession(opt.value)) {
                 opt.disabled = !isSprintWeekend;
                 opt.hidden = !isSprintWeekend;
             }
         });
     }
 
-    if (
-        !isSprintWeekend &&
-        (_activeSession === 'sprint_qualifying' || _activeSession === 'sprint')
-    ) {
-        _activeSession = 'race';
+    if (!isSprintWeekend && _isSprintSession(_activeSession)) {
+        _activeSession = _DEFAULT_SESSION;
     }
 }
 
@@ -462,7 +490,7 @@ async function _loadGrandPrix(dataFile) {
     document.getElementById('race-title').textContent = 'Loading...';
 
     try {
-        const response = await fetch(`src/assets/data/${dataFile}?v=${APP_VERSION}`);
+        const response = await fetch(`${_DATA_BASE_DIR}/${dataFile}?v=${APP_VERSION}`);
         const rawData = await response.json();
 
         _applyOfficialTeamColors(rawData);
@@ -491,7 +519,7 @@ async function _loadGrandPrix(dataFile) {
  */
 async function _init() {
     try {
-        const response = await fetch(`src/assets/data/races_manifest.json?v=${APP_VERSION}`);
+        const response = await fetch(`${_MANIFEST_PATH}?v=${APP_VERSION}`);
         const manifest = await response.json();
 
         const dropdownElements = {

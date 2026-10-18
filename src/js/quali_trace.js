@@ -4,10 +4,65 @@ const _PEDAL_HEIGHT_PX = 95;
 const _DELTA_HEIGHT_PX = 90;
 const _SUBPLOT_GAP_PX = 26;
 const _MIN_CHART_WIDTH_PX = 320;
+
+const _DEFAULT_DRIVER_A_COLOR = '#e10600';
+const _DEFAULT_DRIVER_B_COLOR = '#38bdf8';
 const _SAME_TEAM_ACCENT_COLOR = '#facc15';
+const _SAME_TEAM_LEGACY_YELLOW_COLOR = '#eab308';
 const _SAME_TEAM_ALT_COLOR = '#38bdf8';
+const _DELTA_LINE_COLOR = '#ffffff';
+const _CROSSHAIR_DOT_STROKE_COLOR = '#ffffff';
+const _TURN_MARKER_STROKE_COLOR = 'rgba(255, 255, 255, 0.12)';
+const _ZERO_DELTA_LINE_COLOR = 'rgba(255, 255, 255, 0.4)';
+const _CROSSHAIR_LINE_COLOR = 'rgba(255, 255, 255, 0.65)';
+const _SELECT_BG_COLOR = '#111118';
+
 const _SAME_TEAM_DASH_ARRAY = '6,3';
 const _BRAKE_DASH_ARRAY = '2,3';
+const _TURN_MARKER_DASH_ARRAY = '3,3';
+const _ZERO_DELTA_DASH_ARRAY = '4,3';
+const _CROSSHAIR_DASH_ARRAY = '3,3';
+
+const _SPEED_STROKE_WIDTH_PX = 2.2;
+const _THROTTLE_STROKE_WIDTH_PX = 1.9;
+const _BRAKE_STROKE_WIDTH_PX = 1.35;
+const _DELTA_LINE_STROKE_WIDTH_PX = 1.8;
+const _BRAKE_LINE_OPACITY = 0.85;
+const _BRAKE_AREA_OPACITY = 0.1;
+const _DELTA_AREA_OPACITY = 0.24;
+
+const _CROSSHAIR_DOT_RADIUS_PX = 4;
+const _CROSSHAIR_PEDAL_DOT_RADIUS_PX = 3.5;
+const _CROSSHAIR_DOT_STROKE_WIDTH_PX = 1.5;
+const _CROSSHAIR_PEDAL_DOT_STROKE_WIDTH_PX = 1.2;
+
+const _AXIS_LABEL_Y_OFFSET_PX = -44;
+const _BOTTOM_AXIS_LABEL_Y_OFFSET_PX = 32;
+const _TURN_LABEL_Y_OFFSET_PX = -6;
+const _DELTA_AHEAD_LABEL_X_PX = 8;
+const _DELTA_UPPER_LABEL_Y_PX = 12;
+const _DELTA_LOWER_LABEL_BOTTOM_PAD_PX = 5;
+
+const _LAP_DISTANCE_DOMAIN = [0, 100];
+const _PEDAL_PERCENT_DOMAIN = [0, 100];
+const _PEDAL_TICK_VALUES = [0, 50, 100];
+const _SPEED_AXIS_TICKS = 5;
+const _PEDAL_AXIS_TICKS = 3;
+const _DELTA_AXIS_TICKS = 3;
+const _DISTANCE_AXIS_TICKS = 10;
+
+const _MIN_SPEED_FLOOR_KMH = 60;
+const _DEFAULT_MIN_SPEED_KMH = 100;
+const _DEFAULT_MAX_SPEED_KMH = 340;
+const _SPEED_DOMAIN_LOWER_PAD_KMH = 12;
+const _SPEED_DOMAIN_UPPER_PAD_KMH = 10;
+
+const _MIN_ABS_DELTA_FLOOR_S = 0.15;
+const _DEFAULT_ABS_DELTA_S = 0.25;
+const _DELTA_DOMAIN_PADDING_FACTOR = 1.18;
+const _NEAREST_TURN_THRESHOLD_PCT = 2.2;
+const _DEAD_EVEN_DELTA_THRESHOLD_S = 0.0005;
+
 const _TOOLTIP_OFFSET_X_PX = 15;
 const _TOOLTIP_OFFSET_Y_PX = -28;
 
@@ -77,31 +132,141 @@ function _buildDriverColorMap(data) {
  *   colorA: string,
  *   colorB: string,
  *   dashB: string,
- *   sameTeam: boolean
+ *   isSameTeam: boolean
  * }} Visual stroke descriptors for Driver A and Driver B.
  */
 function _resolvePairStrokeStyles(driverAEntry, driverBEntry, colorMap) {
-    const colorA = colorMap.get(driverAEntry.driver) || driverAEntry.color || '#e10600';
-    let colorB = colorMap.get(driverBEntry.driver) || driverBEntry.color || '#38bdf8';
+    const colorA = colorMap.get(driverAEntry.driver) || driverAEntry.color || _DEFAULT_DRIVER_A_COLOR;
+    let colorB = colorMap.get(driverBEntry.driver) || driverBEntry.color || _DEFAULT_DRIVER_B_COLOR;
 
-    const sameTeam =
+    const isSameTeam =
         driverAEntry.team === driverBEntry.team ||
         colorA.toLowerCase() === colorB.toLowerCase();
 
-    if (sameTeam) {
+    if (isSameTeam) {
         const normalizedA = colorA.toLowerCase();
-        colorB =
-            normalizedA === _SAME_TEAM_ACCENT_COLOR || normalizedA === '#eab308'
-                ? _SAME_TEAM_ALT_COLOR
-                : _SAME_TEAM_ACCENT_COLOR;
+        const isYellowPrimary =
+            normalizedA === _SAME_TEAM_ACCENT_COLOR ||
+            normalizedA === _SAME_TEAM_LEGACY_YELLOW_COLOR;
+        colorB = isYellowPrimary ? _SAME_TEAM_ALT_COLOR : _SAME_TEAM_ACCENT_COLOR;
     }
 
     return {
         colorA,
         colorB,
-        dashB: sameTeam ? _SAME_TEAM_DASH_ARRAY : 'none',
-        sameTeam
+        dashB: isSameTeam ? _SAME_TEAM_DASH_ARRAY : 'none',
+        isSameTeam
     };
+}
+
+/**
+ * Builds the synchronized telemetry comparison series across lap distance percentages.
+ *
+ * @param {Array<number>} distancePct - Array of normalized lap distance percentages (`0..100`).
+ * @param {Object} traceA - Telemetry arrays (`speed`, `throttle`, `brake`, `cum_time`) for Driver A.
+ * @param {Object} traceB - Telemetry arrays (`speed`, `throttle`, `brake`, `cum_time`) for Driver B.
+ * @returns {Array<{
+ *   pct: number,
+ *   speedA: number,
+ *   speedB: number,
+ *   throttleA: number,
+ *   throttleB: number,
+ *   brakeA: number,
+ *   brakeB: number,
+ *   cumTimeA: number,
+ *   cumTimeB: number,
+ *   delta: number
+ * }>} Synchronized telemetry samples for both drivers.
+ */
+function _buildTelemetrySeries(distancePct, traceA, traceB) {
+    return distancePct.map((pct, index) => {
+        const speedA = traceA.speed[index] ?? 0;
+        const speedB = traceB.speed[index] ?? 0;
+        const throttleA = traceA.throttle[index] ?? 0;
+        const throttleB = traceB.throttle[index] ?? 0;
+        const brakeA = traceA.brake[index] ?? 0;
+        const brakeB = traceB.brake[index] ?? 0;
+        const cumTimeA = traceA.cum_time[index] ?? 0;
+        const cumTimeB = traceB.cum_time[index] ?? 0;
+        return {
+            pct,
+            speedA,
+            speedB,
+            throttleA,
+            throttleB,
+            brakeA,
+            brakeB,
+            cumTimeA,
+            cumTimeB,
+            delta: cumTimeB - cumTimeA
+        };
+    });
+}
+
+/**
+ * Computes the padded `[minSpeed, maxSpeed]` Y-axis domain for the Speed subplot.
+ *
+ * @param {Array<{speedA: number, speedB: number}>} series - Synchronized telemetry samples.
+ * @returns {[number, number]} Lower and upper speed bounds in km/h.
+ */
+function _computeSpeedDomain(series) {
+    const allSpeeds = series.flatMap((sample) => [sample.speedA, sample.speedB]);
+    const minSpeed = Math.max(
+        _MIN_SPEED_FLOOR_KMH,
+        Math.floor((d3.min(allSpeeds) || _DEFAULT_MIN_SPEED_KMH) - _SPEED_DOMAIN_LOWER_PAD_KMH)
+    );
+    const maxSpeed = Math.ceil(
+        (d3.max(allSpeeds) || _DEFAULT_MAX_SPEED_KMH) + _SPEED_DOMAIN_UPPER_PAD_KMH
+    );
+    return [minSpeed, maxSpeed];
+}
+
+/**
+ * Computes the symmetric Y-axis bound for the cumulative time delta subplot.
+ *
+ * @param {Array<{delta: number}>} series - Synchronized telemetry samples.
+ * @returns {number} Positive delta bound in seconds.
+ */
+function _computeDeltaDomainBound(series) {
+    const maxAbsDelta = Math.max(
+        _MIN_ABS_DELTA_FLOOR_S,
+        d3.max(series, (sample) => Math.abs(sample.delta)) || _DEFAULT_ABS_DELTA_S
+    );
+    return maxAbsDelta * _DELTA_DOMAIN_PADDING_FACTOR;
+}
+
+/**
+ * Finds the turn number nearest to a given lap distance percentage if within the proximity threshold.
+ *
+ * @param {Array<{turn: number, pct: number}>} turns - Track turn markers.
+ * @param {number} pct - Hovered lap distance percentage.
+ * @returns {number|null} Turn number if near a corner, or null.
+ */
+function _findNearestTurnNumber(turns, pct) {
+    for (let i = 0; i < turns.length; i += 1) {
+        if (Math.abs(turns[i].pct - pct) <= _NEAREST_TURN_THRESHOLD_PCT) {
+            return turns[i].turn;
+        }
+    }
+    return null;
+}
+
+/**
+ * Renders an uppercase empty-state message inside a chart container.
+ *
+ * @param {HTMLElement} container - Target chart container element.
+ * @param {string} message - Empty-state text message.
+ * @returns {void}
+ */
+function _renderEmptyState(container, message) {
+    const emptyMsg = document.createElement('p');
+    emptyMsg.style.color = 'var(--text-muted)';
+    emptyMsg.style.textAlign = 'center';
+    emptyMsg.style.paddingTop = '2rem';
+    emptyMsg.style.fontFamily = 'Montserrat, sans-serif';
+    emptyMsg.style.textTransform = 'uppercase';
+    emptyMsg.textContent = message;
+    container.replaceChildren(emptyMsg);
 }
 
 /**
@@ -153,7 +318,7 @@ function _createDriverSelectControl(roleLabel, results, selectedDriver, onChange
     selectEl.setAttribute('aria-label', roleLabel);
     selectEl.style.appearance = 'none';
     selectEl.style.webkitAppearance = 'none';
-    selectEl.style.backgroundColor = '#111118';
+    selectEl.style.backgroundColor = _SELECT_BG_COLOR;
     selectEl.style.color = 'var(--text-primary)';
     selectEl.style.border = '1px solid var(--border-color)';
     selectEl.style.borderRadius = '4px';
@@ -198,6 +363,115 @@ function _createDriverSelectControl(roleLabel, results, selectedDriver, onChange
 }
 
 /**
+ * Creates the styled `VS` badge element separating Driver A and Driver B selectors.
+ *
+ * @returns {HTMLSpanElement} Styled `VS` badge element.
+ */
+function _createVsBadgeElement() {
+    const vsBadge = document.createElement('span');
+    vsBadge.style.fontFamily = 'Montserrat, sans-serif';
+    vsBadge.style.fontSize = '0.7rem';
+    vsBadge.style.fontWeight = '700';
+    vsBadge.style.color = 'var(--accent)';
+    vsBadge.style.padding = '0.15rem 0.4rem';
+    vsBadge.style.borderRadius = '4px';
+    vsBadge.style.background = 'rgba(225, 6, 0, 0.12)';
+    vsBadge.style.border = '1px solid rgba(225, 6, 0, 0.3)';
+    vsBadge.textContent = 'VS';
+    return vsBadge;
+}
+
+/**
+ * Renders the Driver A and Driver B selector controls inside `#quali-trace-controls`.
+ *
+ * @param {HTMLElement|null} controlsContainer - Controls host element.
+ * @param {Array<Object>} results - Sorted qualifying results.
+ * @param {string} driverACode - Initial Driver A code.
+ * @param {string} driverBCode - Initial Driver B code.
+ * @param {Function} onSelectDriverA - Callback invoked when Driver A changes.
+ * @param {Function} onSelectDriverB - Callback invoked when Driver B changes.
+ * @returns {{
+ *   controlA: {wrapper: HTMLDivElement, selectEl: HTMLSelectElement, swatchEl: HTMLSpanElement}|null,
+ *   controlB: {wrapper: HTMLDivElement, selectEl: HTMLSelectElement, swatchEl: HTMLSpanElement}|null
+ * }} Selector control references.
+ */
+function _renderTraceSelectorControls(
+    controlsContainer,
+    results,
+    driverACode,
+    driverBCode,
+    onSelectDriverA,
+    onSelectDriverB
+) {
+    if (!controlsContainer) {
+        return { controlA: null, controlB: null };
+    }
+
+    controlsContainer.style.display = 'flex';
+    controlsContainer.style.alignItems = 'center';
+    controlsContainer.style.gap = '0.85rem';
+    controlsContainer.style.flexWrap = 'wrap';
+
+    const controlA = _createDriverSelectControl('DRIVER A', results, driverACode, onSelectDriverA);
+    const vsBadge = _createVsBadgeElement();
+    const controlB = _createDriverSelectControl('DRIVER B', results, driverBCode, onSelectDriverB);
+
+    controlsContainer.appendChild(controlA.wrapper);
+    controlsContainer.appendChild(vsBadge);
+    controlsContainer.appendChild(controlB.wrapper);
+
+    return { controlA, controlB };
+}
+
+/**
+ * Synchronizes the Driver A and Driver B selector swatches with their active stroke styles.
+ *
+ * @param {{swatchEl: HTMLSpanElement}|null} controlA - Driver A control object.
+ * @param {{swatchEl: HTMLSpanElement}|null} controlB - Driver B control object.
+ * @param {{colorA: string, colorB: string, isSameTeam: boolean}} strokeStyles - Active pair stroke styles.
+ * @returns {void}
+ */
+function _updateControlSwatches(controlA, controlB, strokeStyles) {
+    if (!controlA || !controlB) return;
+    controlA.swatchEl.style.borderTopColor = strokeStyles.colorA;
+    controlA.swatchEl.style.borderTopStyle = 'solid';
+    controlB.swatchEl.style.borderTopColor = strokeStyles.colorB;
+    controlB.swatchEl.style.borderTopStyle = strokeStyles.isSameTeam ? 'dashed' : 'solid';
+}
+
+/**
+ * Builds a single driver's telemetry row for the trace hover tooltip.
+ *
+ * @param {Object} entry - Qualifying result entry for the driver.
+ * @param {{speed: number, throttle: number, brake: number}} point - Driver telemetry sample at hovered distance.
+ * @param {string} color - Driver display hex color.
+ * @returns {HTMLDivElement} Constructed tooltip driver row element.
+ */
+function _buildTooltipDriverRow(entry, point, color) {
+    const row = document.createElement('div');
+    row.style.display = 'flex';
+    row.style.justifyContent = 'space-between';
+    row.style.alignItems = 'center';
+    row.style.gap = '12px';
+    row.style.fontSize = '0.8rem';
+    row.style.marginBottom = '3px';
+
+    const left = document.createElement('span');
+    left.style.fontWeight = '700';
+    left.style.color = color;
+    left.textContent = `${entry.driver} (P${entry.grid_pos})`;
+
+    const right = document.createElement('span');
+    right.style.color = 'var(--text-primary)';
+    right.style.fontWeight = '600';
+    right.textContent = `${point.speed.toFixed(1)} km/h | Thr ${point.throttle.toFixed(0)}% | Brk ${point.brake.toFixed(0)}%`;
+
+    row.appendChild(left);
+    row.appendChild(right);
+    return row;
+}
+
+/**
  * Updates the tooltip DOM node with synchronized telemetry values at the hovered track distance.
  *
  * @param {HTMLElement|null} tooltipNode - Shared `#tooltip` DOM node.
@@ -230,30 +504,6 @@ function _populateTraceTooltip(tooltipNode, payload) {
         ? `LAP DISTANCE: ${pct}% (NEAR T${nearestTurn})`
         : `LAP DISTANCE: ${pct}%`;
 
-    const buildDriverRow = (entry, pt, color) => {
-        const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.justifyContent = 'space-between';
-        row.style.alignItems = 'center';
-        row.style.gap = '12px';
-        row.style.fontSize = '0.8rem';
-        row.style.marginBottom = '3px';
-
-        const left = document.createElement('span');
-        left.style.fontWeight = '700';
-        left.style.color = color;
-        left.textContent = `${entry.driver} (P${entry.grid_pos})`;
-
-        const right = document.createElement('span');
-        right.style.color = 'var(--text-primary)';
-        right.style.fontWeight = '600';
-        right.textContent = `${pt.speed.toFixed(1)} km/h | Thr ${pt.throttle.toFixed(0)}% | Brk ${pt.brake.toFixed(0)}%`;
-
-        row.appendChild(left);
-        row.appendChild(right);
-        return row;
-    };
-
     const deltaRow = document.createElement('div');
     deltaRow.style.marginTop = '5px';
     deltaRow.style.paddingTop = '4px';
@@ -262,7 +512,8 @@ function _populateTraceTooltip(tooltipNode, payload) {
     deltaRow.style.fontWeight = '700';
 
     const absDelta = Math.abs(deltaS).toFixed(3);
-    if (Math.abs(deltaS) < 0.0005) {
+    const isDeadEven = Math.abs(deltaS) < _DEAD_EVEN_DELTA_THRESHOLD_S;
+    if (isDeadEven) {
         deltaRow.style.color = 'var(--text-muted)';
         deltaRow.textContent = 'Δt: 0.000s (DEAD EVEN)';
     } else if (deltaS > 0) {
@@ -275,8 +526,8 @@ function _populateTraceTooltip(tooltipNode, payload) {
 
     tooltipNode.replaceChildren(
         header,
-        buildDriverRow(driverA, pointA, colorA),
-        buildDriverRow(driverB, pointB, colorB),
+        _buildTooltipDriverRow(driverA, pointA, colorA),
+        _buildTooltipDriverRow(driverB, pointB, colorB),
         deltaRow
     );
 }
@@ -288,10 +539,10 @@ function _populateTraceTooltip(tooltipNode, payload) {
  * @param {Array<{turn: number, pct: number}>} turns - Array of turn locations along the lap.
  * @param {Function} xScale - Shared D3 linear scale for lap distance percentage.
  * @param {number} height - Subplot height in pixels.
- * @param {boolean} showLabels - Whether to render `T1..TN` text labels along the top of the subplot.
+ * @param {boolean} shouldShowLabels - Whether to render `T1..TN` text labels along the top of the subplot.
  * @returns {void}
  */
-function _renderTurnLines(group, turns, xScale, height, showLabels) {
+function _renderTurnMarkers(group, turns, xScale, height, shouldShowLabels) {
     const turnGroup = group.append('g').attr('class', 'trace-turns');
 
     turnGroup
@@ -304,11 +555,11 @@ function _renderTurnLines(group, turns, xScale, height, showLabels) {
         .attr('x2', (d) => xScale(d.pct))
         .attr('y1', 0)
         .attr('y2', height)
-        .attr('stroke', 'rgba(255, 255, 255, 0.12)')
+        .attr('stroke', _TURN_MARKER_STROKE_COLOR)
         .attr('stroke-width', 1)
-        .attr('stroke-dasharray', '3,3');
+        .attr('stroke-dasharray', _TURN_MARKER_DASH_ARRAY);
 
-    if (showLabels) {
+    if (shouldShowLabels) {
         turnGroup
             .selectAll('text.turn-label')
             .data(turns)
@@ -316,7 +567,7 @@ function _renderTurnLines(group, turns, xScale, height, showLabels) {
             .append('text')
             .attr('class', 'turn-label')
             .attr('x', (d) => xScale(d.pct))
-            .attr('y', -6)
+            .attr('y', _TURN_LABEL_Y_OFFSET_PX)
             .attr('text-anchor', 'middle')
             .attr('fill', 'var(--text-muted)')
             .style('font-family', 'Montserrat, sans-serif')
@@ -324,6 +575,706 @@ function _renderTurnLines(group, turns, xScale, height, showLabels) {
             .style('font-weight', '700')
             .text((d) => `T${d.turn}`);
     }
+}
+
+/**
+ * Appends a rotated vertical Y-axis title to a D3 axis group.
+ *
+ * @param {Object} axisGroup - D3 selection of the rendered left axis group.
+ * @param {number} subplotHeight - Height of the subplot in pixels.
+ * @param {string} labelText - Uppercase axis label text.
+ * @returns {void}
+ */
+function _appendVerticalAxisLabel(axisGroup, subplotHeight, labelText) {
+    axisGroup
+        .append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('x', -subplotHeight / 2)
+        .attr('y', _AXIS_LABEL_Y_OFFSET_PX)
+        .attr('fill', 'var(--text-muted)')
+        .attr('text-anchor', 'middle')
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-size', '10px')
+        .style('font-weight', '700')
+        .text(labelText);
+}
+
+/**
+ * Renders the top Speed (km/h) subplot and returns its vertical scale and offset.
+ *
+ * @param {Object} mainGroup - Root translated D3 `<g>` selection.
+ * @param {Array<Object>} series - Synchronized telemetry samples.
+ * @param {Array<{turn: number, pct: number}>} turns - Track corner markers.
+ * @param {Function} xScale - Shared lap distance D3 linear scale.
+ * @param {number} width - Inner chart width in pixels.
+ * @param {{colorA: string, colorB: string, dashB: string}} strokeStyles - Pair stroke styles.
+ * @returns {{speedYScale: Function, speedYOffset: number}} Speed Y scale and vertical offset.
+ */
+function _renderSpeedSubplot(mainGroup, series, turns, xScale, width, strokeStyles) {
+    const speedYOffset = 0;
+    const speedGroup = mainGroup
+        .append('g')
+        .attr('transform', `translate(0,${speedYOffset})`);
+
+    const speedDomain = _computeSpeedDomain(series);
+    const speedYScale = d3
+        .scaleLinear()
+        .domain(speedDomain)
+        .range([_SPEED_HEIGHT_PX, 0]);
+
+    speedGroup
+        .append('g')
+        .attr('class', 'gridline')
+        .call(d3.axisLeft(speedYScale).ticks(_SPEED_AXIS_TICKS).tickSize(-width).tickFormat(''));
+
+    _renderTurnMarkers(speedGroup, turns, xScale, _SPEED_HEIGHT_PX, true);
+
+    const speedAxisGroup = speedGroup
+        .append('g')
+        .call(d3.axisLeft(speedYScale).ticks(_SPEED_AXIS_TICKS).tickSize(0))
+        .call((g) => g.select('.domain').remove());
+
+    _appendVerticalAxisLabel(speedAxisGroup, _SPEED_HEIGHT_PX, 'SPEED (KM/H)');
+
+    const speedLineA = d3
+        .line()
+        .x((d) => xScale(d.pct))
+        .y((d) => speedYScale(d.speedA))
+        .curve(d3.curveMonotoneX);
+
+    const speedLineB = d3
+        .line()
+        .x((d) => xScale(d.pct))
+        .y((d) => speedYScale(d.speedB))
+        .curve(d3.curveMonotoneX);
+
+    speedGroup
+        .append('path')
+        .datum(series)
+        .attr('fill', 'none')
+        .attr('stroke', strokeStyles.colorA)
+        .attr('stroke-width', _SPEED_STROKE_WIDTH_PX)
+        .attr('d', speedLineA);
+
+    speedGroup
+        .append('path')
+        .datum(series)
+        .attr('fill', 'none')
+        .attr('stroke', strokeStyles.colorB)
+        .attr('stroke-width', _SPEED_STROKE_WIDTH_PX)
+        .attr('stroke-dasharray', strokeStyles.dashB)
+        .attr('d', speedLineB);
+
+    return { speedYScale, speedYOffset };
+}
+
+/**
+ * Renders the middle Throttle & Brake (%) subplot and returns its vertical scale and offset.
+ *
+ * @param {Object} mainGroup - Root translated D3 `<g>` selection.
+ * @param {Array<Object>} series - Synchronized telemetry samples.
+ * @param {Array<{turn: number, pct: number}>} turns - Track corner markers.
+ * @param {Function} xScale - Shared lap distance D3 linear scale.
+ * @param {number} width - Inner chart width in pixels.
+ * @param {{colorA: string, colorB: string, dashB: string}} strokeStyles - Pair stroke styles.
+ * @returns {{pedalYScale: Function, pedalYOffset: number}} Pedal Y scale and vertical offset.
+ */
+function _renderThrottleBrakeSubplot(mainGroup, series, turns, xScale, width, strokeStyles) {
+    const pedalYOffset = _SPEED_HEIGHT_PX + _SUBPLOT_GAP_PX;
+    const pedalGroup = mainGroup
+        .append('g')
+        .attr('transform', `translate(0,${pedalYOffset})`);
+
+    const pedalYScale = d3
+        .scaleLinear()
+        .domain(_PEDAL_PERCENT_DOMAIN)
+        .range([_PEDAL_HEIGHT_PX, 0]);
+
+    pedalGroup
+        .append('g')
+        .attr('class', 'gridline')
+        .call(d3.axisLeft(pedalYScale).ticks(_PEDAL_AXIS_TICKS).tickSize(-width).tickFormat(''));
+
+    _renderTurnMarkers(pedalGroup, turns, xScale, _PEDAL_HEIGHT_PX, false);
+
+    const pedalAxisGroup = pedalGroup
+        .append('g')
+        .call(
+            d3
+                .axisLeft(pedalYScale)
+                .tickValues(_PEDAL_TICK_VALUES)
+                .tickFormat((d) => `${d}%`)
+                .tickSize(0)
+        )
+        .call((g) => g.select('.domain').remove());
+
+    _appendVerticalAxisLabel(pedalAxisGroup, _PEDAL_HEIGHT_PX, 'THR / BRK (%)');
+
+    const brakeAreaA = d3
+        .area()
+        .x((d) => xScale(d.pct))
+        .y0(_PEDAL_HEIGHT_PX)
+        .y1((d) => pedalYScale(d.brakeA))
+        .curve(d3.curveMonotoneX);
+
+    const brakeAreaB = d3
+        .area()
+        .x((d) => xScale(d.pct))
+        .y0(_PEDAL_HEIGHT_PX)
+        .y1((d) => pedalYScale(d.brakeB))
+        .curve(d3.curveMonotoneX);
+
+    pedalGroup
+        .append('path')
+        .datum(series)
+        .attr('fill', strokeStyles.colorA)
+        .attr('fill-opacity', _BRAKE_AREA_OPACITY)
+        .attr('d', brakeAreaA);
+
+    pedalGroup
+        .append('path')
+        .datum(series)
+        .attr('fill', strokeStyles.colorB)
+        .attr('fill-opacity', _BRAKE_AREA_OPACITY)
+        .attr('d', brakeAreaB);
+
+    const throttleLineA = d3
+        .line()
+        .x((d) => xScale(d.pct))
+        .y((d) => pedalYScale(d.throttleA))
+        .curve(d3.curveMonotoneX);
+
+    const throttleLineB = d3
+        .line()
+        .x((d) => xScale(d.pct))
+        .y((d) => pedalYScale(d.throttleB))
+        .curve(d3.curveMonotoneX);
+
+    const brakeLineA = d3
+        .line()
+        .x((d) => xScale(d.pct))
+        .y((d) => pedalYScale(d.brakeA))
+        .curve(d3.curveMonotoneX);
+
+    const brakeLineB = d3
+        .line()
+        .x((d) => xScale(d.pct))
+        .y((d) => pedalYScale(d.brakeB))
+        .curve(d3.curveMonotoneX);
+
+    pedalGroup
+        .append('path')
+        .datum(series)
+        .attr('fill', 'none')
+        .attr('stroke', strokeStyles.colorA)
+        .attr('stroke-width', _THROTTLE_STROKE_WIDTH_PX)
+        .attr('d', throttleLineA);
+
+    pedalGroup
+        .append('path')
+        .datum(series)
+        .attr('fill', 'none')
+        .attr('stroke', strokeStyles.colorB)
+        .attr('stroke-width', _THROTTLE_STROKE_WIDTH_PX)
+        .attr('stroke-dasharray', strokeStyles.dashB)
+        .attr('d', throttleLineB);
+
+    pedalGroup
+        .append('path')
+        .datum(series)
+        .attr('fill', 'none')
+        .attr('stroke', strokeStyles.colorA)
+        .attr('stroke-width', _BRAKE_STROKE_WIDTH_PX)
+        .attr('stroke-dasharray', _BRAKE_DASH_ARRAY)
+        .attr('opacity', _BRAKE_LINE_OPACITY)
+        .attr('d', brakeLineA);
+
+    pedalGroup
+        .append('path')
+        .datum(series)
+        .attr('fill', 'none')
+        .attr('stroke', strokeStyles.colorB)
+        .attr('stroke-width', _BRAKE_STROKE_WIDTH_PX)
+        .attr('stroke-dasharray', _BRAKE_DASH_ARRAY)
+        .attr('opacity', _BRAKE_LINE_OPACITY)
+        .attr('d', brakeLineB);
+
+    return { pedalYScale, pedalYOffset };
+}
+
+/**
+ * Renders the bottom Cumulative Time Delta (`cum_time_B - cum_time_A`) subplot and returns its scale and offset.
+ *
+ * @param {Object} mainGroup - Root translated D3 `<g>` selection.
+ * @param {Object} defs - SVG `<defs>` selection for clip paths.
+ * @param {Array<Object>} series - Synchronized telemetry samples.
+ * @param {Array<{turn: number, pct: number}>} turns - Track corner markers.
+ * @param {Function} xScale - Shared lap distance D3 linear scale.
+ * @param {number} width - Inner chart width in pixels.
+ * @param {Object} driverAEntry - Qualifying result entry for Driver A.
+ * @param {Object} driverBEntry - Qualifying result entry for Driver B.
+ * @param {{colorA: string, colorB: string}} strokeStyles - Pair stroke styles.
+ * @returns {{deltaYScale: Function, deltaYOffset: number}} Delta Y scale and vertical offset.
+ */
+function _renderDeltaSubplot(
+    mainGroup,
+    defs,
+    series,
+    turns,
+    xScale,
+    width,
+    driverAEntry,
+    driverBEntry,
+    strokeStyles
+) {
+    const deltaYOffset = _SPEED_HEIGHT_PX + _PEDAL_HEIGHT_PX + _SUBPLOT_GAP_PX * 2;
+    const deltaGroup = mainGroup
+        .append('g')
+        .attr('transform', `translate(0,${deltaYOffset})`);
+
+    const paddedDeltaBound = _computeDeltaDomainBound(series);
+    const deltaYScale = d3
+        .scaleLinear()
+        .domain([-paddedDeltaBound, paddedDeltaBound])
+        .range([_DELTA_HEIGHT_PX, 0]);
+
+    const zeroY = deltaYScale(0);
+    const clipAboveId = `quali-delta-above-${driverAEntry.driver}-${driverBEntry.driver}`;
+    const clipBelowId = `quali-delta-below-${driverAEntry.driver}-${driverBEntry.driver}`;
+
+    defs.append('clipPath')
+        .attr('id', clipAboveId)
+        .append('rect')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', width)
+        .attr('height', zeroY);
+
+    defs.append('clipPath')
+        .attr('id', clipBelowId)
+        .append('rect')
+        .attr('x', 0)
+        .attr('y', zeroY)
+        .attr('width', width)
+        .attr('height', _DELTA_HEIGHT_PX - zeroY);
+
+    deltaGroup
+        .append('g')
+        .attr('class', 'gridline')
+        .call(d3.axisLeft(deltaYScale).ticks(_DELTA_AXIS_TICKS).tickSize(-width).tickFormat(''));
+
+    _renderTurnMarkers(deltaGroup, turns, xScale, _DELTA_HEIGHT_PX, false);
+
+    const deltaArea = d3
+        .area()
+        .x((d) => xScale(d.pct))
+        .y0(zeroY)
+        .y1((d) => deltaYScale(d.delta))
+        .curve(d3.curveMonotoneX);
+
+    deltaGroup
+        .append('path')
+        .datum(series)
+        .attr('clip-path', `url(#${clipAboveId})`)
+        .attr('fill', strokeStyles.colorA)
+        .attr('fill-opacity', _DELTA_AREA_OPACITY)
+        .attr('d', deltaArea);
+
+    deltaGroup
+        .append('path')
+        .datum(series)
+        .attr('clip-path', `url(#${clipBelowId})`)
+        .attr('fill', strokeStyles.colorB)
+        .attr('fill-opacity', _DELTA_AREA_OPACITY)
+        .attr('d', deltaArea);
+
+    deltaGroup
+        .append('line')
+        .attr('x1', 0)
+        .attr('x2', width)
+        .attr('y1', zeroY)
+        .attr('y2', zeroY)
+        .attr('stroke', _ZERO_DELTA_LINE_COLOR)
+        .attr('stroke-width', 1)
+        .attr('stroke-dasharray', _ZERO_DELTA_DASH_ARRAY);
+
+    const deltaLine = d3
+        .line()
+        .x((d) => xScale(d.pct))
+        .y((d) => deltaYScale(d.delta))
+        .curve(d3.curveMonotoneX);
+
+    deltaGroup
+        .append('path')
+        .datum(series)
+        .attr('fill', 'none')
+        .attr('stroke', _DELTA_LINE_COLOR)
+        .attr('stroke-width', _DELTA_LINE_STROKE_WIDTH_PX)
+        .attr('d', deltaLine);
+
+    deltaGroup
+        .append('text')
+        .attr('x', _DELTA_AHEAD_LABEL_X_PX)
+        .attr('y', _DELTA_UPPER_LABEL_Y_PX)
+        .attr('fill', strokeStyles.colorA)
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-size', '9.5px')
+        .style('font-weight', '700')
+        .text(`▲ ${driverAEntry.driver} AHEAD (+Δt)`);
+
+    deltaGroup
+        .append('text')
+        .attr('x', _DELTA_AHEAD_LABEL_X_PX)
+        .attr('y', _DELTA_HEIGHT_PX - _DELTA_LOWER_LABEL_BOTTOM_PAD_PX)
+        .attr('fill', strokeStyles.colorB)
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-size', '9.5px')
+        .style('font-weight', '700')
+        .text(`▼ ${driverBEntry.driver} AHEAD (-Δt)`);
+
+    const deltaAxisGroup = deltaGroup
+        .append('g')
+        .call(
+            d3
+                .axisLeft(deltaYScale)
+                .ticks(_DELTA_AXIS_TICKS)
+                .tickFormat((d) => `${d > 0 ? '+' : ''}${d.toFixed(2)}s`)
+                .tickSize(0)
+        )
+        .call((g) => g.select('.domain').remove());
+
+    _appendVerticalAxisLabel(deltaAxisGroup, _DELTA_HEIGHT_PX, 'Δt (SEC)');
+
+    const bottomAxisGroup = deltaGroup
+        .append('g')
+        .attr('transform', `translate(0,${_DELTA_HEIGHT_PX})`)
+        .call(
+            d3
+                .axisBottom(xScale)
+                .ticks(_DISTANCE_AXIS_TICKS)
+                .tickFormat((d) => `${d}%`)
+        );
+
+    bottomAxisGroup
+        .append('text')
+        .attr('x', width)
+        .attr('y', _BOTTOM_AXIS_LABEL_Y_OFFSET_PX)
+        .attr('fill', 'var(--text-muted)')
+        .attr('text-anchor', 'end')
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-size', '10.5px')
+        .style('font-weight', '700')
+        .text('LAP DISTANCE (%)');
+
+    return { deltaYScale, deltaYOffset };
+}
+
+/**
+ * Creates the synchronized SVG crosshair line and indicator dots across all 3 subplots.
+ *
+ * @param {Object} mainGroup - Root translated D3 `<g>` selection.
+ * @param {number} totalInnerHeight - Combined height of all 3 subplots plus gaps.
+ * @param {{colorA: string, colorB: string}} strokeStyles - Pair stroke styles.
+ * @returns {{
+ *   crosshairGroup: Object,
+ *   crosshairLine: Object,
+ *   dotSpeedA: Object,
+ *   dotSpeedB: Object,
+ *   dotPedalA: Object,
+ *   dotPedalB: Object,
+ *   dotDelta: Object
+ * }} D3 selections for the crosshair overlay elements.
+ */
+function _createCrosshairElements(mainGroup, totalInnerHeight, strokeStyles) {
+    const crosshairGroup = mainGroup
+        .append('g')
+        .attr('class', 'trace-crosshair')
+        .style('display', 'none')
+        .style('pointer-events', 'none');
+
+    const crosshairLine = crosshairGroup
+        .append('line')
+        .attr('y1', 0)
+        .attr('y2', totalInnerHeight)
+        .attr('stroke', _CROSSHAIR_LINE_COLOR)
+        .attr('stroke-width', 1)
+        .attr('stroke-dasharray', _CROSSHAIR_DASH_ARRAY);
+
+    const dotSpeedA = crosshairGroup
+        .append('circle')
+        .attr('r', _CROSSHAIR_DOT_RADIUS_PX)
+        .attr('fill', strokeStyles.colorA)
+        .attr('stroke', _CROSSHAIR_DOT_STROKE_COLOR)
+        .attr('stroke-width', _CROSSHAIR_DOT_STROKE_WIDTH_PX);
+
+    const dotSpeedB = crosshairGroup
+        .append('circle')
+        .attr('r', _CROSSHAIR_DOT_RADIUS_PX)
+        .attr('fill', strokeStyles.colorB)
+        .attr('stroke', _CROSSHAIR_DOT_STROKE_COLOR)
+        .attr('stroke-width', _CROSSHAIR_DOT_STROKE_WIDTH_PX);
+
+    const dotPedalA = crosshairGroup
+        .append('circle')
+        .attr('r', _CROSSHAIR_PEDAL_DOT_RADIUS_PX)
+        .attr('fill', strokeStyles.colorA)
+        .attr('stroke', _CROSSHAIR_DOT_STROKE_COLOR)
+        .attr('stroke-width', _CROSSHAIR_PEDAL_DOT_STROKE_WIDTH_PX);
+
+    const dotPedalB = crosshairGroup
+        .append('circle')
+        .attr('r', _CROSSHAIR_PEDAL_DOT_RADIUS_PX)
+        .attr('fill', strokeStyles.colorB)
+        .attr('stroke', _CROSSHAIR_DOT_STROKE_COLOR)
+        .attr('stroke-width', _CROSSHAIR_PEDAL_DOT_STROKE_WIDTH_PX);
+
+    const dotDelta = crosshairGroup
+        .append('circle')
+        .attr('r', _CROSSHAIR_DOT_RADIUS_PX)
+        .attr('fill', _DELTA_LINE_COLOR)
+        .attr('stroke', 'var(--bg-dark)')
+        .attr('stroke-width', _CROSSHAIR_DOT_STROKE_WIDTH_PX);
+
+    return {
+        crosshairGroup,
+        crosshairLine,
+        dotSpeedA,
+        dotSpeedB,
+        dotPedalA,
+        dotPedalB,
+        dotDelta
+    };
+}
+
+/**
+ * Attaches the transparent interactive hover overlay that drives synchronized crosshair scrubbing
+ * and tooltip updates across all 3 telemetry subplots.
+ *
+ * @param {Object} mainGroup - Root translated D3 `<g>` selection.
+ * @param {{
+ *   width: number,
+ *   totalInnerHeight: number,
+ *   series: Array<Object>,
+ *   turns: Array<{turn: number, pct: number}>,
+ *   xScale: Function,
+ *   speedYScale: Function,
+ *   speedYOffset: number,
+ *   pedalYScale: Function,
+ *   pedalYOffset: number,
+ *   deltaYScale: Function,
+ *   deltaYOffset: number,
+ *   driverAEntry: Object,
+ *   driverBEntry: Object,
+ *   strokeStyles: {colorA: string, colorB: string},
+ *   tooltip: Object
+ * }} config - Crosshair interaction configuration and subplot scales.
+ * @returns {void}
+ */
+function _bindTraceHoverCrosshair(mainGroup, config) {
+    const {
+        width,
+        totalInnerHeight,
+        series,
+        turns,
+        xScale,
+        speedYScale,
+        speedYOffset,
+        pedalYScale,
+        pedalYOffset,
+        deltaYScale,
+        deltaYOffset,
+        driverAEntry,
+        driverBEntry,
+        strokeStyles,
+        tooltip
+    } = config;
+
+    const {
+        crosshairGroup,
+        crosshairLine,
+        dotSpeedA,
+        dotSpeedB,
+        dotPedalA,
+        dotPedalB,
+        dotDelta
+    } = _createCrosshairElements(mainGroup, totalInnerHeight, strokeStyles);
+
+    const bisectPct = d3.bisector((d) => d.pct).center;
+
+    mainGroup
+        .append('rect')
+        .attr('width', width)
+        .attr('height', totalInnerHeight)
+        .attr('fill', 'transparent')
+        .style('cursor', 'crosshair')
+        .on('mouseover', () => {
+            crosshairGroup.style('display', null);
+            tooltip.classed('hidden', false);
+        })
+        .on('mousemove', (event) => {
+            const [mouseX] = d3.pointer(event);
+            const hoveredPct = xScale.invert(mouseX);
+            const index = Math.max(0, Math.min(series.length - 1, bisectPct(series, hoveredPct)));
+            const point = series[index];
+            const cx = xScale(point.pct);
+
+            crosshairLine.attr('x1', cx).attr('x2', cx);
+            dotSpeedA.attr('cx', cx).attr('cy', speedYOffset + speedYScale(point.speedA));
+            dotSpeedB.attr('cx', cx).attr('cy', speedYOffset + speedYScale(point.speedB));
+            dotPedalA.attr('cx', cx).attr('cy', pedalYOffset + pedalYScale(point.throttleA));
+            dotPedalB.attr('cx', cx).attr('cy', pedalYOffset + pedalYScale(point.throttleB));
+            dotDelta.attr('cx', cx).attr('cy', deltaYOffset + deltaYScale(point.delta));
+
+            const nearestTurn = _findNearestTurnNumber(turns, point.pct);
+            const isDriverAAhead = point.delta >= 0;
+            const leadingColor = isDriverAAhead ? strokeStyles.colorA : strokeStyles.colorB;
+
+            _populateTraceTooltip(tooltip.node(), {
+                pct: point.pct,
+                nearestTurn,
+                driverA: driverAEntry,
+                driverB: driverBEntry,
+                pointA: {
+                    speed: point.speedA,
+                    throttle: point.throttleA,
+                    brake: point.brakeA,
+                    cumTime: point.cumTimeA
+                },
+                pointB: {
+                    speed: point.speedB,
+                    throttle: point.throttleB,
+                    brake: point.brakeB,
+                    cumTime: point.cumTimeB
+                },
+                deltaS: point.delta,
+                colorA: strokeStyles.colorA,
+                colorB: strokeStyles.colorB
+            });
+
+            tooltip
+                .classed('hidden', false)
+                .style('border-left-color', leadingColor)
+                .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
+                .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
+        })
+        .on('mouseout', () => {
+            crosshairGroup.style('display', 'none');
+            tooltip.classed('hidden', true);
+        });
+}
+
+/**
+ * Renders the 3-subplot SVG telemetry comparison for the currently selected Driver A and Driver B.
+ *
+ * @param {HTMLElement} container - Target `#quali-trace-chart` DOM container.
+ * @param {{
+ *   driverACode: string,
+ *   driverBCode: string,
+ *   results: Array<Object>,
+ *   resultByDriver: Map<string, Object>,
+ *   traces: Object,
+ *   colorMap: Map<string, string>,
+ *   controlA: Object|null,
+ *   controlB: Object|null,
+ *   tooltip: Object
+ * }} state - Active trace comparison state and lookup maps.
+ * @returns {void}
+ */
+function _renderTraceComparisonChart(container, state) {
+    const {
+        driverACode,
+        driverBCode,
+        results,
+        resultByDriver,
+        traces,
+        colorMap,
+        controlA,
+        controlB,
+        tooltip
+    } = state;
+
+    container.replaceChildren();
+
+    const driverAEntry = resultByDriver.get(driverACode) || results[0];
+    const driverBEntry = resultByDriver.get(driverBCode) || results[1];
+    const traceA = traces.drivers[driverAEntry.driver];
+    const traceB = traces.drivers[driverBEntry.driver];
+    if (!traceA || !traceB) return;
+
+    const strokeStyles = _resolvePairStrokeStyles(driverAEntry, driverBEntry, colorMap);
+    _updateControlSwatches(controlA, controlB, strokeStyles);
+
+    const width = Math.max(
+        _MIN_CHART_WIDTH_PX,
+        container.clientWidth - _CHART_MARGIN.left - _CHART_MARGIN.right
+    );
+    const totalInnerHeight =
+        _SPEED_HEIGHT_PX + _PEDAL_HEIGHT_PX + _DELTA_HEIGHT_PX + _SUBPLOT_GAP_PX * 2;
+    const totalSvgHeight = totalInnerHeight + _CHART_MARGIN.top + _CHART_MARGIN.bottom;
+
+    const turns = traces.turns || [];
+    const series = _buildTelemetrySeries(traces.distance_pct, traceA, traceB);
+
+    const svg = d3
+        .select(container)
+        .append('svg')
+        .attr('width', width + _CHART_MARGIN.left + _CHART_MARGIN.right)
+        .attr('height', totalSvgHeight);
+
+    const defs = svg.append('defs');
+    const mainGroup = svg
+        .append('g')
+        .attr('transform', `translate(${_CHART_MARGIN.left},${_CHART_MARGIN.top})`);
+
+    const xScale = d3.scaleLinear().domain(_LAP_DISTANCE_DOMAIN).range([0, width]);
+
+    const { speedYScale, speedYOffset } = _renderSpeedSubplot(
+        mainGroup,
+        series,
+        turns,
+        xScale,
+        width,
+        strokeStyles
+    );
+
+    const { pedalYScale, pedalYOffset } = _renderThrottleBrakeSubplot(
+        mainGroup,
+        series,
+        turns,
+        xScale,
+        width,
+        strokeStyles
+    );
+
+    const { deltaYScale, deltaYOffset } = _renderDeltaSubplot(
+        mainGroup,
+        defs,
+        series,
+        turns,
+        xScale,
+        width,
+        driverAEntry,
+        driverBEntry,
+        strokeStyles
+    );
+
+    _bindTraceHoverCrosshair(mainGroup, {
+        width,
+        totalInnerHeight,
+        series,
+        turns,
+        xScale,
+        speedYScale,
+        speedYOffset,
+        pedalYScale,
+        pedalYOffset,
+        deltaYScale,
+        deltaYOffset,
+        driverAEntry,
+        driverBEntry,
+        strokeStyles,
+        tooltip
+    });
 }
 
 /**
@@ -346,21 +1297,15 @@ export function renderQualiTrace(data) {
         .sort((a, b) => a.grid_pos - b.grid_pos);
     const traces = data.qualifying?.traces;
 
-    if (
-        results.length < 2 ||
-        !traces ||
-        !Array.isArray(traces.distance_pct) ||
-        !traces.drivers
-    ) {
+    const hasValidTraceData =
+        results.length >= 2 &&
+        Boolean(traces) &&
+        Array.isArray(traces.distance_pct) &&
+        Boolean(traces.drivers);
+
+    if (!hasValidTraceData) {
         _externalFocusHandler = null;
-        const emptyMsg = document.createElement('p');
-        emptyMsg.style.color = 'var(--text-muted)';
-        emptyMsg.style.textAlign = 'center';
-        emptyMsg.style.paddingTop = '2rem';
-        emptyMsg.style.fontFamily = 'Montserrat, sans-serif';
-        emptyMsg.style.textTransform = 'uppercase';
-        emptyMsg.textContent = 'No qualifying telemetry traces available.';
-        container.replaceChildren(emptyMsg);
+        _renderEmptyState(container, 'No qualifying telemetry traces available.');
         return;
     }
 
@@ -370,582 +1315,48 @@ export function renderQualiTrace(data) {
 
     let driverACode = results[0].driver;
     let driverBCode = results[1].driver;
-
     let controlA = null;
     let controlB = null;
 
     const drawComparison = () => {
-        container.replaceChildren();
-
-        const driverAEntry = resultByDriver.get(driverACode) || results[0];
-        const driverBEntry = resultByDriver.get(driverBCode) || results[1];
-        const traceA = traces.drivers[driverAEntry.driver];
-        const traceB = traces.drivers[driverBEntry.driver];
-        if (!traceA || !traceB) return;
-
-        const { colorA, colorB, dashB, sameTeam } = _resolvePairStrokeStyles(
-            driverAEntry,
-            driverBEntry,
-            colorMap
-        );
-
-        if (controlA && controlB) {
-            controlA.swatchEl.style.borderTopColor = colorA;
-            controlA.swatchEl.style.borderTopStyle = 'solid';
-            controlB.swatchEl.style.borderTopColor = colorB;
-            controlB.swatchEl.style.borderTopStyle = sameTeam ? 'dashed' : 'solid';
-        }
-
-        const width = Math.max(
-            _MIN_CHART_WIDTH_PX,
-            container.clientWidth - _CHART_MARGIN.left - _CHART_MARGIN.right
-        );
-        const totalInnerHeight =
-            _SPEED_HEIGHT_PX + _PEDAL_HEIGHT_PX + _DELTA_HEIGHT_PX + _SUBPLOT_GAP_PX * 2;
-        const totalSvgHeight = totalInnerHeight + _CHART_MARGIN.top + _CHART_MARGIN.bottom;
-
-        const distancePct = traces.distance_pct;
-        const turns = traces.turns || [];
-
-        const series = distancePct.map((pct, i) => {
-            const speedA = traceA.speed[i] ?? 0;
-            const speedB = traceB.speed[i] ?? 0;
-            const throttleA = traceA.throttle[i] ?? 0;
-            const throttleB = traceB.throttle[i] ?? 0;
-            const brakeA = traceA.brake[i] ?? 0;
-            const brakeB = traceB.brake[i] ?? 0;
-            const cumTimeA = traceA.cum_time[i] ?? 0;
-            const cumTimeB = traceB.cum_time[i] ?? 0;
-            return {
-                pct,
-                speedA,
-                speedB,
-                throttleA,
-                throttleB,
-                brakeA,
-                brakeB,
-                cumTimeA,
-                cumTimeB,
-                delta: cumTimeB - cumTimeA
-            };
+        _renderTraceComparisonChart(container, {
+            driverACode,
+            driverBCode,
+            results,
+            resultByDriver,
+            traces,
+            colorMap,
+            controlA,
+            controlB,
+            tooltip
         });
-
-        const svg = d3
-            .select(container)
-            .append('svg')
-            .attr('width', width + _CHART_MARGIN.left + _CHART_MARGIN.right)
-            .attr('height', totalSvgHeight);
-
-        const defs = svg.append('defs');
-        const clipAboveId = `quali-delta-above-${driverAEntry.driver}-${driverBEntry.driver}`;
-        const clipBelowId = `quali-delta-below-${driverAEntry.driver}-${driverBEntry.driver}`;
-
-        const mainGroup = svg
-            .append('g')
-            .attr('transform', `translate(${_CHART_MARGIN.left},${_CHART_MARGIN.top})`);
-
-        const xScale = d3.scaleLinear().domain([0, 100]).range([0, width]);
-
-        const speedYOffset = 0;
-        const pedalYOffset = _SPEED_HEIGHT_PX + _SUBPLOT_GAP_PX;
-        const deltaYOffset = _SPEED_HEIGHT_PX + _PEDAL_HEIGHT_PX + _SUBPLOT_GAP_PX * 2;
-
-        // 1. Speed Subplot
-        const speedGroup = mainGroup
-            .append('g')
-            .attr('transform', `translate(0,${speedYOffset})`);
-
-        const allSpeeds = series.flatMap((d) => [d.speedA, d.speedB]);
-        const minSpeed = Math.max(60, Math.floor((d3.min(allSpeeds) || 100) - 12));
-        const maxSpeed = Math.ceil((d3.max(allSpeeds) || 340) + 10);
-        const speedYScale = d3
-            .scaleLinear()
-            .domain([minSpeed, maxSpeed])
-            .range([_SPEED_HEIGHT_PX, 0]);
-
-        speedGroup
-            .append('g')
-            .attr('class', 'gridline')
-            .call(d3.axisLeft(speedYScale).ticks(5).tickSize(-width).tickFormat(''));
-
-        _renderTurnLines(speedGroup, turns, xScale, _SPEED_HEIGHT_PX, true);
-
-        speedGroup
-            .append('g')
-            .call(d3.axisLeft(speedYScale).ticks(5).tickSize(0))
-            .call((g) => g.select('.domain').remove())
-            .append('text')
-            .attr('transform', 'rotate(-90)')
-            .attr('x', -_SPEED_HEIGHT_PX / 2)
-            .attr('y', -44)
-            .attr('fill', 'var(--text-muted)')
-            .attr('text-anchor', 'middle')
-            .style('font-family', 'Montserrat, sans-serif')
-            .style('font-size', '10px')
-            .style('font-weight', '700')
-            .text('SPEED (KM/H)');
-
-        const speedLineA = d3
-            .line()
-            .x((d) => xScale(d.pct))
-            .y((d) => speedYScale(d.speedA))
-            .curve(d3.curveMonotoneX);
-
-        const speedLineB = d3
-            .line()
-            .x((d) => xScale(d.pct))
-            .y((d) => speedYScale(d.speedB))
-            .curve(d3.curveMonotoneX);
-
-        speedGroup
-            .append('path')
-            .datum(series)
-            .attr('fill', 'none')
-            .attr('stroke', colorA)
-            .attr('stroke-width', 2.2)
-            .attr('d', speedLineA);
-
-        speedGroup
-            .append('path')
-            .datum(series)
-            .attr('fill', 'none')
-            .attr('stroke', colorB)
-            .attr('stroke-width', 2.2)
-            .attr('stroke-dasharray', dashB)
-            .attr('d', speedLineB);
-
-        // 2. Throttle & Brake Subplot
-        const pedalGroup = mainGroup
-            .append('g')
-            .attr('transform', `translate(0,${pedalYOffset})`);
-
-        const pedalYScale = d3.scaleLinear().domain([0, 100]).range([_PEDAL_HEIGHT_PX, 0]);
-
-        pedalGroup
-            .append('g')
-            .attr('class', 'gridline')
-            .call(d3.axisLeft(pedalYScale).ticks(3).tickSize(-width).tickFormat(''));
-
-        _renderTurnLines(pedalGroup, turns, xScale, _PEDAL_HEIGHT_PX, false);
-
-        pedalGroup
-            .append('g')
-            .call(
-                d3
-                    .axisLeft(pedalYScale)
-                    .tickValues([0, 50, 100])
-                    .tickFormat((d) => `${d}%`)
-                    .tickSize(0)
-            )
-            .call((g) => g.select('.domain').remove())
-            .append('text')
-            .attr('transform', 'rotate(-90)')
-            .attr('x', -_PEDAL_HEIGHT_PX / 2)
-            .attr('y', -44)
-            .attr('fill', 'var(--text-muted)')
-            .attr('text-anchor', 'middle')
-            .style('font-family', 'Montserrat, sans-serif')
-            .style('font-size', '10px')
-            .style('font-weight', '700')
-            .text('THR / BRK (%)');
-
-        const brakeAreaA = d3
-            .area()
-            .x((d) => xScale(d.pct))
-            .y0(_PEDAL_HEIGHT_PX)
-            .y1((d) => pedalYScale(d.brakeA))
-            .curve(d3.curveMonotoneX);
-
-        const brakeAreaB = d3
-            .area()
-            .x((d) => xScale(d.pct))
-            .y0(_PEDAL_HEIGHT_PX)
-            .y1((d) => pedalYScale(d.brakeB))
-            .curve(d3.curveMonotoneX);
-
-        pedalGroup
-            .append('path')
-            .datum(series)
-            .attr('fill', colorA)
-            .attr('fill-opacity', 0.1)
-            .attr('d', brakeAreaA);
-
-        pedalGroup
-            .append('path')
-            .datum(series)
-            .attr('fill', colorB)
-            .attr('fill-opacity', 0.1)
-            .attr('d', brakeAreaB);
-
-        const throttleLineA = d3
-            .line()
-            .x((d) => xScale(d.pct))
-            .y((d) => pedalYScale(d.throttleA))
-            .curve(d3.curveMonotoneX);
-
-        const throttleLineB = d3
-            .line()
-            .x((d) => xScale(d.pct))
-            .y((d) => pedalYScale(d.throttleB))
-            .curve(d3.curveMonotoneX);
-
-        const brakeLineA = d3
-            .line()
-            .x((d) => xScale(d.pct))
-            .y((d) => pedalYScale(d.brakeA))
-            .curve(d3.curveMonotoneX);
-
-        const brakeLineB = d3
-            .line()
-            .x((d) => xScale(d.pct))
-            .y((d) => pedalYScale(d.brakeB))
-            .curve(d3.curveMonotoneX);
-
-        pedalGroup
-            .append('path')
-            .datum(series)
-            .attr('fill', 'none')
-            .attr('stroke', colorA)
-            .attr('stroke-width', 1.9)
-            .attr('d', throttleLineA);
-
-        pedalGroup
-            .append('path')
-            .datum(series)
-            .attr('fill', 'none')
-            .attr('stroke', colorB)
-            .attr('stroke-width', 1.9)
-            .attr('stroke-dasharray', dashB)
-            .attr('d', throttleLineB);
-
-        pedalGroup
-            .append('path')
-            .datum(series)
-            .attr('fill', 'none')
-            .attr('stroke', colorA)
-            .attr('stroke-width', 1.35)
-            .attr('stroke-dasharray', _BRAKE_DASH_ARRAY)
-            .attr('opacity', 0.85)
-            .attr('d', brakeLineA);
-
-        pedalGroup
-            .append('path')
-            .datum(series)
-            .attr('fill', 'none')
-            .attr('stroke', colorB)
-            .attr('stroke-width', 1.35)
-            .attr('stroke-dasharray', _BRAKE_DASH_ARRAY)
-            .attr('opacity', 0.85)
-            .attr('d', brakeLineB);
-
-        // 3. Cumulative Time Delta Subplot (cum_time_B - cum_time_A)
-        const deltaGroup = mainGroup
-            .append('g')
-            .attr('transform', `translate(0,${deltaYOffset})`);
-
-        const maxAbsDelta = Math.max(
-            0.15,
-            d3.max(series, (d) => Math.abs(d.delta)) || 0.25
-        );
-        const paddedDeltaBound = maxAbsDelta * 1.18;
-
-        const deltaYScale = d3
-            .scaleLinear()
-            .domain([-paddedDeltaBound, paddedDeltaBound])
-            .range([_DELTA_HEIGHT_PX, 0]);
-
-        const zeroY = deltaYScale(0);
-
-        defs.append('clipPath')
-            .attr('id', clipAboveId)
-            .append('rect')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('width', width)
-            .attr('height', zeroY);
-
-        defs.append('clipPath')
-            .attr('id', clipBelowId)
-            .append('rect')
-            .attr('x', 0)
-            .attr('y', zeroY)
-            .attr('width', width)
-            .attr('height', _DELTA_HEIGHT_PX - zeroY);
-
-        deltaGroup
-            .append('g')
-            .attr('class', 'gridline')
-            .call(d3.axisLeft(deltaYScale).ticks(3).tickSize(-width).tickFormat(''));
-
-        _renderTurnLines(deltaGroup, turns, xScale, _DELTA_HEIGHT_PX, false);
-
-        const deltaArea = d3
-            .area()
-            .x((d) => xScale(d.pct))
-            .y0(zeroY)
-            .y1((d) => deltaYScale(d.delta))
-            .curve(d3.curveMonotoneX);
-
-        deltaGroup
-            .append('path')
-            .datum(series)
-            .attr('clip-path', `url(#${clipAboveId})`)
-            .attr('fill', colorA)
-            .attr('fill-opacity', 0.24)
-            .attr('d', deltaArea);
-
-        deltaGroup
-            .append('path')
-            .datum(series)
-            .attr('clip-path', `url(#${clipBelowId})`)
-            .attr('fill', colorB)
-            .attr('fill-opacity', 0.24)
-            .attr('d', deltaArea);
-
-        deltaGroup
-            .append('line')
-            .attr('x1', 0)
-            .attr('x2', width)
-            .attr('y1', zeroY)
-            .attr('y2', zeroY)
-            .attr('stroke', 'rgba(255, 255, 255, 0.4)')
-            .attr('stroke-width', 1)
-            .attr('stroke-dasharray', '4,3');
-
-        const deltaLine = d3
-            .line()
-            .x((d) => xScale(d.pct))
-            .y((d) => deltaYScale(d.delta))
-            .curve(d3.curveMonotoneX);
-
-        deltaGroup
-            .append('path')
-            .datum(series)
-            .attr('fill', 'none')
-            .attr('stroke', '#ffffff')
-            .attr('stroke-width', 1.8)
-            .attr('d', deltaLine);
-
-        deltaGroup
-            .append('text')
-            .attr('x', 8)
-            .attr('y', 12)
-            .attr('fill', colorA)
-            .style('font-family', 'Montserrat, sans-serif')
-            .style('font-size', '9.5px')
-            .style('font-weight', '700')
-            .text(`▲ ${driverAEntry.driver} AHEAD (+Δt)`);
-
-        deltaGroup
-            .append('text')
-            .attr('x', 8)
-            .attr('y', _DELTA_HEIGHT_PX - 5)
-            .attr('fill', colorB)
-            .style('font-family', 'Montserrat, sans-serif')
-            .style('font-size', '9.5px')
-            .style('font-weight', '700')
-            .text(`▼ ${driverBEntry.driver} AHEAD (-Δt)`);
-
-        deltaGroup
-            .append('g')
-            .call(
-                d3
-                    .axisLeft(deltaYScale)
-                    .ticks(3)
-                    .tickFormat((d) => `${d > 0 ? '+' : ''}${d.toFixed(2)}s`)
-                    .tickSize(0)
-            )
-            .call((g) => g.select('.domain').remove())
-            .append('text')
-            .attr('transform', 'rotate(-90)')
-            .attr('x', -_DELTA_HEIGHT_PX / 2)
-            .attr('y', -44)
-            .attr('fill', 'var(--text-muted)')
-            .attr('text-anchor', 'middle')
-            .style('font-family', 'Montserrat, sans-serif')
-            .style('font-size', '10px')
-            .style('font-weight', '700')
-            .text('Δt (SEC)');
-
-        const bottomAxisGroup = deltaGroup
-            .append('g')
-            .attr('transform', `translate(0,${_DELTA_HEIGHT_PX})`)
-            .call(
-                d3
-                    .axisBottom(xScale)
-                    .ticks(10)
-                    .tickFormat((d) => `${d}%`)
-            );
-
-        bottomAxisGroup
-            .append('text')
-            .attr('x', width)
-            .attr('y', 32)
-            .attr('fill', 'var(--text-muted)')
-            .attr('text-anchor', 'end')
-            .style('font-family', 'Montserrat, sans-serif')
-            .style('font-size', '10.5px')
-            .style('font-weight', '700')
-            .text('LAP DISTANCE (%)');
-
-        // Synchronized Interactive Crosshair Layer
-        const crosshairGroup = mainGroup
-            .append('g')
-            .attr('class', 'trace-crosshair')
-            .style('display', 'none')
-            .style('pointer-events', 'none');
-
-        const crosshairLine = crosshairGroup
-            .append('line')
-            .attr('y1', 0)
-            .attr('y2', totalInnerHeight)
-            .attr('stroke', 'rgba(255, 255, 255, 0.65)')
-            .attr('stroke-width', 1)
-            .attr('stroke-dasharray', '3,3');
-
-        const dotSpeedA = crosshairGroup
-            .append('circle')
-            .attr('r', 4)
-            .attr('fill', colorA)
-            .attr('stroke', '#ffffff')
-            .attr('stroke-width', 1.5);
-
-        const dotSpeedB = crosshairGroup
-            .append('circle')
-            .attr('r', 4)
-            .attr('fill', colorB)
-            .attr('stroke', '#ffffff')
-            .attr('stroke-width', 1.5);
-
-        const dotPedalA = crosshairGroup
-            .append('circle')
-            .attr('r', 3.5)
-            .attr('fill', colorA)
-            .attr('stroke', '#ffffff')
-            .attr('stroke-width', 1.2);
-
-        const dotPedalB = crosshairGroup
-            .append('circle')
-            .attr('r', 3.5)
-            .attr('fill', colorB)
-            .attr('stroke', '#ffffff')
-            .attr('stroke-width', 1.2);
-
-        const dotDelta = crosshairGroup
-            .append('circle')
-            .attr('r', 4)
-            .attr('fill', '#ffffff')
-            .attr('stroke', 'var(--bg-dark)')
-            .attr('stroke-width', 1.5);
-
-        const bisectPct = d3.bisector((d) => d.pct).center;
-
-        mainGroup
-            .append('rect')
-            .attr('width', width)
-            .attr('height', totalInnerHeight)
-            .attr('fill', 'transparent')
-            .style('cursor', 'crosshair')
-            .on('mouseover', () => {
-                crosshairGroup.style('display', null);
-                tooltip.classed('hidden', false);
-            })
-            .on('mousemove', (event) => {
-                const [mouseX] = d3.pointer(event);
-                const hoveredPct = xScale.invert(mouseX);
-                const index = Math.max(0, Math.min(series.length - 1, bisectPct(series, hoveredPct)));
-                const point = series[index];
-                const cx = xScale(point.pct);
-
-                crosshairLine.attr('x1', cx).attr('x2', cx);
-                dotSpeedA.attr('cx', cx).attr('cy', speedYOffset + speedYScale(point.speedA));
-                dotSpeedB.attr('cx', cx).attr('cy', speedYOffset + speedYScale(point.speedB));
-                dotPedalA.attr('cx', cx).attr('cy', pedalYOffset + pedalYScale(point.throttleA));
-                dotPedalB.attr('cx', cx).attr('cy', pedalYOffset + pedalYScale(point.throttleB));
-                dotDelta.attr('cx', cx).attr('cy', deltaYOffset + deltaYScale(point.delta));
-
-                let nearestTurn = null;
-                for (let i = 0; i < turns.length; i += 1) {
-                    if (Math.abs(turns[i].pct - point.pct) <= 2.2) {
-                        nearestTurn = turns[i].turn;
-                        break;
-                    }
-                }
-
-                const leadingColor = point.delta >= 0 ? colorA : colorB;
-                _populateTraceTooltip(tooltip.node(), {
-                    pct: point.pct,
-                    nearestTurn,
-                    driverA: driverAEntry,
-                    driverB: driverBEntry,
-                    pointA: {
-                        speed: point.speedA,
-                        throttle: point.throttleA,
-                        brake: point.brakeA,
-                        cumTime: point.cumTimeA
-                    },
-                    pointB: {
-                        speed: point.speedB,
-                        throttle: point.throttleB,
-                        brake: point.brakeB,
-                        cumTime: point.cumTimeB
-                    },
-                    deltaS: point.delta,
-                    colorA,
-                    colorB
-                });
-
-                tooltip
-                    .classed('hidden', false)
-                    .style('border-left-color', leadingColor)
-                    .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
-                    .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
-            })
-            .on('mouseout', () => {
-                crosshairGroup.style('display', 'none');
-                tooltip.classed('hidden', true);
-            });
     };
 
-    if (controlsContainer) {
-        controlsContainer.style.display = 'flex';
-        controlsContainer.style.alignItems = 'center';
-        controlsContainer.style.gap = '0.85rem';
-        controlsContainer.style.flexWrap = 'wrap';
-
-        controlA = _createDriverSelectControl('DRIVER A', results, driverACode, (newDriverA) => {
+    const controls = _renderTraceSelectorControls(
+        controlsContainer,
+        results,
+        driverACode,
+        driverBCode,
+        (newDriverA) => {
             driverACode = newDriverA;
             drawComparison();
-        });
-
-        const vsBadge = document.createElement('span');
-        vsBadge.style.fontFamily = 'Montserrat, sans-serif';
-        vsBadge.style.fontSize = '0.7rem';
-        vsBadge.style.fontWeight = '700';
-        vsBadge.style.color = 'var(--accent)';
-        vsBadge.style.padding = '0.15rem 0.4rem';
-        vsBadge.style.borderRadius = '4px';
-        vsBadge.style.background = 'rgba(225, 6, 0, 0.12)';
-        vsBadge.style.border = '1px solid rgba(225, 6, 0, 0.3)';
-        vsBadge.textContent = 'VS';
-
-        controlB = _createDriverSelectControl('DRIVER B', results, driverBCode, (newDriverB) => {
+        },
+        (newDriverB) => {
             driverBCode = newDriverB;
             drawComparison();
-        });
-
-        controlsContainer.appendChild(controlA.wrapper);
-        controlsContainer.appendChild(vsBadge);
-        controlsContainer.appendChild(controlB.wrapper);
-    }
+        }
+    );
+    controlA = controls.controlA;
+    controlB = controls.controlB;
 
     _externalFocusHandler = (focusedDriverCode) => {
-        if (
-            focusedDriverCode &&
+        const shouldSwitchDriverB =
+            Boolean(focusedDriverCode) &&
             focusedDriverCode !== driverACode &&
             resultByDriver.has(focusedDriverCode) &&
-            traces.drivers[focusedDriverCode]
-        ) {
+            Boolean(traces.drivers[focusedDriverCode]);
+
+        if (shouldSwitchDriverB) {
             driverBCode = focusedDriverCode;
             if (controlB) {
                 controlB.selectEl.value = focusedDriverCode;

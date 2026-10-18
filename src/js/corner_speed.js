@@ -6,11 +6,24 @@ const _MIN_SUBPLOT_WIDTH_PX = 120;
 const _MIN_SPEED_DOMAIN_PADDING_KMH = 0.3;
 const _SPEED_DOMAIN_PADDING_RATIO = 0.04;
 const _X_AXIS_TICKS = 5;
+
+const _RANGE_BAR_STROKE_COLOR = 'rgba(255, 255, 255, 0.16)';
+const _RANGE_BAR_STROKE_WIDTH_PX = 4;
+
 const _NODE_RADIUS_PX = 5.5;
 const _NODE_HOVER_RADIUS_OFFSET_PX = 2;
+const _DEFAULT_NODE_STROKE_COLOR = 'rgba(255, 255, 255, 0.35)';
+const _HOVER_NODE_STROKE_COLOR = '#ffffff';
+const _DEFAULT_NODE_STROKE_WIDTH_PX = 1;
+const _HOVER_NODE_STROKE_WIDTH_PX = 2;
+
 const _MAX_VERTICAL_JITTER_PX = 5.5;
+const _COARSE_JITTER_FACTOR = 0.85;
+const _FINE_JITTER_STEP_PX = 2.2;
+
 const _ACTIVE_OPACITY = 1;
 const _DIMMED_OPACITY = 0.12;
+const _FASTEST_DELTA_COLOR = '#34d399';
 const _TOOLTIP_OFFSET_X_PX = 15;
 const _TOOLTIP_OFFSET_Y_PX = -30;
 
@@ -287,8 +300,8 @@ function _renderTurnRangeBar(svg, xScale, minSpeed, maxSpeed, centerY) {
         .attr('x2', xScale(maxSpeed))
         .attr('y1', centerY)
         .attr('y2', centerY)
-        .attr('stroke', 'rgba(255, 255, 255, 0.16)')
-        .attr('stroke-width', 4)
+        .attr('stroke', _RANGE_BAR_STROKE_COLOR)
+        .attr('stroke-width', _RANGE_BAR_STROKE_WIDTH_PX)
         .attr('stroke-linecap', 'round');
 }
 
@@ -308,8 +321,8 @@ function _positionTurnNodesTrueSpeed(turnCorners, xScale, centerY) {
     turnCorners.forEach((d, idx) => {
         d.x = xScale(d.speed);
         const normalizedOffset =
-            count > 1 ? ((idx % 3) - 1) * (_MAX_VERTICAL_JITTER_PX * 0.85) : 0;
-        const fineOffset = count > 3 ? ((idx % 2) - 0.5) * 2.2 : 0;
+            count > 1 ? ((idx % 3) - 1) * (_MAX_VERTICAL_JITTER_PX * _COARSE_JITTER_FACTOR) : 0;
+        const fineOffset = count > 3 ? ((idx % 2) - 0.5) * _FINE_JITTER_STEP_PX : 0;
         d.y =
             centerY +
             Math.max(
@@ -353,7 +366,7 @@ function _populateCornerTooltipContent(tooltipNode, cornerEntry, category, faste
     const delta = fastestInTurn - cornerEntry.speed;
     const deltaDiv = document.createElement('div');
     deltaDiv.style.fontSize = '0.8rem';
-    deltaDiv.style.color = delta === 0 ? '#34d399' : 'var(--text-muted)';
+    deltaDiv.style.color = delta === 0 ? _FASTEST_DELTA_COLOR : 'var(--text-muted)';
     deltaDiv.style.marginTop = '2px';
     deltaDiv.textContent =
         delta === 0 ? 'Fastest in Turn' : `-${delta.toFixed(1)} km/h vs P1`;
@@ -396,16 +409,16 @@ function _renderTurnCornerNodes(svg, turnData, width, tooltip) {
             d3.select(event.currentTarget)
                 .raise()
                 .select('circle')
-                .attr('stroke', '#ffffff')
-                .attr('stroke-width', 2)
+                .attr('stroke', _HOVER_NODE_STROKE_COLOR)
+                .attr('stroke-width', _HOVER_NODE_STROKE_WIDTH_PX)
                 .attr('r', _NODE_RADIUS_PX + _NODE_HOVER_RADIUS_OFFSET_PX);
         })
         .on('mouseout', (event) => {
             tooltip.classed('hidden', true);
             d3.select(event.currentTarget)
                 .select('circle')
-                .attr('stroke', 'rgba(255, 255, 255, 0.35)')
-                .attr('stroke-width', 1)
+                .attr('stroke', _DEFAULT_NODE_STROKE_COLOR)
+                .attr('stroke-width', _DEFAULT_NODE_STROKE_WIDTH_PX)
                 .attr('r', _NODE_RADIUS_PX);
         });
 
@@ -413,8 +426,8 @@ function _renderTurnCornerNodes(svg, turnData, width, tooltip) {
         .append('circle')
         .attr('r', _NODE_RADIUS_PX)
         .attr('fill', (d) => d.color || 'var(--accent)')
-        .attr('stroke', 'rgba(255, 255, 255, 0.35)')
-        .attr('stroke-width', 1);
+        .attr('stroke', _DEFAULT_NODE_STROKE_COLOR)
+        .attr('stroke-width', _DEFAULT_NODE_STROKE_WIDTH_PX);
 
     return nodes;
 }
@@ -487,11 +500,13 @@ function _applyCornerTeamStyles(subplotNodeSelections, activeTeams, highlightedT
             )
             .attr('stroke', (d) =>
                 highlightedTeam !== null && highlightedTeam === d.team
-                    ? '#ffffff'
-                    : 'rgba(255, 255, 255, 0.35)'
+                    ? _HOVER_NODE_STROKE_COLOR
+                    : _DEFAULT_NODE_STROKE_COLOR
             )
             .attr('stroke-width', (d) =>
-                highlightedTeam !== null && highlightedTeam === d.team ? 2 : 1
+                highlightedTeam !== null && highlightedTeam === d.team
+                    ? _HOVER_NODE_STROKE_WIDTH_PX
+                    : _DEFAULT_NODE_STROKE_WIDTH_PX
             );
 
         if (highlightedTeam !== null) {

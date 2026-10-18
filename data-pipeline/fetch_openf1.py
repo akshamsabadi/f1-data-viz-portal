@@ -1,5 +1,7 @@
 """Fetches and processes Formula 1 race telemetry and lap data from the OpenF1 API."""
 
+from __future__ import annotations
+
 import argparse
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
@@ -11,6 +13,10 @@ import requests
 
 _OPENF1_BASE_URL: Final[str] = "https://api.openf1.org/v1"
 _API_RATE_LIMIT_DELAY_SECONDS: Final[float] = 0.4
+_MAX_RETRY_ATTEMPTS: Final[int] = 4
+_HTTP_OK: Final[int] = 200
+_HTTP_TOO_MANY_REQUESTS: Final[int] = 429
+_RETRY_BACKOFF_BASE_SECONDS: Final[float] = 1.5
 _RACE_SESSION_NAME: Final[str] = "Race"
 
 _DEFAULT_LAP_DURATION_SECONDS: Final[float] = 90.0
@@ -327,10 +333,10 @@ def _fetch_openf1_endpoint(
     query_string = "&".join(f"{key}={value}" for key, value in params.items())
     url = f"{_OPENF1_BASE_URL}/{endpoint}?{query_string}"
     response = requests.get(url)
-    for attempt in range(4):
-        if getattr(response, "status_code", 200) != 429:
+    for attempt in range(_MAX_RETRY_ATTEMPTS):
+        if getattr(response, "status_code", _HTTP_OK) != _HTTP_TOO_MANY_REQUESTS:
             break
-        time.sleep(1.5 * (attempt + 1))
+        time.sleep(_RETRY_BACKOFF_BASE_SECONDS * (attempt + 1))
         response = requests.get(url)
     time.sleep(_API_RATE_LIMIT_DELAY_SECONDS)
     payload = response.json()

@@ -1,14 +1,30 @@
 """Unit and integration tests for generate_weekend_telemetry."""
 
+from __future__ import annotations
+
 import json
 from pathlib import Path
 from typing import Any
+from unittest.mock import MagicMock, patch
 
 import pytest
+import requests
 
 from generate_weekend_telemetry import (
+    _build_fia_position_timeline,
+    _build_practice_telemetry,
     _build_qualifying_telemetry,
+    _build_race_telemetry,
     _calibrate_race_laps_with_session_result,
+    _extract_sc_vsc_windows,
+    _fetch_openf1_json,
+    _group_driver_laps_into_stints,
+    _lookup_fia_position_at_timestamp,
+    _merge_single_lap_stint_artifacts,
+    _parse_int_position,
+    _parse_iso_timestamp,
+    _parse_openf1_lap_timestamps,
+    enrich_all_races,
     generate_weekend_telemetry,
 )
 
@@ -75,7 +91,6 @@ def test_generate_weekend_telemetry_populates_all_three_sessions(tmp_path: Path)
     assert "race_telemetry" in enriched
     assert "corners" in enriched
 
-    # Verify Practice block
     practice = enriched["practice"]
     assert len(practice["classification"]) == 12
     assert practice["classification"][0]["rank"] == 1
@@ -91,7 +106,6 @@ def test_generate_weekend_telemetry_populates_all_three_sessions(tmp_path: Path)
     assert len(practice["degradation_slopes"]) == 3
     assert len(practice["stint_laps"]) > 0
 
-    # Verify Qualifying block
     qualifying = enriched["qualifying"]
     results = qualifying["results"]
     assert len(results) == 12
@@ -108,7 +122,6 @@ def test_generate_weekend_telemetry_populates_all_three_sessions(tmp_path: Path)
             assert row["eliminated_in"] == "Q2"
             assert row["q3_time"] is None
 
-    # Verify Qualifying traces
     traces = qualifying["traces"]
     assert len(traces["distance_pct"]) == 51
     for code in ("NOR", "VER", "LEC"):
@@ -118,9 +131,8 @@ def test_generate_weekend_telemetry_populates_all_three_sessions(tmp_path: Path)
         assert len(driver_trace["brake"]) == 51
         assert len(driver_trace["cum_time"]) == 51
 
-    # Verify Race Telemetry block
     race_tel = enriched["race_telemetry"]
-    assert len(race_tel["stints"]) >= 24  # 12 drivers x 2 stints
+    assert len(race_tel["stints"]) >= 24
     assert len(race_tel["pit_stops"]) >= 12
 
 
@@ -142,7 +154,6 @@ def test_calibrate_race_laps_strips_phantom_cooldown_laps_and_matches_official_r
         {"code": "NOR", "name": "Lando Norris", "team": "McLaren", "color": "#fe7b04"},
         {"code": "ANT", "name": "Kimi Antonelli", "team": "Mercedes", "color": "#00e3c0"},
     ]
-    # Simulate ANT having a phantom Lap 3 cooldown lap and NOR having slightly lower raw summed time than VER
     raw_laps = [
         {"driver": "VER", "lap": 1, "time": 90.5, "compound": "MEDIUM", "tyre_life": 1, "position": 2, "session_time": 90.5, "interpolated": True},
         {"driver": "VER", "lap": 2, "time": 90.0, "compound": "MEDIUM", "tyre_life": 2, "position": 2, "session_time": 180.5, "interpolated": False},
@@ -179,6 +190,87 @@ def test_calibrate_race_laps_strips_phantom_cooldown_laps_and_matches_official_r
     assert [l["driver"] for l in lap2_by_pos] == ["VER", "NOR", "ANT"]
 
 
+def test_calibrate_race_laps_handles_dns_dnf_dsq_lapped_and_position_timeline() -> None:
+    """Verifies calibration handles DNS, DNF, DSQ, lapped drivers, glitched laps, and FIA positions."""
+    drivers = [
+        {"code": "VER", "name": "Max Verstappen", "team": "Red Bull", "color": "#3671c6"},
+        {"code": "NOR", "name": "Lando Norris", "team": "McLaren", "color": "#fe7b04"},
+        {"code": "LEC", "name": "Charles Leclerc", "team": "Ferrari", "color": "#e30002"},
+        {"code": "HAM", "name": "Lewis Hamilton", "team": "Ferrari", "color": "#e30002"},
+        {"code": "ALO", "name": "Fernando Alonso", "team": "Aston Martin", "color": "#229971"},
+    ]
+    raw_laps = [
+        {"driver": "VER", "lap": 1, "time": 50.0, "compound": "SOFT", "tyre_life": 1, "position": 2, "session_time": 50.0},
+        {"driver": "VER", "lap": 2, "time": 90.0, "compound": "SOFT", "tyre_life": 2, "position": 1, "session_time": 140.0},
+        {"driver": "VER", "lap": 3, "time": 90.0, "compound": "SOFT", "tyre_life": 3, "position": 1, "session_time": 230.0},
+        {"driver": "NOR", "lap": 1, "time": 93.0, "compound": "SOFT", "tyre_life": 1, "position": 1, "session_time": 93.0},
+        {"driver": "NOR", "lap": 2, "time": 40.0, "compound": "SOFT", "tyre_life": 2, "position": 2, "session_time": 133.0},
+        {"driver": "NOR", "lap": 3, "time": 90.5, "compound": "SOFT", "tyre_life": 3, "position": 2, "session_time": 223.5},
+        {"driver": "LEC", "lap": 1, "time": 94.0, "compound": "MEDIUM", "tyre_life": 1, "position": 3, "session_time": 94.0},
+        {"driver": "LEC", "lap": 2, "time": 91.0, "compound": "MEDIUM", "tyre_life": 2, "position": 3, "session_time": 185.0},
+        {"driver": "HAM", "lap": 1, "time": 95.0, "compound": "HARD", "tyre_life": 1, "position": 4, "session_time": 95.0},
+    ]
+    session_result = [
+        {"driver_number": 1, "position": 1, "number_of_laps": 3, "duration": 273.5, "gap_to_leader": 0.0, "dnf": False, "dns": False, "dsq": False},
+        {"driver_number": 4, "position": 2, "number_of_laps": 3, "duration": 273.5, "gap_to_leader": 0.0, "dnf": False, "dns": False, "dsq": True},
+        {"driver_number": 16, "position": 3, "number_of_laps": 2, "duration": 185.0, "gap_to_leader": None, "dnf": False, "dns": False, "dsq": False},
+        {"driver_number": 44, "position": None, "number_of_laps": 1, "duration": 95.0, "gap_to_leader": None, "dnf": True, "dns": False, "dsq": False},
+        {"driver_number": 14, "position": None, "number_of_laps": 0, "duration": None, "gap_to_leader": None, "dnf": False, "dns": True, "dsq": False},
+    ]
+    openf1_raw_laps = [
+        {"driver_number": 1, "lap_number": 1, "date_start": "2026-05-01T14:00:00Z", "lap_duration": None},
+        {"driver_number": 1, "lap_number": 3, "date_start": "2026-05-01T14:03:03Z", "lap_duration": 90.0},
+        {"driver_number": 4, "lap_number": 1, "date_start": "2026-05-01T14:00:00Z", "lap_duration": 93.0},
+        {"driver_number": 4, "lap_number": 2, "date_start": "2026-05-01T14:01:33Z", "lap_duration": 90.5},
+    ]
+    openf1_positions = [
+        {"driver_number": 4, "position": 1, "date": "2026-05-01T14:01:30Z"},
+        {"driver_number": 1, "position": 2, "date": "2026-05-01T14:01:30Z"},
+    ]
+    num_to_code = {1: "VER", 4: "NOR", 16: "LEC", 44: "HAM", 14: "ALO"}
+
+    cal_laps, max_lap, winner, cls = _calibrate_race_laps_with_session_result(
+        laps=raw_laps,
+        drivers=drivers,
+        openf1_session_result=session_result,
+        num_to_code=num_to_code,
+        openf1_raw_laps=openf1_raw_laps,
+        openf1_positions=openf1_positions,
+    )
+
+    assert max_lap == 3
+    assert winner == "VER"
+    cls_by_code = {row["driver"]: row for row in cls}
+    assert cls_by_code["VER"]["status"] == "FINISHER"
+    assert cls_by_code["NOR"]["status"] == "DSQ"
+    assert cls_by_code["NOR"]["duration"] > cls_by_code["VER"]["duration"]
+    assert cls_by_code["LEC"]["status"] == "LAPPED"
+    assert cls_by_code["LEC"]["gap_to_leader"] == "+1 Lap"
+    assert cls_by_code["HAM"]["status"] == "DNF"
+    assert cls_by_code["ALO"]["status"] == "DNS"
+    assert cls_by_code["ALO"]["is_dns"] is True
+
+    nor_lap2 = next(l for l in cal_laps if l["driver"] == "NOR" and l["lap"] == 2)
+    assert nor_lap2["time"] >= 80.0
+    assert nor_lap2["interpolated"] is True
+
+
+def test_calibrate_race_laps_returns_unmodified_when_no_session_result() -> None:
+    """Verifies _calibrate_race_laps_with_session_result returns clean copy when session_result is empty."""
+    laps = [{"driver": "LEC", "lap": 1, "time": 90.0, "position": 1, "session_time": 90.0}]
+    drivers = [{"code": "LEC", "name": "Charles Leclerc", "team": "Ferrari", "color": "#e30002"}]
+    cal_laps, max_lap, winner, cls = _calibrate_race_laps_with_session_result(
+        laps=laps,
+        drivers=drivers,
+        openf1_session_result=None,
+        num_to_code=None,
+    )
+    assert len(cal_laps) == 1
+    assert max_lap == 1
+    assert winner == "LEC"
+    assert cls == []
+
+
 def test_build_qualifying_telemetry_honors_official_session_result() -> None:
     """Verifies official /v1/session_result overrides deleted laps in /v1/laps."""
     payload = _create_sample_gp_payload()
@@ -187,7 +279,6 @@ def test_build_qualifying_telemetry_honors_official_session_result() -> None:
     ]
     num_to_code = {1: "VER", 16: "LEC", 4: "NOR"}
 
-    # Simulate LEC having a deleted faster lap in raw /v1/laps (88.9s), while official session_result has VER P1 (89.1s)
     openf1_quali_laps = [
         {"driver_number": 16, "lap_number": 5, "lap_duration": 88.9, "duration_sector_1": 28.9, "duration_sector_2": 30.0, "duration_sector_3": 30.0, "date_start": "2026-10-10T13:55:00Z"},
         {"driver_number": 1, "lap_number": 5, "lap_duration": 89.1, "duration_sector_1": 29.0, "duration_sector_2": 30.0, "duration_sector_3": 30.1, "date_start": "2026-10-10T13:56:00Z"},
@@ -201,7 +292,7 @@ def test_build_qualifying_telemetry_honors_official_session_result() -> None:
         gp_name="Singapore Grand Prix",
         drivers=drivers,
         driver_pace={"VER": 91.0, "LEC": 91.2, "NOR": 91.3},
-        track_profile={"turns": 19, "base_speed": 150.0, "variation": 60.0},
+        track_profile={"turns": 19, "base_speed": 150, "variation": 60},
         race_laps=payload["laps"],
         openf1_quali_laps=openf1_quali_laps,
         openf1_quali_results=openf1_quali_results,
@@ -210,6 +301,316 @@ def test_build_qualifying_telemetry_honors_official_session_result() -> None:
     assert [r["driver"] for r in quali["results"]] == ["VER", "LEC", "NOR"]
     assert quali["results"][0]["best_time"] == 89.1
     assert quali["results"][1]["best_time"] == 89.3
+
+
+def test_build_qualifying_telemetry_with_phase_starts_and_twenty_drivers() -> None:
+    """Verifies Q1/Q2/Q3 elimination cutoffs across 20 drivers and phase timestamps."""
+    base_payload = _create_sample_gp_payload()
+    extra_drivers = [
+        {"code": f"D{idx:02d}", "name": f"Driver {idx}", "team": "Haas", "color": "#ffffff"}
+        for idx in range(13, 21)
+    ]
+    drivers = base_payload["drivers"] + extra_drivers
+    driver_pace = {str(d["code"]): 88.0 + idx * 0.15 for idx, d in enumerate(drivers)}
+    num_to_code = {idx + 1: str(d["code"]) for idx, d in enumerate(drivers)}
+
+    quali_rc = [
+        {"qualifying_phase": 1, "message": "SESSION STARTED", "date": "2026-06-01T14:00:00Z"},
+        {"qualifying_phase": 2, "message": "SESSION STARTED", "date": "2026-06-01T14:25:00Z"},
+        {"qualifying_phase": 3, "message": "SESSION STARTED", "date": "2026-06-01T14:48:00Z"},
+    ]
+    quali_laps = []
+    for idx in range(20):
+        d_num = idx + 1
+        quali_laps.append(
+            {
+                "driver_number": d_num,
+                "lap_number": 2,
+                "lap_duration": 86.0 + idx * 0.12,
+                "duration_sector_1": 25.0 + idx * 0.04,
+                "duration_sector_2": 31.0 + idx * 0.04,
+                "duration_sector_3": 30.0 + idx * 0.04,
+                "date_start": "2026-06-01T14:05:00Z",
+            }
+        )
+        if idx < 16:
+            quali_laps.append(
+                {
+                    "driver_number": d_num,
+                    "lap_number": 5,
+                    "lap_duration": 85.5 + idx * 0.11,
+                    "date_start": "2026-06-01T14:30:00Z",
+                }
+            )
+        if idx < 10:
+            quali_laps.append(
+                {
+                    "driver_number": d_num,
+                    "lap_number": 8,
+                    "lap_duration": 85.0 + idx * 0.10,
+                    "date_start": "2026-06-01T14:52:00Z",
+                }
+            )
+
+    quali = _build_qualifying_telemetry(
+        gp_name="Monaco Grand Prix",
+        drivers=drivers,
+        driver_pace=driver_pace,
+        track_profile={"turns": 19, "base_speed": 140, "variation": 50},
+        race_laps=base_payload["laps"],
+        openf1_quali_laps=quali_laps,
+        openf1_quali_rc=quali_rc,
+        num_to_code=num_to_code,
+        stage_prefix="SQ",
+    )
+
+    assert quali["stage_prefix"] == "SQ"
+    assert len(quali["results"]) == 20
+    assert quali["results"][0]["eliminated_in"] == "SQ3"
+    assert quali["results"][12]["eliminated_in"] == "SQ2"
+    assert quali["results"][18]["eliminated_in"] == "SQ1"
+    assert quali["results"][18]["q2_time"] is None
+    assert quali["results"][18]["q3_time"] is None
+
+
+@pytest.mark.parametrize(
+    ("rc_events", "lap_times_by_lap", "expected_types_and_bounds"),
+    [
+        (
+            [
+                {"category": "SafetyCar", "message": "VSC DEPLOYED", "lap_number": 4},
+                {"category": "SafetyCar", "message": "VSC ENDING", "lap_number": 5},
+                {"category": "SafetyCar", "message": "SAFETY CAR DEPLOYED", "lap_number": 10},
+                {"category": "SafetyCar", "message": "SAFETY CAR IN THIS LAP", "lap_number": 13},
+            ],
+            {},
+            [("VSC", 4, 5), ("SC", 10, 13)],
+        ),
+        (
+            [
+                {"category": "SafetyCar", "message": "VIRTUAL SAFETY CAR DEPLOYED", "lap_number": 6},
+                {"category": "SafetyCar", "message": "SAFETY CAR DEPLOYED", "lap_number": 8},
+                {"category": "SafetyCar", "message": "SAFETY CAR ENDING", "lap_number": 10},
+                {"category": "SafetyCar", "message": "SC DEPLOYED", "lap_number": 11},
+                {"category": "SafetyCar", "message": "CLEAR", "lap_number": 12},
+            ],
+            {},
+            [("VSC", 6, 7), ("SC", 8, 12)],
+        ),
+        (
+            [
+                {"category": "SafetyCar", "message": "SAFETY CAR DEPLOYED", "lap_number": 19},
+            ],
+            {},
+            [("SC", 19, 20)],
+        ),
+        (
+            [],
+            {2: 90.0, 3: 90.0, 4: 90.0, 5: 106.0, 6: 120.0, 7: 122.0, 8: 90.0},
+            [("VSC", 5, 5), ("SC", 6, 7)],
+        ),
+    ],
+)
+def test_extract_sc_vsc_windows_scenarios(
+    rc_events: list[dict[str, Any]],
+    lap_times_by_lap: dict[int, float],
+    expected_types_and_bounds: list[tuple[str, int, int]],
+) -> None:
+    """Verifies SC/VSC extraction across race control messages, VSC-to-SC escalation, merging, and lap-time fallback."""
+    laps = [
+        {"driver": "VER", "lap": lap_no, "time": lap_time}
+        for lap_no, lap_time in lap_times_by_lap.items()
+    ]
+    windows = _extract_sc_vsc_windows(
+        race_control_events=rc_events,
+        laps=laps,
+        total_laps=20,
+    )
+    actual = [
+        (w["type"], int(w["start_lap"]), int(w["end_lap"])) for w in windows
+    ]
+    assert actual == expected_types_and_bounds
+
+
+def test_stint_grouping_and_single_lap_artifact_merging() -> None:
+    """Verifies 1-lap tyre stint artifacts at start, middle, and end are merged into adjacent stints."""
+    driver_laps = [
+        {"driver": "VER", "lap": 1, "time": 95.0, "compound": "SOFT", "tyre_life": 1},
+        {"driver": "VER", "lap": 2, "time": 91.0, "compound": "MEDIUM", "tyre_life": 1},
+        {"driver": "VER", "lap": 3, "time": 91.2, "compound": "MEDIUM", "tyre_life": 2},
+        {"driver": "VER", "lap": 4, "time": 91.4, "compound": "MEDIUM", "tyre_life": 3},
+        {"driver": "VER", "lap": 5, "time": 92.0, "compound": "HARD", "tyre_life": 1},
+        {"driver": "VER", "lap": 6, "time": 90.5, "compound": "SOFT", "tyre_life": 1},
+        {"driver": "VER", "lap": 7, "time": 90.7, "compound": "SOFT", "tyre_life": 2},
+        {"driver": "VER", "lap": 8, "time": 91.0, "compound": "MEDIUM", "tyre_life": 1},
+    ]
+    raw_groups = _group_driver_laps_into_stints(driver_laps)
+    assert len(raw_groups) == 5
+
+    merged = _merge_single_lap_stint_artifacts(
+        raw_stint_groups=raw_groups,
+        driver_laps=driver_laps,
+        gp_name="Test GP",
+        code="VER",
+        has_openf1_stints=True,
+    )
+    assert all(len(grp) > 1 for grp in merged)
+    assert sum(len(grp) for grp in merged) == len(driver_laps)
+
+
+def test_build_practice_and_race_telemetry_with_real_openf1_inputs() -> None:
+    """Verifies real OpenF1 practice and pit stop records are incorporated when provided."""
+    payload = _create_sample_gp_payload()
+    drivers = payload["drivers"][:2]
+    num_to_code = {4: "NOR", 81: "PIA"}
+
+    prac = _build_practice_telemetry(
+        gp_name="Singapore Grand Prix",
+        drivers=drivers,
+        driver_pace={"NOR": 90.0, "PIA": 90.3},
+        track_profile={"turns": 19, "base_speed": 150, "variation": 60},
+        corners=[
+            {"turn": 1, "team": "McLaren", "speed": 145.0, "color": "#fe7b04"}
+        ],
+        openf1_practice_laps=[
+            {"driver_number": 4, "lap_duration": 88.123, "st_speed": 325.4},
+            {"driver_number": 81, "lap_duration": 88.456, "i2_speed": 322.1},
+        ],
+        openf1_practice_stints=[
+            {"driver_number": 4, "compound": "SOFT", "lap_start": 1, "lap_end": 6},
+            {"driver_number": 4, "compound": "MEDIUM", "lap_start": 7, "lap_end": 16},
+            {"driver_number": 4, "compound": "INTERMEDIATE", "lap_start": 17, "lap_end": 18},
+        ],
+        openf1_practice_results=[
+            {"driver_number": 81, "position": 1, "duration": 88.05},
+            {"driver_number": 4, "position": 2, "duration": 88.123},
+        ],
+        num_to_code=num_to_code,
+    )
+    assert [c["driver"] for c in prac["classification"]] == ["PIA", "NOR"]
+    assert prac["classification"][0]["best_lap"] == 88.05
+    assert prac["classification"][1]["speed_trap_kmh"] == 325.4
+
+    race_tel = _build_race_telemetry(
+        gp_name="Singapore Grand Prix",
+        drivers=drivers,
+        laps=[l for l in payload["laps"] if l["driver"] in ("NOR", "PIA")],
+        total_laps=24,
+        openf1_stints=[{"driver_number": 4, "compound": "MEDIUM", "lap_start": 1, "lap_end": 11}],
+        openf1_pits=[
+            {"driver_number": 4, "lap_number": 11, "stop_duration": 2.34, "pit_duration": 21.8},
+            {"driver_number": 81, "lap_number": 11, "lane_duration": 22.9},
+        ],
+        openf1_rc=[],
+        num_to_code=num_to_code,
+    )
+    pit_by_drv = {p["driver"]: p for p in race_tel["pit_stops"]}
+    assert pit_by_drv["NOR"]["stationary_s"] == 2.34
+    assert pit_by_drv["NOR"]["pit_loss_s"] == 21.8
+    assert pit_by_drv["PIA"]["pit_loss_s"] == 22.9
+
+
+def test_generate_weekend_telemetry_live_sprint_and_enrich_all_races(
+    tmp_path: Path,
+) -> None:
+    """Verifies live fetch mode with Sprint sessions and batch enrich_all_races execution."""
+    race_path = tmp_path / "china.json"
+    race_path.write_text(
+        json.dumps(_create_sample_gp_payload()), encoding="utf-8"
+    )
+
+    sessions_cache = [
+        {"meeting_key": 1280, "session_name": "Practice 1", "session_key": 101},
+        {"meeting_key": 1280, "session_name": "Sprint Qualifying", "session_key": 102},
+        {"meeting_key": 1280, "session_name": "Sprint", "session_key": 103},
+        {"meeting_key": 1280, "session_name": "Qualifying", "session_key": 104},
+        {"meeting_key": 1280, "session_name": "Race", "session_key": 105},
+    ]
+
+    def _fake_fetch(endpoint: str, params: dict[str, Any]) -> list[dict[str, Any]]:
+        if endpoint == "drivers":
+            return [
+                {"driver_number": 4, "name_acronym": "NOR", "full_name": "Lando Norris", "team_name": "McLaren", "team_colour": "fe7b04"},
+                {"driver_number": 81, "name_acronym": "PIA", "full_name": "Oscar Piastri", "team_name": "McLaren", "team_colour": "fe7b04"},
+            ]
+        if endpoint == "laps":
+            return [
+                {"driver_number": 4, "lap_number": 1, "lap_duration": 92.0, "date_start": "2026-03-20T07:00:00Z"},
+                {"driver_number": 4, "lap_number": 2, "lap_duration": 90.0, "date_start": "2026-03-20T07:01:32Z"},
+                {"driver_number": 81, "lap_number": 1, "lap_duration": 92.5, "date_start": "2026-03-20T07:00:00Z"},
+                {"driver_number": 81, "lap_number": 2, "lap_duration": 90.5, "date_start": "2026-03-20T07:01:32Z"},
+            ]
+        if endpoint == "session_result":
+            return [
+                {"driver_number": 4, "position": 1, "number_of_laps": 2, "duration": 182.0, "gap_to_leader": 0.0},
+                {"driver_number": 81, "position": 2, "number_of_laps": 2, "duration": 183.0, "gap_to_leader": 1.0},
+            ]
+        return []
+
+    with patch("generate_weekend_telemetry._fetch_openf1_json", side_effect=_fake_fetch):
+        enriched_list = enrich_all_races(races_dir=str(tmp_path), fetch_live=False)
+        assert len(enriched_list) == 1
+        assert enriched_list[0]["is_sprint_weekend"] is True
+        assert "sprint_qualifying" in enriched_list[0]
+        assert "sprint" in enriched_list[0]
+
+        live_enriched = generate_weekend_telemetry(
+            str(race_path),
+            fetch_live=True,
+            all_sessions_cache=sessions_cache,
+        )
+        assert live_enriched["is_sprint_weekend"] is True
+        assert live_enriched["sprint"]["winner"] == "NOR"
+
+
+def test_fetch_openf1_json_retries_and_handles_failures() -> None:
+    """Verifies _fetch_openf1_json handles HTTP 429 retry, non-list JSON, and network exceptions."""
+    resp_429 = MagicMock(status_code=429)
+    resp_200 = MagicMock(status_code=200)
+    resp_200.json.return_value = [{"session_key": 1}]
+
+    with (
+        patch("generate_weekend_telemetry.requests.get", side_effect=[resp_429, resp_200]) as mock_get,
+        patch("generate_weekend_telemetry.time.sleep"),
+    ):
+        res = _fetch_openf1_json("sessions", {"year": 2026})
+        assert res == [{"session_key": 1}]
+        assert mock_get.call_count == 2
+
+    with (
+        patch("generate_weekend_telemetry.requests.get", side_effect=requests.RequestException("offline")),
+        patch("generate_weekend_telemetry.time.sleep"),
+    ):
+        assert _fetch_openf1_json("sessions", {"year": 2026}) == []
+
+
+def test_helper_parsers_and_failure_exceptions(tmp_path: Path) -> None:
+    """Verifies utility parsers and file error handling for generate_weekend_telemetry."""
+    assert _parse_int_position(5) == 5
+    assert _parse_int_position(" 12 ") == 12
+    assert _parse_int_position("NC") is None
+    assert _parse_iso_timestamp(None) is None
+    assert _parse_iso_timestamp("not-a-timestamp") is None
+    assert _parse_iso_timestamp("2026-03-15T14:00:00Z") is not None
+
+    timeline = _build_fia_position_timeline(
+        [{"driver_number": 1, "position": 3, "date": "2026-03-15T14:00:00Z"}],
+        {1: "VER"},
+    )
+    assert _lookup_fia_position_at_timestamp("VER", 9999999999.0, timeline, {"VER": 1}) == 3
+    assert _lookup_fia_position_at_timestamp("NOR", 9999999999.0, timeline, {"NOR": 2}) == 2
+
+    end_by_code, end_by_lap = _parse_openf1_lap_timestamps(None, {}, 10, 90.0)
+    assert end_by_code == {}
+    assert end_by_lap == {}
+
+    with pytest.raises(FileNotFoundError):
+        generate_weekend_telemetry(str(tmp_path / "missing.json"))
+
+    bad_json = tmp_path / "corrupt.json"
+    bad_json.write_text("{corrupt", encoding="utf-8")
+    with pytest.raises(json.JSONDecodeError):
+        generate_weekend_telemetry(str(bad_json))
 
 
 def test_production_2026_dataset_and_manifest_guardrails() -> None:
@@ -222,7 +623,6 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
     manifest_races = manifest.get("races", [])
     manifest_ids = [r["id"] for r in manifest_races]
 
-    # 1. No duplicate GP IDs or files in manifest, and Madring is included
     assert len(manifest_ids) == len(set(manifest_ids)), "Duplicate GP IDs in races_manifest.json"
     assert "madring" in manifest_ids, "Madring GP must be present in races_manifest.json"
 
@@ -232,7 +632,6 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
         f"Manifest files and disk files out of sync: {manifest_files ^ disk_files}"
     )
 
-    # 2. Validate every single GP JSON file
     for entry in manifest_races:
         gp_path = repo_root / "src" / "assets" / "data" / entry["file"]
         data = json.loads(gp_path.read_text(encoding="utf-8"))
@@ -244,13 +643,11 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
         assert total_laps > 0, f"{gp_id}: total_laps must be > 0"
         assert laps, f"{gp_id}: laps must not be empty"
 
-        # No phantom cooldown laps > total_laps
         max_lap_in_laps = max(int(l["lap"]) for l in laps)
         assert max_lap_in_laps == total_laps, (
             f"{gp_id}: max lap in laps ({max_lap_in_laps}) != total_laps ({total_laps})"
         )
 
-        # Winner must be P1 on total_laps AND P1 in race_telemetry.classification
         final_lap_p1 = [
             l["driver"]
             for l in laps
@@ -265,7 +662,6 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
                 f"{gp_id}: race_telemetry.classification P1 ({race_cls[0]['driver']}) != winner ({winner})"
             )
 
-        # Qualifying results must be strictly ordered 1..N with P1 gap == 0.0
         quali_results = data.get("qualifying", {}).get("results", [])
         assert len(quali_results) >= 18, f"{gp_id}: missing qualifying results"
         assert [r["grid_pos"] for r in quali_results] == list(
@@ -273,12 +669,10 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
         )
         assert quali_results[0]["gap_to_pole"] == 0.0
 
-        # Practice classification must be strictly ordered 1..N
         prac_cls = data.get("practice", {}).get("classification", [])
         assert len(prac_cls) >= 18, f"{gp_id}: missing practice classification"
         assert [r["rank"] for r in prac_cls] == list(range(1, len(prac_cls) + 1))
 
-        # Guardrail against unrealistic lap time outliers (e.g., 58.0s calibration clamp)
         lap_times_sorted = sorted(float(l["time"]) for l in laps if float(l.get("time") or 0) > 0)
         field_median = lap_times_sorted[len(lap_times_sorted) // 2]
         min_allowed_lap = field_median * 0.85
@@ -291,7 +685,6 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
             f"{gp_id}: unrealistic fast lap times (< {min_allowed_lap:.2f}s): {unrealistic_laps[:5]}"
         )
 
-        # Guardrail against 1-lap tyre stint artifacts for multi-lap drivers
         stints = data.get("race_telemetry", {}).get("stints", [])
         laps_per_driver: dict[str, int] = {}
         for l in laps:
@@ -305,13 +698,11 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
             f"{gp_id}: 1-lap tyre stint artifacts detected: {one_lap_stints}"
         )
 
-        # Guardrail for Lap 1 positions: must have unique positions 1..K
         lap1_positions = sorted(int(l["position"]) for l in laps if int(l["lap"]) == 1)
         assert lap1_positions == list(range(1, len(lap1_positions) + 1)), (
             f"{gp_id}: invalid Lap 1 positions: {lap1_positions}"
         )
 
-        # Sprint weekends must have valid sprint_qualifying and sprint blocks
         if data.get("is_sprint_weekend"):
             sq_results = data.get("sprint_qualifying", {}).get("results", [])
             assert len(sq_results) >= 18, f"{gp_id}: missing sprint_qualifying results"
@@ -356,4 +747,3 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
             assert not sp_one_lap, (
                 f"{gp_id}: 1-lap sprint stint artifacts: {sp_one_lap}"
             )
-

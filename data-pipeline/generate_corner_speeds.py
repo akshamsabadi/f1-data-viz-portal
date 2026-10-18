@@ -5,6 +5,8 @@ known circuit corner profiles, and derives per-turn average corner speeds for
 each constructor based on their top five clean lap times.
 """
 
+from __future__ import annotations
+
 from collections.abc import Mapping, Sequence
 import glob
 import json

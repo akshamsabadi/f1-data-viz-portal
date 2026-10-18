@@ -1,20 +1,62 @@
 import { calculateDriverClassification } from './standings.js';
 
 const _CHART_MARGIN = { top: 34, right: 32, bottom: 44, left: 82 };
+const _MIN_CONTAINER_WIDTH_PX = 360;
+const _DEFAULT_CONTAINER_WIDTH_PX = 860;
 const _ROW_HEIGHT_PX = 26;
 const _MIN_CHART_HEIGHT_PX = 420;
 const _BAR_VERTICAL_PADDING_RATIO = 0.2;
+const _BAR_OUTER_PADDING_RATIO = 0.1;
 const _BAR_CORNER_RADIUS_PX = 4;
 const _STINT_GAP_PX = 2;
 const _MIN_BAR_WIDTH_PX = 4;
+const _MIN_BAR_HEIGHT_PX = 4;
+const _BAR_HEIGHT_INSET_PX = 2;
+const _TEAM_ACCENT_HEIGHT_PX = 3;
+const _TEAM_ACCENT_RADIUS_PX = 1.5;
+const _BAR_STROKE_COLOR = '#111118';
+const _BAR_HOVER_STROKE_COLOR = '#ffffff';
+const _BAR_STROKE_WIDTH_PX = 1.5;
+const _BAR_HOVER_STROKE_WIDTH_PX = 2;
+const _LABEL_OUTLINE_WIDTH_PX = 4;
 const _FULL_LABEL_MIN_WIDTH_PX = 46;
 const _SHORT_LABEL_MIN_WIDTH_PX = 20;
+const _PIT_TICK_VERTICAL_OVERHANG_PX = 2;
+const _PIT_TICK_STROKE_WIDTH_PX = 2;
+const _SC_BAND_VERTICAL_PAD_PX = 4;
+const _SC_BAND_MIN_WIDTH_PX = 6;
+const _SC_LINE_TOP_OFFSET_PX = -6;
+const _SC_LINE_STROKE_WIDTH_PX = 1.5;
+const _SC_LINE_DASH_ARRAY = '4,3';
+const _SC_LINE_OPACITY = 0.72;
+const _SC_BADGE_Y_OFFSET_PX = -15;
+const _SC_BADGE_CHAR_WIDTH_PX = 6.6;
+const _SC_BADGE_HORIZONTAL_PAD_PX = 16;
+const _SC_BADGE_HEIGHT_PX = 17;
+const _SC_BADGE_RADIUS_PX = 4;
+const _SC_BADGE_MIN_GAP_PX = 6;
+const _SC_BADGE_EDGE_MARGIN_PX = 2;
+const _SC_BADGE_STROKE_WIDTH_PX = 1.2;
+const _SC_COLOR = '#f59e0b';
+const _VSC_COLOR = '#facc15';
+const _SC_BAND_FILL = 'rgba(245, 158, 11, 0.14)';
+const _VSC_BAND_FILL = 'rgba(250, 204, 21, 0.11)';
+const _SC_LEGEND_FILL = 'rgba(245, 158, 11, 0.35)';
+const _VSC_LEGEND_FILL = 'rgba(250, 204, 21, 0.3)';
+const _SC_BADGE_BG_FILL = 'rgba(18, 18, 26, 0.95)';
+const _MAX_X_AXIS_TICKS = 15;
+const _X_AXIS_TITLE_OFFSET_Y_PX = 36;
+const _Y_AXIS_TICK_PADDING_PX = 10;
 const _ACTIVE_OPACITY = 1;
 const _DIMMED_OPACITY = 0.2;
 const _TOOLTIP_OFFSET_X_PX = 15;
 const _TOOLTIP_OFFSET_Y_PX = -28;
 const _SECONDS_PER_MINUTE = 60;
+const _DEFAULT_FALLBACK_MAX_LAP = 60;
 const _FUEL_BURN_CORRECTION_PER_LAP_S = 0.055;
+const _DEFAULT_DRIVER_COLOR = '#888888';
+const _ROW_GUIDE_FILL = 'rgba(255, 255, 255, 0.025)';
+const _FUEL_CORRECTED_TEXT_COLOR = '#34d399';
 
 const _COMPOUND_ORDER = ['SOFT', 'MEDIUM', 'HARD', 'INTERMEDIATE', 'WET', 'UNKNOWN'];
 
@@ -53,7 +95,7 @@ export function setRaceStrategyExternalFocus(driverCode) {
 }
 
 /**
- * Formats a lap pace value in seconds as `m:ss.sss` or `ss.sss s`.
+ * Formats a lap pace value in seconds as `m:ss.sss (ss.sss s)` or `ss.sss s`.
  *
  * @param {number|null|undefined} paceSeconds - Lap pace in seconds.
  * @returns {string} Formatted pace string.
@@ -101,7 +143,7 @@ function _deriveStintsFromLaps(data, driverMetaByCode, maxLap) {
             code: driverCode,
             name: driverCode,
             team: '',
-            color: '#888888'
+            color: _DEFAULT_DRIVER_COLOR
         };
 
         let stintNumber = 1;
@@ -126,7 +168,7 @@ function _deriveStintsFromLaps(data, driverMetaByCode, maxLap) {
                 driver: driverCode,
                 name: meta.name || driverCode,
                 team: meta.team || '',
-                color: meta.color || '#888888',
+                color: meta.color || _DEFAULT_DRIVER_COLOR,
                 stint: stintNumber,
                 compound: currentCompound,
                 start_lap: startLap,
@@ -141,12 +183,12 @@ function _deriveStintsFromLaps(data, driverMetaByCode, maxLap) {
             const lapObj = sortedLaps[i];
             const prevLapObj = sortedLaps[i - 1];
             const nextCompound = _normalizeCompound(lapObj.compound);
-            const tyreLifeReset =
+            const hasTyreLifeReset =
                 Number.isFinite(lapObj.tyre_life) &&
                 Number.isFinite(prevLapObj.tyre_life) &&
                 lapObj.tyre_life < prevLapObj.tyre_life;
 
-            if (nextCompound !== currentCompound || tyreLifeReset) {
+            if (nextCompound !== currentCompound || hasTyreLifeReset) {
                 flushStint();
                 stintNumber += 1;
                 currentCompound = nextCompound;
@@ -173,12 +215,13 @@ function _deriveStintsFromLaps(data, driverMetaByCode, maxLap) {
  * @returns {Array<Object>} Normalized stint records.
  */
 function _resolveStints(data, driverMetaByCode, maxLap) {
-    const rawStints =
+    const hasPrecomputedStints =
         data.race_telemetry &&
         Array.isArray(data.race_telemetry.stints) &&
-        data.race_telemetry.stints.length > 0
-            ? data.race_telemetry.stints
-            : _deriveStintsFromLaps(data, driverMetaByCode, maxLap);
+        data.race_telemetry.stints.length > 0;
+    const rawStints = hasPrecomputedStints
+        ? data.race_telemetry.stints
+        : _deriveStintsFromLaps(data, driverMetaByCode, maxLap);
 
     return rawStints.map((stint) => {
         const meta = driverMetaByCode.get(stint.driver);
@@ -190,13 +233,156 @@ function _resolveStints(data, driverMetaByCode, maxLap) {
             ...stint,
             name: stint.name || meta?.name || stint.driver,
             team: stint.team || meta?.team || '',
-            color: meta?.color || stint.color || '#888888',
+            color: meta?.color || stint.color || _DEFAULT_DRIVER_COLOR,
             compound,
             start_lap: startLap,
             end_lap: endLap,
             laps_count: lapsCount
         };
     });
+}
+
+/**
+ * Extracts and normalizes Safety Car (SC) and Virtual Safety Car (VSC) lap windows.
+ *
+ * @param {Object} data - Race telemetry payload.
+ * @param {number} maxLap - Maximum race lap count.
+ * @returns {Array<{type: string, start_lap: number, end_lap: number, label: string}>} Normalized SC/VSC windows.
+ */
+function _extractScVscWindows(data, maxLap) {
+    const rawScWindows =
+        data.race_telemetry && Array.isArray(data.race_telemetry.sc_vsc_windows)
+            ? data.race_telemetry.sc_vsc_windows
+            : Array.isArray(data.session_events)
+              ? data.session_events
+              : [];
+
+    return rawScWindows
+        .filter(
+            (w) =>
+                (w.type === 'SC' || w.type === 'VSC') &&
+                Number.isFinite(Number(w.start_lap)) &&
+                Number(w.start_lap) <= maxLap
+        )
+        .map((w) => {
+            const startLap = Math.max(1, Number(w.start_lap));
+            const endLap = Math.min(maxLap, Math.max(startLap, Number(w.end_lap) || startLap));
+            return {
+                type: w.type,
+                start_lap: startLap,
+                end_lap: endLap,
+                label:
+                    startLap === endLap
+                        ? `${w.type} · L${startLap}`
+                        : `${w.type} · L${startLap}–${endLap}`
+            };
+        });
+}
+
+/**
+ * Extracts pit window transition boundary descriptors between consecutive stints per driver.
+ *
+ * @param {Array<Object>} stints - Normalized stint records.
+ * @param {Function} yScale - D3 band scale for driver rows.
+ * @returns {Array<{driver: string, lap: number, fromCompound: string, toCompound: string}>} Pit transition markers.
+ */
+function _extractPitTransitions(stints, yScale) {
+    const stintsByDriver = d3.group(stints, (d) => d.driver);
+    const pitTransitions = [];
+
+    stintsByDriver.forEach((driverStints, driverCode) => {
+        if (yScale(driverCode) === undefined) return;
+        const sorted = driverStints.slice().sort((a, b) => a.stint - b.stint);
+        for (let i = 0; i < sorted.length - 1; i++) {
+            pitTransitions.push({
+                driver: driverCode,
+                lap: sorted[i].end_lap,
+                fromCompound: sorted[i].compound,
+                toCompound: sorted[i + 1].compound
+            });
+        }
+    });
+
+    return pitTransitions;
+}
+
+/**
+ * Computes de-collided horizontal center coordinates for SC/VSC top header badges.
+ *
+ * @param {Array<Object>} scWindows - Normalized SC/VSC lap windows.
+ * @param {Function} xScale - D3 linear scale for lap numbers.
+ * @param {number} width - Inner chart width in pixels.
+ * @returns {Array<{cx: number, cy: number, badgeW: number}>} De-collided badge positions.
+ */
+function _decollideScBadgePositions(scWindows, xScale, width) {
+    const badgePositions = [];
+
+    scWindows.forEach((w) => {
+        const x0 = xScale(Math.max(0, w.start_lap - 1));
+        const x1 = xScale(w.end_lap);
+        const badgeW = w.label.length * _SC_BADGE_CHAR_WIDTH_PX + _SC_BADGE_HORIZONTAL_PAD_PX;
+        let cx = Math.max(
+            badgeW / 2 + _SC_BADGE_EDGE_MARGIN_PX,
+            Math.min(width - badgeW / 2 - _SC_BADGE_EDGE_MARGIN_PX, (x0 + x1) / 2)
+        );
+        const cy = _SC_BADGE_Y_OFFSET_PX;
+
+        if (badgePositions.length > 0) {
+            const prev = badgePositions[badgePositions.length - 1];
+            const minGap = (prev.badgeW + badgeW) / 2 + _SC_BADGE_MIN_GAP_PX;
+            if (cx - prev.cx < minGap) {
+                cx = Math.min(
+                    width - badgeW / 2 - _SC_BADGE_EDGE_MARGIN_PX,
+                    prev.cx + minGap
+                );
+            }
+        }
+        badgePositions.push({ cx, cy, badgeW });
+    });
+
+    return badgePositions;
+}
+
+/**
+ * Computes the horizontal start X coordinate in pixels for a stint bar.
+ *
+ * @param {Object} stint - Normalized stint record.
+ * @param {Function} xScale - D3 linear scale for lap numbers.
+ * @returns {number} Starting X coordinate in pixels.
+ */
+function _computeStintBarX(stint, xScale) {
+    return xScale(Math.max(0, stint.start_lap - 1)) + _STINT_GAP_PX / 2;
+}
+
+/**
+ * Computes the horizontal width in pixels for a stint bar.
+ *
+ * @param {Object} stint - Normalized stint record.
+ * @param {Function} xScale - D3 linear scale for lap numbers.
+ * @returns {number} Bar width in pixels.
+ */
+function _computeStintBarWidth(stint, xScale) {
+    const rawWidth =
+        xScale(stint.end_lap) - xScale(Math.max(0, stint.start_lap - 1)) - _STINT_GAP_PX;
+    return Math.max(_MIN_BAR_WIDTH_PX, rawWidth);
+}
+
+/**
+ * Formats the in-bar text label based on available pixel width.
+ *
+ * @param {Object} stint - Normalized stint record.
+ * @param {number} barWidth - Computed pixel width of the stint bar.
+ * @returns {string} Formatted bar label string (full, abbreviated, or empty).
+ */
+function _formatStintBarLabel(stint, barWidth) {
+    const abbr = _COMPOUND_ABBREVIATIONS[stint.compound] || 'U';
+    if (barWidth >= _FULL_LABEL_MIN_WIDTH_PX) {
+        return `${abbr} · ${stint.laps_count}L`;
+    }
+    if (barWidth >= _SHORT_LABEL_MIN_WIDTH_PX) {
+        return abbr;
+    }
+    return '';
 }
 
 /**
@@ -261,8 +447,8 @@ function _buildStrategyLegend(legendContainer, stints, scWindows, activeCompound
         scItem.style.cursor = 'default';
         const swatch = document.createElement('div');
         swatch.className = 'legend-color';
-        swatch.style.backgroundColor = 'rgba(245, 158, 11, 0.35)';
-        swatch.style.border = '1.5px dashed #f59e0b';
+        swatch.style.backgroundColor = _SC_LEGEND_FILL;
+        swatch.style.border = `1.5px dashed ${_SC_COLOR}`;
         scItem.appendChild(swatch);
         scItem.appendChild(document.createTextNode('SAFETY CAR (SC)'));
         legendContainer.appendChild(scItem);
@@ -274,8 +460,8 @@ function _buildStrategyLegend(legendContainer, stints, scWindows, activeCompound
         vscItem.style.cursor = 'default';
         const swatch = document.createElement('div');
         swatch.className = 'legend-color';
-        swatch.style.backgroundColor = 'rgba(250, 204, 21, 0.3)';
-        swatch.style.border = '1.5px dashed #facc15';
+        swatch.style.backgroundColor = _VSC_LEGEND_FILL;
+        swatch.style.border = `1.5px dashed ${_VSC_COLOR}`;
         vscItem.appendChild(swatch);
         vscItem.appendChild(document.createTextNode('VIRTUAL SC (VSC)'));
         legendContainer.appendChild(vscItem);
@@ -346,11 +532,474 @@ function _populateStintTooltip(tooltipNode, stint) {
 
     const fuelPaceDiv = document.createElement('div');
     fuelPaceDiv.style.fontSize = '0.76rem';
-    fuelPaceDiv.style.color = '#34d399';
+    fuelPaceDiv.style.color = _FUEL_CORRECTED_TEXT_COLOR;
     fuelPaceDiv.style.fontWeight = '600';
     fuelPaceDiv.textContent = `Fuel-Corrected Pace: ${_formatPace(stint.fuel_corrected_pace)}`;
 
     tooltipNode.replaceChildren(headerDiv, compoundRow, lapsDiv, rawPaceDiv, fuelPaceDiv);
+}
+
+/**
+ * Populates the shared `#tooltip` DOM node with Safety Car / VSC window summary details.
+ *
+ * @param {HTMLElement|null} tooltipNode - Underlying DOM node for `#tooltip`.
+ * @param {Object} scWindow - Hovered SC/VSC window descriptor.
+ * @param {Array<Object>} pitTransitions - Pit transition events across the race.
+ * @param {string} badgeColor - Accent color for the SC or VSC window.
+ * @returns {void}
+ */
+function _populateScWindowTooltip(tooltipNode, scWindow, pitTransitions, badgeColor) {
+    if (!tooltipNode) return;
+
+    const fullTitle =
+        scWindow.type === 'SC' ? 'SAFETY CAR DEPLOYED' : 'VIRTUAL SAFETY CAR';
+    const pitsInWindow = pitTransitions.filter(
+        (p) => p.lap >= scWindow.start_lap - 1 && p.lap <= scWindow.end_lap
+    );
+    const pittedDrivers = Array.from(new Set(pitsInWindow.map((p) => p.driver)));
+    const pitSummary =
+        pittedDrivers.length > 0
+            ? `Drivers Pitting (${pittedDrivers.length}): ${pittedDrivers.join(', ')}`
+            : 'No pit stops recorded in this window';
+
+    const titleDiv = document.createElement('div');
+    titleDiv.style.fontFamily = 'Montserrat, sans-serif';
+    titleDiv.style.fontWeight = '700';
+    titleDiv.style.marginBottom = '4px';
+    titleDiv.style.color = badgeColor;
+    titleDiv.textContent = fullTitle;
+
+    const windowDiv = document.createElement('div');
+    windowDiv.style.fontSize = '0.82rem';
+    windowDiv.style.fontWeight = '600';
+    windowDiv.style.marginBottom = '4px';
+    windowDiv.textContent = `Active Window: Laps ${scWindow.start_lap}–${scWindow.end_lap}`;
+
+    const summaryDiv = document.createElement('div');
+    summaryDiv.style.fontSize = '0.76rem';
+    summaryDiv.style.color = 'var(--text-muted)';
+    summaryDiv.textContent = pitSummary;
+
+    tooltipNode.replaceChildren(titleDiv, windowDiv, summaryDiv);
+}
+
+/**
+ * Renders an empty-state notice inside the strategy chart container.
+ *
+ * @param {HTMLElement} container - Target chart container element.
+ * @returns {void}
+ */
+function _renderEmptyStrategyState(container) {
+    const emptyMsg = document.createElement('p');
+    emptyMsg.style.color = 'var(--text-muted)';
+    emptyMsg.style.textAlign = 'center';
+    emptyMsg.style.paddingTop = '2rem';
+    emptyMsg.style.fontFamily = 'Montserrat, sans-serif';
+    emptyMsg.style.textTransform = 'uppercase';
+    emptyMsg.textContent = 'No tyre strategy data available for this race.';
+    container.replaceChildren(emptyMsg);
+}
+
+/**
+ * Renders vertical lap gridlines and subtle horizontal row background bands.
+ *
+ * @param {Object} svg - D3 selection of the chart main `<g>`.
+ * @param {Function} xScale - D3 linear scale for lap numbers.
+ * @param {Function} yScale - D3 band scale for driver codes.
+ * @param {Array<string>} orderedDrivers - Ordered list of driver codes.
+ * @param {number} width - Inner chart width in pixels.
+ * @param {number} height - Inner chart height in pixels.
+ * @param {number} maxLap - Maximum race lap number.
+ * @returns {void}
+ */
+function _renderStrategyGridAndRowGuides(
+    svg,
+    xScale,
+    yScale,
+    orderedDrivers,
+    width,
+    height,
+    maxLap
+) {
+    svg.append('g')
+        .attr('class', 'gridline')
+        .attr('transform', `translate(0,${height})`)
+        .call(
+            d3
+                .axisBottom(xScale)
+                .ticks(Math.min(_MAX_X_AXIS_TICKS, maxLap))
+                .tickSize(-height)
+                .tickFormat('')
+        );
+
+    svg.append('g')
+        .attr('class', 'strategy-row-guides')
+        .selectAll('rect.row-bg')
+        .data(orderedDrivers)
+        .enter()
+        .append('rect')
+        .attr('class', 'row-bg')
+        .attr('x', 0)
+        .attr('y', (d) => yScale(d))
+        .attr('width', width)
+        .attr('height', yScale.bandwidth())
+        .attr('rx', _BAR_CORNER_RADIUS_PX)
+        .attr('fill', _ROW_GUIDE_FILL);
+}
+
+/**
+ * Renders under-stint shaded vertical bands for Safety Car and Virtual Safety Car periods.
+ *
+ * @param {Object} svg - D3 selection of the chart main `<g>`.
+ * @param {Array<Object>} scWindows - Normalized SC/VSC lap windows.
+ * @param {Function} xScale - D3 linear scale for lap numbers.
+ * @param {number} height - Inner chart height in pixels.
+ * @returns {void}
+ */
+function _renderScVscBackdrops(svg, scWindows, xScale, height) {
+    if (scWindows.length === 0) return;
+
+    svg.append('g')
+        .attr('class', 'sc-vsc-bg-layer')
+        .selectAll('rect.sc-vsc-band')
+        .data(scWindows)
+        .enter()
+        .append('rect')
+        .attr('class', 'sc-vsc-band')
+        .attr('x', (w) => xScale(Math.max(0, w.start_lap - 1)))
+        .attr('y', -_SC_BAND_VERTICAL_PAD_PX)
+        .attr('width', (w) =>
+            Math.max(
+                _SC_BAND_MIN_WIDTH_PX,
+                xScale(w.end_lap) - xScale(Math.max(0, w.start_lap - 1))
+            )
+        )
+        .attr('height', height + _SC_BAND_VERTICAL_PAD_PX * 2)
+        .attr('fill', (w) => (w.type === 'SC' ? _SC_BAND_FILL : _VSC_BAND_FILL))
+        .style('pointer-events', 'none');
+}
+
+/**
+ * Renders the horizontal lap axis and vertical driver classification axis.
+ *
+ * @param {Object} svg - D3 selection of the chart main `<g>`.
+ * @param {Function} xScale - D3 linear scale for lap numbers.
+ * @param {Function} yScale - D3 band scale for driver codes.
+ * @param {Map<string, number>} rankByDriver - Lookup map of driver code to classification rank.
+ * @param {Map<string, Object>} driverMetaByCode - Lookup map of driver code to metadata.
+ * @param {number} width - Inner chart width in pixels.
+ * @param {number} height - Inner chart height in pixels.
+ * @param {number} maxLap - Maximum race lap number.
+ * @returns {Object} D3 selection of Y-axis driver label `<text>` elements.
+ */
+function _renderStrategyAxes(
+    svg,
+    xScale,
+    yScale,
+    rankByDriver,
+    driverMetaByCode,
+    width,
+    height,
+    maxLap
+) {
+    const xAxisGroup = svg
+        .append('g')
+        .attr('transform', `translate(0,${height})`)
+        .call(
+            d3
+                .axisBottom(xScale)
+                .ticks(Math.min(_MAX_X_AXIS_TICKS, maxLap))
+                .tickFormat((d) => (d === 0 ? 'START' : `L${d}`))
+        );
+
+    xAxisGroup
+        .append('text')
+        .attr('x', width)
+        .attr('y', _X_AXIS_TITLE_OFFSET_Y_PX)
+        .attr('fill', 'var(--text-muted)')
+        .attr('text-anchor', 'end')
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-weight', '600')
+        .style('font-size', '11px')
+        .text('LAP NUMBER');
+
+    const yAxisGroup = svg
+        .append('g')
+        .call(
+            d3
+                .axisLeft(yScale)
+                .tickSize(0)
+                .tickPadding(_Y_AXIS_TICK_PADDING_PX)
+                .tickFormat((code) => {
+                    const rank = rankByDriver.get(code);
+                    return rank ? `P${rank}  ${code}` : code;
+                })
+        )
+        .call((g) => g.select('.domain').remove());
+
+    return yAxisGroup
+        .selectAll('.tick text')
+        .attr('class', 'driver-label')
+        .style('fill', (code) => driverMetaByCode.get(code)?.color || 'var(--text-primary)')
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-weight', '700')
+        .style('font-size', '11px')
+        .style('cursor', 'pointer');
+}
+
+/**
+ * Renders the stint compound bars, constructor accent underlines, and compound labels.
+ *
+ * @param {Object} svg - D3 selection of the chart main `<g>`.
+ * @param {Array<Object>} stints - Normalized stint records.
+ * @param {Function} xScale - D3 linear scale for lap numbers.
+ * @param {Function} yScale - D3 band scale for driver codes.
+ * @returns {Object} D3 selection of `<g class="stint-bar-group">` elements.
+ */
+function _renderStintBars(svg, stints, xScale, yScale) {
+    const stintsGroup = svg.append('g').attr('class', 'stints-layer');
+
+    const stintGroups = stintsGroup
+        .selectAll('g.stint-bar-group')
+        .data(stints.filter((s) => yScale(s.driver) !== undefined))
+        .enter()
+        .append('g')
+        .attr('class', 'stint-bar-group')
+        .style('cursor', 'pointer');
+
+    stintGroups
+        .append('rect')
+        .attr('class', 'stint-team-accent')
+        .attr('x', (d) => _computeStintBarX(d, xScale))
+        .attr('y', (d) => yScale(d.driver) + yScale.bandwidth() - _TEAM_ACCENT_HEIGHT_PX)
+        .attr('width', (d) => _computeStintBarWidth(d, xScale))
+        .attr('height', _TEAM_ACCENT_HEIGHT_PX)
+        .attr('rx', _TEAM_ACCENT_RADIUS_PX)
+        .attr('fill', (d) => d.color);
+
+    stintGroups
+        .append('rect')
+        .attr('class', 'stint-compound-bar')
+        .attr('x', (d) => _computeStintBarX(d, xScale))
+        .attr('y', (d) => yScale(d.driver))
+        .attr('width', (d) => _computeStintBarWidth(d, xScale))
+        .attr('height', Math.max(_MIN_BAR_HEIGHT_PX, yScale.bandwidth() - _BAR_HEIGHT_INSET_PX))
+        .attr('rx', _BAR_CORNER_RADIUS_PX)
+        .attr('ry', _BAR_CORNER_RADIUS_PX)
+        .attr('fill', (d) => _COMPOUND_COLORS[d.compound] || _COMPOUND_COLORS.UNKNOWN)
+        .attr('stroke', _BAR_STROKE_COLOR)
+        .attr('stroke-width', _BAR_STROKE_WIDTH_PX);
+
+    stintGroups
+        .append('text')
+        .attr('class', 'stint-bar-label')
+        .attr('x', (d) => _computeStintBarX(d, xScale) + _computeStintBarWidth(d, xScale) / 2)
+        .attr('y', (d) => yScale(d.driver) + (yScale.bandwidth() - _BAR_HEIGHT_INSET_PX) / 2)
+        .attr('dy', '0.36em')
+        .attr('text-anchor', 'middle')
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-weight', '700')
+        .style('font-size', '10px')
+        .style('pointer-events', 'none')
+        .style('paint-order', 'stroke')
+        .attr('stroke', (d) => _COMPOUND_COLORS[d.compound] || _COMPOUND_COLORS.UNKNOWN)
+        .attr('stroke-width', _LABEL_OUTLINE_WIDTH_PX)
+        .attr('stroke-linejoin', 'round')
+        .attr('fill', (d) =>
+            _DARK_TEXT_COMPOUNDS.has(d.compound) ? _BAR_STROKE_COLOR : '#ffffff'
+        )
+        .text((d) => _formatStintBarLabel(d, _computeStintBarWidth(d, xScale)));
+
+    return stintGroups;
+}
+
+/**
+ * Renders vertical pit stop transition ticks between consecutive stints.
+ *
+ * @param {Object} svg - D3 selection of the chart main `<g>`.
+ * @param {Array<Object>} pitTransitions - Pit transition descriptors.
+ * @param {Function} xScale - D3 linear scale for lap numbers.
+ * @param {Function} yScale - D3 band scale for driver codes.
+ * @returns {Object} D3 selection of `<line class="pit-tick">` elements.
+ */
+function _renderPitTransitionTicks(svg, pitTransitions, xScale, yScale) {
+    return svg
+        .append('g')
+        .attr('class', 'pit-transition-ticks')
+        .selectAll('line.pit-tick')
+        .data(pitTransitions)
+        .enter()
+        .append('line')
+        .attr('class', 'pit-tick')
+        .attr('x1', (d) => xScale(d.lap))
+        .attr('x2', (d) => xScale(d.lap))
+        .attr('y1', (d) => yScale(d.driver) - _PIT_TICK_VERTICAL_OVERHANG_PX)
+        .attr('y2', (d) => yScale(d.driver) + yScale.bandwidth() + _PIT_TICK_VERTICAL_OVERHANG_PX)
+        .attr('stroke', '#ffffff')
+        .attr('stroke-width', _PIT_TICK_STROKE_WIDTH_PX)
+        .style('pointer-events', 'none');
+}
+
+/**
+ * Renders over-stint SC/VSC dashed boundary lines and de-collided top header badges.
+ *
+ * @param {Object} svg - D3 selection of the chart main `<g>`.
+ * @param {Array<Object>} scWindows - Normalized SC/VSC lap windows.
+ * @param {Array<Object>} pitTransitions - Pit transition descriptors across the race.
+ * @param {Function} xScale - D3 linear scale for lap numbers.
+ * @param {number} width - Inner chart width in pixels.
+ * @param {number} height - Inner chart height in pixels.
+ * @param {Object} tooltip - D3 selection of `#tooltip`.
+ * @returns {void}
+ */
+function _renderScVscOverlayBadges(
+    svg,
+    scWindows,
+    pitTransitions,
+    xScale,
+    width,
+    height,
+    tooltip
+) {
+    if (scWindows.length === 0) return;
+
+    const scOverlayGroup = svg.append('g').attr('class', 'sc-vsc-overlay-layer');
+
+    const windowGroups = scOverlayGroup
+        .selectAll('g.sc-vsc-window')
+        .data(scWindows)
+        .enter()
+        .append('g')
+        .attr('class', 'sc-vsc-window');
+
+    const appendBoundaryLine = (getLapX) => {
+        windowGroups
+            .append('line')
+            .attr('x1', getLapX)
+            .attr('x2', getLapX)
+            .attr('y1', _SC_LINE_TOP_OFFSET_PX)
+            .attr('y2', height)
+            .attr('stroke', (w) => (w.type === 'SC' ? _SC_COLOR : _VSC_COLOR))
+            .attr('stroke-width', _SC_LINE_STROKE_WIDTH_PX)
+            .attr('stroke-dasharray', _SC_LINE_DASH_ARRAY)
+            .attr('opacity', _SC_LINE_OPACITY)
+            .style('pointer-events', 'none');
+    };
+
+    appendBoundaryLine((w) => xScale(Math.max(0, w.start_lap - 1)));
+    appendBoundaryLine((w) => xScale(w.end_lap));
+
+    const badgePositions = _decollideScBadgePositions(scWindows, xScale, width);
+
+    const badgeGroups = windowGroups
+        .append('g')
+        .attr('class', 'sc-vsc-badge')
+        .attr('transform', (_w, idx) => {
+            const pos = badgePositions[idx] || { cx: 40, cy: _SC_BADGE_Y_OFFSET_PX };
+            return `translate(${pos.cx},${pos.cy})`;
+        })
+        .style('cursor', 'pointer');
+
+    badgeGroups
+        .append('rect')
+        .attr(
+            'x',
+            (w) =>
+                -(w.label.length * (_SC_BADGE_CHAR_WIDTH_PX / 2) + _SC_BADGE_HORIZONTAL_PAD_PX / 2)
+        )
+        .attr('y', -9)
+        .attr('width', (w) => w.label.length * _SC_BADGE_CHAR_WIDTH_PX + _SC_BADGE_HORIZONTAL_PAD_PX)
+        .attr('height', _SC_BADGE_HEIGHT_PX)
+        .attr('rx', _SC_BADGE_RADIUS_PX)
+        .attr('fill', _SC_BADGE_BG_FILL)
+        .attr('stroke', (w) => (w.type === 'SC' ? _SC_COLOR : _VSC_COLOR))
+        .attr('stroke-width', _SC_BADGE_STROKE_WIDTH_PX);
+
+    badgeGroups
+        .append('text')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('dy', '0.34em')
+        .attr('text-anchor', 'middle')
+        .attr('fill', (w) => (w.type === 'SC' ? _SC_COLOR : _VSC_COLOR))
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-size', '9.5px')
+        .style('font-weight', '700')
+        .style('letter-spacing', '0.4px')
+        .text((w) => w.label);
+
+    badgeGroups
+        .on('mouseover', (event, w) => {
+            const badgeColor = w.type === 'SC' ? _SC_COLOR : _VSC_COLOR;
+            _populateScWindowTooltip(tooltip.node(), w, pitTransitions, badgeColor);
+            tooltip
+                .classed('hidden', false)
+                .style('border-left-color', badgeColor)
+                .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
+                .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
+        })
+        .on('mousemove', (event) => {
+            tooltip
+                .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
+                .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
+        })
+        .on('mouseout', () => {
+            tooltip.classed('hidden', true);
+        });
+}
+
+/**
+ * Binds click and hover interactions to driver labels and stint bar groups.
+ *
+ * @param {Object} stintGroups - D3 selection of stint bar groups.
+ * @param {Object} driverLabels - D3 selection of Y-axis driver label nodes.
+ * @param {Object} tooltip - D3 selection of `#tooltip`.
+ * @param {Function} onHoverChange - Callback invoked with hovered driver code or null.
+ * @param {Function} onDriverClick - Callback invoked when a driver label is clicked.
+ * @returns {void}
+ */
+function _bindStrategyInteractions(
+    stintGroups,
+    driverLabels,
+    tooltip,
+    onHoverChange,
+    onDriverClick
+) {
+    driverLabels.on('click', (_event, code) => {
+        onDriverClick(code);
+    });
+
+    stintGroups
+        .on('mouseover', (event, d) => {
+            onHoverChange(d.driver);
+
+            d3.select(event.currentTarget)
+                .select('rect.stint-compound-bar')
+                .attr('stroke', _BAR_HOVER_STROKE_COLOR)
+                .attr('stroke-width', _BAR_HOVER_STROKE_WIDTH_PX);
+
+            _populateStintTooltip(tooltip.node(), d);
+            tooltip
+                .classed('hidden', false)
+                .style('border-left-color', d.color || 'var(--accent)')
+                .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
+                .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
+        })
+        .on('mousemove', (event) => {
+            tooltip
+                .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
+                .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
+        })
+        .on('mouseout', (event) => {
+            onHoverChange(null);
+
+            d3.select(event.currentTarget)
+                .select('rect.stint-compound-bar')
+                .attr('stroke', _BAR_STROKE_COLOR)
+                .attr('stroke-width', _BAR_STROKE_WIDTH_PX);
+
+            tooltip.classed('hidden', true);
+        });
 }
 
 /**
@@ -372,17 +1021,14 @@ export function renderRaceStrategy(data) {
         (data.drivers || []).map((d) => [d.code, d])
     );
 
-    const stints = _resolveStints(data, driverMetaByCode, classifiedMaxLap || 60);
+    const stints = _resolveStints(
+        data,
+        driverMetaByCode,
+        classifiedMaxLap || _DEFAULT_FALLBACK_MAX_LAP
+    );
     if (stints.length === 0) {
         _externalStrategyFocusHandler = null;
-        const emptyMsg = document.createElement('p');
-        emptyMsg.style.color = 'var(--text-muted)';
-        emptyMsg.style.textAlign = 'center';
-        emptyMsg.style.paddingTop = '2rem';
-        emptyMsg.style.fontFamily = 'Montserrat, sans-serif';
-        emptyMsg.style.textTransform = 'uppercase';
-        emptyMsg.textContent = 'No tyre strategy data available for this race.';
-        container.replaceChildren(emptyMsg);
+        _renderEmptyStrategyState(container);
         return;
     }
 
@@ -400,7 +1046,10 @@ export function renderRaceStrategy(data) {
         orderedDrivers.map((code, idx) => [code, idx + 1])
     );
 
-    const containerWidth = Math.max(360, container.clientWidth || 860);
+    const containerWidth = Math.max(
+        _MIN_CONTAINER_WIDTH_PX,
+        container.clientWidth || _DEFAULT_CONTAINER_WIDTH_PX
+    );
     const width = containerWidth - _CHART_MARGIN.left - _CHART_MARGIN.right;
     const height = Math.max(
         _MIN_CHART_HEIGHT_PX - _CHART_MARGIN.top - _CHART_MARGIN.bottom,
@@ -413,7 +1062,7 @@ export function renderRaceStrategy(data) {
         .domain(orderedDrivers)
         .range([0, height])
         .paddingInner(_BAR_VERTICAL_PADDING_RATIO)
-        .paddingOuter(0.1);
+        .paddingOuter(_BAR_OUTER_PADDING_RATIO);
 
     const svg = d3
         .select(container)
@@ -423,366 +1072,40 @@ export function renderRaceStrategy(data) {
         .append('g')
         .attr('transform', `translate(${_CHART_MARGIN.left},${_CHART_MARGIN.top})`);
 
-    // Vertical lap gridlines
-    svg.append('g')
-        .attr('class', 'gridline')
-        .attr('transform', `translate(0,${height})`)
-        .call(
-            d3
-                .axisBottom(xScale)
-                .ticks(Math.min(15, maxLap))
-                .tickSize(-height)
-                .tickFormat('')
-        );
+    const scWindows = _extractScVscWindows(data, maxLap);
+    const pitTransitions = _extractPitTransitions(stints, yScale);
+    const tooltip = d3.select('#tooltip');
 
-    // Subtle horizontal row guide backgrounds
-    svg.append('g')
-        .attr('class', 'strategy-row-guides')
-        .selectAll('rect.row-bg')
-        .data(orderedDrivers)
-        .enter()
-        .append('rect')
-        .attr('class', 'row-bg')
-        .attr('x', 0)
-        .attr('y', (d) => yScale(d))
-        .attr('width', width)
-        .attr('height', yScale.bandwidth())
-        .attr('rx', _BAR_CORNER_RADIUS_PX)
-        .attr('fill', 'rgba(255, 255, 255, 0.025)');
+    _renderStrategyGridAndRowGuides(
+        svg,
+        xScale,
+        yScale,
+        orderedDrivers,
+        width,
+        height,
+        maxLap
+    );
+    _renderScVscBackdrops(svg, scWindows, xScale, height);
 
-    // Safety Car (SC) & Virtual Safety Car (VSC) Window Extraction
-    const rawScWindows =
-        data.race_telemetry && Array.isArray(data.race_telemetry.sc_vsc_windows)
-            ? data.race_telemetry.sc_vsc_windows
-            : Array.isArray(data.session_events)
-              ? data.session_events
-              : [];
+    const driverLabels = _renderStrategyAxes(
+        svg,
+        xScale,
+        yScale,
+        rankByDriver,
+        driverMetaByCode,
+        width,
+        height,
+        maxLap
+    );
 
-    const scWindows = rawScWindows
-        .filter(
-            (w) =>
-                (w.type === 'SC' || w.type === 'VSC') &&
-                Number.isFinite(Number(w.start_lap)) &&
-                Number(w.start_lap) <= maxLap
-        )
-        .map((w) => {
-            const startLap = Math.max(1, Number(w.start_lap));
-            const endLap = Math.min(maxLap, Math.max(startLap, Number(w.end_lap) || startLap));
-            return {
-                type: w.type,
-                start_lap: startLap,
-                end_lap: endLap,
-                label:
-                    startLap === endLap
-                        ? `${w.type} · L${startLap}`
-                        : `${w.type} · L${startLap}–${endLap}`
-            };
-        });
+    const stintGroups = _renderStintBars(svg, stints, xScale, yScale);
+    const pitTickGroups = _renderPitTransitionTicks(svg, pitTransitions, xScale, yScale);
+    _renderScVscOverlayBadges(svg, scWindows, pitTransitions, xScale, width, height, tooltip);
 
-    // Under-stint SC / VSC vertical shaded bands
-    if (scWindows.length > 0) {
-        svg.append('g')
-            .attr('class', 'sc-vsc-bg-layer')
-            .selectAll('rect.sc-vsc-band')
-            .data(scWindows)
-            .enter()
-            .append('rect')
-            .attr('class', 'sc-vsc-band')
-            .attr('x', (w) => xScale(Math.max(0, w.start_lap - 1)))
-            .attr('y', -4)
-            .attr('width', (w) =>
-                Math.max(6, xScale(w.end_lap) - xScale(Math.max(0, w.start_lap - 1)))
-            )
-            .attr('height', height + 8)
-            .attr('fill', (w) =>
-                w.type === 'SC' ? 'rgba(245, 158, 11, 0.14)' : 'rgba(250, 204, 21, 0.11)'
-            )
-            .style('pointer-events', 'none');
-    }
-
-    // X-axis
-    const xAxisGroup = svg
-        .append('g')
-        .attr('transform', `translate(0,${height})`)
-        .call(
-            d3
-                .axisBottom(xScale)
-                .ticks(Math.min(15, maxLap))
-                .tickFormat((d) => (d === 0 ? 'START' : `L${d}`))
-        );
-
-    xAxisGroup
-        .append('text')
-        .attr('x', width)
-        .attr('y', 36)
-        .attr('fill', 'var(--text-muted)')
-        .attr('text-anchor', 'end')
-        .style('font-family', 'Montserrat, sans-serif')
-        .style('font-weight', '600')
-        .style('font-size', '11px')
-        .text('LAP NUMBER');
-
-    // Y-axis driver classification labels
     let localFocusedDriver = null;
     let externalFocusedDriver = null;
     let hoveredDriver = null;
     const activeCompounds = new Set(_COMPOUND_ORDER);
-
-    const yAxisGroup = svg
-        .append('g')
-        .call(
-            d3
-                .axisLeft(yScale)
-                .tickSize(0)
-                .tickPadding(10)
-                .tickFormat((code) => {
-                    const rank = rankByDriver.get(code);
-                    return rank ? `P${rank}  ${code}` : code;
-                })
-        )
-        .call((g) => g.select('.domain').remove());
-
-    const driverLabels = yAxisGroup
-        .selectAll('.tick text')
-        .attr('class', 'driver-label')
-        .style('fill', (code) => driverMetaByCode.get(code)?.color || 'var(--text-primary)')
-        .style('font-family', 'Montserrat, sans-serif')
-        .style('font-weight', '700')
-        .style('font-size', '11px')
-        .style('cursor', 'pointer');
-
-    const tooltip = d3.select('#tooltip');
-    const stintsGroup = svg.append('g').attr('class', 'stints-layer');
-
-    const stintGroups = stintsGroup
-        .selectAll('g.stint-bar-group')
-        .data(stints.filter((s) => yScale(s.driver) !== undefined))
-        .enter()
-        .append('g')
-        .attr('class', 'stint-bar-group')
-        .style('cursor', 'pointer');
-
-    const computeBarX = (d) => xScale(Math.max(0, d.start_lap - 1)) + _STINT_GAP_PX / 2;
-    const computeBarWidth = (d) => {
-        const rawWidth =
-            xScale(d.end_lap) - xScale(Math.max(0, d.start_lap - 1)) - _STINT_GAP_PX;
-        return Math.max(_MIN_BAR_WIDTH_PX, rawWidth);
-    };
-
-    // Constructor accent underline under each stint bar
-    stintGroups
-        .append('rect')
-        .attr('class', 'stint-team-accent')
-        .attr('x', computeBarX)
-        .attr('y', (d) => yScale(d.driver) + yScale.bandwidth() - 3)
-        .attr('width', computeBarWidth)
-        .attr('height', 3)
-        .attr('rx', 1.5)
-        .attr('fill', (d) => d.color);
-
-    // Main compound rounded bar
-    stintGroups
-        .append('rect')
-        .attr('class', 'stint-compound-bar')
-        .attr('x', computeBarX)
-        .attr('y', (d) => yScale(d.driver))
-        .attr('width', computeBarWidth)
-        .attr('height', Math.max(4, yScale.bandwidth() - 2))
-        .attr('rx', _BAR_CORNER_RADIUS_PX)
-        .attr('ry', _BAR_CORNER_RADIUS_PX)
-        .attr('fill', (d) => _COMPOUND_COLORS[d.compound] || _COMPOUND_COLORS.UNKNOWN)
-        .attr('stroke', '#111118')
-        .attr('stroke-width', 1.5);
-
-    // Centered compound + lap count text inside bar when width permits
-    stintGroups
-        .append('text')
-        .attr('class', 'stint-bar-label')
-        .attr('x', (d) => computeBarX(d) + computeBarWidth(d) / 2)
-        .attr('y', (d) => yScale(d.driver) + (yScale.bandwidth() - 2) / 2)
-        .attr('dy', '0.36em')
-        .attr('text-anchor', 'middle')
-        .style('font-family', 'Montserrat, sans-serif')
-        .style('font-weight', '700')
-        .style('font-size', '10px')
-        .style('pointer-events', 'none')
-        .style('paint-order', 'stroke')
-        .attr('stroke', (d) => _COMPOUND_COLORS[d.compound] || _COMPOUND_COLORS.UNKNOWN)
-        .attr('stroke-width', 4)
-        .attr('stroke-linejoin', 'round')
-        .attr('fill', (d) =>
-            _DARK_TEXT_COMPOUNDS.has(d.compound) ? '#111118' : '#ffffff'
-        )
-        .text((d) => {
-            const w = computeBarWidth(d);
-            const abbr = _COMPOUND_ABBREVIATIONS[d.compound] || 'U';
-            if (w >= _FULL_LABEL_MIN_WIDTH_PX) {
-                return `${abbr} · ${d.laps_count}L`;
-            }
-            if (w >= _SHORT_LABEL_MIN_WIDTH_PX) {
-                return abbr;
-            }
-            return '';
-        });
-
-    // Pit window transition ticks between consecutive stints
-    const stintsByDriver = d3.group(stints, (d) => d.driver);
-    const pitTransitions = [];
-    stintsByDriver.forEach((driverStints, driverCode) => {
-        if (yScale(driverCode) === undefined) return;
-        const sorted = driverStints.slice().sort((a, b) => a.stint - b.stint);
-        for (let i = 0; i < sorted.length - 1; i++) {
-            pitTransitions.push({
-                driver: driverCode,
-                lap: sorted[i].end_lap,
-                fromCompound: sorted[i].compound,
-                toCompound: sorted[i + 1].compound
-            });
-        }
-    });
-
-    const pitTickGroups = svg
-        .append('g')
-        .attr('class', 'pit-transition-ticks')
-        .selectAll('line.pit-tick')
-        .data(pitTransitions)
-        .enter()
-        .append('line')
-        .attr('class', 'pit-tick')
-        .attr('x1', (d) => xScale(d.lap))
-        .attr('x2', (d) => xScale(d.lap))
-        .attr('y1', (d) => yScale(d.driver) - 2)
-        .attr('y2', (d) => yScale(d.driver) + yScale.bandwidth() + 2)
-        .attr('stroke', '#ffffff')
-        .attr('stroke-width', 2)
-        .style('pointer-events', 'none');
-
-    // Over-stint SC / VSC dashed boundary lines & top header badges
-    if (scWindows.length > 0) {
-        const scOverlayGroup = svg.append('g').attr('class', 'sc-vsc-overlay-layer');
-
-        const windowGroups = scOverlayGroup
-            .selectAll('g.sc-vsc-window')
-            .data(scWindows)
-            .enter()
-            .append('g')
-            .attr('class', 'sc-vsc-window');
-
-        windowGroups
-            .append('line')
-            .attr('x1', (w) => xScale(Math.max(0, w.start_lap - 1)))
-            .attr('x2', (w) => xScale(Math.max(0, w.start_lap - 1)))
-            .attr('y1', -6)
-            .attr('y2', height)
-            .attr('stroke', (w) => (w.type === 'SC' ? '#f59e0b' : '#facc15'))
-            .attr('stroke-width', 1.5)
-            .attr('stroke-dasharray', '4,3')
-            .attr('opacity', 0.72)
-            .style('pointer-events', 'none');
-
-        windowGroups
-            .append('line')
-            .attr('x1', (w) => xScale(w.end_lap))
-            .attr('x2', (w) => xScale(w.end_lap))
-            .attr('y1', -6)
-            .attr('y2', height)
-            .attr('stroke', (w) => (w.type === 'SC' ? '#f59e0b' : '#facc15'))
-            .attr('stroke-width', 1.5)
-            .attr('stroke-dasharray', '4,3')
-            .attr('opacity', 0.72)
-            .style('pointer-events', 'none');
-
-        // De-collide top SC/VSC header badges horizontally
-        const badgePositions = [];
-        scWindows.forEach((w) => {
-            const x0 = xScale(Math.max(0, w.start_lap - 1));
-            const x1 = xScale(w.end_lap);
-            const badgeW = w.label.length * 6.6 + 16;
-            let cx = Math.max(badgeW / 2 + 2, Math.min(width - badgeW / 2 - 2, (x0 + x1) / 2));
-            let cy = -15;
-            if (badgePositions.length > 0) {
-                const prev = badgePositions[badgePositions.length - 1];
-                const minGap = (prev.badgeW + badgeW) / 2 + 6;
-                if (cx - prev.cx < minGap) {
-                    cx = Math.min(width - badgeW / 2 - 2, prev.cx + minGap);
-                }
-            }
-            badgePositions.push({ cx, cy, badgeW });
-        });
-
-        const badgeGroups = windowGroups
-            .append('g')
-            .attr('class', 'sc-vsc-badge')
-            .attr('transform', (_w, idx) => {
-                const pos = badgePositions[idx] || { cx: 40, cy: -15 };
-                return `translate(${pos.cx},${pos.cy})`;
-            })
-            .style('cursor', 'pointer');
-
-        badgeGroups
-            .append('rect')
-            .attr('x', (w) => -(w.label.length * 3.3 + 8))
-            .attr('y', -9)
-            .attr('width', (w) => w.label.length * 6.6 + 16)
-            .attr('height', 17)
-            .attr('rx', 4)
-            .attr('fill', 'rgba(18, 18, 26, 0.95)')
-            .attr('stroke', (w) => (w.type === 'SC' ? '#f59e0b' : '#facc15'))
-            .attr('stroke-width', 1.2);
-
-        badgeGroups
-            .append('text')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('dy', '0.34em')
-            .attr('text-anchor', 'middle')
-            .attr('fill', (w) => (w.type === 'SC' ? '#f59e0b' : '#facc15'))
-            .style('font-family', 'Montserrat, sans-serif')
-            .style('font-size', '9.5px')
-            .style('font-weight', '700')
-            .style('letter-spacing', '0.4px')
-            .text((w) => w.label);
-
-        badgeGroups
-            .on('mouseover', (event, w) => {
-                const color = w.type === 'SC' ? '#f59e0b' : '#facc15';
-                const fullTitle =
-                    w.type === 'SC' ? 'SAFETY CAR DEPLOYED' : 'VIRTUAL SAFETY CAR';
-                const pitsInWindow = pitTransitions.filter(
-                    (p) => p.lap >= w.start_lap - 1 && p.lap <= w.end_lap
-                );
-                const pittedDrivers = Array.from(new Set(pitsInWindow.map((p) => p.driver)));
-                const pitSummary =
-                    pittedDrivers.length > 0
-                        ? `Drivers Pitting (${pittedDrivers.length}): ${pittedDrivers.join(', ')}`
-                        : 'No pit stops recorded in this window';
-
-                tooltip
-                    .classed('hidden', false)
-                    .style('border-left-color', color)
-                    .html(`
-                        <div style="font-family: Montserrat, sans-serif; font-weight: 700; margin-bottom: 4px; color: ${color};">
-                            ${fullTitle}
-                        </div>
-                        <div style="font-size: 0.82rem; font-weight: 600; margin-bottom: 4px;">
-                            Active Window: Laps ${w.start_lap}&ndash;${w.end_lap}
-                        </div>
-                        <div style="font-size: 0.76rem; color: var(--text-muted);">
-                            ${pitSummary}
-                        </div>
-                    `)
-                    .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
-                    .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
-            })
-            .on('mousemove', (event) => {
-                tooltip
-                    .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
-                    .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
-            })
-            .on('mouseout', () => {
-                tooltip.classed('hidden', true);
-            });
-    }
 
     const updateFocusStyles = () => {
         const effectiveDriver =
@@ -793,9 +1116,9 @@ export function renderRaceStrategy(data) {
                   : localFocusedDriver;
 
         stintGroups.style('opacity', (d) => {
-            const compoundMatch = activeCompounds.has(d.compound);
-            const driverMatch = effectiveDriver === null || d.driver === effectiveDriver;
-            return compoundMatch && driverMatch ? _ACTIVE_OPACITY : _DIMMED_OPACITY;
+            const isCompoundActive = activeCompounds.has(d.compound);
+            const isDriverSelected = effectiveDriver === null || d.driver === effectiveDriver;
+            return isCompoundActive && isDriverSelected ? _ACTIVE_OPACITY : _DIMMED_OPACITY;
         });
 
         pitTickGroups.style('opacity', (d) =>
@@ -811,44 +1134,20 @@ export function renderRaceStrategy(data) {
         );
     };
 
-    driverLabels.on('click', (event, code) => {
-        localFocusedDriver = localFocusedDriver === code ? null : code;
-        updateFocusStyles();
-    });
-
-    stintGroups
-        .on('mouseover', (event, d) => {
-            hoveredDriver = d.driver;
+    _bindStrategyInteractions(
+        stintGroups,
+        driverLabels,
+        tooltip,
+        (nextHoveredDriver) => {
+            hoveredDriver = nextHoveredDriver;
             updateFocusStyles();
-
-            d3.select(event.currentTarget)
-                .select('rect.stint-compound-bar')
-                .attr('stroke', '#ffffff')
-                .attr('stroke-width', 2);
-
-            _populateStintTooltip(tooltip.node(), d);
-            tooltip
-                .classed('hidden', false)
-                .style('border-left-color', d.color || 'var(--accent)')
-                .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
-                .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
-        })
-        .on('mousemove', (event) => {
-            tooltip
-                .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
-                .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
-        })
-        .on('mouseout', (event) => {
-            hoveredDriver = null;
+        },
+        (clickedDriverCode) => {
+            localFocusedDriver =
+                localFocusedDriver === clickedDriverCode ? null : clickedDriverCode;
             updateFocusStyles();
-
-            d3.select(event.currentTarget)
-                .select('rect.stint-compound-bar')
-                .attr('stroke', '#111118')
-                .attr('stroke-width', 1.5);
-
-            tooltip.classed('hidden', true);
-        });
+        }
+    );
 
     _externalStrategyFocusHandler = (driverCode) => {
         externalFocusedDriver = driverCode;

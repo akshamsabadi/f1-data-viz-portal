@@ -1,5 +1,7 @@
 """Unit tests for the automated OpenF1 calendar update pipeline."""
 
+from __future__ import annotations
+
 import json
 import os
 from pathlib import Path

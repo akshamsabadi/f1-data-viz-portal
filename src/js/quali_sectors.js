@@ -1,16 +1,76 @@
 const _CHART_MARGIN = { top: 32, right: 96, bottom: 42, left: 78 };
 const _ROW_HEIGHT_PX = 26;
 const _MIN_CHART_WIDTH_PX = 520;
+const _LAP_READOUT_MIN_CHART_WIDTH_PX = 620;
+
+const _SECTORS_ZONE_MIN_WIDTH_PX = 210;
+const _SECTORS_ZONE_MAX_WIDTH_PX = 315;
+const _SECTORS_ZONE_WIDTH_RATIO = 0.44;
+const _LAP_READOUT_WIDTH_PX = 148;
+const _LOLLIPOP_ZONE_GAP_PX = 18;
+const _MIN_LOLLIPOP_WIDTH_PX = 120;
+const _SECTOR_PILL_GAP_PX = 6;
+
 const _ACTIVE_OPACITY = 1;
 const _DIMMED_OPACITY = 0.16;
-const _TOOLTIP_OFFSET_X_PX = 15;
-const _TOOLTIP_OFFSET_Y_PX = -28;
+const _PILL_FILL_OPACITY = 0.22;
+const _PILL_STROKE_OPACITY = 0.85;
+const _LOLLIPOP_BAR_OPACITY = 0.25;
 
 const _SECTOR_STATUS_COLORS = {
     purple: '#b138ff',
     green: '#00d27a',
     yellow: '#ffb800'
 };
+const _PILL_TEXT_COLOR = '#ffffff';
+const _LOLLIPOP_HEAD_STROKE_COLOR = '#ffffff';
+
+const _SECTOR_DEFINITIONS = [
+    { number: 1, title: 'SECTOR 1', timeKey: 's1', idealKey: 'ideal_s1', statusKey: 's1_status' },
+    { number: 2, title: 'SECTOR 2', timeKey: 's2', idealKey: 'ideal_s2', statusKey: 's2_status' },
+    { number: 3, title: 'SECTOR 3', timeKey: 's3', idealKey: 'ideal_s3', statusKey: 's3_status' }
+];
+
+const _MIN_TIME_LEFT_FLOOR_S = 0.05;
+const _DEFAULT_MAX_TIME_LEFT_S = 0.1;
+const _TIME_LEFT_DOMAIN_PADDING_FACTOR = 1.15;
+const _OPTIMAL_TIME_LEFT_THRESHOLD_S = 0.015;
+const _SECTOR_LOSS_EPSILON_S = 0.0005;
+const _MS_PER_SECOND = 1000;
+
+const _Y_BAND_PADDING_INNER = 0.22;
+const _Y_BAND_PADDING_OUTER = 0.12;
+const _LOLLIPOP_AXIS_TICKS = 4;
+const _COLUMN_HEADER_Y_OFFSET_PX = -11;
+const _X_AXIS_LABEL_Y_OFFSET_PX = 34;
+
+const _DRIVER_STRIP_X_OFFSET_PX = -10;
+const _DRIVER_STRIP_Y_INSET_PX = 2;
+const _DRIVER_STRIP_WIDTH_PX = 3;
+const _DRIVER_STRIP_MIN_HEIGHT_PX = 8;
+const _DRIVER_STRIP_CORNER_RADIUS_PX = 1.5;
+const _DRIVER_LABEL_X_OFFSET_PX = -15;
+
+const _PILL_VERTICAL_INSET_PX = 1;
+const _PILL_MIN_HEIGHT_PX = 12;
+const _PILL_CORNER_RADIUS_PX = 3.5;
+const _PILL_STROKE_WIDTH_PX = 1.2;
+const _PILL_ACCENT_BAR_WIDTH_PX = 3.5;
+const _PILL_ACCENT_CORNER_RADIUS_PX = 1.5;
+const _PILL_TEXT_X_NUDGE_PX = 1;
+
+const _LOLLIPOP_BAR_MIN_WIDTH_PX = 2;
+const _LOLLIPOP_BAR_MIN_HEIGHT_PX = 6;
+const _LOLLIPOP_BAR_Y_RATIO = 0.25;
+const _LOLLIPOP_BAR_HEIGHT_RATIO = 0.5;
+const _LOLLIPOP_BAR_CORNER_RADIUS_PX = 2;
+const _LOLLIPOP_STEM_STROKE_WIDTH_PX = 2.2;
+const _LOLLIPOP_HEAD_RADIUS_PX = 4.5;
+const _LOLLIPOP_HEAD_STROKE_WIDTH_PX = 1.2;
+const _LOLLIPOP_LABEL_X_OFFSET_PX = 8;
+
+const _TOOLTIP_OFFSET_X_PX = 15;
+const _TOOLTIP_OFFSET_Y_PX = -28;
 
 let _externalFocusHandler = null;
 
@@ -78,6 +138,85 @@ function _buildDriverColorMap(data) {
 }
 
 /**
+ * Computes the non-negative unrealized lap time ("time left on the table") in seconds for a driver.
+ *
+ * @param {Object} entry - Qualifying result record for a driver.
+ * @returns {number} Time left on the table (`best_time - ideal_lap`) in seconds.
+ */
+function _computeTimeLeftOnTable(entry) {
+    return Math.max(0, entry.time_left_on_table ?? entry.best_time - entry.ideal_lap);
+}
+
+/**
+ * Computes horizontal column widths and X offsets for the Sector Pills, Ideal-vs-Actual Readout,
+ * and Time-Left Lollipop zones.
+ *
+ * @param {number} width - Total inner chart width in pixels.
+ * @returns {{
+ *   shouldShowLapReadout: boolean,
+ *   sectorsZoneWidth: number,
+ *   lapReadoutWidth: number,
+ *   lollipopStartX: number,
+ *   lollipopWidth: number,
+ *   sectorPillWidth: number
+ * }} Horizontal layout metrics.
+ */
+function _computeSectorsLayoutMetrics(width) {
+    const shouldShowLapReadout = width >= _LAP_READOUT_MIN_CHART_WIDTH_PX;
+    const sectorsZoneWidth = Math.min(
+        _SECTORS_ZONE_MAX_WIDTH_PX,
+        Math.max(_SECTORS_ZONE_MIN_WIDTH_PX, Math.floor(width * _SECTORS_ZONE_WIDTH_RATIO))
+    );
+    const lapReadoutWidth = shouldShowLapReadout ? _LAP_READOUT_WIDTH_PX : 0;
+    const lollipopStartX = sectorsZoneWidth + lapReadoutWidth + _LOLLIPOP_ZONE_GAP_PX;
+    const lollipopWidth = Math.max(_MIN_LOLLIPOP_WIDTH_PX, width - lollipopStartX);
+    const sectorPillWidth =
+        (sectorsZoneWidth - _SECTOR_PILL_GAP_PX * (_SECTOR_DEFINITIONS.length - 1)) /
+        _SECTOR_DEFINITIONS.length;
+
+    return {
+        shouldShowLapReadout,
+        sectorsZoneWidth,
+        lapReadoutWidth,
+        lollipopStartX,
+        lollipopWidth,
+        sectorPillWidth
+    };
+}
+
+/**
+ * Computes the padded upper bound in seconds for the Time Left on Table lollipop scale.
+ *
+ * @param {Array<Object>} results - Sorted qualifying results array.
+ * @returns {number} Upper X-axis domain bound in seconds.
+ */
+function _computeMaxTimeLeftDomain(results) {
+    const maxTimeLeft = Math.max(
+        _MIN_TIME_LEFT_FLOOR_S,
+        d3.max(results, _computeTimeLeftOnTable) || _DEFAULT_MAX_TIME_LEFT_S
+    );
+    return maxTimeLeft * _TIME_LEFT_DOMAIN_PADDING_FACTOR;
+}
+
+/**
+ * Renders an uppercase empty-state message inside a chart container.
+ *
+ * @param {HTMLElement} container - Target chart container element.
+ * @param {string} message - Empty-state text message.
+ * @returns {void}
+ */
+function _renderEmptyState(container, message) {
+    const emptyMsg = document.createElement('p');
+    emptyMsg.style.color = 'var(--text-muted)';
+    emptyMsg.style.textAlign = 'center';
+    emptyMsg.style.paddingTop = '2rem';
+    emptyMsg.style.fontFamily = 'Montserrat, sans-serif';
+    emptyMsg.style.textTransform = 'uppercase';
+    emptyMsg.textContent = message;
+    container.replaceChildren(emptyMsg);
+}
+
+/**
  * Renders the FIA Sector Dominance color legend inside `#quali-sectors-legend`.
  *
  * @param {HTMLElement|null} legendContainer - DOM container for the legend items.
@@ -108,14 +247,50 @@ function _buildSectorsLegend(legendContainer) {
 }
 
 /**
+ * Builds a single sector status and time comparison line inside the hover tooltip.
+ *
+ * @param {number} sectorNum - Sector number (`1`, `2`, or `3`).
+ * @param {number} actualSeconds - Driver's sector split on their best lap.
+ * @param {number} idealSeconds - Driver's personal best split for that sector.
+ * @param {string} status - FIA sector status (`purple`, `green`, or `yellow`).
+ * @returns {HTMLDivElement} Constructed tooltip sector row element.
+ */
+function _buildTooltipSectorRow(sectorNum, actualSeconds, idealSeconds, status) {
+    const row = document.createElement('div');
+    row.style.display = 'flex';
+    row.style.justifyContent = 'space-between';
+    row.style.gap = '14px';
+    row.style.fontSize = '0.8rem';
+    row.style.marginBottom = '2px';
+
+    const statusColor = _getSectorStatusColor(status);
+    const sectorLoss = Math.max(0, (actualSeconds || 0) - (idealSeconds || 0));
+    const hasSectorLoss = sectorLoss > _SECTOR_LOSS_EPSILON_S;
+
+    const left = document.createElement('span');
+    left.style.fontWeight = '700';
+    left.style.color = statusColor;
+    left.textContent = `SECTOR ${sectorNum} (${String(status).toUpperCase()})`;
+
+    const right = document.createElement('span');
+    right.style.fontWeight = '600';
+    right.textContent = hasSectorLoss
+        ? `${actualSeconds.toFixed(3)}s (Ideal ${idealSeconds.toFixed(3)}s, +${sectorLoss.toFixed(3)}s)`
+        : `${actualSeconds.toFixed(3)}s (Optimal)`;
+
+    row.appendChild(left);
+    row.appendChild(right);
+    return row;
+}
+
+/**
  * Populates the shared `#tooltip` element with a driver's sector-by-sector and ideal lap breakdown.
  *
  * @param {HTMLElement|null} tooltipNode - Shared `#tooltip` DOM node.
  * @param {Object} entry - Qualifying result record for a driver.
- * @param {string} teamColor - Driver's constructor hex color.
  * @returns {void}
  */
-function _populateSectorsTooltip(tooltipNode, entry, teamColor) {
+function _populateSectorsTooltip(tooltipNode, entry) {
     if (!tooltipNode) return;
 
     const header = document.createElement('div');
@@ -132,34 +307,6 @@ function _populateSectorsTooltip(tooltipNode, entry, teamColor) {
     teamSpan.textContent = entry.team;
     header.appendChild(teamSpan);
 
-    const buildSectorLine = (num, actualS, idealS, status) => {
-        const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.justifyContent = 'space-between';
-        row.style.gap = '14px';
-        row.style.fontSize = '0.8rem';
-        row.style.marginBottom = '2px';
-
-        const statusColor = _getSectorStatusColor(status);
-        const loss = Math.max(0, (actualS || 0) - (idealS || 0));
-
-        const left = document.createElement('span');
-        left.style.fontWeight = '700';
-        left.style.color = statusColor;
-        left.textContent = `SECTOR ${num} (${String(status).toUpperCase()})`;
-
-        const right = document.createElement('span');
-        right.style.fontWeight = '600';
-        right.textContent =
-            loss > 0.0005
-                ? `${actualS.toFixed(3)}s (Ideal ${idealS.toFixed(3)}s, +${loss.toFixed(3)}s)`
-                : `${actualS.toFixed(3)}s (Optimal)`;
-
-        row.appendChild(left);
-        row.appendChild(right);
-        return row;
-    };
-
     const lapCompare = document.createElement('div');
     lapCompare.style.marginTop = '5px';
     lapCompare.style.paddingTop = '4px';
@@ -172,18 +319,359 @@ function _populateSectorsTooltip(tooltipNode, entry, teamColor) {
     potentialLine.style.fontSize = '0.8rem';
     potentialLine.style.fontWeight = '700';
     potentialLine.style.marginTop = '2px';
-    const timeLeft = Math.max(0, entry.time_left_on_table ?? entry.best_time - entry.ideal_lap);
-    potentialLine.style.color = timeLeft <= 0.015 ? '#00d27a' : '#ffb800';
-    potentialLine.textContent = `Time Left on Table: +${timeLeft.toFixed(3)}s potential (${(timeLeft * 1000).toFixed(0)} ms)`;
 
-    tooltipNode.replaceChildren(
-        header,
-        buildSectorLine(1, entry.s1, entry.ideal_s1, entry.s1_status),
-        buildSectorLine(2, entry.s2, entry.ideal_s2, entry.s2_status),
-        buildSectorLine(3, entry.s3, entry.ideal_s3, entry.s3_status),
-        lapCompare,
-        potentialLine
+    const timeLeft = _computeTimeLeftOnTable(entry);
+    const isNearOptimalLap = timeLeft <= _OPTIMAL_TIME_LEFT_THRESHOLD_S;
+    potentialLine.style.color = isNearOptimalLap
+        ? _SECTOR_STATUS_COLORS.green
+        : _SECTOR_STATUS_COLORS.yellow;
+    potentialLine.textContent = `Time Left on Table: +${timeLeft.toFixed(3)}s potential (${(timeLeft * _MS_PER_SECOND).toFixed(0)} ms)`;
+
+    const sectorRows = _SECTOR_DEFINITIONS.map((def) =>
+        _buildTooltipSectorRow(def.number, entry[def.timeKey], entry[def.idealKey], entry[def.statusKey])
     );
+
+    tooltipNode.replaceChildren(header, ...sectorRows, lapCompare, potentialLine);
+}
+
+/**
+ * Renders the top column headers for Sector 1..3, Ideal->Actual readout, and Time Left on Table.
+ *
+ * @param {Object} svg - Root translated D3 `<g>` selection.
+ * @param {{
+ *   shouldShowLapReadout: boolean,
+ *   sectorsZoneWidth: number,
+ *   lapReadoutWidth: number,
+ *   lollipopStartX: number,
+ *   sectorPillWidth: number
+ * }} layoutMetrics - Horizontal layout metrics.
+ * @returns {void}
+ */
+function _renderSectorColumnHeaders(svg, layoutMetrics) {
+    const {
+        shouldShowLapReadout,
+        sectorsZoneWidth,
+        lapReadoutWidth,
+        lollipopStartX,
+        sectorPillWidth
+    } = layoutMetrics;
+
+    _SECTOR_DEFINITIONS.forEach(({ title }, idx) => {
+        const pillCenterX =
+            idx * (sectorPillWidth + _SECTOR_PILL_GAP_PX) + sectorPillWidth / 2;
+        svg.append('text')
+            .attr('x', pillCenterX)
+            .attr('y', _COLUMN_HEADER_Y_OFFSET_PX)
+            .attr('text-anchor', 'middle')
+            .attr('fill', 'var(--text-muted)')
+            .style('font-family', 'Montserrat, sans-serif')
+            .style('font-size', '9.5px')
+            .style('font-weight', '700')
+            .style('letter-spacing', '0.6px')
+            .text(title);
+    });
+
+    if (shouldShowLapReadout) {
+        svg.append('text')
+            .attr('x', sectorsZoneWidth + lapReadoutWidth / 2)
+            .attr('y', _COLUMN_HEADER_Y_OFFSET_PX)
+            .attr('text-anchor', 'middle')
+            .attr('fill', 'var(--text-muted)')
+            .style('font-family', 'Montserrat, sans-serif')
+            .style('font-size', '9.5px')
+            .style('font-weight', '700')
+            .style('letter-spacing', '0.6px')
+            .text('IDEAL → ACTUAL');
+    }
+
+    svg.append('text')
+        .attr('x', lollipopStartX)
+        .attr('y', _COLUMN_HEADER_Y_OFFSET_PX)
+        .attr('text-anchor', 'start')
+        .attr('fill', 'var(--text-muted)')
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-size', '9.5px')
+        .style('font-weight', '700')
+        .style('letter-spacing', '0.6px')
+        .text('TIME LEFT ON TABLE (BEST - IDEAL)');
+}
+
+/**
+ * Renders the vertical gridlines and bottom X-axis for the Time Left on Table lollipop zone.
+ *
+ * @param {Object} svg - Root translated D3 `<g>` selection.
+ * @param {Function} xScale - D3 linear scale for time left on table.
+ * @param {{lollipopStartX: number, lollipopWidth: number}} layoutMetrics - Horizontal layout metrics.
+ * @param {number} height - Inner chart height in pixels.
+ * @returns {void}
+ */
+function _renderLollipopAxisAndGrid(svg, xScale, layoutMetrics, height) {
+    const { lollipopStartX, lollipopWidth } = layoutMetrics;
+
+    const lollipopGroup = svg
+        .append('g')
+        .attr('transform', `translate(${lollipopStartX},0)`);
+
+    lollipopGroup
+        .append('g')
+        .attr('class', 'gridline')
+        .attr('transform', `translate(0,${height})`)
+        .call(d3.axisBottom(xScale).ticks(_LOLLIPOP_AXIS_TICKS).tickSize(-height).tickFormat(''));
+
+    const xAxisGroup = lollipopGroup
+        .append('g')
+        .attr('transform', `translate(0,${height})`)
+        .call(
+            d3
+                .axisBottom(xScale)
+                .ticks(_LOLLIPOP_AXIS_TICKS)
+                .tickFormat((d) => `+${d.toFixed(3)}s`)
+        );
+
+    xAxisGroup
+        .append('text')
+        .attr('x', lollipopWidth)
+        .attr('y', _X_AXIS_LABEL_Y_OFFSET_PX)
+        .attr('fill', 'var(--text-muted)')
+        .attr('text-anchor', 'end')
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-size', '10px')
+        .style('font-weight', '700')
+        .text('UNREALIZED PACE POTENTIAL (+S)');
+}
+
+/**
+ * Renders the left-side team color strip and `P# DRIVER` label for each driver row.
+ *
+ * @param {Object} rowGroups - D3 selection of `.sector-driver-row` groups.
+ * @param {number} rowHeight - Bandwidth height of each driver row.
+ * @param {Map<string, string>} colorMap - Map of driver code to constructor hex color.
+ * @returns {void}
+ */
+function _renderDriverIdentityColumn(rowGroups, rowHeight, colorMap) {
+    rowGroups
+        .append('rect')
+        .attr('x', _DRIVER_STRIP_X_OFFSET_PX)
+        .attr('y', _DRIVER_STRIP_Y_INSET_PX)
+        .attr('width', _DRIVER_STRIP_WIDTH_PX)
+        .attr('height', Math.max(_DRIVER_STRIP_MIN_HEIGHT_PX, rowHeight - _DRIVER_STRIP_Y_INSET_PX * 2))
+        .attr('rx', _DRIVER_STRIP_CORNER_RADIUS_PX)
+        .attr('fill', (d) => colorMap.get(d.driver) || d.color || 'var(--accent)');
+
+    rowGroups
+        .append('text')
+        .attr('x', _DRIVER_LABEL_X_OFFSET_PX)
+        .attr('y', rowHeight / 2)
+        .attr('dy', '0.35em')
+        .attr('text-anchor', 'end')
+        .attr('fill', (d) => colorMap.get(d.driver) || d.color || 'var(--text-primary)')
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-size', '11px')
+        .style('font-weight', '700')
+        .text((d) => `P${d.grid_pos} ${d.driver}`);
+}
+
+/**
+ * Renders the 3 FIA Sector status pills (Purple, Green, Yellow) and sector split times per row.
+ *
+ * @param {Object} rowGroups - D3 selection of `.sector-driver-row` groups.
+ * @param {number} rowHeight - Bandwidth height of each driver row.
+ * @param {{sectorPillWidth: number}} layoutMetrics - Horizontal layout metrics.
+ * @returns {void}
+ */
+function _renderSectorStatusPills(rowGroups, rowHeight, layoutMetrics) {
+    const { sectorPillWidth } = layoutMetrics;
+    const pillHeight = Math.max(_PILL_MIN_HEIGHT_PX, rowHeight - _PILL_VERTICAL_INSET_PX * 2);
+
+    _SECTOR_DEFINITIONS.forEach(({ timeKey, statusKey }, idx) => {
+        const pillX = idx * (sectorPillWidth + _SECTOR_PILL_GAP_PX);
+
+        rowGroups
+            .append('rect')
+            .attr('x', pillX)
+            .attr('y', _PILL_VERTICAL_INSET_PX)
+            .attr('width', sectorPillWidth)
+            .attr('height', pillHeight)
+            .attr('rx', _PILL_CORNER_RADIUS_PX)
+            .attr('fill', (d) => _getSectorStatusColor(d[statusKey]))
+            .attr('fill-opacity', _PILL_FILL_OPACITY)
+            .attr('stroke', (d) => _getSectorStatusColor(d[statusKey]))
+            .attr('stroke-opacity', _PILL_STROKE_OPACITY)
+            .attr('stroke-width', _PILL_STROKE_WIDTH_PX);
+
+        rowGroups
+            .append('rect')
+            .attr('x', pillX)
+            .attr('y', _PILL_VERTICAL_INSET_PX)
+            .attr('width', _PILL_ACCENT_BAR_WIDTH_PX)
+            .attr('height', pillHeight)
+            .attr('rx', _PILL_ACCENT_CORNER_RADIUS_PX)
+            .attr('fill', (d) => _getSectorStatusColor(d[statusKey]));
+
+        rowGroups
+            .append('text')
+            .attr('x', pillX + sectorPillWidth / 2 + _PILL_TEXT_X_NUDGE_PX)
+            .attr('y', rowHeight / 2)
+            .attr('dy', '0.35em')
+            .attr('text-anchor', 'middle')
+            .attr('fill', _PILL_TEXT_COLOR)
+            .style('font-family', 'Titillium Web, sans-serif')
+            .style('font-size', '11px')
+            .style('font-weight', '700')
+            .text((d) => (Number.isFinite(d[timeKey]) ? `${d[timeKey].toFixed(3)}s` : '—'));
+    });
+}
+
+/**
+ * Renders the middle `Ideal -> Actual` lap time text column when sufficient horizontal width is available.
+ *
+ * @param {Object} rowGroups - D3 selection of `.sector-driver-row` groups.
+ * @param {number} rowHeight - Bandwidth height of each driver row.
+ * @param {{
+ *   shouldShowLapReadout: boolean,
+ *   sectorsZoneWidth: number,
+ *   lapReadoutWidth: number
+ * }} layoutMetrics - Horizontal layout metrics.
+ * @returns {void}
+ */
+function _renderIdealVsActualReadout(rowGroups, rowHeight, layoutMetrics) {
+    const { shouldShowLapReadout, sectorsZoneWidth, lapReadoutWidth } = layoutMetrics;
+    if (!shouldShowLapReadout) return;
+
+    rowGroups
+        .append('text')
+        .attr('x', sectorsZoneWidth + lapReadoutWidth / 2)
+        .attr('y', rowHeight / 2)
+        .attr('dy', '0.35em')
+        .attr('text-anchor', 'middle')
+        .attr('fill', 'var(--text-muted)')
+        .style('font-family', 'Titillium Web, sans-serif')
+        .style('font-size', '10.5px')
+        .style('font-weight', '600')
+        .text((d) => `${_formatLapTime(d.ideal_lap)} → ${_formatLapTime(d.best_time)}`);
+}
+
+/**
+ * Renders the right-side horizontal lollipop bar, stem, circle head, and millisecond potential label.
+ *
+ * @param {Object} rowGroups - D3 selection of `.sector-driver-row` groups.
+ * @param {Function} xScale - D3 linear scale for time left on table.
+ * @param {number} rowHeight - Bandwidth height of each driver row.
+ * @param {{lollipopStartX: number}} layoutMetrics - Horizontal layout metrics.
+ * @param {Map<string, string>} colorMap - Map of driver code to constructor hex color.
+ * @returns {void}
+ */
+function _renderTimeLeftLollipops(rowGroups, xScale, rowHeight, layoutMetrics, colorMap) {
+    const { lollipopStartX } = layoutMetrics;
+
+    rowGroups
+        .append('rect')
+        .attr('x', lollipopStartX)
+        .attr('y', rowHeight * _LOLLIPOP_BAR_Y_RATIO)
+        .attr('width', (d) =>
+            Math.max(_LOLLIPOP_BAR_MIN_WIDTH_PX, xScale(_computeTimeLeftOnTable(d)))
+        )
+        .attr('height', Math.max(_LOLLIPOP_BAR_MIN_HEIGHT_PX, rowHeight * _LOLLIPOP_BAR_HEIGHT_RATIO))
+        .attr('rx', _LOLLIPOP_BAR_CORNER_RADIUS_PX)
+        .attr('fill', (d) => colorMap.get(d.driver) || d.color || 'var(--accent)')
+        .attr('fill-opacity', _LOLLIPOP_BAR_OPACITY);
+
+    rowGroups
+        .append('line')
+        .attr('x1', lollipopStartX)
+        .attr('x2', (d) => lollipopStartX + xScale(_computeTimeLeftOnTable(d)))
+        .attr('y1', rowHeight / 2)
+        .attr('y2', rowHeight / 2)
+        .attr('stroke', (d) => colorMap.get(d.driver) || d.color || 'var(--accent)')
+        .attr('stroke-width', _LOLLIPOP_STEM_STROKE_WIDTH_PX);
+
+    rowGroups
+        .append('circle')
+        .attr('cx', (d) => lollipopStartX + xScale(_computeTimeLeftOnTable(d)))
+        .attr('cy', rowHeight / 2)
+        .attr('r', _LOLLIPOP_HEAD_RADIUS_PX)
+        .attr('fill', (d) => colorMap.get(d.driver) || d.color || 'var(--accent)')
+        .attr('stroke', _LOLLIPOP_HEAD_STROKE_COLOR)
+        .attr('stroke-width', _LOLLIPOP_HEAD_STROKE_WIDTH_PX);
+
+    rowGroups
+        .append('text')
+        .attr('x', (d) =>
+            lollipopStartX + xScale(_computeTimeLeftOnTable(d)) + _LOLLIPOP_LABEL_X_OFFSET_PX
+        )
+        .attr('y', rowHeight / 2)
+        .attr('dy', '0.35em')
+        .attr('text-anchor', 'start')
+        .attr('fill', (d) => {
+            const isNearOptimalLap =
+                _computeTimeLeftOnTable(d) <= _OPTIMAL_TIME_LEFT_THRESHOLD_S;
+            return isNearOptimalLap ? _SECTOR_STATUS_COLORS.green : 'var(--text-primary)';
+        })
+        .style('font-family', 'Titillium Web, sans-serif')
+        .style('font-size', '11px')
+        .style('font-weight', '700')
+        .text((d) => {
+            const timeLeft = _computeTimeLeftOnTable(d);
+            return `+${timeLeft.toFixed(3)}s (${(timeLeft * _MS_PER_SECOND).toFixed(0)}ms)`;
+        });
+}
+
+/**
+ * Updates driver row opacities based on hovered or externally focused driver code.
+ *
+ * @param {Object} rowGroups - D3 selection of `.sector-driver-row` groups.
+ * @param {string|null} activeDriverCode - Currently focused driver code, or null.
+ * @returns {void}
+ */
+function _updateSectorsFocusState(rowGroups, activeDriverCode) {
+    rowGroups.style('opacity', (d) => {
+        const isRowActive = activeDriverCode === null || d.driver === activeDriverCode;
+        return isRowActive ? _ACTIVE_OPACITY : _DIMMED_OPACITY;
+    });
+}
+
+/**
+ * Appends transparent hit-area rectangles and binds hover listeners to sector driver rows.
+ *
+ * @param {Object} rowGroups - D3 selection of `.sector-driver-row` groups.
+ * @param {Object} tooltip - D3 selection of `#tooltip`.
+ * @param {Map<string, string>} colorMap - Map of driver code to constructor hex color.
+ * @param {number} width - Inner chart width in pixels.
+ * @param {number} rowHeight - Bandwidth height of each driver row.
+ * @param {Function} onHoverChange - Callback invoked with hovered driver code (or null on mouseout).
+ * @returns {void}
+ */
+function _bindSectorRowInteractions(rowGroups, tooltip, colorMap, width, rowHeight, onHoverChange) {
+    rowGroups
+        .append('rect')
+        .attr('x', -_CHART_MARGIN.left)
+        .attr('y', 0)
+        .attr('width', width + _CHART_MARGIN.left + _CHART_MARGIN.right)
+        .attr('height', rowHeight)
+        .attr('fill', 'transparent');
+
+    rowGroups
+        .on('mouseover', (event, d) => {
+            onHoverChange(d.driver);
+
+            const teamColor = colorMap.get(d.driver) || d.color || 'var(--accent)';
+            _populateSectorsTooltip(tooltip.node(), d);
+
+            tooltip
+                .classed('hidden', false)
+                .style('border-left-color', teamColor)
+                .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
+                .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
+        })
+        .on('mousemove', (event) => {
+            tooltip
+                .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
+                .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
+        })
+        .on('mouseout', () => {
+            onHoverChange(null);
+            tooltip.classed('hidden', true);
+        });
 }
 
 /**
@@ -204,16 +692,10 @@ export function renderQualiSectors(data) {
         .slice()
         .sort((a, b) => a.grid_pos - b.grid_pos);
 
-    if (results.length === 0) {
+    const hasSectorResults = results.length > 0;
+    if (!hasSectorResults) {
         _externalFocusHandler = null;
-        const emptyMsg = document.createElement('p');
-        emptyMsg.style.color = 'var(--text-muted)';
-        emptyMsg.style.textAlign = 'center';
-        emptyMsg.style.paddingTop = '2rem';
-        emptyMsg.style.fontFamily = 'Montserrat, sans-serif';
-        emptyMsg.style.textTransform = 'uppercase';
-        emptyMsg.textContent = 'No qualifying sector telemetry available.';
-        container.replaceChildren(emptyMsg);
+        _renderEmptyState(container, 'No qualifying sector telemetry available.');
         return;
     }
 
@@ -228,36 +710,20 @@ export function renderQualiSectors(data) {
     );
     const height = results.length * _ROW_HEIGHT_PX;
 
-    // Partition inner width into:
-    // 1. Left/Middle: 3 FIA Sector Pills (S1, S2, S3) + Ideal vs Actual Lap Readout
-    // 2. Right: Horizontal Lollipop/Bar Chart of Time Left on the Table
-    const showLapReadout = width >= 620;
-    const sectorsZoneWidth = Math.min(315, Math.max(210, Math.floor(width * 0.44)));
-    const lapReadoutWidth = showLapReadout ? 148 : 0;
-    const lollipopStartX = sectorsZoneWidth + lapReadoutWidth + 18;
-    const lollipopWidth = Math.max(120, width - lollipopStartX);
-
-    const sectorGap = 6;
-    const sectorPillWidth = (sectorsZoneWidth - sectorGap * 2) / 3;
-
-    const maxTimeLeft = Math.max(
-        0.05,
-        d3.max(results, (d) =>
-            Math.max(0, d.time_left_on_table ?? d.best_time - d.ideal_lap)
-        ) || 0.1
-    );
+    const layoutMetrics = _computeSectorsLayoutMetrics(width);
+    const maxTimeLeftDomain = _computeMaxTimeLeftDomain(results);
 
     const xScale = d3
         .scaleLinear()
-        .domain([0, maxTimeLeft * 1.15])
-        .range([0, lollipopWidth]);
+        .domain([0, maxTimeLeftDomain])
+        .range([0, layoutMetrics.lollipopWidth]);
 
     const yScale = d3
         .scaleBand()
         .domain(results.map((d) => d.driver))
         .range([0, height])
-        .paddingInner(0.22)
-        .paddingOuter(0.12);
+        .paddingInner(_Y_BAND_PADDING_INNER)
+        .paddingOuter(_Y_BAND_PADDING_OUTER);
 
     const svg = d3
         .select(container)
@@ -267,80 +733,10 @@ export function renderQualiSectors(data) {
         .append('g')
         .attr('transform', `translate(${_CHART_MARGIN.left},${_CHART_MARGIN.top})`);
 
-    // Column Headers
-    const sectorHeaders = ['SECTOR 1', 'SECTOR 2', 'SECTOR 3'];
-    sectorHeaders.forEach((title, idx) => {
-        const pillCenterX = idx * (sectorPillWidth + sectorGap) + sectorPillWidth / 2;
-        svg.append('text')
-            .attr('x', pillCenterX)
-            .attr('y', -11)
-            .attr('text-anchor', 'middle')
-            .attr('fill', 'var(--text-muted)')
-            .style('font-family', 'Montserrat, sans-serif')
-            .style('font-size', '9.5px')
-            .style('font-weight', '700')
-            .style('letter-spacing', '0.6px')
-            .text(title);
-    });
-
-    if (showLapReadout) {
-        svg.append('text')
-            .attr('x', sectorsZoneWidth + lapReadoutWidth / 2)
-            .attr('y', -11)
-            .attr('text-anchor', 'middle')
-            .attr('fill', 'var(--text-muted)')
-            .style('font-family', 'Montserrat, sans-serif')
-            .style('font-size', '9.5px')
-            .style('font-weight', '700')
-            .style('letter-spacing', '0.6px')
-            .text('IDEAL → ACTUAL');
-    }
-
-    svg.append('text')
-        .attr('x', lollipopStartX)
-        .attr('y', -11)
-        .attr('text-anchor', 'start')
-        .attr('fill', 'var(--text-muted)')
-        .style('font-family', 'Montserrat, sans-serif')
-        .style('font-size', '9.5px')
-        .style('font-weight', '700')
-        .style('letter-spacing', '0.6px')
-        .text('TIME LEFT ON TABLE (BEST - IDEAL)');
-
-    // Lollipop Chart Gridlines and X-axis
-    const lollipopGroup = svg
-        .append('g')
-        .attr('transform', `translate(${lollipopStartX},0)`);
-
-    lollipopGroup
-        .append('g')
-        .attr('class', 'gridline')
-        .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(xScale).ticks(4).tickSize(-height).tickFormat(''));
-
-    const xAxisGroup = lollipopGroup
-        .append('g')
-        .attr('transform', `translate(0,${height})`)
-        .call(
-            d3
-                .axisBottom(xScale)
-                .ticks(4)
-                .tickFormat((d) => `+${d.toFixed(3)}s`)
-        );
-
-    xAxisGroup
-        .append('text')
-        .attr('x', lollipopWidth)
-        .attr('y', 34)
-        .attr('fill', 'var(--text-muted)')
-        .attr('text-anchor', 'end')
-        .style('font-family', 'Montserrat, sans-serif')
-        .style('font-size', '10px')
-        .style('font-weight', '700')
-        .text('UNREALIZED PACE POTENTIAL (+S)');
+    _renderSectorColumnHeaders(svg, layoutMetrics);
+    _renderLollipopAxisAndGrid(svg, xScale, layoutMetrics, height);
 
     const rowHeight = yScale.bandwidth();
-
     const rowGroups = svg
         .selectAll('g.sector-driver-row')
         .data(results)
@@ -350,187 +746,33 @@ export function renderQualiSectors(data) {
         .attr('transform', (d) => `translate(0,${yScale(d.driver)})`)
         .style('cursor', 'pointer');
 
-    // Left Driver Position & Code Label + Team Color Strip
-    rowGroups
-        .append('rect')
-        .attr('x', -10)
-        .attr('y', 2)
-        .attr('width', 3)
-        .attr('height', Math.max(8, rowHeight - 4))
-        .attr('rx', 1.5)
-        .attr('fill', (d) => colorMap.get(d.driver) || d.color || 'var(--accent)');
-
-    rowGroups
-        .append('text')
-        .attr('x', -15)
-        .attr('y', rowHeight / 2)
-        .attr('dy', '0.35em')
-        .attr('text-anchor', 'end')
-        .attr('fill', (d) => colorMap.get(d.driver) || d.color || 'var(--text-primary)')
-        .style('font-family', 'Montserrat, sans-serif')
-        .style('font-size', '11px')
-        .style('font-weight', '700')
-        .text((d) => `P${d.grid_pos} ${d.driver}`);
-
-    // Render 3 FIA Sector Pills per row
-    const sectorDefs = [
-        { timeKey: 's1', statusKey: 's1_status' },
-        { timeKey: 's2', statusKey: 's2_status' },
-        { timeKey: 's3', statusKey: 's3_status' }
-    ];
-
-    sectorDefs.forEach(({ timeKey, statusKey }, idx) => {
-        const pillX = idx * (sectorPillWidth + sectorGap);
-
-        rowGroups
-            .append('rect')
-            .attr('x', pillX)
-            .attr('y', 1)
-            .attr('width', sectorPillWidth)
-            .attr('height', Math.max(12, rowHeight - 2))
-            .attr('rx', 3.5)
-            .attr('fill', (d) => _getSectorStatusColor(d[statusKey]))
-            .attr('fill-opacity', 0.22)
-            .attr('stroke', (d) => _getSectorStatusColor(d[statusKey]))
-            .attr('stroke-opacity', 0.85)
-            .attr('stroke-width', 1.2);
-
-        // Left status accent bar inside the sector pill
-        rowGroups
-            .append('rect')
-            .attr('x', pillX)
-            .attr('y', 1)
-            .attr('width', 3.5)
-            .attr('height', Math.max(12, rowHeight - 2))
-            .attr('rx', 1.5)
-            .attr('fill', (d) => _getSectorStatusColor(d[statusKey]));
-
-        rowGroups
-            .append('text')
-            .attr('x', pillX + sectorPillWidth / 2 + 1)
-            .attr('y', rowHeight / 2)
-            .attr('dy', '0.35em')
-            .attr('text-anchor', 'middle')
-            .attr('fill', '#ffffff')
-            .style('font-family', 'Titillium Web, sans-serif')
-            .style('font-size', '11px')
-            .style('font-weight', '700')
-            .text((d) => (Number.isFinite(d[timeKey]) ? `${d[timeKey].toFixed(3)}s` : '—'));
-    });
-
-    // Middle Ideal -> Actual Lap Readout
-    if (showLapReadout) {
-        rowGroups
-            .append('text')
-            .attr('x', sectorsZoneWidth + lapReadoutWidth / 2)
-            .attr('y', rowHeight / 2)
-            .attr('dy', '0.35em')
-            .attr('text-anchor', 'middle')
-            .attr('fill', 'var(--text-muted)')
-            .style('font-family', 'Titillium Web, sans-serif')
-            .style('font-size', '10.5px')
-            .style('font-weight', '600')
-            .text(
-                (d) => `${_formatLapTime(d.ideal_lap)} → ${_formatLapTime(d.best_time)}`
-            );
-    }
-
-    // Right Column: Horizontal D3 Lollipop / Bar of Time Left on Table (best_time - ideal_lap)
-    const getTimeLeft = (d) =>
-        Math.max(0, d.time_left_on_table ?? d.best_time - d.ideal_lap);
-
-    // Translucent background bar
-    rowGroups
-        .append('rect')
-        .attr('x', lollipopStartX)
-        .attr('y', rowHeight * 0.25)
-        .attr('width', (d) => Math.max(2, xScale(getTimeLeft(d))))
-        .attr('height', Math.max(6, rowHeight * 0.5))
-        .attr('rx', 2)
-        .attr('fill', (d) => colorMap.get(d.driver) || d.color || 'var(--accent)')
-        .attr('fill-opacity', 0.25);
-
-    // Lollipop stem line
-    rowGroups
-        .append('line')
-        .attr('x1', lollipopStartX)
-        .attr('x2', (d) => lollipopStartX + xScale(getTimeLeft(d)))
-        .attr('y1', rowHeight / 2)
-        .attr('y2', rowHeight / 2)
-        .attr('stroke', (d) => colorMap.get(d.driver) || d.color || 'var(--accent)')
-        .attr('stroke-width', 2.2);
-
-    // Lollipop head circle
-    rowGroups
-        .append('circle')
-        .attr('cx', (d) => lollipopStartX + xScale(getTimeLeft(d)))
-        .attr('cy', rowHeight / 2)
-        .attr('r', 4.5)
-        .attr('fill', (d) => colorMap.get(d.driver) || d.color || 'var(--accent)')
-        .attr('stroke', '#ffffff')
-        .attr('stroke-width', 1.2);
-
-    // Value label (`+0.031s potential`)
-    rowGroups
-        .append('text')
-        .attr('x', (d) => lollipopStartX + xScale(getTimeLeft(d)) + 8)
-        .attr('y', rowHeight / 2)
-        .attr('dy', '0.35em')
-        .attr('text-anchor', 'start')
-        .attr('fill', (d) => (getTimeLeft(d) <= 0.015 ? '#00d27a' : 'var(--text-primary)'))
-        .style('font-family', 'Titillium Web, sans-serif')
-        .style('font-size', '11px')
-        .style('font-weight', '700')
-        .text((d) => `+${getTimeLeft(d).toFixed(3)}s (${(getTimeLeft(d) * 1000).toFixed(0)}ms)`);
-
-    // Transparent hover hit area
-    rowGroups
-        .append('rect')
-        .attr('x', -_CHART_MARGIN.left)
-        .attr('y', 0)
-        .attr('width', width + _CHART_MARGIN.left + _CHART_MARGIN.right)
-        .attr('height', rowHeight)
-        .attr('fill', 'transparent');
+    _renderDriverIdentityColumn(rowGroups, rowHeight, colorMap);
+    _renderSectorStatusPills(rowGroups, rowHeight, layoutMetrics);
+    _renderIdealVsActualReadout(rowGroups, rowHeight, layoutMetrics);
+    _renderTimeLeftLollipops(rowGroups, xScale, rowHeight, layoutMetrics, colorMap);
 
     let externalDriver = null;
     let hoveredDriver = null;
 
-    const updateFocusStyles = () => {
-        const activeDriver = hoveredDriver !== null ? hoveredDriver : externalDriver;
-        rowGroups.style('opacity', (d) =>
-            activeDriver === null || d.driver === activeDriver
-                ? _ACTIVE_OPACITY
-                : _DIMMED_OPACITY
-        );
+    const syncFocusStyles = () => {
+        const activeDriverCode = hoveredDriver !== null ? hoveredDriver : externalDriver;
+        _updateSectorsFocusState(rowGroups, activeDriverCode);
     };
 
-    rowGroups
-        .on('mouseover', (event, d) => {
-            hoveredDriver = d.driver;
-            updateFocusStyles();
-
-            const teamColor = colorMap.get(d.driver) || d.color || 'var(--accent)';
-            _populateSectorsTooltip(tooltip.node(), d, teamColor);
-
-            tooltip
-                .classed('hidden', false)
-                .style('border-left-color', teamColor)
-                .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
-                .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
-        })
-        .on('mousemove', (event) => {
-            tooltip
-                .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
-                .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
-        })
-        .on('mouseout', () => {
-            hoveredDriver = null;
-            updateFocusStyles();
-            tooltip.classed('hidden', true);
-        });
+    _bindSectorRowInteractions(
+        rowGroups,
+        tooltip,
+        colorMap,
+        width,
+        rowHeight,
+        (newHoveredDriver) => {
+            hoveredDriver = newHoveredDriver;
+            syncFocusStyles();
+        }
+    );
 
     _externalFocusHandler = (driverCode) => {
         externalDriver = driverCode;
-        updateFocusStyles();
+        syncFocusStyles();
     };
 }

@@ -25,7 +25,14 @@ const _STATUS_FINISHER = 'FINISHER';
 const _STATUS_LAPPED = 'LAPPED';
 const _STATUS_DNF = 'DNF';
 const _STATUS_DNS = 'DNS';
+const _STATUS_DSQ = 'DSQ';
 
+const _Q3_CUTOFF_INDEX = 9;
+const _Q3_TOP_COUNT = 10;
+const _Q2_CUTOFF_INDEX = 15;
+const _Q2_TOP_COUNT = 16;
+
+const _DEFAULT_COMPOUND_COLOR = '#F0F0F5';
 const _COMPOUND_COLORS = {
     SOFT: '#FF3333',
     MEDIUM: '#FFE600',
@@ -81,6 +88,60 @@ function _determineDriverStatus(lapsCompleted, lastLapRecord, maxLap, maxSession
 }
 
 /**
+ * Builds an unranked classification summary entry for a single driver.
+ *
+ * @param {Object} driver - Driver metadata object (`{ code, team, color }`).
+ * @param {Map<string, Array<Object>>} driverLapsMap - Map of driver code to valid race laps.
+ * @param {Map<string, Object>} officialMap - Map of driver code to official race classification entry.
+ * @param {number} maxLap - Total laps completed by the race winner.
+ * @param {number} maxSessionTime - Maximum session timestamp in seconds.
+ * @returns {Object} Enriched unranked driver classification entry.
+ */
+function _buildDriverClassificationEntry(driver, driverLapsMap, officialMap, maxLap, maxSessionTime) {
+    const laps = (driverLapsMap.get(driver.code) || []).slice().sort((a, b) => a.lap - b.lap);
+    const lastLapRecord = laps.length > 0 ? laps[laps.length - 1] : null;
+    const lapsCompleted = lastLapRecord ? lastLapRecord.lap : 0;
+    const lastLapTime = lastLapRecord ? lastLapRecord.session_time : Infinity;
+    const official = officialMap.get(driver.code);
+    const status = official?.status
+        ? official.status
+        : _determineDriverStatus(lapsCompleted, lastLapRecord, maxLap, maxSessionTime);
+
+    return {
+        ...driver,
+        laps,
+        lapsCompleted,
+        lastLapTime,
+        status,
+        officialPosition: official?.position ?? null,
+        officialGap: official?.gap_to_leader ?? null,
+        isDns: status === _STATUS_DNS,
+        isDnf: status === _STATUS_DNF || status === _STATUS_DSQ,
+        isDsq: status === _STATUS_DSQ
+    };
+}
+
+/**
+ * Comparator function ordering classified drivers by official position, laps completed, DNS status, and finish time.
+ *
+ * @param {Object} a - First driver classification entry.
+ * @param {Object} b - Second driver classification entry.
+ * @returns {number} Negative if `a` ranks ahead of `b`, positive otherwise.
+ */
+function _compareClassifiedDrivers(a, b) {
+    if (a.officialPosition !== null && b.officialPosition !== null) {
+        return a.officialPosition - b.officialPosition;
+    }
+    if (b.lapsCompleted !== a.lapsCompleted) {
+        return b.lapsCompleted - a.lapsCompleted;
+    }
+    if (a.isDns !== b.isDns) {
+        return a.isDns ? 1 : -1;
+    }
+    return a.lastLapTime - b.lastLapTime;
+}
+
+/**
  * Computes the official race classification, ranks, and DNF/DNS statuses for all drivers.
  * Shared between the Session Classification sidebar, Lap Times X-axis, Strategy chart, and Bump chart.
  *
@@ -109,42 +170,11 @@ export function calculateDriverClassification(data) {
     const officialList = data.race_telemetry?.classification || [];
     const officialMap = new Map(officialList.map((item) => [item.driver, item]));
 
-    const unsortedClassification = (data.drivers || []).map((driver) => {
-        const laps = (driverLapsMap.get(driver.code) || []).slice().sort((a, b) => a.lap - b.lap);
-        const lastLapRecord = laps.length > 0 ? laps[laps.length - 1] : null;
-        const lapsCompleted = lastLapRecord ? lastLapRecord.lap : 0;
-        const lastLapTime = lastLapRecord ? lastLapRecord.session_time : Infinity;
-        const official = officialMap.get(driver.code);
-        const status = official?.status
-            ? official.status
-            : _determineDriverStatus(lapsCompleted, lastLapRecord, maxLap, maxSessionTime);
+    const unsortedClassification = (data.drivers || []).map((driver) =>
+        _buildDriverClassificationEntry(driver, driverLapsMap, officialMap, maxLap, maxSessionTime)
+    );
 
-        return {
-            ...driver,
-            laps,
-            lapsCompleted,
-            lastLapTime,
-            status,
-            officialPosition: official?.position ?? null,
-            officialGap: official?.gap_to_leader ?? null,
-            isDns: status === _STATUS_DNS,
-            isDnf: status === _STATUS_DNF || status === 'DSQ',
-            isDsq: status === 'DSQ'
-        };
-    });
-
-    unsortedClassification.sort((a, b) => {
-        if (a.officialPosition !== null && b.officialPosition !== null) {
-            return a.officialPosition - b.officialPosition;
-        }
-        if (b.lapsCompleted !== a.lapsCompleted) {
-            return b.lapsCompleted - a.lapsCompleted;
-        }
-        if (a.isDns !== b.isDns) {
-            return a.isDns ? 1 : -1;
-        }
-        return a.lastLapTime - b.lastLapTime;
-    });
+    unsortedClassification.sort(_compareClassifiedDrivers);
 
     const classification = unsortedClassification.map((entry, index) => ({
         ...entry,
@@ -209,7 +239,7 @@ function _formatRaceGapAndDetail(driver, index, winnerTime, maxLap) {
     let detailText = '';
 
     if (driver.isDsq) {
-        gapText = 'DSQ';
+        gapText = _STATUS_DSQ;
         detailText = `Lap ${driver.lapsCompleted}`;
     } else if (driver.isDns) {
         gapText = _STATUS_DNS;
@@ -355,6 +385,105 @@ function _bindStandingsRowInteractions(container, rowBindings, activeSession) {
 }
 
 /**
+ * Renders the Practice Classification rows into `#standings-list`.
+ *
+ * @param {HTMLElement} container - `#standings-list` container element.
+ * @param {Array<Object>} classification - Practice session classification entries.
+ * @returns {Array<{row: HTMLElement, driver: {code: string, team: string, color: string}}>} Mounted row bindings.
+ */
+function _renderPracticeStandingsRows(container, classification) {
+    const rowBindings = [];
+    classification.forEach((entry, index) => {
+        const code = entry.driver;
+        const compoundColor = _COMPOUND_COLORS[entry.compound] || _DEFAULT_COMPOUND_COLOR;
+        const dotHtml = `<span class="standings-compound-badge" style="background-color: ${compoundColor}" title="${entry.compound}"></span>`;
+        const gapHtml =
+            index === 0
+                ? `${dotHtml}${formatSessionDuration(entry.best_lap)}`
+                : `${dotHtml}+${Number(entry.gap_to_p1).toFixed(3)}s`;
+        const detailHtml = `${entry.total_laps} Laps`;
+        const driverObj = { code, team: entry.team, color: entry.color };
+        const row = _createStandingsRowElement(driverObj, index, gapHtml, detailHtml);
+        container.appendChild(row);
+        rowBindings.push({ row, driver: driverObj });
+    });
+    return rowBindings;
+}
+
+/**
+ * Renders the Qualifying or Sprint Qualifying Classification rows and knockout cutoff dividers into `#standings-list`.
+ *
+ * @param {HTMLElement} container - `#standings-list` container element.
+ * @param {Object} qualifyingData - Qualifying session data (`{ results, cutoffs, stage_prefix }`).
+ * @param {string} activeSession - Active session identifier (`'qualifying'` or `'sprint_qualifying'`).
+ * @returns {Array<{row: HTMLElement, driver: {code: string, team: string, color: string}}>} Mounted row bindings.
+ */
+function _renderQualifyingStandingsRows(container, qualifyingData, activeSession) {
+    const rowBindings = [];
+    const cutoffs = qualifyingData.cutoffs || {};
+    const stagePrefix =
+        qualifyingData.stage_prefix || (activeSession === 'sprint_qualifying' ? 'SQ' : 'Q');
+    const results = qualifyingData.results;
+
+    results.forEach((entry, index) => {
+        const code = entry.driver;
+        const gapHtml =
+            index === 0
+                ? formatSessionDuration(entry.best_time)
+                : `+${Number(entry.gap_to_pole).toFixed(3)}s`;
+        const detailHtml = `${entry.eliminated_in} · ${formatSessionDuration(entry.best_time)}`;
+        const driverObj = { code, team: entry.team, color: entry.color };
+        const row = _createStandingsRowElement(driverObj, index, gapHtml, detailHtml);
+        container.appendChild(row);
+        rowBindings.push({ row, driver: driverObj });
+
+        if (index === _Q3_CUTOFF_INDEX && results.length > _Q3_TOP_COUNT) {
+            container.appendChild(
+                _createCutoffDividerElement(
+                    `${stagePrefix}3 CUTOFF · TOP ${_Q3_TOP_COUNT}`,
+                    formatSessionDuration(cutoffs.q3_cutoff_time || entry.best_time)
+                )
+            );
+        } else if (index === _Q2_CUTOFF_INDEX && results.length > _Q2_TOP_COUNT) {
+            container.appendChild(
+                _createCutoffDividerElement(
+                    `${stagePrefix}2 CUTOFF · TOP ${_Q2_TOP_COUNT}`,
+                    formatSessionDuration(cutoffs.q2_cutoff_time || entry.best_time)
+                )
+            );
+        }
+    });
+
+    return rowBindings;
+}
+
+/**
+ * Renders the Race or Sprint Classification rows into `#standings-list`.
+ *
+ * @param {HTMLElement} container - `#standings-list` container element.
+ * @param {Object} data - Enriched Grand Prix telemetry payload.
+ * @returns {Array<{row: HTMLElement, driver: Object}>} Mounted row bindings.
+ */
+function _renderRaceStandingsRows(container, data) {
+    const { validLaps, maxLap, classification } = calculateDriverClassification(data);
+    if (validLaps.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted)">No classification data available.</p>';
+        return [];
+    }
+
+    const rowBindings = [];
+    const winnerTime = classification[0].lastLapTime;
+    classification.forEach((driver, index) => {
+        const { gapText, detailText } = _formatRaceGapAndDetail(driver, index, winnerTime, maxLap);
+        const row = _createStandingsRowElement(driver, index, gapText, detailText);
+        container.appendChild(row);
+        rowBindings.push({ row, driver });
+    });
+
+    return rowBindings;
+}
+
+/**
  * Renders the Session Classification sidebar table for the active session (`practice`, `qualifying`, or `race`)
  * and binds unified cross-chart hover and click-lock interactions.
  *
@@ -371,81 +500,20 @@ export function renderStandings(data, activeSession = 'race') {
     if (!container) return;
     container.innerHTML = '';
 
-    const rowBindings = [];
+    let rowBindings = [];
 
-    if (activeSession === 'practice' && data.practice && Array.isArray(data.practice.classification)) {
-        data.practice.classification.forEach((entry, index) => {
-            const code = entry.driver;
-            const compoundColor = _COMPOUND_COLORS[entry.compound] || '#F0F0F5';
-            const dotHtml = `<span class="standings-compound-badge" style="background-color: ${compoundColor}" title="${entry.compound}"></span>`;
-            const gapHtml =
-                index === 0
-                    ? `${dotHtml}${formatSessionDuration(entry.best_lap)}`
-                    : `${dotHtml}+${Number(entry.gap_to_p1).toFixed(3)}s`;
-            const detailHtml = `${entry.total_laps} Laps`;
-            const driverObj = { code, team: entry.team, color: entry.color };
-            const row = _createStandingsRowElement(driverObj, index, gapHtml, detailHtml);
-            container.appendChild(row);
-            rowBindings.push({ row, driver: driverObj });
-        });
-        _bindStandingsRowInteractions(container, rowBindings, activeSession);
-        return;
-    }
-
-    if (
+    if (activeSession === 'practice' && Array.isArray(data?.practice?.classification)) {
+        rowBindings = _renderPracticeStandingsRows(container, data.practice.classification);
+    } else if (
         (activeSession === 'qualifying' || activeSession === 'sprint_qualifying') &&
-        data.qualifying &&
-        Array.isArray(data.qualifying.results)
+        Array.isArray(data?.qualifying?.results)
     ) {
-        const cutoffs = data.qualifying.cutoffs || {};
-        const stagePrefix =
-            data.qualifying.stage_prefix || (activeSession === 'sprint_qualifying' ? 'SQ' : 'Q');
-        data.qualifying.results.forEach((entry, index) => {
-            const code = entry.driver;
-            const gapHtml =
-                index === 0
-                    ? formatSessionDuration(entry.best_time)
-                    : `+${Number(entry.gap_to_pole).toFixed(3)}s`;
-            const detailHtml = `${entry.eliminated_in} · ${formatSessionDuration(entry.best_time)}`;
-            const driverObj = { code, team: entry.team, color: entry.color };
-            const row = _createStandingsRowElement(driverObj, index, gapHtml, detailHtml);
-            container.appendChild(row);
-            rowBindings.push({ row, driver: driverObj });
+        rowBindings = _renderQualifyingStandingsRows(container, data.qualifying, activeSession);
+    } else {
+        rowBindings = _renderRaceStandingsRows(container, data);
+    }
 
-            if (index === 9 && data.qualifying.results.length > 10) {
-                container.appendChild(
-                    _createCutoffDividerElement(
-                        `${stagePrefix}3 CUTOFF · TOP 10`,
-                        formatSessionDuration(cutoffs.q3_cutoff_time || entry.best_time)
-                    )
-                );
-            } else if (index === 15 && data.qualifying.results.length > 16) {
-                container.appendChild(
-                    _createCutoffDividerElement(
-                        `${stagePrefix}2 CUTOFF · TOP 16`,
-                        formatSessionDuration(cutoffs.q2_cutoff_time || entry.best_time)
-                    )
-                );
-            }
-        });
+    if (rowBindings.length > 0) {
         _bindStandingsRowInteractions(container, rowBindings, activeSession);
-        return;
     }
-
-    // Default: Race Classification
-    const { validLaps, maxLap, classification } = calculateDriverClassification(data);
-    if (validLaps.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted)">No classification data available.</p>';
-        return;
-    }
-
-    const winnerTime = classification[0].lastLapTime;
-    classification.forEach((driver, index) => {
-        const { gapText, detailText } = _formatRaceGapAndDetail(driver, index, winnerTime, maxLap);
-        const row = _createStandingsRowElement(driver, index, gapText, detailText);
-        container.appendChild(row);
-        rowBindings.push({ row, driver });
-    });
-
-    _bindStandingsRowInteractions(container, rowBindings, activeSession);
 }

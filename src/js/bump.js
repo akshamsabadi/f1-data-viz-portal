@@ -4,13 +4,21 @@ const _CHART_MARGIN = { top: 20, right: 76, bottom: 40, left: 76 };
 const _CHART_HEIGHT_PX = 440;
 const _DEFAULT_MAX_POSITIONS = 22;
 const _X_AXIS_TICKS = 10;
+const _X_AXIS_LABEL_OFFSET_Y_PX = 35;
 const _Y_AXIS_TICK_PADDING_PX = 38;
 const _Y_AXIS_LABEL_OFFSET_Y_PX = -62;
 const _DEFAULT_STROKE_WIDTH = 2;
 const _HOVER_STROKE_WIDTH = 4;
 const _HOVER_TARGET_STROKE_WIDTH = 12;
 const _NODE_RADIUS_PX = 4;
+const _NODE_STROKE_WIDTH_PX = 1;
 const _LABEL_OFFSET_X_PX = 8;
+const _LABEL_HALO_STROKE_WIDTH_PX = 3.5;
+const _START_LABEL_FONT_SIZE_PX = '10.5px';
+const _END_LABEL_FONT_SIZE_PX = '11px';
+const _FALLBACK_LINE_COLOR = '#ccc';
+const _GAIN_COLOR = '#22c55e';
+const _LOSS_COLOR = '#ef4444';
 const _ACTIVE_OPACITY = 1;
 const _DIMMED_OPACITY = 0.38;
 const _TEAMMATE_SECOND_DASH_ARRAY = '8,4';
@@ -218,6 +226,23 @@ function _formatEndLabelText(driverCode, laps) {
 }
 
 /**
+ * Renders an empty-state message inside `#bump-chart`.
+ *
+ * @param {HTMLElement} container - Bump chart container element.
+ * @returns {void}
+ */
+function _renderEmptyBumpState(container) {
+    const emptyMsg = document.createElement('p');
+    emptyMsg.style.color = 'var(--text-muted)';
+    emptyMsg.style.textAlign = 'center';
+    emptyMsg.style.paddingTop = '2rem';
+    emptyMsg.style.fontFamily = 'Montserrat, sans-serif';
+    emptyMsg.style.textTransform = 'uppercase';
+    emptyMsg.textContent = 'No position data available.';
+    container.replaceChildren(emptyMsg);
+}
+
+/**
  * Renders background gridlines, the horizontal Lap axis, and the vertical Position axis.
  *
  * @param {Object} svg - D3 selection for the chart's main translated group.
@@ -238,7 +263,7 @@ function _renderBumpAxesAndGrid(svg, xScale, yScale, width, height, maxPos) {
         .call(d3.axisBottom(xScale).ticks(_X_AXIS_TICKS).tickFormat(d3.format('d')))
         .append('text')
         .attr('x', width)
-        .attr('y', 35)
+        .attr('y', _X_AXIS_LABEL_OFFSET_Y_PX)
         .attr('fill', 'var(--text-muted)')
         .attr('text-anchor', 'end')
         .style('font-family', 'Montserrat, sans-serif')
@@ -277,7 +302,7 @@ function _renderBumpLines(svg, driverLapsProcessed, driverColors, lineGenerator)
         .append('path')
         .attr('class', 'bump-line')
         .attr('fill', 'none')
-        .attr('stroke', (d) => driverColors[d[0]] || '#ccc')
+        .attr('stroke', (d) => driverColors[d[0]] || _FALLBACK_LINE_COLOR)
         .attr('stroke-width', _DEFAULT_STROKE_WIDTH)
         .attr('opacity', (d) => getBumpLineOpacity(d[1]))
         .attr('stroke-dasharray', (d) => _getStrokeDashArray(d[1]))
@@ -321,9 +346,9 @@ function _renderBumpNodesAndLabels(svg, driverLapsProcessed, driverColors, xScal
         .attr('cx', (d) => xScale(d[1][0].lap))
         .attr('cy', (d) => yScale(d[1][0].position))
         .attr('r', _NODE_RADIUS_PX)
-        .attr('fill', (d) => driverColors[d[0]] || '#ccc')
+        .attr('fill', (d) => driverColors[d[0]] || _FALLBACK_LINE_COLOR)
         .attr('stroke', 'var(--bg-dark)')
-        .attr('stroke-width', 1);
+        .attr('stroke-width', _NODE_STROKE_WIDTH_PX);
 
     const startLabels = startNodesGroup
         .selectAll('.start-label')
@@ -335,13 +360,13 @@ function _renderBumpNodesAndLabels(svg, driverLapsProcessed, driverColors, xScal
         .attr('y', (d) => yScale(d[1][0].position))
         .attr('dy', '0.35em')
         .attr('text-anchor', 'end')
-        .attr('fill', (d) => driverColors[d[0]] || '#ccc')
+        .attr('fill', (d) => driverColors[d[0]] || _FALLBACK_LINE_COLOR)
         .style('paint-order', 'stroke')
         .attr('stroke', 'var(--bg-dark)')
-        .attr('stroke-width', 3.5)
+        .attr('stroke-width', _LABEL_HALO_STROKE_WIDTH_PX)
         .attr('stroke-linejoin', 'round')
         .style('font-family', 'Titillium Web, sans-serif')
-        .style('font-size', '10.5px')
+        .style('font-size', _START_LABEL_FONT_SIZE_PX)
         .style('font-weight', '700')
         .text((d) => d[0]);
 
@@ -355,9 +380,9 @@ function _renderBumpNodesAndLabels(svg, driverLapsProcessed, driverColors, xScal
         .attr('cx', (d) => xScale(d[1][d[1].length - 1].lap))
         .attr('cy', (d) => yScale(d[1][d[1].length - 1].position))
         .attr('r', _NODE_RADIUS_PX)
-        .attr('fill', (d) => driverColors[d[0]] || '#ccc')
+        .attr('fill', (d) => driverColors[d[0]] || _FALLBACK_LINE_COLOR)
         .attr('stroke', 'var(--bg-dark)')
-        .attr('stroke-width', 1);
+        .attr('stroke-width', _NODE_STROKE_WIDTH_PX);
 
     const endLabels = endNodesGroup
         .selectAll('.end-label')
@@ -368,13 +393,13 @@ function _renderBumpNodesAndLabels(svg, driverLapsProcessed, driverColors, xScal
         .attr('x', (d) => xScale(d[1][d[1].length - 1].lap) + _LABEL_OFFSET_X_PX)
         .attr('y', (d) => yScale(d[1][d[1].length - 1].position))
         .attr('dy', '0.35em')
-        .attr('fill', (d) => driverColors[d[0]] || '#ccc')
+        .attr('fill', (d) => driverColors[d[0]] || _FALLBACK_LINE_COLOR)
         .style('paint-order', 'stroke')
         .attr('stroke', 'var(--bg-dark)')
-        .attr('stroke-width', 3.5)
+        .attr('stroke-width', _LABEL_HALO_STROKE_WIDTH_PX)
         .attr('stroke-linejoin', 'round')
         .style('font-family', 'Titillium Web, sans-serif')
-        .style('font-size', '11px')
+        .style('font-size', _END_LABEL_FONT_SIZE_PX)
         .style('font-weight', '700')
         .text((d) => _formatEndLabelText(d[0], d[1]));
 
@@ -382,21 +407,83 @@ function _renderBumpNodesAndLabels(svg, driverLapsProcessed, driverColors, xScal
 }
 
 /**
- * Formats the position delta string between Lap 1 and final classification.
+ * Creates a styled `<span>` element representing the position gain/loss between starting grid and finish.
  *
- * @param {number} startPos - Position at the end of Lap 1.
+ * @param {number} startPos - Starting grid position.
  * @param {number} finishPos - Official final classification rank.
- * @returns {string} Formatted delta badge HTML.
+ * @returns {HTMLSpanElement} Styled delta badge span element.
  */
-function _formatPositionDeltaHtml(startPos, finishPos) {
+function _createPositionDeltaSpan(startPos, finishPos) {
     const delta = startPos - finishPos;
+    const span = document.createElement('span');
+
     if (delta > 0) {
-        return `<span style="color: #22c55e; font-weight: 700;">▲ +${delta}</span>`;
+        span.style.color = _GAIN_COLOR;
+        span.style.fontWeight = '700';
+        span.textContent = `▲ +${delta}`;
+        return span;
     }
     if (delta < 0) {
-        return `<span style="color: #ef4444; font-weight: 700;">▼ ${delta}</span>`;
+        span.style.color = _LOSS_COLOR;
+        span.style.fontWeight = '700';
+        span.textContent = `▼ ${delta}`;
+        return span;
     }
-    return `<span style="color: var(--text-muted); font-weight: 600;">— 0</span>`;
+
+    span.style.color = 'var(--text-muted)';
+    span.style.fontWeight = '600';
+    span.textContent = '— 0';
+    return span;
+}
+
+/**
+ * Populates the shared `#tooltip` DOM node with driver grid, Lap 1, and finish position details.
+ *
+ * @param {HTMLElement|null} tooltipNode - DOM node of `#tooltip`.
+ * @param {Object} info - Driver classification entry.
+ * @param {Array<Object>} laps - Processed lap series for the hovered driver.
+ * @returns {void}
+ */
+function _populateBumpTooltip(tooltipNode, info, laps) {
+    if (!tooltipNode || !info) return;
+
+    const gridPos = laps[0]?.position ?? info.rank;
+    const lap1Pos = laps[1]?.position ?? gridPos;
+    const finishPos = info.rank;
+
+    const headerDiv = document.createElement('div');
+    headerDiv.style.fontFamily = 'Montserrat, sans-serif';
+    headerDiv.style.fontWeight = '700';
+    headerDiv.style.marginBottom = '4px';
+    headerDiv.style.textTransform = 'uppercase';
+    headerDiv.appendChild(document.createTextNode(info.code));
+
+    const teamSpan = document.createElement('span');
+    teamSpan.style.color = 'var(--text-muted)';
+    teamSpan.style.fontWeight = '600';
+    teamSpan.style.fontSize = '0.75rem';
+    teamSpan.style.marginLeft = '6px';
+    teamSpan.textContent = info.team;
+    headerDiv.appendChild(teamSpan);
+
+    const summaryDiv = document.createElement('div');
+    summaryDiv.style.fontSize = '0.85rem';
+    summaryDiv.style.fontWeight = '600';
+
+    if (info.isDns) {
+        summaryDiv.textContent = `Grid: P${gridPos} → DNS`;
+    } else if (info.isDnf) {
+        summaryDiv.textContent = `Grid: P${gridPos} · Lap 1: P${lap1Pos} → DNF (Lap ${info.lapsCompleted})`;
+    } else {
+        summaryDiv.appendChild(
+            document.createTextNode(
+                `Grid: P${gridPos} · Lap 1: P${lap1Pos} → Finish: P${finishPos} `
+            )
+        );
+        summaryDiv.appendChild(_createPositionDeltaSpan(gridPos, finishPos));
+    }
+
+    tooltipNode.replaceChildren(headerDiv, summaryDiv);
 }
 
 /**
@@ -421,31 +508,11 @@ function _bindBumpHoverInteraction(
         applyFocusState(hoveredDriver);
 
         if (!info) return;
-        const gridPos = laps[0]?.position ?? info.rank;
-        const lap1Pos = laps[1]?.position ?? gridPos;
-        const finishPos = info.rank;
-        const deltaHtml = info.isDns ? '' : _formatPositionDeltaHtml(gridPos, finishPos);
-
-        let positionText = '';
-        if (info.isDns) {
-            positionText = `Grid: P${gridPos} → DNS`;
-        } else if (info.isDnf) {
-            positionText = `Grid: P${gridPos} · Lap 1: P${lap1Pos} → DNF (Lap ${info.lapsCompleted})`;
-        } else {
-            positionText = `Grid: P${gridPos} · Lap 1: P${lap1Pos} → Finish: P${finishPos} ${deltaHtml}`;
-        }
+        _populateBumpTooltip(tooltip.node(), info, laps);
 
         tooltip
             .classed('hidden', false)
             .style('border-left-color', info.color || 'var(--accent)')
-            .html(`
-                <div style="font-family: Montserrat, sans-serif; font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">
-                    ${info.code}<span style="color: var(--text-muted); font-weight: 600; font-size: 0.75rem; margin-left: 6px;">${info.team}</span>
-                </div>
-                <div style="font-size: 0.85rem; font-weight: 600;">
-                    ${positionText}
-                </div>
-            `)
             .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
             .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
     };
@@ -468,6 +535,50 @@ function _bindBumpHoverInteraction(
 }
 
 /**
+ * Applies visual focus styling across bump lines, start/end circles, and driver labels.
+ *
+ * @param {Object} selections - Object containing `paths`, `startNodes`, `startLabels`, `endNodes`, and `endLabels`.
+ * @param {string|null} activeDriver - Currently focused or hovered driver code, or null.
+ * @returns {void}
+ */
+function _applyBumpVisualFocus(selections, activeDriver) {
+    const { paths, startNodes, startLabels, endNodes, endLabels } = selections;
+
+    if (activeDriver === null) {
+        paths
+            .attr('opacity', (p) => getBumpLineOpacity(p[1]))
+            .attr('stroke-width', _DEFAULT_STROKE_WIDTH);
+        startNodes.attr('opacity', _ACTIVE_OPACITY);
+        startLabels.attr('opacity', _ACTIVE_OPACITY);
+        endNodes.attr('opacity', _ACTIVE_OPACITY);
+        endLabels.attr('opacity', _ACTIVE_OPACITY);
+        return;
+    }
+
+    paths
+        .attr('opacity', (p) =>
+            p[0] === activeDriver
+                ? _ACTIVE_OPACITY
+                : Math.min(_DIMMED_OPACITY, getBumpLineOpacity(p[1]))
+        )
+        .attr('stroke-width', (p) =>
+            p[0] === activeDriver ? _HOVER_STROKE_WIDTH : _DEFAULT_STROKE_WIDTH
+        );
+    startNodes.attr('opacity', (p) =>
+        p[0] === activeDriver ? _ACTIVE_OPACITY : _DIMMED_OPACITY
+    );
+    startLabels.attr('opacity', (p) =>
+        p[0] === activeDriver ? _ACTIVE_OPACITY : _DIMMED_OPACITY
+    );
+    endNodes.attr('opacity', (p) =>
+        p[0] === activeDriver ? _ACTIVE_OPACITY : _DIMMED_OPACITY
+    );
+    endLabels.attr('opacity', (p) =>
+        p[0] === activeDriver ? _ACTIVE_OPACITY : _DIMMED_OPACITY
+    );
+}
+
+/**
  * Renders the Track Position bump chart across all laps of the race.
  *
  * @param {Object} data - Race telemetry payload containing `laps` and `drivers`.
@@ -475,12 +586,13 @@ function _bindBumpHoverInteraction(
  */
 export function renderBump(data) {
     const container = document.getElementById('bump-chart');
-    container.innerHTML = '';
+    if (!container) return;
+    container.replaceChildren();
 
     const { validLaps, maxLap, classification } = calculateDriverClassification(data);
     if (validLaps.length === 0) {
         _externalBumpFocusHandler = null;
-        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding-top: 2rem; font-family: Montserrat, sans-serif; text-transform: uppercase;">No position data available.</p>';
+        _renderEmptyBumpState(container);
         return;
     }
 
@@ -538,38 +650,12 @@ export function renderBump(data) {
     let localHoveredDriver = null;
 
     const updateVisualFocus = () => {
-        const activeDriver = localHoveredDriver !== null ? localHoveredDriver : externalDriver;
-        if (activeDriver === null) {
-            paths
-                .attr('opacity', (p) => getBumpLineOpacity(p[1]))
-                .attr('stroke-width', _DEFAULT_STROKE_WIDTH);
-            startNodes.attr('opacity', _ACTIVE_OPACITY);
-            startLabels.attr('opacity', _ACTIVE_OPACITY);
-            endNodes.attr('opacity', _ACTIVE_OPACITY);
-            endLabels.attr('opacity', _ACTIVE_OPACITY);
-        } else {
-            paths
-                .attr('opacity', (p) =>
-                    p[0] === activeDriver
-                        ? _ACTIVE_OPACITY
-                        : Math.min(_DIMMED_OPACITY, getBumpLineOpacity(p[1]))
-                )
-                .attr('stroke-width', (p) =>
-                    p[0] === activeDriver ? _HOVER_STROKE_WIDTH : _DEFAULT_STROKE_WIDTH
-                );
-            startNodes.attr('opacity', (p) =>
-                p[0] === activeDriver ? _ACTIVE_OPACITY : _DIMMED_OPACITY
-            );
-            startLabels.attr('opacity', (p) =>
-                p[0] === activeDriver ? _ACTIVE_OPACITY : _DIMMED_OPACITY
-            );
-            endNodes.attr('opacity', (p) =>
-                p[0] === activeDriver ? _ACTIVE_OPACITY : _DIMMED_OPACITY
-            );
-            endLabels.attr('opacity', (p) =>
-                p[0] === activeDriver ? _ACTIVE_OPACITY : _DIMMED_OPACITY
-            );
-        }
+        const activeDriver =
+            localHoveredDriver !== null ? localHoveredDriver : externalDriver;
+        _applyBumpVisualFocus(
+            { paths, startNodes, startLabels, endNodes, endLabels },
+            activeDriver
+        );
     };
 
     _externalBumpFocusHandler = (driverCode) => {
