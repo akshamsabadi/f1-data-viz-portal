@@ -487,9 +487,14 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
             const rec = lapsByDriver.get(code)?.get(lap);
             const isPitting = pitsOnLap.has(code);
 
+            const isRetiredDriver =
+                Boolean(entry.isDns) ||
+                Boolean(entry.isDnf) ||
+                maxLap - entry.lapsCompleted > 4;
+
             const isRetiredOnLap =
                 Boolean(entry.isDns) ||
-                (Boolean(entry.isDnf) && lap > entry.lapsCompleted);
+                (isRetiredDriver && lap > entry.lapsCompleted);
 
             if (isRetiredOnLap) {
                 const coords = sampleTrackPoint(prev.pct, 0);
@@ -1049,8 +1054,10 @@ function _createCircuitRadarSvg(radarMount, trackGeo, initialDrivers, onSelectDr
 
     const applyCarVisualStyles = () => {
         carNodes
+            .style('display', (d) => (d.isRetired ? 'none' : null))
+            .style('pointer-events', (d) => (d.isRetired ? 'none' : 'auto'))
             .style('opacity', (d) => {
-                if (d.isRetired) return _RETIRED_OPACITY;
+                if (d.isRetired) return 0;
                 if (currentFocusedDriver && d.code !== currentFocusedDriver) {
                     return _DIMMED_OPACITY;
                 }
@@ -1071,7 +1078,7 @@ function _createCircuitRadarSvg(radarMount, trackGeo, initialDrivers, onSelectDr
 
         carNodes
             .select('circle.replay-car-pit-ring')
-            .style('display', (d) => (d.isPitting ? null : 'none'));
+            .style('display', (d) => (!d.isRetired && d.isPitting ? null : 'none'));
 
         carNodes
             .select('text.replay-car-label')
@@ -1079,9 +1086,9 @@ function _createCircuitRadarSvg(radarMount, trackGeo, initialDrivers, onSelectDr
             .text((d) => (d.isPitting ? `${d.code} · PIT` : d.code));
 
         // Keep P1 and focused driver on top
-        carNodes.filter((d) => d.pos <= 3 || d.isPitting).raise();
+        carNodes.filter((d) => !d.isRetired && (d.pos <= 3 || d.isPitting)).raise();
         if (currentFocusedDriver) {
-            carNodes.filter((d) => d.code === currentFocusedDriver).raise();
+            carNodes.filter((d) => !d.isRetired && d.code === currentFocusedDriver).raise();
         }
     };
 
@@ -1291,11 +1298,16 @@ function _updateSliderSummaryChips(chipsContainer, snapshot, statusKey, currentL
         pitChip.style.border = '1px solid rgba(245, 158, 11, 0.45)';
         pitChip.textContent = `Pitting on Lap: ${snapshot.pittingDrivers.join(', ')}`;
     } else {
+        const totalCars = (snapshot.drivers || []).length;
+        const retiredCount = (snapshot.drivers || []).filter((d) => d.isRetired).length;
+        const activeCount = totalCars - retiredCount;
         pitChip.style.background = 'rgba(255, 255, 255, 0.04)';
         pitChip.style.color = 'var(--text-muted)';
         pitChip.textContent =
             statusKey === _STATUS_GREEN
-                ? 'All Cars on Track'
+                ? retiredCount > 0
+                    ? `${activeCount} Cars Running · ${retiredCount} OUT`
+                    : 'All Cars on Track'
                 : _TRACK_STATUS_CONFIG[statusKey].label;
     }
 
