@@ -16,7 +16,7 @@ import { renderRacePitStops } from './race_pitstops.js';
 import { renderRaceStintPace } from './race_stint_pace.js';
 import { renderRaceScrubber, stopRaceScrubberPlayback } from './race_scrubber.js';
 
-const APP_VERSION = 'v1.18.7';
+const APP_VERSION = 'v1.18.8';
 
 const _DEFAULT_SESSION = 'race';
 const _PANEL_KEYS = ['practice', 'qualifying', 'race'];

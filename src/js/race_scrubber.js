@@ -10,12 +10,13 @@ const _TRACK_BED_WIDTH_PX = 11;
 const _TRACK_SECTOR_LINE_WIDTH_PX = 3.8;
 const _FALLBACK_LOOP_POINTS_COUNT = 180;
 const _FALLBACK_REF_LAP_TIME_S = 90.0;
-const _LEADER_LAP_ADVANCE_PCT = 17;
-const _GRID_START_BASE_PCT = 99;
-const _GRID_START_STEP_PCT = 1.35;
+const _LEADER_START_FINISH_PCT = 0;
+const _GRID_START_BASE_PCT = 99.2;
+const _GRID_START_STEP_PCT = 1.15;
 const _GRID_NORMAL_OFFSET_PX = 4;
-const _DECOLLIDE_PCT_THRESHOLD = 0.8;
+const _DECOLLIDE_PCT_THRESHOLD = 0.85;
 const _DECOLLIDE_NORMAL_OFFSET_PX = 4.5;
+const _STEP_TRANSITION_DURATION_MS = 220;
 const _CAR_MARKER_RADIUS_PX = 6.5;
 const _CAR_MARKER_FOCUSED_RADIUS_PX = 9.0;
 const _CAR_PIT_RING_RADIUS_PX = 11.0;
@@ -421,6 +422,7 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
                 isPitting: false,
                 tactic: null,
                 pct,
+                normalOffset,
                 x: coords.x,
                 y: coords.y
             };
@@ -438,6 +440,7 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
             d.code,
             {
                 pct: d.pct,
+                normalOffset: d.normalOffset,
                 compound: d.compound,
                 tyreAge: 0,
                 sessionTime: 0,
@@ -448,14 +451,18 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
 
     for (let lap = 1; lap <= maxLap; lap++) {
         const pitsOnLap = pitsByLap.get(lap) || new Set();
-        const leaderPct = (lap * _LEADER_LAP_ADVANCE_PCT) % 100;
+        const leaderPct = _LEADER_START_FINISH_PCT;
 
         let minSessionTime = Infinity;
+        let leaderLapDuration = refLapTime;
         classification.forEach((entry) => {
             const rec = lapsByDriver.get(entry.code)?.get(lap);
             if (rec && Number.isFinite(rec.session_time) && rec.session_time > 0) {
                 if (rec.session_time < minSessionTime) {
                     minSessionTime = rec.session_time;
+                    if (Number.isFinite(rec.time) && rec.time > 35) {
+                        leaderLapDuration = rec.time;
+                    }
                 }
             }
         });
@@ -490,6 +497,7 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
                     isPitting: false,
                     tactic: null,
                     pct: prev.pct,
+                    normalOffset: 0,
                     x: coords.x,
                     y: coords.y
                 };
@@ -505,11 +513,12 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
                         ? Math.max(0, rec.session_time - minSessionTime)
                         : 0;
                 const pct =
-                    ((leaderPct - (gapSeconds / refLapTime) * 100) % 100 + 100) % 100;
+                    ((leaderPct - (gapSeconds / leaderLapDuration) * 100) % 100 + 100) % 100;
                 const pos = Number.isFinite(rec.position) ? rec.position : prev.pos;
 
                 lastKnownStateByDriver.set(code, {
                     pct,
+                    normalOffset: 0,
                     compound,
                     tyreAge,
                     sessionTime: rec.session_time || prev.sessionTime,
@@ -532,6 +541,7 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
                     isPitting,
                     tactic,
                     pct,
+                    normalOffset: 0,
                     x: 0,
                     y: 0
                 };
@@ -556,6 +566,7 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
                 isPitting: false,
                 tactic: null,
                 pct: prev.pct,
+                normalOffset: 0,
                 x: 0,
                 y: 0
             };
@@ -571,11 +582,13 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
             d.pos = idx + 1;
             d.gridDelta = d.gridPos - d.pos;
             if (d.pos === 1 && !d.isRetired) {
+                d.pct = _LEADER_START_FINISH_PCT;
+                d.gapSeconds = 0;
                 d.gapLabel = d.isPitting ? 'LEADER · PIT' : 'LEADER';
             }
         });
 
-        // Apply lateral normal offset if two active cars are within 0.8% track distance
+        // Apply lateral normal offset if two active cars are within 0.85% track distance
         const activeCars = rawLapDrivers.filter((d) => !d.isRetired);
         for (let i = 0; i < activeCars.length; i++) {
             const car = activeCars[i];
@@ -591,6 +604,7 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
                             : -_DECOLLIDE_NORMAL_OFFSET_PX;
                 }
             }
+            car.normalOffset = normalOffset;
             const coords = sampleTrackPoint(car.pct, normalOffset);
             car.x = coords.x;
             car.y = coords.y;
@@ -760,7 +774,20 @@ function _populateRadarCarTooltip(tooltipNode, car, currentLap) {
             ? `Starting Grid: P${car.gridPos} · Tyre: ${car.compound}`
             : `Lap ${currentLap} · Gap: ${car.gapLabel} · Tyre: ${car.compound} (${car.tyreAge}L)`;
 
-    const children = [headerDiv, statusLine];
+    const trackRefLine = document.createElement('div');
+    trackRefLine.style.marginTop = '3px';
+    trackRefLine.style.fontSize = '0.73rem';
+    trackRefLine.style.color = 'var(--text-muted)';
+    if (currentLap === 0) {
+        trackRefLine.textContent = `Grid Formation behind Start/Finish Line`;
+    } else if (car.pos === 1) {
+        trackRefLine.textContent = `Track Position: Crossing Start/Finish Line (0.0% lap)`;
+    } else {
+        const behindPct = (((100 - (car.pct || 0)) % 100) + 100) % 100;
+        trackRefLine.textContent = `Track Position: ${behindPct.toFixed(1)}% of lap behind leader at S/F`;
+    }
+
+    const children = [headerDiv, statusLine, trackRefLine];
 
     if (car.isPitting && car.tactic) {
         const pitLine = document.createElement('div');
@@ -908,6 +935,38 @@ function _createCircuitRadarSvg(radarMount, trackGeo, initialDrivers, onSelectDr
             .append('polygon')
             .attr('points', '7,-5 16,0 7,5')
             .attr('fill', '#ffffff');
+
+        const rad = (angleDeg * Math.PI) / 180;
+        const sfLabelX = sx - Math.sin(rad) * 20;
+        const sfLabelY = sy + Math.cos(rad) * 20;
+        const sfBadge = svg
+            .append('g')
+            .attr('class', 'start-finish-label-badge')
+            .attr('transform', `translate(${sfLabelX},${sfLabelY})`)
+            .style('pointer-events', 'none');
+
+        sfBadge
+            .append('rect')
+            .attr('x', -13)
+            .attr('y', -7.5)
+            .attr('width', 26)
+            .attr('height', 15)
+            .attr('rx', 3)
+            .attr('fill', 'rgba(15, 15, 23, 0.94)')
+            .attr('stroke', 'rgba(255, 255, 255, 0.65)')
+            .attr('stroke-width', 1);
+
+        sfBadge
+            .append('text')
+            .attr('x', 0)
+            .attr('y', 0.5)
+            .attr('dy', '0.32em')
+            .attr('text-anchor', 'middle')
+            .attr('fill', '#ffffff')
+            .style('font-family', 'Montserrat, sans-serif')
+            .style('font-size', '7.5px')
+            .style('font-weight', '800')
+            .text('S/F');
     }
 
     // Cars layer
@@ -1191,9 +1250,10 @@ function _renderTowerRows(towerListEl, drivers, focusedDriver, onSelectDriver) {
  * @param {HTMLElement} chipsContainer - Summary chips container element.
  * @param {Object} snapshot - Active lap snapshot (`leaderCode`, `pittingDrivers`).
  * @param {string} statusKey - Active track status key (`'GREEN'`, `'SC'`, `'VSC'`).
+ * @param {number} currentLap - Active lap number.
  * @returns {void}
  */
-function _updateSliderSummaryChips(chipsContainer, snapshot, statusKey) {
+function _updateSliderSummaryChips(chipsContainer, snapshot, statusKey, currentLap) {
     const leaderChip = document.createElement('span');
     leaderChip.className = 'replay-summary-chip';
     leaderChip.style.fontFamily = 'Montserrat, sans-serif';
@@ -1203,7 +1263,10 @@ function _updateSliderSummaryChips(chipsContainer, snapshot, statusKey) {
     leaderChip.style.borderRadius = '4px';
     leaderChip.style.background = 'rgba(255, 255, 255, 0.06)';
     leaderChip.style.color = '#ffffff';
-    leaderChip.textContent = `Leader: ${snapshot.leaderCode}`;
+    leaderChip.textContent =
+        currentLap === 0
+            ? `Pole Position: ${snapshot.leaderCode}`
+            : `Leader @ Start/Finish: ${snapshot.leaderCode}`;
 
     const pitChip = document.createElement('span');
     pitChip.className = 'replay-summary-chip';
@@ -1413,9 +1476,9 @@ export function renderRaceScrubber(data) {
         lapBadge.textContent =
             currentLap === 0
                 ? `LAP 0 / ${maxLap} · STARTING GRID`
-                : `LAP ${currentLap} / ${maxLap}`;
+                : `LAP ${currentLap} / ${maxLap} · LEADER @ S/F`;
 
-        _updateSliderSummaryChips(chipsContainer, snapshot, statusKey);
+        _updateSliderSummaryChips(chipsContainer, snapshot, statusKey, currentLap);
         if (headerControls) {
             headerControls.updateStatusPill(statusKey);
         }
