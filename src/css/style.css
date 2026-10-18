@@ -1331,3 +1331,179 @@ circle.data-point:hover {
     color: #ffffff;
     border-bottom: 2px solid var(--accent);
 }
+
+/* Interactive Race Replay & GPS Track Radar Scrubber */
+.race-replay-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.replay-slider-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.65rem 0.9rem;
+    background: rgba(12, 12, 18, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+}
+
+.replay-lap-readout {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: #ffffff;
+    background: rgba(225, 6, 0, 0.22);
+    border: 1px solid rgba(225, 6, 0, 0.5);
+    padding: 0.25rem 0.65rem;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.replay-range-slider {
+    flex: 1;
+    min-width: 180px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    height: 6px;
+}
+
+.replay-summary-chips {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.66rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.replay-chip {
+    padding: 0.18rem 0.5rem;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: var(--text-primary);
+}
+
+.replay-transport-btn {
+    appearance: none;
+    background: rgba(225, 6, 0, 0.2);
+    border: 1px solid rgba(225, 6, 0, 0.55);
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    padding: 0.32rem 0.7rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.replay-transport-btn:hover {
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(225, 6, 0, 0.35);
+}
+
+.replay-transport-btn.step-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: var(--text-primary);
+    padding: 0.32rem 0.52rem;
+}
+
+.replay-transport-btn.step-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: none;
+}
+
+.replay-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.38rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    padding: 0.26rem 0.65rem;
+    border-radius: 4px;
+    border: 1px solid rgba(34, 197, 94, 0.45);
+    background: rgba(34, 197, 94, 0.14);
+    color: #4ade80;
+}
+
+.replay-stage-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.9fr) minmax(290px, 1fr);
+    gap: 1.15rem;
+    align-items: stretch;
+}
+
+@media (max-width: 1050px) {
+    .replay-stage-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.replay-radar-card {
+    background: radial-gradient(circle at 42% 50%, rgba(56, 189, 248, 0.06), rgba(0, 0, 0, 0.38) 72%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 0.75rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.replay-track-svg {
+    width: 100%;
+    height: auto;
+    max-height: 360px;
+    display: block;
+    overflow: visible;
+}
+
+.replay-tower {
+    background: rgba(12, 12, 18, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 0.75rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.28rem;
+    max-height: 390px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.replay-tower-row {
+    display: grid;
+    grid-template-columns: 28px 4px minmax(52px, 1fr) 38px 48px 66px;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.24rem 0.4rem;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.replay-tower-row:hover,
+.replay-tower-row.active {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.22);
+}
+

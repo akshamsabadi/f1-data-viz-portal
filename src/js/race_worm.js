@@ -33,7 +33,18 @@ const _TOOLTIP_OFFSET_Y_PX = -28;
 const _VIEW_MODE_LEAD = 'lead';
 const _VIEW_MODE_FULL = 'full';
 
+const _PLAYHEAD_COLOR = '#38bdf8';
+const _PLAYHEAD_STROKE_WIDTH_PX = 1.8;
+const _PLAYHEAD_DASH_ARRAY = '5,3';
+const _PLAYHEAD_PILL_WIDTH_PX = 46;
+const _PLAYHEAD_PILL_HEIGHT_PX = 15;
+const _PLAYHEAD_PILL_Y_OFFSET_PX = -18;
+const _PLAYHEAD_PILL_RADIUS_PX = 3;
+const _PLAYHEAD_PILL_BG_FILL = 'rgba(15, 23, 42, 0.96)';
+
 let _externalWormFocusHandler = null;
+let _wormPlayheadHandler = null;
+let _currentWormPlayheadLap = null;
 let _clipPathCounter = 0;
 
 /**
@@ -45,6 +56,22 @@ let _clipPathCounter = 0;
 export function setRaceWormExternalFocus(driverCode) {
     if (_externalWormFocusHandler) {
         _externalWormFocusHandler(driverCode);
+    }
+}
+
+/**
+ * Updates or hides the synchronized vertical lap playhead line across `#race-worm-chart`.
+ *
+ * @param {number|null} lapNumber - Lap number to highlight (`1..maxLap`), or `null` to hide.
+ * @returns {void}
+ */
+export function setRaceWormPlayheadLap(lapNumber) {
+    _currentWormPlayheadLap =
+        lapNumber !== null && lapNumber !== undefined && Number.isFinite(Number(lapNumber))
+            ? Number(lapNumber)
+            : null;
+    if (_wormPlayheadHandler) {
+        _wormPlayheadHandler(_currentWormPlayheadLap);
     }
 }
 
@@ -728,6 +755,7 @@ export function renderRaceWorm(data) {
 
     if (seriesByDriver.length === 0 || maxLap === 0) {
         _externalWormFocusHandler = null;
+        _wormPlayheadHandler = null;
         _renderEmptyWormState(container);
         return;
     }
@@ -748,6 +776,45 @@ export function renderRaceWorm(data) {
 
     const { svg, gridGroup, axesGroup, plotGroup, labelsGroup, hoverDot } =
         _createWormSvgLayers(container, width, height, clipId);
+
+    const playheadGroup = svg
+        .append('g')
+        .attr('class', 'worm-playhead-layer')
+        .style('display', 'none')
+        .style('pointer-events', 'none');
+
+    playheadGroup
+        .append('line')
+        .attr('x1', 0)
+        .attr('x2', 0)
+        .attr('y1', 0)
+        .attr('y2', height)
+        .attr('stroke', _PLAYHEAD_COLOR)
+        .attr('stroke-width', _PLAYHEAD_STROKE_WIDTH_PX)
+        .attr('stroke-dasharray', _PLAYHEAD_DASH_ARRAY);
+
+    playheadGroup
+        .append('rect')
+        .attr('x', -_PLAYHEAD_PILL_WIDTH_PX / 2)
+        .attr('y', _PLAYHEAD_PILL_Y_OFFSET_PX)
+        .attr('width', _PLAYHEAD_PILL_WIDTH_PX)
+        .attr('height', _PLAYHEAD_PILL_HEIGHT_PX)
+        .attr('rx', _PLAYHEAD_PILL_RADIUS_PX)
+        .attr('fill', _PLAYHEAD_PILL_BG_FILL)
+        .attr('stroke', _PLAYHEAD_COLOR)
+        .attr('stroke-width', 1.2);
+
+    const playheadText = playheadGroup
+        .append('text')
+        .attr('x', 0)
+        .attr('y', _PLAYHEAD_PILL_Y_OFFSET_PX + _PLAYHEAD_PILL_HEIGHT_PX / 2)
+        .attr('dy', '0.35em')
+        .attr('text-anchor', 'middle')
+        .attr('fill', _PLAYHEAD_COLOR)
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-size', '9px')
+        .style('font-weight', '700')
+        .text('L1');
 
     const tooltip = d3.select('#tooltip');
     let visiblePaths = null;
@@ -774,6 +841,20 @@ export function renderRaceWorm(data) {
         const yMax = _computeWormYMax(currentViewMode, maxGapSeconds);
         const xScale = d3.scaleLinear().domain([1, maxLap]).range([0, width]);
         const yScale = d3.scaleLinear().domain([0, yMax]).range([0, height]);
+
+        _wormPlayheadHandler = (lapNumber) => {
+            if (lapNumber === null || lapNumber === undefined || !Number.isFinite(lapNumber)) {
+                playheadGroup.style('display', 'none');
+                return;
+            }
+            const clampedLap = Math.max(1, Math.min(maxLap, lapNumber));
+            const xPos = xScale(clampedLap);
+            playheadText.text(`L${clampedLap}`);
+            playheadGroup
+                .style('display', null)
+                .attr('transform', `translate(${xPos},0)`)
+                .raise();
+        };
 
         _renderWormGridAndAxes(
             gridGroup,
@@ -819,6 +900,9 @@ export function renderRaceWorm(data) {
         );
 
         hoverDot.raise();
+        if (_currentWormPlayheadLap !== null) {
+            _wormPlayheadHandler(_currentWormPlayheadLap);
+        }
         updateFocusStyles();
     };
 

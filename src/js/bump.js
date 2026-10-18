@@ -27,7 +27,18 @@ const _DNF_DASH_ARRAY = '3,3';
 const _TOOLTIP_OFFSET_X_PX = 15;
 const _TOOLTIP_OFFSET_Y_PX = -30;
 
+const _PLAYHEAD_COLOR = '#38bdf8';
+const _PLAYHEAD_STROKE_WIDTH_PX = 1.8;
+const _PLAYHEAD_DASH_ARRAY = '5,3';
+const _PLAYHEAD_PILL_WIDTH_PX = 46;
+const _PLAYHEAD_PILL_HEIGHT_PX = 15;
+const _PLAYHEAD_PILL_Y_OFFSET_PX = -17;
+const _PLAYHEAD_PILL_RADIUS_PX = 3;
+const _PLAYHEAD_PILL_BG_FILL = 'rgba(15, 23, 42, 0.96)';
+
 let _externalBumpFocusHandler = null;
+let _bumpPlayheadHandler = null;
+let _currentBumpPlayheadLap = null;
 
 /**
  * Highlights or restores a driver's trajectory in the Track Position bump chart from an external trigger.
@@ -38,6 +49,22 @@ let _externalBumpFocusHandler = null;
 export function setBumpExternalFocus(driverCode) {
     if (_externalBumpFocusHandler) {
         _externalBumpFocusHandler(driverCode);
+    }
+}
+
+/**
+ * Updates or hides the synchronized vertical lap playhead line across `#bump-chart`.
+ *
+ * @param {number|null} lapNumber - Lap number to highlight (`0..maxLap`), or `null` to hide.
+ * @returns {void}
+ */
+export function setBumpPlayheadLap(lapNumber) {
+    _currentBumpPlayheadLap =
+        lapNumber !== null && lapNumber !== undefined && Number.isFinite(Number(lapNumber))
+            ? Number(lapNumber)
+            : null;
+    if (_bumpPlayheadHandler) {
+        _bumpPlayheadHandler(_currentBumpPlayheadLap);
     }
 }
 
@@ -579,6 +606,70 @@ function _applyBumpVisualFocus(selections, activeDriver) {
 }
 
 /**
+ * Creates the vertical synchronized playhead layer (`g.bump-playhead-layer`) and returns its updater.
+ *
+ * @param {Object} svg - D3 selection for the chart's main translated group.
+ * @param {Function} xScale - D3 linear scale for lap numbers.
+ * @param {number} height - Inner chart height in pixels.
+ * @param {number} maxLap - Maximum race lap number.
+ * @returns {Function} `updatePlayhead(lapNumber)` callback.
+ */
+function _createBumpPlayheadLayer(svg, xScale, height, maxLap) {
+    const playheadGroup = svg
+        .append('g')
+        .attr('class', 'bump-playhead-layer')
+        .style('display', 'none')
+        .style('pointer-events', 'none');
+
+    playheadGroup
+        .append('line')
+        .attr('x1', 0)
+        .attr('x2', 0)
+        .attr('y1', 0)
+        .attr('y2', height)
+        .attr('stroke', _PLAYHEAD_COLOR)
+        .attr('stroke-width', _PLAYHEAD_STROKE_WIDTH_PX)
+        .attr('stroke-dasharray', _PLAYHEAD_DASH_ARRAY);
+
+    playheadGroup
+        .append('rect')
+        .attr('x', -_PLAYHEAD_PILL_WIDTH_PX / 2)
+        .attr('y', _PLAYHEAD_PILL_Y_OFFSET_PX)
+        .attr('width', _PLAYHEAD_PILL_WIDTH_PX)
+        .attr('height', _PLAYHEAD_PILL_HEIGHT_PX)
+        .attr('rx', _PLAYHEAD_PILL_RADIUS_PX)
+        .attr('fill', _PLAYHEAD_PILL_BG_FILL)
+        .attr('stroke', _PLAYHEAD_COLOR)
+        .attr('stroke-width', 1.2);
+
+    const playheadText = playheadGroup
+        .append('text')
+        .attr('x', 0)
+        .attr('y', _PLAYHEAD_PILL_Y_OFFSET_PX + _PLAYHEAD_PILL_HEIGHT_PX / 2)
+        .attr('dy', '0.35em')
+        .attr('text-anchor', 'middle')
+        .attr('fill', _PLAYHEAD_COLOR)
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-size', '9px')
+        .style('font-weight', '700')
+        .text('L0');
+
+    return (lapNumber) => {
+        if (lapNumber === null || lapNumber === undefined || !Number.isFinite(lapNumber)) {
+            playheadGroup.style('display', 'none');
+            return;
+        }
+        const clampedLap = Math.max(0, Math.min(maxLap, lapNumber));
+        const xPos = xScale(clampedLap);
+        playheadText.text(`L${clampedLap}`);
+        playheadGroup
+            .style('display', null)
+            .attr('transform', `translate(${xPos},0)`)
+            .raise();
+    };
+}
+
+/**
  * Renders the Track Position bump chart across all laps of the race.
  *
  * @param {Object} data - Race telemetry payload containing `laps` and `drivers`.
@@ -592,6 +683,7 @@ export function renderBump(data) {
     const { validLaps, maxLap, classification } = calculateDriverClassification(data);
     if (validLaps.length === 0) {
         _externalBumpFocusHandler = null;
+        _bumpPlayheadHandler = null;
         _renderEmptyBumpState(container);
         return;
     }
@@ -645,6 +737,11 @@ export function renderBump(data) {
         xScale,
         yScale
     );
+
+    _bumpPlayheadHandler = _createBumpPlayheadLayer(svg, xScale, height, maxLap);
+    if (_currentBumpPlayheadLap !== null) {
+        _bumpPlayheadHandler(_currentBumpPlayheadLap);
+    }
 
     let externalDriver = null;
     let localHoveredDriver = null;

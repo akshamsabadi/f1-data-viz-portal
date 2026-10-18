@@ -1,4 +1,6 @@
-const _CHART_MARGIN = { top: 24, right: 185, bottom: 42, left: 102 };
+import { analyzePitStopTactics } from './race_strategy.js';
+
+const _CHART_MARGIN = { top: 24, right: 265, bottom: 42, left: 102 };
 const _MIN_CONTAINER_WIDTH_PX = 360;
 const _DEFAULT_CONTAINER_WIDTH_PX = 860;
 const _ROW_HEIGHT_PX = 28;
@@ -33,6 +35,9 @@ const _READOUT_BACKING_X_PX = 62;
 const _READOUT_BACKING_WIDTH_PX = 112;
 const _READOUT_BACKING_RADIUS_PX = 3;
 const _READOUT_TEXT_X_PX = 66;
+const _TACTIC_PILL_X_PX = 178;
+const _TACTIC_PILL_WIDTH_PX = 76;
+const _TACTIC_DEFAULT_COLOR = '#9ca3af';
 const _FASTEST_DELTA_EPSILON_S = 0.001;
 const _ACTIVE_OPACITY = 1;
 const _RESTING_OPACITY = 0.9;
@@ -94,10 +99,11 @@ function _normalizeCompound(compound) {
 }
 
 /**
- * Extracts and normalizes pit stop records from `data.race_telemetry.pit_stops`.
+ * Extracts and normalizes pit stop records from `data.race_telemetry.pit_stops`,
+ * enriching each stop with its tactical classification from `analyzePitStopTactics`.
  *
  * @param {Object} data - Race telemetry payload.
- * @returns {Array<Object>} Normalized pit stop entries with unique row keys.
+ * @returns {Array<Object>} Normalized pit stop entries with unique row keys and tactical classifications.
  */
 function _resolvePitStops(data) {
     const rawStops =
@@ -106,6 +112,7 @@ function _resolvePitStops(data) {
             : [];
 
     const driverMetaByCode = new Map((data.drivers || []).map((d) => [d.code, d]));
+    const { byKey: tacticsByKey } = analyzePitStopTactics(data);
 
     return rawStops
         .map((stop, idx) => {
@@ -120,6 +127,14 @@ function _resolvePitStops(data) {
             const pitLoss = Number.isFinite(Number(stop.pit_loss_s))
                 ? Number(stop.pit_loss_s)
                 : null;
+            const tactic = tacticsByKey.get(`${stop.driver}-${lapNum}`) || {
+                category: 'STANDARD',
+                badgeLabel: 'HOLD',
+                shortBadge: 'HOLD',
+                color: _TACTIC_DEFAULT_COLOR,
+                detailText: 'Routine tyre service',
+                trafficRivals: []
+            };
 
             return {
                 id: `${stop.driver}-S${stopNum}-L${lapNum}-${idx}`,
@@ -132,7 +147,8 @@ function _resolvePitStops(data) {
                 from_compound: fromCompound,
                 to_compound: toCompound,
                 stationary_s: stationary,
-                pit_loss_s: pitLoss
+                pit_loss_s: pitLoss,
+                tactic
             };
         })
         .filter(
@@ -219,7 +235,7 @@ function _buildPitStopControls(controlsContainer, activeMetric, onMetricChange) 
 }
 
 /**
- * Populates the shared `#tooltip` element with pit stop telemetry details.
+ * Populates the shared `#tooltip` element with pit stop telemetry details and tactical outcome.
  *
  * @param {HTMLElement|null} tooltipNode - DOM node of `#tooltip`.
  * @param {Object} stop - Hovered pit stop entry.
@@ -284,7 +300,55 @@ function _populatePitStopTooltip(tooltipNode, stop, rank, fastestVal, activeMetr
         ? 'Fastest Pit Stop of Race'
         : `+${delta.toFixed(2)}s vs Fastest Stop`;
 
-    tooltipNode.replaceChildren(headerDiv, metaDiv, stationaryDiv, lossDiv, deltaDiv);
+    const children = [headerDiv, metaDiv, stationaryDiv, lossDiv, deltaDiv];
+
+    if (stop.tactic) {
+        const tacticWrap = document.createElement('div');
+        tacticWrap.style.marginTop = '6px';
+        tacticWrap.style.paddingTop = '5px';
+        tacticWrap.style.borderTop = '1px solid rgba(255, 255, 255, 0.12)';
+
+        const tacticBadgeRow = document.createElement('div');
+        tacticBadgeRow.style.display = 'flex';
+        tacticBadgeRow.style.alignItems = 'center';
+        tacticBadgeRow.style.gap = '6px';
+        tacticBadgeRow.style.marginBottom = '2px';
+
+        const pill = document.createElement('span');
+        pill.style.display = 'inline-block';
+        pill.style.padding = '1px 6px';
+        pill.style.borderRadius = '3px';
+        pill.style.fontFamily = 'Montserrat, sans-serif';
+        pill.style.fontSize = '0.68rem';
+        pill.style.fontWeight = '700';
+        pill.style.color = stop.tactic.color || _TACTIC_DEFAULT_COLOR;
+        pill.style.border = `1px solid ${stop.tactic.color || _TACTIC_DEFAULT_COLOR}`;
+        pill.style.backgroundColor = 'rgba(17, 17, 24, 0.92)';
+        pill.textContent = stop.tactic.badgeLabel || 'HOLD';
+
+        const detailSpan = document.createElement('span');
+        detailSpan.style.fontSize = '0.75rem';
+        detailSpan.style.fontWeight = '600';
+        detailSpan.style.color = 'var(--text-primary)';
+        detailSpan.textContent = stop.tactic.detailText || '';
+
+        tacticBadgeRow.append(pill, detailSpan);
+        tacticWrap.appendChild(tacticBadgeRow);
+
+        const trafficDiv = document.createElement('div');
+        trafficDiv.style.fontSize = '0.73rem';
+        trafficDiv.style.color = 'var(--text-muted)';
+        const rivalsText =
+            Array.isArray(stop.tactic.trafficRivals) && stop.tactic.trafficRivals.length > 0
+                ? stop.tactic.trafficRivals.join(', ')
+                : 'Clear track';
+        trafficDiv.textContent = `Pit-Loss Traffic Window: ${rivalsText}`;
+        tacticWrap.appendChild(trafficDiv);
+
+        children.push(tacticWrap);
+    }
+
+    tooltipNode.replaceChildren(...children);
 }
 
 /**
@@ -513,6 +577,31 @@ function _renderTransitionPill(rowGroups, xScale, yScale, activeMetric, fastestV
                 ? `${val.toFixed(2)}s (BEST)`
                 : `${val.toFixed(2)}s (+${delta.toFixed(2)}s)`;
         });
+
+    pillGroup
+        .append('rect')
+        .attr('class', 'pitstop-tactic-pill-bg')
+        .attr('x', _TACTIC_PILL_X_PX)
+        .attr('y', _PILL_OFFSET_Y_PX)
+        .attr('width', _TACTIC_PILL_WIDTH_PX)
+        .attr('height', _PILL_HEIGHT_PX)
+        .attr('rx', _PILL_CORNER_RADIUS_PX)
+        .attr('fill', _PILL_BG_FILL)
+        .attr('stroke', (d) => d.tactic?.color || _TACTIC_DEFAULT_COLOR)
+        .attr('stroke-width', 1.1);
+
+    pillGroup
+        .append('text')
+        .attr('class', 'pitstop-tactic-pill-text')
+        .attr('x', _TACTIC_PILL_X_PX + _TACTIC_PILL_WIDTH_PX / 2)
+        .attr('y', 0)
+        .attr('dy', '0.35em')
+        .attr('text-anchor', 'middle')
+        .attr('fill', (d) => d.tactic?.color || _TACTIC_DEFAULT_COLOR)
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-size', '8.5px')
+        .style('font-weight', '700')
+        .text((d) => d.tactic?.badgeLabel || 'HOLD');
 }
 
 /**

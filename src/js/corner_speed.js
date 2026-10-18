@@ -1,3 +1,5 @@
+import { setQualiTraceHighlightedTurn } from './quali_trace.js';
+
 const _SLOW_CORNER_MAX_KMH = 130;
 const _MEDIUM_CORNER_MAX_KMH = 200;
 const _TURN_SUBPLOT_MARGIN = { top: 8, right: 12, bottom: 22, left: 12 };
@@ -42,6 +44,7 @@ const _TRACK_VIEWBOX_H = 560;
 const _TRACK_OUTER_CASING_WIDTH_PX = 16;
 const _TRACK_BED_WIDTH_PX = 10;
 const _TRACK_SECTOR_LINE_WIDTH_PX = 4.2;
+const _TRACK_DOMINANCE_LINE_WIDTH_PX = 5.2;
 const _TRACK_ACTIVE_ARC_WIDTH_PX = 11.5;
 const _TURN_APEX_RADIUS_PX = 4.8;
 const _TURN_APEX_ACTIVE_RADIUS_PX = 8.2;
@@ -49,7 +52,20 @@ const _TURN_BADGE_RADIUS_PX = 11.5;
 const _TURN_BADGE_ACTIVE_RADIUS_PX = 14.5;
 const _INSPECTOR_TOP_TEAMS_LIMIT = 5;
 
+const _MAP_MODE_DOMINANCE = 'dominance';
+const _MAP_MODE_SECTORS = 'sectors';
+const _GHOST_CAR_RADIUS_PX = 7;
+const _GHOST_CAR_HALO_RADIUS_PX = 12;
+const _GHOST_CAR_NORMAL_OFFSET_PX = 2.5;
+const _GHOST_CAR_DELTA_PCT_SCALE = 1.8;
+const _GHOST_CAR_PILL_WIDTH_PX = 68;
+const _GHOST_CAR_PILL_HEIGHT_PX = 18;
+const _LIVE_HUD_HEIGHT_PX = 26;
+
 let _externalTeamFocusHandler = null;
+let _externalTurnHighlightHandler = null;
+let _latestTraceState = null;
+let _activeMapTraceUpdater = null;
 
 /**
  * Highlights or restores team nodes in the Corner Speeds subplots from an external trigger.
@@ -60,6 +76,34 @@ let _externalTeamFocusHandler = null;
 export function setCornerSpeedExternalFocus(teamName) {
     if (_externalTeamFocusHandler) {
         _externalTeamFocusHandler(teamName);
+    }
+}
+
+/**
+ * Highlights or clears a specific turn across the circuit track map, turn inspector,
+ * and corner speed subplot cards from an external chart trigger without re-calling
+ * `setQualiTraceHighlightedTurn`.
+ *
+ * @param {number|null} turnNumber - Turn number to highlight, or null to restore default.
+ * @returns {void}
+ */
+export function setCornerSpeedHighlightedTurn(turnNumber) {
+    if (_externalTurnHighlightHandler) {
+        _externalTurnHighlightHandler(turnNumber);
+    }
+}
+
+/**
+ * Stores the latest telemetry trace dominance and live hover state and immediately updates
+ * the circuit track map if mounted.
+ *
+ * @param {Object|null} traceState - Synchronized trace dominance and hover sample state.
+ * @returns {void}
+ */
+export function setCircuitMapTraceState(traceState) {
+    _latestTraceState = traceState;
+    if (_activeMapTraceUpdater) {
+        _activeMapTraceUpdater(traceState);
     }
 }
 
@@ -721,6 +765,298 @@ function _populateTurnInspectorCard(inspectorEl, turnData, turnGeo, s1EndIdx, s2
 }
 
 /**
+ * Interpolates a fractional lap percentage (`0..100`) smoothly along the closed circuit loop
+ * and computes its unit normal vector perpendicular to the track tangent.
+ *
+ * @param {Array<[number, number]>} points - Closed-loop circuit `[x, y]` coordinate array.
+ * @param {number} pct - Lap distance percentage (`0..100`).
+ * @returns {{x: number, y: number, nx: number, ny: number}} Interpolated coordinate and unit normal vector.
+ */
+function _interpolatePointOnTrack(points, pct) {
+    const count = points.length;
+    if (count === 0) {
+        return { x: 0, y: 0, nx: 0, ny: -1 };
+    }
+    const wrappedPct = ((pct % 100) + 100) % 100;
+    const exactIdx = (wrappedPct / 100) * count;
+    const idx0 = Math.floor(exactIdx) % count;
+    const idx1 = (idx0 + 1) % count;
+    const prevIdx = (idx0 - 1 + count) % count;
+    const frac = exactIdx - Math.floor(exactIdx);
+
+    const [x0, y0] = points[idx0];
+    const [x1, y1] = points[idx1];
+    const [px, py] = points[prevIdx];
+
+    const x = x0 + (x1 - x0) * frac;
+    const y = y0 + (y1 - y0) * frac;
+
+    const tx = x1 - px;
+    const ty = y1 - py;
+    const len = Math.hypot(tx, ty) || 1;
+
+    return {
+        x,
+        y,
+        nx: -ty / len,
+        ny: tx / len
+    };
+}
+
+/**
+ * Populates `.circuit-sector-pills` with either Driver A/B Track Dominance share pills
+ * or the 3 FIA Sector pills depending on the active map mode and trace state.
+ *
+ * @param {HTMLElement} sectorPillsEl - `.circuit-sector-pills` container element.
+ * @param {'dominance'|'sectors'} mode - Active circuit map visualization mode.
+ * @param {Object|null} traceState - Synchronized telemetry trace state.
+ * @returns {void}
+ */
+function _populateTopbarPills(sectorPillsEl, mode, traceState) {
+    if (!sectorPillsEl) return;
+
+    const hasDominanceData =
+        mode === _MAP_MODE_DOMINANCE &&
+        Boolean(traceState) &&
+        Array.isArray(traceState.dominanceSegments) &&
+        traceState.dominanceSegments.length > 0;
+
+    const pillSpecs = hasDominanceData
+        ? [
+              {
+                  label: `${traceState.driverA} ${traceState.shareA ?? 50}%`,
+                  color: traceState.colorA || '#e10600'
+              },
+              {
+                  label: `${traceState.driverB} ${traceState.shareB ?? 50}%`,
+                  color: traceState.colorB || '#38bdf8'
+              }
+          ]
+        : [
+              { label: 'Sector 1', color: _SECTOR_COLORS.S1 },
+              { label: 'Sector 2', color: _SECTOR_COLORS.S2 },
+              { label: 'Sector 3', color: _SECTOR_COLORS.S3 }
+          ];
+
+    const pillNodes = pillSpecs.map(({ label, color }) => {
+        const pill = document.createElement('span');
+        pill.className = 'circuit-sector-pill';
+        const dot = document.createElement('span');
+        dot.className = 'circuit-sector-dot';
+        dot.style.backgroundColor = color;
+        pill.append(dot, document.createTextNode(label));
+        return pill;
+    });
+
+    sectorPillsEl.replaceChildren(...pillNodes);
+}
+
+/**
+ * Renders the driver track dominance colored segments along the circuit loop inside `g.track-dominance-layer`.
+ *
+ * @param {Object} dominanceLayer - D3 selection for `g.track-dominance-layer`.
+ * @param {Array<[number, number]>} points - Circuit loop `[x, y]` coordinate array.
+ * @param {Function} openLine - D3 open line generator.
+ * @param {Object|null} traceState - Synchronized telemetry trace state with `dominanceSegments`.
+ * @returns {void}
+ */
+function _renderDominanceLayerSegments(dominanceLayer, points, openLine, traceState) {
+    if (!dominanceLayer) return;
+    dominanceLayer.selectAll('*').remove();
+
+    const segments = traceState?.dominanceSegments;
+    if (!Array.isArray(segments) || segments.length === 0 || points.length < 2) {
+        return;
+    }
+
+    const maxIdx = points.length - 1;
+    segments.forEach((seg) => {
+        const idxStart = Math.max(0, Math.floor((seg.startPct / 100) * maxIdx));
+        const idxEnd = Math.min(maxIdx, Math.ceil((seg.endPct / 100) * maxIdx));
+        const slice = points.slice(idxStart, Math.max(idxStart + 2, idxEnd + 1));
+        if (seg.endPct >= 99.5 && slice.length > 0) {
+            slice.push(points[0]);
+        }
+        if (slice.length < 2) return;
+
+        dominanceLayer
+            .append('path')
+            .datum(slice)
+            .attr('class', 'track-dominance-segment')
+            .attr('fill', 'none')
+            .attr('stroke', seg.color)
+            .attr('stroke-width', _TRACK_DOMINANCE_LINE_WIDTH_PX)
+            .attr('stroke-linecap', 'round')
+            .attr('opacity', 0.94)
+            .attr('d', openLine);
+
+        if (traceState.isSameTeam && seg.leader === 'B') {
+            dominanceLayer
+                .append('path')
+                .datum(slice)
+                .attr('class', 'track-dominance-segment-accent')
+                .attr('fill', 'none')
+                .attr('stroke', '#0d0d14')
+                .attr('stroke-width', 1.8)
+                .attr('stroke-dasharray', '5,4')
+                .attr('stroke-linecap', 'round')
+                .attr('d', openLine);
+        }
+    });
+}
+
+/**
+ * Creates a single ghost car marker group (`g.ghost-car-a` or `g.ghost-car-b`) with a glowing halo,
+ * team-colored circle, and floating telemetry speed callout pill.
+ *
+ * @param {Object} ghostLayer - Parent `g.track-ghost-cars-layer` D3 selection.
+ * @param {string} className - Marker CSS class (`ghost-car-a` or `ghost-car-b`).
+ * @param {number} pillOffsetY - Vertical offset in pixels for the floating callout pill.
+ * @returns {{group: Object, halo: Object, dot: Object, pillRect: Object, pillText: Object}} Ghost car D3 element references.
+ */
+function _createGhostCarMarkerGroup(ghostLayer, className, pillOffsetY) {
+    const group = ghostLayer.append('g').attr('class', className);
+
+    const halo = group
+        .append('circle')
+        .attr('class', 'ghost-car-halo')
+        .attr('r', _GHOST_CAR_HALO_RADIUS_PX)
+        .attr('fill-opacity', 0.28)
+        .attr('stroke-width', 1.5)
+        .attr('stroke-opacity', 0.78);
+
+    const dot = group
+        .append('circle')
+        .attr('class', 'ghost-car-dot')
+        .attr('r', _GHOST_CAR_RADIUS_PX)
+        .attr('stroke', '#ffffff')
+        .attr('stroke-width', 2);
+
+    const callout = group
+        .append('g')
+        .attr('class', 'ghost-car-callout')
+        .attr('transform', `translate(0,${pillOffsetY})`);
+
+    const pillRect = callout
+        .append('rect')
+        .attr('x', -_GHOST_CAR_PILL_WIDTH_PX / 2)
+        .attr('y', -_GHOST_CAR_PILL_HEIGHT_PX / 2)
+        .attr('width', _GHOST_CAR_PILL_WIDTH_PX)
+        .attr('height', _GHOST_CAR_PILL_HEIGHT_PX)
+        .attr('rx', 4)
+        .attr('fill', 'rgba(12, 12, 18, 0.92)')
+        .attr('stroke-width', 1.3);
+
+    const pillText = callout
+        .append('text')
+        .attr('x', 0)
+        .attr('y', 3.5)
+        .attr('text-anchor', 'middle')
+        .attr('fill', '#ffffff')
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-size', '9.5px')
+        .style('font-weight', '800');
+
+    return { group, halo, dot, pillRect, pillText };
+}
+
+/**
+ * Appends the `g.track-ghost-cars-layer` overlay and Live Telemetry HUD badge to the circuit SVG
+ * and returns a fast updater function for live trace crosshair scrubbing.
+ *
+ * @param {Object} svg - Root circuit map SVG D3 selection.
+ * @param {Array<[number, number]>} points - Closed-loop circuit coordinate array.
+ * @returns {Function} Updater function `(traceState) => void` for ghost car positions and HUD.
+ */
+function _createTrackGhostCarsLayer(svg, points) {
+    const ghostLayer = svg
+        .append('g')
+        .attr('class', 'track-ghost-cars-layer')
+        .style('display', 'none')
+        .style('pointer-events', 'none');
+
+    const hudGroup = ghostLayer
+        .append('g')
+        .attr('class', 'track-live-hud')
+        .attr('transform', 'translate(16, 16)');
+
+    const hudRect = hudGroup
+        .append('rect')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', 280)
+        .attr('height', _LIVE_HUD_HEIGHT_PX)
+        .attr('rx', 5)
+        .attr('fill', 'rgba(12, 12, 18, 0.92)')
+        .attr('stroke', 'rgba(255, 24, 1, 0.65)')
+        .attr('stroke-width', 1.2);
+
+    hudGroup
+        .append('circle')
+        .attr('cx', 12)
+        .attr('cy', _LIVE_HUD_HEIGHT_PX / 2)
+        .attr('r', 4)
+        .attr('fill', '#ff1801');
+
+    const hudText = hudGroup
+        .append('text')
+        .attr('x', 22)
+        .attr('y', 17)
+        .attr('fill', '#ffffff')
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-size', '10.5px')
+        .style('font-weight', '700');
+
+    const markerB = _createGhostCarMarkerGroup(ghostLayer, 'ghost-car-b', 20);
+    const markerA = _createGhostCarMarkerGroup(ghostLayer, 'ghost-car-a', -18);
+
+    return (traceState) => {
+        const hoverSample = traceState?.hoverSample;
+        if (!hoverSample || points.length < 2) {
+            ghostLayer.style('display', 'none');
+            return;
+        }
+
+        ghostLayer.style('display', null);
+
+        const colorA = traceState.colorA || '#e10600';
+        const colorB = traceState.colorB || '#38bdf8';
+        const driverA = traceState.driverA || 'DRV A';
+        const driverB = traceState.driverB || 'DRV B';
+
+        const pctA = hoverSample.pct;
+        const pctB =
+            (((hoverSample.pct - (hoverSample.delta || 0) * _GHOST_CAR_DELTA_PCT_SCALE) % 100) +
+                100) %
+            100;
+
+        const posA = _interpolatePointOnTrack(points, pctA);
+        const posB = _interpolatePointOnTrack(points, pctB);
+
+        const ax = posA.x + posA.nx * _GHOST_CAR_NORMAL_OFFSET_PX;
+        const ay = posA.y + posA.ny * _GHOST_CAR_NORMAL_OFFSET_PX;
+        const bx = posB.x - posB.nx * _GHOST_CAR_NORMAL_OFFSET_PX;
+        const by = posB.y - posB.ny * _GHOST_CAR_NORMAL_OFFSET_PX;
+
+        markerA.group.attr('transform', `translate(${ax.toFixed(1)},${ay.toFixed(1)})`);
+        markerA.halo.attr('fill', colorA).attr('stroke', colorA);
+        markerA.dot.attr('fill', colorA);
+        markerA.pillRect.attr('stroke', colorA);
+        markerA.pillText.text(`${driverA} ${hoverSample.speedA.toFixed(0)}`);
+
+        markerB.group.attr('transform', `translate(${bx.toFixed(1)},${by.toFixed(1)})`);
+        markerB.halo.attr('fill', colorB).attr('stroke', colorB);
+        markerB.dot.attr('fill', colorB);
+        markerB.pillRect.attr('stroke', colorB);
+        markerB.pillText.text(`${driverB} ${hoverSample.speedB.toFixed(0)}`);
+
+        const hudLabel = `LIVE SYNC · ${hoverSample.pct.toFixed(0)}% · ${driverA} ${hoverSample.speedA.toFixed(0)} vs ${driverB} ${hoverSample.speedB.toFixed(0)} km/h`;
+        hudText.text(hudLabel);
+        hudRect.attr('width', Math.max(255, Math.round(hudLabel.length * 6.5 + 28)));
+    };
+}
+
+/**
  * Renders the interactive FIA Circuit Track Map SVG and live Corner Telemetry Inspector panel,
  * returning a controller function `setActiveTurn(turnNumber)` that highlights the corresponding
  * corner on the circuit map and updates the inspector card.
@@ -753,23 +1089,34 @@ function _renderCircuitTrackMapPanel(mapWrapper, data, turnDataByNumber, onMapTu
     const gpName = data.race_info?.gp || 'Circuit';
     subtitle.textContent = `// FIA CIRCUIT TELEMETRY MAP · ${gpName.toUpperCase()} (${allTurnsData.length} TURNS)`;
 
+    const topBarRight = document.createElement('div');
+    topBarRight.style.display = 'inline-flex';
+    topBarRight.style.alignItems = 'center';
+    topBarRight.style.gap = '0.6rem';
+    topBarRight.style.flexWrap = 'wrap';
+
+    const modeToggle = document.createElement('div');
+    modeToggle.className = 'viz-mode-toggle';
+
+    const domBtn = document.createElement('button');
+    domBtn.type = 'button';
+    domBtn.className = 'viz-mode-btn';
+    domBtn.dataset.mode = _MAP_MODE_DOMINANCE;
+    domBtn.textContent = 'Track Dominance';
+
+    const sectorsBtn = document.createElement('button');
+    sectorsBtn.type = 'button';
+    sectorsBtn.className = 'viz-mode-btn';
+    sectorsBtn.dataset.mode = _MAP_MODE_SECTORS;
+    sectorsBtn.textContent = 'FIA Sectors';
+
+    modeToggle.append(domBtn, sectorsBtn);
+
     const sectorPills = document.createElement('div');
     sectorPills.className = 'circuit-sector-pills';
-    [
-        { key: 'S1', label: 'Sector 1', color: _SECTOR_COLORS.S1 },
-        { key: 'S2', label: 'Sector 2', color: _SECTOR_COLORS.S2 },
-        { key: 'S3', label: 'Sector 3', color: _SECTOR_COLORS.S3 }
-    ].forEach(({ label, color }) => {
-        const pill = document.createElement('span');
-        pill.className = 'circuit-sector-pill';
-        const dot = document.createElement('span');
-        dot.className = 'circuit-sector-dot';
-        dot.style.backgroundColor = color;
-        pill.append(dot, document.createTextNode(label));
-        sectorPills.appendChild(pill);
-    });
 
-    topBar.append(subtitle, sectorPills);
+    topBarRight.append(modeToggle, sectorPills);
+    topBar.append(subtitle, topBarRight);
     mapStage.appendChild(topBar);
 
     const svgMount = document.createElement('div');
@@ -816,7 +1163,8 @@ function _renderCircuitTrackMapPanel(mapWrapper, data, turnDataByNumber, onMapTu
         .attr('stroke-linejoin', 'round')
         .attr('d', closedLine);
 
-    // 2. Sector 1 / Sector 2 / Sector 3 colored racing line segments
+    // 2A. Sector 1 / Sector 2 / Sector 3 colored racing line segments
+    const sectorsLayer = svg.append('g').attr('class', 'track-sectors-layer');
     const s1Points = points.slice(0, s1EndIdx + 1);
     const s2Points = points.slice(s1EndIdx, s2EndIdx + 1);
     const s3Points = [...points.slice(s2EndIdx), points[0]];
@@ -827,7 +1175,8 @@ function _renderCircuitTrackMapPanel(mapWrapper, data, turnDataByNumber, onMapTu
         { pts: s3Points, color: _SECTOR_COLORS.S3 }
     ].forEach(({ pts, color }) => {
         if (pts.length >= 2) {
-            svg.append('path')
+            sectorsLayer
+                .append('path')
                 .datum(pts)
                 .attr('class', 'track-sector-path')
                 .attr('fill', 'none')
@@ -838,6 +1187,9 @@ function _renderCircuitTrackMapPanel(mapWrapper, data, turnDataByNumber, onMapTu
                 .attr('d', openLine);
         }
     });
+
+    // 2B. Track Dominance segments layer (placed right above g.track-sectors-layer)
+    const dominanceLayer = svg.append('g').attr('class', 'track-dominance-layer');
 
     // 3. Start / Finish Line marker at points[0]
     if (points.length >= 3) {
@@ -970,6 +1322,68 @@ function _renderCircuitTrackMapPanel(mapWrapper, data, turnDataByNumber, onMapTu
         .attr('fill', '#f3f4f6')
         .text((tg) => `T${tg.turn}`);
 
+    // 6. Live Ghost Cars & Telemetry HUD Layer
+    const updateGhostCarsLayer = _createTrackGhostCarsLayer(svg, points);
+
+    let activeMapMode =
+        _latestTraceState?.dominanceSegments?.length > 0
+            ? _MAP_MODE_DOMINANCE
+            : _MAP_MODE_SECTORS;
+    let userExplicitlyChoseMode = false;
+    let renderedDominanceRef = null;
+
+    const syncMapModeAndTraceUI = (traceState) => {
+        if (
+            !userExplicitlyChoseMode &&
+            traceState?.dominanceSegments?.length > 0 &&
+            activeMapMode !== _MAP_MODE_DOMINANCE
+        ) {
+            activeMapMode = _MAP_MODE_DOMINANCE;
+        }
+
+        const hasDominance = Boolean(traceState?.dominanceSegments?.length);
+        const effectiveMode =
+            activeMapMode === _MAP_MODE_DOMINANCE && hasDominance
+                ? _MAP_MODE_DOMINANCE
+                : _MAP_MODE_SECTORS;
+
+        domBtn.classList.toggle('active', effectiveMode === _MAP_MODE_DOMINANCE);
+        sectorsBtn.classList.toggle('active', effectiveMode === _MAP_MODE_SECTORS);
+
+        _populateTopbarPills(sectorPills, effectiveMode, traceState);
+
+        if (traceState?.dominanceSegments !== renderedDominanceRef) {
+            renderedDominanceRef = traceState?.dominanceSegments || null;
+            _renderDominanceLayerSegments(dominanceLayer, points, openLine, traceState);
+        }
+
+        dominanceLayer.style(
+            'display',
+            effectiveMode === _MAP_MODE_DOMINANCE ? null : 'none'
+        );
+        sectorsLayer.style('display', effectiveMode === _MAP_MODE_SECTORS ? null : 'none');
+
+        updateGhostCarsLayer(traceState);
+    };
+
+    domBtn.addEventListener('click', () => {
+        userExplicitlyChoseMode = true;
+        activeMapMode = _MAP_MODE_DOMINANCE;
+        syncMapModeAndTraceUI(_latestTraceState);
+    });
+
+    sectorsBtn.addEventListener('click', () => {
+        userExplicitlyChoseMode = true;
+        activeMapMode = _MAP_MODE_SECTORS;
+        syncMapModeAndTraceUI(_latestTraceState);
+    });
+
+    _activeMapTraceUpdater = (traceState) => {
+        syncMapModeAndTraceUI(traceState);
+    };
+
+    syncMapModeAndTraceUI(_latestTraceState);
+
     const defaultTurnNumber = allTurnsData[0].turn;
 
     const updateMapHighlight = (activeTurnNumber) => {
@@ -1064,6 +1478,8 @@ export function renderCornerSpeed(data) {
 
     if (!data.corners || data.corners.length === 0) {
         _externalTeamFocusHandler = null;
+        _externalTurnHighlightHandler = null;
+        _activeMapTraceUpdater = null;
         const emptyParagraph = document.createElement('p');
         emptyParagraph.style.color = 'var(--text-muted)';
         emptyParagraph.style.textAlign = 'center';
@@ -1093,12 +1509,19 @@ export function renderCornerSpeed(data) {
     const mountedTurnCards = [];
     let updateTrackMapHighlight = () => {};
 
-    const syncActiveTurnState = (hoveredTurnNumber) => {
+    const syncActiveTurnState = (hoveredTurnNumber, notifyExternal = true) => {
         const effectiveTurn = hoveredTurnNumber ?? pinnedTurnNumber;
         updateTrackMapHighlight(effectiveTurn);
         mountedTurnCards.forEach(({ cardEl, turnData }) => {
             cardEl.classList.toggle('turn-card-active', turnData.turn === effectiveTurn);
         });
+        if (notifyExternal) {
+            setQualiTraceHighlightedTurn(effectiveTurn);
+        }
+    };
+
+    _externalTurnHighlightHandler = (turnNumber) => {
+        syncActiveTurnState(turnNumber, false);
     };
 
     updateTrackMapHighlight = _renderCircuitTrackMapPanel(
@@ -1109,7 +1532,7 @@ export function renderCornerSpeed(data) {
             if (isClick && mapTurnNumber !== null) {
                 pinnedTurnNumber = pinnedTurnNumber === mapTurnNumber ? null : mapTurnNumber;
             }
-            syncActiveTurnState(mapTurnNumber);
+            syncActiveTurnState(mapTurnNumber, true);
         }
     );
 
@@ -1119,7 +1542,7 @@ export function renderCornerSpeed(data) {
             const { cardEl, chartDiv } = _createTurnSubplotCard(
                 columnEl,
                 turnData,
-                (hoveredTurn) => syncActiveTurnState(hoveredTurn)
+                (hoveredTurn) => syncActiveTurnState(hoveredTurn, true)
             );
             mountedTurnCards.push({
                 turnData,
@@ -1131,7 +1554,7 @@ export function renderCornerSpeed(data) {
 
     const subplotNodeSelections = mountedTurnCards.map(({ chartDiv, turnData }) =>
         _drawTurnSubplotSvg(chartDiv, turnData, tooltip, (hoveredTurn) =>
-            syncActiveTurnState(hoveredTurn)
+            syncActiveTurnState(hoveredTurn, true)
         )
     );
 

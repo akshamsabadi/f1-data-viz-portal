@@ -1,3 +1,5 @@
+import { setCircuitMapTraceState, setCornerSpeedHighlightedTurn } from './corner_speed.js';
+
 const _CHART_MARGIN = { top: 24, right: 28, bottom: 38, left: 62 };
 const _SPEED_HEIGHT_PX = 145;
 const _PEDAL_HEIGHT_PX = 95;
@@ -62,11 +64,21 @@ const _DEFAULT_ABS_DELTA_S = 0.25;
 const _DELTA_DOMAIN_PADDING_FACTOR = 1.18;
 const _NEAREST_TURN_THRESHOLD_PCT = 2.2;
 const _DEAD_EVEN_DELTA_THRESHOLD_S = 0.0005;
+const _SEGMENT_TIME_EPSILON_S = 0.000001;
+
+const _ACTIVE_TURN_MARKER_COLOR = '#ff1801';
+const _ACTIVE_TURN_MARKER_WIDTH_PX = 2.2;
+const _DEFAULT_TURN_MARKER_WIDTH_PX = 1;
+const _ACTIVE_TURN_LABEL_COLOR = '#ffffff';
+const _DEFAULT_TURN_LABEL_COLOR = 'var(--text-muted)';
+const _ACTIVE_TURN_LABEL_FONT_SIZE = '11px';
+const _DEFAULT_TURN_LABEL_FONT_SIZE = '9.5px';
 
 const _TOOLTIP_OFFSET_X_PX = 15;
 const _TOOLTIP_OFFSET_Y_PX = -28;
 
 let _externalFocusHandler = null;
+let _highlightedTurnHandler = null;
 
 /**
  * Updates the telemetry trace comparison when an external driver focus is triggered
@@ -78,6 +90,19 @@ let _externalFocusHandler = null;
 export function setQualiTraceExternalFocus(driverCode) {
     if (_externalFocusHandler) {
         _externalFocusHandler(driverCode);
+    }
+}
+
+/**
+ * Highlights or restores the vertical turn reference line and turn label across all 3 telemetry
+ * trace subplots for a given turn number.
+ *
+ * @param {number|null} turnNumber - Turn number to highlight (`1..N`), or null to reset.
+ * @returns {void}
+ */
+export function setQualiTraceHighlightedTurn(turnNumber) {
+    if (_highlightedTurnHandler) {
+        _highlightedTurnHandler(turnNumber);
     }
 }
 
@@ -249,6 +274,105 @@ function _findNearestTurnNumber(turns, pct) {
         }
     }
     return null;
+}
+
+/**
+ * Computes contiguous track dominance segments and distance share percentages for Driver A and Driver B
+ * across consecutive lap distance intervals.
+ *
+ * @param {Array<{pct: number, speedA: number, speedB: number, cumTimeA: number, cumTimeB: number}>} series - Synchronized telemetry samples.
+ * @param {{colorA: string, colorB: string, isSameTeam: boolean}} strokeStyles - Active pair stroke styles.
+ * @returns {{
+ *   dominanceSegments: Array<{startPct: number, endPct: number, leader: 'A'|'B', color: string, isDashed: boolean}>,
+ *   shareA: number,
+ *   shareB: number
+ * }} Merged track dominance segments and percentage split.
+ */
+function _computeTrackDominanceSummary(series, strokeStyles) {
+    if (!Array.isArray(series) || series.length < 2) {
+        return { dominanceSegments: [], shareA: 50, shareB: 50 };
+    }
+
+    const dominanceSegments = [];
+    let distA = 0;
+    let totalDist = 0;
+
+    for (let i = 0; i < series.length - 1; i += 1) {
+        const s0 = series[i];
+        const s1 = series[i + 1];
+        const segLen = Math.max(0, s1.pct - s0.pct);
+        const segTimeGainA = (s1.cumTimeB - s0.cumTimeB) - (s1.cumTimeA - s0.cumTimeA);
+
+        let leader;
+        if (Math.abs(segTimeGainA) > _SEGMENT_TIME_EPSILON_S) {
+            leader = segTimeGainA > 0 ? 'A' : 'B';
+        } else {
+            leader = s0.speedA + s1.speedA >= s0.speedB + s1.speedB ? 'A' : 'B';
+        }
+
+        if (leader === 'A') {
+            distA += segLen;
+        }
+        totalDist += segLen;
+
+        const color = leader === 'A' ? strokeStyles.colorA : strokeStyles.colorB;
+        const isDashed = Boolean(strokeStyles.isSameTeam && leader === 'B');
+        const prevSeg = dominanceSegments[dominanceSegments.length - 1];
+
+        if (prevSeg && prevSeg.leader === leader) {
+            prevSeg.endPct = s1.pct;
+        } else {
+            dominanceSegments.push({
+                startPct: s0.pct,
+                endPct: s1.pct,
+                leader,
+                color,
+                isDashed
+            });
+        }
+    }
+
+    const shareA = totalDist > 0 ? Math.round((distA / totalDist) * 100) : 50;
+    const shareB = 100 - shareA;
+
+    return {
+        dominanceSegments,
+        shareA,
+        shareB
+    };
+}
+
+/**
+ * Highlights or resets the vertical turn marker line and top turn label matching `turnNumber`
+ * across all 3 stacked telemetry subplots.
+ *
+ * @param {Object} mainGroup - Root translated D3 `<g>` selection.
+ * @param {number|null} turnNumber - Turn number to highlight, or null to restore default styling.
+ * @returns {void}
+ */
+function _applyTurnMarkerHighlight(mainGroup, turnNumber) {
+    if (!mainGroup) return;
+
+    mainGroup
+        .selectAll('line.turn-marker')
+        .attr('stroke', (d) =>
+            d.turn === turnNumber ? _ACTIVE_TURN_MARKER_COLOR : _TURN_MARKER_STROKE_COLOR
+        )
+        .attr('stroke-width', (d) =>
+            d.turn === turnNumber ? _ACTIVE_TURN_MARKER_WIDTH_PX : _DEFAULT_TURN_MARKER_WIDTH_PX
+        )
+        .attr('stroke-dasharray', (d) =>
+            d.turn === turnNumber ? 'none' : _TURN_MARKER_DASH_ARRAY
+        );
+
+    mainGroup
+        .selectAll('text.turn-label')
+        .attr('fill', (d) =>
+            d.turn === turnNumber ? _ACTIVE_TURN_LABEL_COLOR : _DEFAULT_TURN_LABEL_COLOR
+        )
+        .style('font-size', (d) =>
+            d.turn === turnNumber ? _ACTIVE_TURN_LABEL_FONT_SIZE : _DEFAULT_TURN_LABEL_FONT_SIZE
+        );
 }
 
 /**
@@ -1066,6 +1190,7 @@ function _createCrosshairElements(mainGroup, totalInnerHeight, strokeStyles) {
  *   driverAEntry: Object,
  *   driverBEntry: Object,
  *   strokeStyles: {colorA: string, colorB: string},
+ *   baseTraceState: Object,
  *   tooltip: Object
  * }} config - Crosshair interaction configuration and subplot scales.
  * @returns {void}
@@ -1086,6 +1211,7 @@ function _bindTraceHoverCrosshair(mainGroup, config) {
         driverAEntry,
         driverBEntry,
         strokeStyles,
+        baseTraceState,
         tooltip
     } = config;
 
@@ -1129,6 +1255,23 @@ function _bindTraceHoverCrosshair(mainGroup, config) {
             const isDriverAAhead = point.delta >= 0;
             const leadingColor = isDriverAAhead ? strokeStyles.colorA : strokeStyles.colorB;
 
+            _applyTurnMarkerHighlight(mainGroup, nearestTurn);
+            setCornerSpeedHighlightedTurn(nearestTurn);
+            setCircuitMapTraceState({
+                ...baseTraceState,
+                hoverSample: {
+                    pct: point.pct,
+                    speedA: point.speedA,
+                    speedB: point.speedB,
+                    throttleA: point.throttleA,
+                    throttleB: point.throttleB,
+                    brakeA: point.brakeA,
+                    brakeB: point.brakeB,
+                    delta: point.delta,
+                    nearestTurn
+                }
+            });
+
             _populateTraceTooltip(tooltip.node(), {
                 pct: point.pct,
                 nearestTurn,
@@ -1160,6 +1303,12 @@ function _bindTraceHoverCrosshair(mainGroup, config) {
         .on('mouseout', () => {
             crosshairGroup.style('display', 'none');
             tooltip.classed('hidden', true);
+            _applyTurnMarkerHighlight(mainGroup, null);
+            setCornerSpeedHighlightedTurn(null);
+            setCircuitMapTraceState({
+                ...baseTraceState,
+                hoverSample: null
+            });
         });
 }
 
@@ -1214,6 +1363,22 @@ function _renderTraceComparisonChart(container, state) {
 
     const turns = traces.turns || [];
     const series = _buildTelemetrySeries(traces.distance_pct, traceA, traceB);
+    const { dominanceSegments, shareA, shareB } = _computeTrackDominanceSummary(
+        series,
+        strokeStyles
+    );
+    const baseTraceState = {
+        driverA: driverAEntry.driver,
+        driverB: driverBEntry.driver,
+        colorA: strokeStyles.colorA,
+        colorB: strokeStyles.colorB,
+        isSameTeam: strokeStyles.isSameTeam,
+        dominanceSegments,
+        shareA,
+        shareB,
+        hoverSample: null
+    };
+    setCircuitMapTraceState(baseTraceState);
 
     const svg = d3
         .select(container)
@@ -1258,6 +1423,10 @@ function _renderTraceComparisonChart(container, state) {
         strokeStyles
     );
 
+    _highlightedTurnHandler = (turnNumber) => {
+        _applyTurnMarkerHighlight(mainGroup, turnNumber);
+    };
+
     _bindTraceHoverCrosshair(mainGroup, {
         width,
         totalInnerHeight,
@@ -1273,6 +1442,7 @@ function _renderTraceComparisonChart(container, state) {
         driverAEntry,
         driverBEntry,
         strokeStyles,
+        baseTraceState,
         tooltip
     });
 }
@@ -1305,6 +1475,8 @@ export function renderQualiTrace(data) {
 
     if (!hasValidTraceData) {
         _externalFocusHandler = null;
+        _highlightedTurnHandler = null;
+        setCircuitMapTraceState(null);
         _renderEmptyState(container, 'No qualifying telemetry traces available.');
         return;
     }

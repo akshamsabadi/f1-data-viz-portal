@@ -58,6 +58,38 @@ const _DEFAULT_DRIVER_COLOR = '#888888';
 const _ROW_GUIDE_FILL = 'rgba(255, 255, 255, 0.025)';
 const _FUEL_CORRECTED_TEXT_COLOR = '#34d399';
 
+const _TACTIC_CATEGORY_UNDERCUT = 'UNDERCUT';
+const _TACTIC_CATEGORY_OVERCUT = 'OVERCUT';
+const _TACTIC_CATEGORY_SC = 'SC_STOP';
+const _TACTIC_CATEGORY_STANDARD = 'STANDARD';
+
+const _TACTIC_COLOR_UNDERCUT = '#22c55e';
+const _TACTIC_COLOR_OVERCUT = '#38bdf8';
+const _TACTIC_COLOR_SC = '#f59e0b';
+const _TACTIC_COLOR_STANDARD = '#9ca3af';
+
+const _DEFAULT_PIT_LOSS_WINDOW_S = 21.5;
+const _TRAFFIC_RIVALS_MAX_COUNT = 3;
+const _PIT_WINDOW_RIVAL_LAP_RADIUS = 4;
+const _PIT_CYCLE_BEFORE_LAPS = 2;
+const _PIT_CYCLE_AFTER_LAPS = 3;
+const _OVERCUT_CLOSE_GAP_S = 3.5;
+
+const _PIT_MARKER_LINE_WIDTH_PX = 2.4;
+const _PIT_MARKER_BADGE_RADIUS_PX = 4.2;
+const _PIT_MARKER_BADGE_STROKE_WIDTH_PX = 1.4;
+const _PIT_MARKER_HIT_WIDTH_PX = 12;
+
+const _PLAYHEAD_COLOR = '#38bdf8';
+const _PLAYHEAD_STROKE_WIDTH_PX = 2;
+const _PLAYHEAD_DASH_ARRAY = '5,3';
+const _PLAYHEAD_TOP_OFFSET_PX = -14;
+const _PLAYHEAD_PILL_WIDTH_PX = 64;
+const _PLAYHEAD_PILL_HEIGHT_PX = 16;
+const _PLAYHEAD_PILL_Y_OFFSET_PX = -30;
+const _PLAYHEAD_PILL_RADIUS_PX = 4;
+const _PLAYHEAD_PILL_BG_FILL = 'rgba(15, 23, 42, 0.96)';
+
 const _COMPOUND_ORDER = ['SOFT', 'MEDIUM', 'HARD', 'INTERMEDIATE', 'WET', 'UNKNOWN'];
 
 const _COMPOUND_COLORS = {
@@ -81,6 +113,8 @@ const _COMPOUND_ABBREVIATIONS = {
 const _DARK_TEXT_COMPOUNDS = new Set(['MEDIUM', 'HARD', 'INTERMEDIATE']);
 
 let _externalStrategyFocusHandler = null;
+let _strategyPlayheadHandler = null;
+let _currentStrategyPlayheadLap = null;
 
 /**
  * Highlights or restores a driver's row in the Tyre Strategy Gantt chart from an external trigger.
@@ -91,6 +125,22 @@ let _externalStrategyFocusHandler = null;
 export function setRaceStrategyExternalFocus(driverCode) {
     if (_externalStrategyFocusHandler) {
         _externalStrategyFocusHandler(driverCode);
+    }
+}
+
+/**
+ * Updates or hides the synchronized vertical lap playhead line across `#race-strategy-chart`.
+ *
+ * @param {number|null} lapNumber - Lap number to highlight (`0..maxLap`), or `null` to hide.
+ * @returns {void}
+ */
+export function setRaceStrategyPlayheadLap(lapNumber) {
+    _currentStrategyPlayheadLap =
+        lapNumber !== null && lapNumber !== undefined && Number.isFinite(Number(lapNumber))
+            ? Number(lapNumber)
+            : null;
+    if (_strategyPlayheadHandler) {
+        _strategyPlayheadHandler(_currentStrategyPlayheadLap);
     }
 }
 
@@ -280,13 +330,383 @@ function _extractScVscWindows(data, maxLap) {
 }
 
 /**
- * Extracts pit window transition boundary descriptors between consecutive stints per driver.
+ * Looks up a driver's lap record at `targetLap`, falling back to adjacent laps (±1) if missing.
+ *
+ * @param {Map<string, Map<number, Object>>} driverLapLookup - Nested map of driver -> lap -> record.
+ * @param {string} driverCode - Three-letter driver code.
+ * @param {number} targetLap - Desired lap number.
+ * @returns {Object|null} Matching or adjacent lap record, or null.
+ */
+function _findDriverLapRecord(driverLapLookup, driverCode, targetLap) {
+    const byLap = driverLapLookup.get(driverCode);
+    if (!byLap) return null;
+    return (
+        byLap.get(targetLap) ||
+        byLap.get(targetLap - 1) ||
+        byLap.get(targetLap + 1) ||
+        null
+    );
+}
+
+/**
+ * Computes up to 3 rival drivers whose `session_time` on `lap - 1` falls within the pit-loss window
+ * `[driverSessionTime, driverSessionTime + pitLossS]`.
+ *
+ * @param {Map<number, Array<Object>>} lapsByNumber - Map of lap number to lap telemetry records.
+ * @param {Map<string, Map<number, Object>>} driverLapLookup - Nested map of driver -> lap -> record.
+ * @param {string} driverCode - Driver performing the pit stop.
+ * @param {number} lap - Pit stop lap number.
+ * @param {number|null|undefined} pitLossS - Total pit-lane time loss in seconds.
+ * @returns {Array<string>} Up to 3 rival driver codes inside the pit-loss traffic window.
+ */
+function _computeTrafficRivals(lapsByNumber, driverLapLookup, driverCode, lap, pitLossS) {
+    const refLap = Math.max(1, lap - 1);
+    const driverRec = _findDriverLapRecord(driverLapLookup, driverCode, refLap);
+    if (!driverRec || !Number.isFinite(driverRec.session_time)) {
+        return [];
+    }
+
+    const driverSessionTime = driverRec.session_time;
+    const lossWindow =
+        Number.isFinite(Number(pitLossS)) && Number(pitLossS) > 0
+            ? Number(pitLossS)
+            : _DEFAULT_PIT_LOSS_WINDOW_S;
+    const candidates = lapsByNumber.get(refLap) || [];
+
+    return candidates
+        .filter(
+            (rec) =>
+                rec.driver !== driverCode &&
+                Number.isFinite(rec.session_time) &&
+                rec.session_time >= driverSessionTime &&
+                rec.session_time <= driverSessionTime + lossWindow
+        )
+        .slice()
+        .sort((a, b) => a.session_time - b.session_time)
+        .slice(0, _TRAFFIC_RIVALS_MAX_COUNT)
+        .map((rec) => rec.driver);
+}
+
+/**
+ * Collects unified pit stop candidates from both `data.race_telemetry.pit_stops` and stint transitions.
+ *
+ * @param {Object} data - Race telemetry payload.
+ * @param {Array<Object>} stints - Normalized stint records.
+ * @returns {Array<Object>} Deduplicated pit stop descriptors.
+ */
+function _collectUnifiedPitStopCandidates(data, stints) {
+    const candidatesByKey = new Map();
+    const rawStops =
+        data.race_telemetry && Array.isArray(data.race_telemetry.pit_stops)
+            ? data.race_telemetry.pit_stops
+            : [];
+
+    rawStops.forEach((stop) => {
+        const lap = Number(stop.lap) || 1;
+        const driver = stop.driver;
+        if (!driver) return;
+        const key = `${driver}-${lap}`;
+        candidatesByKey.set(key, {
+            driver,
+            lap,
+            stop_number: Number(stop.stop_number) || 1,
+            from_compound: _normalizeCompound(stop.from_compound),
+            to_compound: _normalizeCompound(stop.to_compound),
+            stationary_s: Number.isFinite(Number(stop.stationary_s))
+                ? Number(stop.stationary_s)
+                : null,
+            pit_loss_s: Number.isFinite(Number(stop.pit_loss_s))
+                ? Number(stop.pit_loss_s)
+                : null
+        });
+    });
+
+    const stintsByDriver = d3.group(stints, (s) => s.driver);
+    stintsByDriver.forEach((driverStints, driverCode) => {
+        const sorted = driverStints.slice().sort((a, b) => a.stint - b.stint);
+        for (let i = 0; i < sorted.length - 1; i++) {
+            const lap = sorted[i].end_lap;
+            const key = `${driverCode}-${lap}`;
+            if (!candidatesByKey.has(key)) {
+                candidatesByKey.set(key, {
+                    driver: driverCode,
+                    lap,
+                    stop_number: i + 1,
+                    from_compound: sorted[i].compound,
+                    to_compound: sorted[i + 1].compound,
+                    stationary_s: null,
+                    pit_loss_s: null
+                });
+            }
+        }
+    });
+
+    return Array.from(candidatesByKey.values()).sort((a, b) => a.lap - b.lap);
+}
+
+/**
+ * Classifies a single pit stop into `SC_STOP`, `UNDERCUT`, `OVERCUT`, or `STANDARD`.
+ *
+ * @param {Object} stop - Unified pit stop candidate.
+ * @param {Array<Object>} allStops - All unified pit stop candidates in the race.
+ * @param {Array<Object>} scWindows - Normalized SC/VSC lap windows.
+ * @param {Map<string, Map<number, Object>>} driverLapLookup - Nested map of driver -> lap -> record.
+ * @param {Map<number, Array<Object>>} lapsByNumber - Map of lap number to lap telemetry records.
+ * @param {number} maxLap - Maximum race lap count.
+ * @returns {Object} Enriched tactical pit stop descriptor.
+ */
+function _classifySinglePitStopTactic(
+    stop,
+    allStops,
+    scWindows,
+    driverLapLookup,
+    lapsByNumber,
+    maxLap
+) {
+    const { driver, lap } = stop;
+    const key = `${driver}-${lap}`;
+    const trafficRivals = _computeTrafficRivals(
+        lapsByNumber,
+        driverLapLookup,
+        driver,
+        lap,
+        stop.pit_loss_s
+    );
+
+    const matchingScWindow = scWindows.find(
+        (w) => lap >= w.start_lap - 1 && lap <= w.end_lap
+    );
+    if (matchingScWindow) {
+        const isSc = matchingScWindow.type === 'SC';
+        return {
+            ...stop,
+            key,
+            category: _TACTIC_CATEGORY_SC,
+            badgeLabel: isSc ? 'SC FREE STOP' : 'VSC STOP',
+            shortBadge: isSc ? 'SC STOP' : 'VSC STOP',
+            color: _TACTIC_COLOR_SC,
+            detailText: isSc
+                ? 'Pitted under Safety Car (~9.5s saved)'
+                : 'Pitted under VSC (~6.0s saved)',
+            trafficRivals
+        };
+    }
+
+    const lapBefore = Math.max(1, lap - _PIT_CYCLE_BEFORE_LAPS);
+    const lapAfter = Math.min(maxLap, lap + _PIT_CYCLE_AFTER_LAPS);
+    const beforeRec = _findDriverLapRecord(driverLapLookup, driver, lapBefore);
+    const afterRec = _findDriverLapRecord(driverLapLookup, driver, lapAfter);
+    const posBefore = Number.isFinite(beforeRec?.position) ? beforeRec.position : null;
+    const posAfter = Number.isFinite(afterRec?.position) ? afterRec.position : null;
+    const netGain =
+        posBefore !== null && posAfter !== null ? Math.max(0, posBefore - posAfter) : 0;
+
+    const nearbyRivalStops = allStops.filter(
+        (other) =>
+            other.driver !== driver &&
+            Math.abs(other.lap - lap) <= _PIT_WINDOW_RIVAL_LAP_RADIUS
+    );
+
+    let undercutRivalCode = null;
+    for (const rivalStop of nearbyRivalStops) {
+        if (rivalStop.lap <= lap) continue;
+        const rivalBefore = _findDriverLapRecord(
+            driverLapLookup,
+            rivalStop.driver,
+            lapBefore
+        );
+        const evalLap = Math.min(maxLap, rivalStop.lap + 1);
+        const driverEval = _findDriverLapRecord(driverLapLookup, driver, evalLap);
+        const rivalEval = _findDriverLapRecord(
+            driverLapLookup,
+            rivalStop.driver,
+            evalLap
+        );
+
+        const wasRivalAhead =
+            posBefore !== null &&
+            Number.isFinite(rivalBefore?.position) &&
+            rivalBefore.position < posBefore;
+        const isDriverAheadAfter =
+            Number.isFinite(driverEval?.position) &&
+            Number.isFinite(rivalEval?.position) &&
+            driverEval.position < rivalEval.position;
+
+        if (wasRivalAhead && isDriverAheadAfter) {
+            undercutRivalCode = rivalStop.driver;
+            break;
+        }
+    }
+
+    const hasLaterWindowRivals = nearbyRivalStops.some((r) => r.lap > lap);
+    if (undercutRivalCode || (netGain > 0 && hasLaterWindowRivals)) {
+        const effectiveGain = Math.max(1, netGain);
+        return {
+            ...stop,
+            key,
+            category: _TACTIC_CATEGORY_UNDERCUT,
+            badgeLabel: `UNDERCUT +${effectiveGain}`,
+            shortBadge: 'UNDERCUT',
+            color: _TACTIC_COLOR_UNDERCUT,
+            detailText: undercutRivalCode
+                ? `Undercut ${undercutRivalCode} (P${posBefore ?? '?'} → P${posAfter ?? '?'})`
+                : `Undercut gain (P${posBefore ?? '?'} → P${posAfter ?? '?'})`,
+            trafficRivals
+        };
+    }
+
+    let overcutRivalCode = null;
+    for (const rivalStop of nearbyRivalStops) {
+        if (lap <= rivalStop.lap) continue;
+        const preRivalLap = Math.max(1, rivalStop.lap - 1);
+        const driverPre = _findDriverLapRecord(driverLapLookup, driver, preRivalLap);
+        const rivalPre = _findDriverLapRecord(
+            driverLapLookup,
+            rivalStop.driver,
+            preRivalLap
+        );
+        const evalLap = Math.min(maxLap, lap + 1);
+        const driverEval = _findDriverLapRecord(driverLapLookup, driver, evalLap);
+        const rivalEval = _findDriverLapRecord(
+            driverLapLookup,
+            rivalStop.driver,
+            evalLap
+        );
+
+        const wasRivalAheadOrClose =
+            (Number.isFinite(rivalPre?.position) &&
+                Number.isFinite(driverPre?.position) &&
+                rivalPre.position < driverPre.position) ||
+            (Number.isFinite(rivalPre?.session_time) &&
+                Number.isFinite(driverPre?.session_time) &&
+                Math.abs(driverPre.session_time - rivalPre.session_time) <=
+                    _OVERCUT_CLOSE_GAP_S);
+
+        const emergedAhead =
+            Number.isFinite(driverEval?.position) &&
+            Number.isFinite(rivalEval?.position) &&
+            driverEval.position < rivalEval.position;
+
+        if (wasRivalAheadOrClose && emergedAhead) {
+            overcutRivalCode = rivalStop.driver;
+            break;
+        }
+    }
+
+    if (overcutRivalCode || netGain > 0) {
+        const effectiveGain = Math.max(1, netGain);
+        return {
+            ...stop,
+            key,
+            category: _TACTIC_CATEGORY_OVERCUT,
+            badgeLabel: `OVERCUT +${effectiveGain}`,
+            shortBadge: 'OVERCUT',
+            color: _TACTIC_COLOR_OVERCUT,
+            detailText: overcutRivalCode
+                ? `Overcut ${overcutRivalCode} (P${posBefore ?? '?'} → P${posAfter ?? '?'})`
+                : `Extended stint overcut (P${posBefore ?? '?'} → P${posAfter ?? '?'})`,
+            trafficRivals
+        };
+    }
+
+    return {
+        ...stop,
+        key,
+        category: _TACTIC_CATEGORY_STANDARD,
+        badgeLabel: 'HOLD',
+        shortBadge: 'HOLD',
+        color: _TACTIC_COLOR_STANDARD,
+        detailText:
+            posBefore !== null && posAfter !== null
+                ? `Track position P${posBefore} → P${posAfter}`
+                : 'Routine tyre service',
+        trafficRivals
+    };
+}
+
+/**
+ * Analyzes all pit stops in the race and classifies each stop into Undercut, Overcut,
+ * SC/VSC Free Stop, or Standard Hold, including pit-loss traffic window rivals.
+ *
+ * @param {Object} data - Race telemetry payload containing `drivers`, `laps`, and `race_telemetry`.
+ * @returns {{
+ *   byKey: Map<string, Object>,
+ *   list: Array<Object>,
+ *   counts: { UNDERCUT: number, OVERCUT: number, SC_STOP: number, STANDARD: number }
+ * }} Tactical pit stop classifications and summary counts.
+ */
+export function analyzePitStopTactics(data) {
+    const counts = {
+        UNDERCUT: 0,
+        OVERCUT: 0,
+        SC_STOP: 0,
+        STANDARD: 0
+    };
+    const byKey = new Map();
+    const list = [];
+
+    if (!data) {
+        return { byKey, list, counts };
+    }
+
+    const rawLaps = Array.isArray(data.laps) ? data.laps : [];
+    const maxLap =
+        d3.max(rawLaps, (d) => Number(d.lap) || 0) || _DEFAULT_FALLBACK_MAX_LAP;
+    const driverMetaByCode = new Map(
+        (data.drivers || []).map((d) => [d.code, d])
+    );
+
+    const stints = _resolveStints(data, driverMetaByCode, maxLap);
+    const scWindows = _extractScVscWindows(data, maxLap);
+    const allStops = _collectUnifiedPitStopCandidates(data, stints);
+
+    const driverLapLookup = new Map();
+    const lapsByNumber = new Map();
+
+    rawLaps.forEach((lapRec) => {
+        const lapNum = Number(lapRec.lap);
+        if (!lapRec.driver || !Number.isFinite(lapNum)) return;
+
+        if (!driverLapLookup.has(lapRec.driver)) {
+            driverLapLookup.set(lapRec.driver, new Map());
+        }
+        driverLapLookup.get(lapRec.driver).set(lapNum, lapRec);
+
+        if (!lapsByNumber.has(lapNum)) {
+            lapsByNumber.set(lapNum, []);
+        }
+        lapsByNumber.get(lapNum).push(lapRec);
+    });
+
+    allStops.forEach((stop) => {
+        const tactic = _classifySinglePitStopTactic(
+            stop,
+            allStops,
+            scWindows,
+            driverLapLookup,
+            lapsByNumber,
+            maxLap
+        );
+        byKey.set(tactic.key, tactic);
+        list.push(tactic);
+        if (counts[tactic.category] !== undefined) {
+            counts[tactic.category] += 1;
+        }
+    });
+
+    return { byKey, list, counts };
+}
+
+/**
+ * Extracts pit window transition boundary descriptors between consecutive stints per driver,
+ * enriched with tactical pit stop classifications.
  *
  * @param {Array<Object>} stints - Normalized stint records.
  * @param {Function} yScale - D3 band scale for driver rows.
- * @returns {Array<{driver: string, lap: number, fromCompound: string, toCompound: string}>} Pit transition markers.
+ * @param {Map<string, Object>} tacticsByKey - Lookup map of `"${driver}-${lap}"` to tactical outcome.
+ * @returns {Array<Object>} Pit transition markers with tactical metadata.
  */
-function _extractPitTransitions(stints, yScale) {
+function _extractPitTransitions(stints, yScale, tacticsByKey) {
     const stintsByDriver = d3.group(stints, (d) => d.driver);
     const pitTransitions = [];
 
@@ -294,11 +714,25 @@ function _extractPitTransitions(stints, yScale) {
         if (yScale(driverCode) === undefined) return;
         const sorted = driverStints.slice().sort((a, b) => a.stint - b.stint);
         for (let i = 0; i < sorted.length - 1; i++) {
+            const lap = sorted[i].end_lap;
+            const key = `${driverCode}-${lap}`;
+            const tactic = tacticsByKey?.get(key) || {
+                category: _TACTIC_CATEGORY_STANDARD,
+                badgeLabel: 'HOLD',
+                shortBadge: 'HOLD',
+                color: _TACTIC_COLOR_STANDARD,
+                detailText: 'Routine tyre service',
+                trafficRivals: []
+            };
             pitTransitions.push({
                 driver: driverCode,
-                lap: sorted[i].end_lap,
+                name: sorted[i].name || driverCode,
+                team: sorted[i].team || '',
+                color: sorted[i].color || _DEFAULT_DRIVER_COLOR,
+                lap,
                 fromCompound: sorted[i].compound,
-                toCompound: sorted[i + 1].compound
+                toCompound: sorted[i + 1].compound,
+                tactic
             });
         }
     });
@@ -386,7 +820,31 @@ function _formatStintBarLabel(stint, barWidth) {
 }
 
 /**
- * Builds the interactive compound legend inside `#race-strategy-legend`.
+ * Appends a static tactical pit outcome badge item to `#race-strategy-legend`.
+ *
+ * @param {HTMLElement} legendContainer - Legend DOM container.
+ * @param {string} label - Badge text label.
+ * @param {string} accentColor - Tactical category accent color.
+ * @returns {void}
+ */
+function _appendTacticalLegendBadge(legendContainer, label, accentColor) {
+    const badgeItem = document.createElement('div');
+    badgeItem.className = 'legend-item';
+    badgeItem.style.cursor = 'default';
+    badgeItem.style.borderColor = accentColor;
+
+    const swatch = document.createElement('div');
+    swatch.className = 'legend-color';
+    swatch.style.backgroundColor = accentColor;
+    swatch.style.borderRadius = '50%';
+    badgeItem.appendChild(swatch);
+    badgeItem.appendChild(document.createTextNode(label));
+
+    legendContainer.appendChild(badgeItem);
+}
+
+/**
+ * Builds the interactive compound and tactical outcome legend inside `#race-strategy-legend`.
  *
  * @param {HTMLElement|null} legendContainer - DOM element for the legend.
  * @param {Array<Object>} stints - Normalized stint records.
@@ -467,17 +925,76 @@ function _buildStrategyLegend(legendContainer, stints, scWindows, activeCompound
         legendContainer.appendChild(vscItem);
     }
 
+    _appendTacticalLegendBadge(legendContainer, 'UNDERCUT', _TACTIC_COLOR_UNDERCUT);
+    _appendTacticalLegendBadge(legendContainer, 'OVERCUT', _TACTIC_COLOR_OVERCUT);
+    _appendTacticalLegendBadge(legendContainer, 'SC/VSC FREE STOP', _TACTIC_COLOR_SC);
+
     updateLegendStyles();
 }
 
 /**
- * Populates the shared `#tooltip` DOM node with stint telemetry details.
+ * Builds a DOM block displaying a pit stop's tactical outcome and traffic window for `#tooltip`.
+ *
+ * @param {Object|null} tactic - Tactical pit stop classification entry.
+ * @returns {HTMLDivElement|null} Tactical outcome container element or null.
+ */
+function _createTacticTooltipBlock(tactic) {
+    if (!tactic) return null;
+
+    const wrap = document.createElement('div');
+    wrap.style.marginTop = '6px';
+    wrap.style.paddingTop = '5px';
+    wrap.style.borderTop = '1px solid rgba(255, 255, 255, 0.12)';
+
+    const badgeRow = document.createElement('div');
+    badgeRow.style.display = 'flex';
+    badgeRow.style.alignItems = 'center';
+    badgeRow.style.gap = '6px';
+    badgeRow.style.marginBottom = '2px';
+
+    const pill = document.createElement('span');
+    pill.style.display = 'inline-block';
+    pill.style.padding = '1px 6px';
+    pill.style.borderRadius = '3px';
+    pill.style.fontFamily = 'Montserrat, sans-serif';
+    pill.style.fontSize = '0.68rem';
+    pill.style.fontWeight = '700';
+    pill.style.color = tactic.color || _TACTIC_COLOR_STANDARD;
+    pill.style.border = `1px solid ${tactic.color || _TACTIC_COLOR_STANDARD}`;
+    pill.style.backgroundColor = 'rgba(17, 17, 24, 0.92)';
+    pill.textContent = tactic.badgeLabel || 'HOLD';
+
+    const detailSpan = document.createElement('span');
+    detailSpan.style.fontSize = '0.75rem';
+    detailSpan.style.fontWeight = '600';
+    detailSpan.style.color = 'var(--text-primary)';
+    detailSpan.textContent = tactic.detailText || '';
+
+    badgeRow.append(pill, detailSpan);
+    wrap.appendChild(badgeRow);
+
+    const trafficDiv = document.createElement('div');
+    trafficDiv.style.fontSize = '0.73rem';
+    trafficDiv.style.color = 'var(--text-muted)';
+    const rivalsText =
+        Array.isArray(tactic.trafficRivals) && tactic.trafficRivals.length > 0
+            ? tactic.trafficRivals.join(', ')
+            : 'Clear track';
+    trafficDiv.textContent = `Pit Window Traffic: ${rivalsText}`;
+    wrap.appendChild(trafficDiv);
+
+    return wrap;
+}
+
+/**
+ * Populates the shared `#tooltip` DOM node with stint telemetry details and entry/exit pit tactics.
  *
  * @param {HTMLElement|null} tooltipNode - Underlying DOM node for `#tooltip`.
  * @param {Object} stint - Hovered stint object.
+ * @param {Map<string, Object>} tacticsByKey - Lookup map of `"${driver}-${lap}"` to tactical outcome.
  * @returns {void}
  */
-function _populateStintTooltip(tooltipNode, stint) {
+function _populateStintTooltip(tooltipNode, stint, tacticsByKey) {
     if (!tooltipNode) return;
 
     const compoundColor = _COMPOUND_COLORS[stint.compound] || _COMPOUND_COLORS.UNKNOWN;
@@ -536,7 +1053,60 @@ function _populateStintTooltip(tooltipNode, stint) {
     fuelPaceDiv.style.fontWeight = '600';
     fuelPaceDiv.textContent = `Fuel-Corrected Pace: ${_formatPace(stint.fuel_corrected_pace)}`;
 
-    tooltipNode.replaceChildren(headerDiv, compoundRow, lapsDiv, rawPaceDiv, fuelPaceDiv);
+    const children = [headerDiv, compoundRow, lapsDiv, rawPaceDiv, fuelPaceDiv];
+
+    const entryPitLap = stint.start_lap - 1;
+    const tactic =
+        (entryPitLap >= 1 && tacticsByKey?.get(`${stint.driver}-${entryPitLap}`)) ||
+        tacticsByKey?.get(`${stint.driver}-${stint.end_lap}`) ||
+        null;
+    const tacticBlock = _createTacticTooltipBlock(tactic);
+    if (tacticBlock) {
+        children.push(tacticBlock);
+    }
+
+    tooltipNode.replaceChildren(...children);
+}
+
+/**
+ * Populates the shared `#tooltip` DOM node when hovering a pit transition marker.
+ *
+ * @param {HTMLElement|null} tooltipNode - Underlying DOM node for `#tooltip`.
+ * @param {Object} marker - Pit transition marker descriptor (`driver`, `team`, `lap`, `fromCompound`, `toCompound`, `tactic`).
+ * @returns {void}
+ */
+function _populatePitMarkerTooltip(tooltipNode, marker) {
+    if (!tooltipNode || !marker) return;
+
+    const headerDiv = document.createElement('div');
+    headerDiv.style.fontFamily = 'Montserrat, sans-serif';
+    headerDiv.style.fontWeight = '700';
+    headerDiv.style.marginBottom = '4px';
+    headerDiv.style.textTransform = 'uppercase';
+    headerDiv.appendChild(document.createTextNode(`${marker.driver} · PIT STOP LAP ${marker.lap} `));
+
+    if (marker.team) {
+        const teamSpan = document.createElement('span');
+        teamSpan.style.color = 'var(--text-muted)';
+        teamSpan.style.fontWeight = '600';
+        teamSpan.style.fontSize = '0.75rem';
+        teamSpan.textContent = `(${marker.team})`;
+        headerDiv.appendChild(teamSpan);
+    }
+
+    const transitionDiv = document.createElement('div');
+    transitionDiv.style.fontSize = '0.8rem';
+    transitionDiv.style.fontWeight = '600';
+    transitionDiv.style.color = 'var(--text-primary)';
+    transitionDiv.textContent = `Tyre Change: ${marker.fromCompound} → ${marker.toCompound}`;
+
+    const children = [headerDiv, transitionDiv];
+    const tacticBlock = _createTacticTooltipBlock(marker.tactic);
+    if (tacticBlock) {
+        children.push(tacticBlock);
+    }
+
+    tooltipNode.replaceChildren(...children);
 }
 
 /**
@@ -814,30 +1384,160 @@ function _renderStintBars(svg, stints, xScale, yScale) {
 }
 
 /**
- * Renders vertical pit stop transition ticks between consecutive stints.
+ * Renders interactive pit transition markers (`<g class="pit-transition-marker">`) between consecutive stints.
  *
  * @param {Object} svg - D3 selection of the chart main `<g>`.
- * @param {Array<Object>} pitTransitions - Pit transition descriptors.
+ * @param {Array<Object>} pitTransitions - Pit transition descriptors enriched with `tactic`.
  * @param {Function} xScale - D3 linear scale for lap numbers.
  * @param {Function} yScale - D3 band scale for driver codes.
- * @returns {Object} D3 selection of `<line class="pit-tick">` elements.
+ * @param {Object} tooltip - D3 selection of `#tooltip`.
+ * @param {Function} onHoverChange - Callback invoked with hovered driver code or null.
+ * @returns {Object} D3 selection of `<g class="pit-transition-marker">` elements.
  */
-function _renderPitTransitionTicks(svg, pitTransitions, xScale, yScale) {
-    return svg
-        .append('g')
-        .attr('class', 'pit-transition-ticks')
-        .selectAll('line.pit-tick')
+function _renderPitTransitionTicks(
+    svg,
+    pitTransitions,
+    xScale,
+    yScale,
+    tooltip,
+    onHoverChange
+) {
+    const markerLayer = svg.append('g').attr('class', 'pit-transition-ticks');
+
+    const markers = markerLayer
+        .selectAll('g.pit-transition-marker')
         .data(pitTransitions)
         .enter()
+        .append('g')
+        .attr('class', 'pit-transition-marker')
+        .style('cursor', 'pointer');
+
+    markers
         .append('line')
         .attr('class', 'pit-tick')
         .attr('x1', (d) => xScale(d.lap))
         .attr('x2', (d) => xScale(d.lap))
         .attr('y1', (d) => yScale(d.driver) - _PIT_TICK_VERTICAL_OVERHANG_PX)
         .attr('y2', (d) => yScale(d.driver) + yScale.bandwidth() + _PIT_TICK_VERTICAL_OVERHANG_PX)
-        .attr('stroke', '#ffffff')
-        .attr('stroke-width', _PIT_TICK_STROKE_WIDTH_PX)
+        .attr('stroke', (d) => d.tactic?.color || _TACTIC_COLOR_STANDARD)
+        .attr('stroke-width', _PIT_MARKER_LINE_WIDTH_PX)
         .style('pointer-events', 'none');
+
+    markers
+        .append('circle')
+        .attr('class', 'pit-transition-badge')
+        .attr('cx', (d) => xScale(d.lap))
+        .attr('cy', (d) => yScale(d.driver) - 1)
+        .attr('r', _PIT_MARKER_BADGE_RADIUS_PX)
+        .attr('fill', (d) => d.tactic?.color || _TACTIC_COLOR_STANDARD)
+        .attr('stroke', _BAR_STROKE_COLOR)
+        .attr('stroke-width', _PIT_MARKER_BADGE_STROKE_WIDTH_PX)
+        .style('pointer-events', 'none');
+
+    markers
+        .append('rect')
+        .attr('class', 'pit-transition-hit')
+        .attr('x', (d) => xScale(d.lap) - _PIT_MARKER_HIT_WIDTH_PX / 2)
+        .attr('y', (d) => yScale(d.driver) - _PIT_MARKER_BADGE_RADIUS_PX)
+        .attr('width', _PIT_MARKER_HIT_WIDTH_PX)
+        .attr('height', yScale.bandwidth() + _PIT_MARKER_BADGE_RADIUS_PX * 2)
+        .attr('fill', 'transparent');
+
+    markers
+        .on('mouseover', (event, d) => {
+            if (onHoverChange) onHoverChange(d.driver);
+            d3.select(event.currentTarget)
+                .select('circle.pit-transition-badge')
+                .attr('r', _PIT_MARKER_BADGE_RADIUS_PX + 1.4)
+                .attr('stroke', '#ffffff');
+
+            _populatePitMarkerTooltip(tooltip.node(), d);
+            tooltip
+                .classed('hidden', false)
+                .style('border-left-color', d.tactic?.color || d.color || 'var(--accent)')
+                .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
+                .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
+        })
+        .on('mousemove', (event) => {
+            tooltip
+                .style('left', `${event.pageX + _TOOLTIP_OFFSET_X_PX}px`)
+                .style('top', `${event.pageY + _TOOLTIP_OFFSET_Y_PX}px`);
+        })
+        .on('mouseout', (event) => {
+            if (onHoverChange) onHoverChange(null);
+            d3.select(event.currentTarget)
+                .select('circle.pit-transition-badge')
+                .attr('r', _PIT_MARKER_BADGE_RADIUS_PX)
+                .attr('stroke', _BAR_STROKE_COLOR);
+            tooltip.classed('hidden', true);
+        });
+
+    return markers;
+}
+
+/**
+ * Renders the vertical synchronized playhead line (`g.strategy-playhead-layer`) and returns its updater.
+ *
+ * @param {Object} svg - D3 selection of the chart main `<g>`.
+ * @param {Function} xScale - D3 linear scale for lap numbers.
+ * @param {number} height - Inner chart height in pixels.
+ * @param {number} maxLap - Maximum race lap count.
+ * @returns {Function} `updatePlayhead(lapNumber)` callback.
+ */
+function _createStrategyPlayheadLayer(svg, xScale, height, maxLap) {
+    const playheadLayer = svg
+        .append('g')
+        .attr('class', 'strategy-playhead-layer')
+        .style('display', 'none')
+        .style('pointer-events', 'none');
+
+    playheadLayer
+        .append('line')
+        .attr('class', 'strategy-playhead-line')
+        .attr('x1', 0)
+        .attr('x2', 0)
+        .attr('y1', _PLAYHEAD_TOP_OFFSET_PX)
+        .attr('y2', height)
+        .attr('stroke', _PLAYHEAD_COLOR)
+        .attr('stroke-width', _PLAYHEAD_STROKE_WIDTH_PX)
+        .attr('stroke-dasharray', _PLAYHEAD_DASH_ARRAY);
+
+    playheadLayer
+        .append('rect')
+        .attr('x', -_PLAYHEAD_PILL_WIDTH_PX / 2)
+        .attr('y', _PLAYHEAD_PILL_Y_OFFSET_PX)
+        .attr('width', _PLAYHEAD_PILL_WIDTH_PX)
+        .attr('height', _PLAYHEAD_PILL_HEIGHT_PX)
+        .attr('rx', _PLAYHEAD_PILL_RADIUS_PX)
+        .attr('fill', _PLAYHEAD_PILL_BG_FILL)
+        .attr('stroke', _PLAYHEAD_COLOR)
+        .attr('stroke-width', 1.2);
+
+    const labelText = playheadLayer
+        .append('text')
+        .attr('x', 0)
+        .attr('y', _PLAYHEAD_PILL_Y_OFFSET_PX + _PLAYHEAD_PILL_HEIGHT_PX / 2)
+        .attr('dy', '0.35em')
+        .attr('text-anchor', 'middle')
+        .attr('fill', _PLAYHEAD_COLOR)
+        .style('font-family', 'Montserrat, sans-serif')
+        .style('font-size', '9.5px')
+        .style('font-weight', '700')
+        .text('LAP 0');
+
+    return (lapNumber) => {
+        if (lapNumber === null || lapNumber === undefined || !Number.isFinite(lapNumber)) {
+            playheadLayer.style('display', 'none');
+            return;
+        }
+        const clampedLap = Math.max(0, Math.min(maxLap, lapNumber));
+        const xPos = xScale(clampedLap);
+        labelText.text(`LAP ${clampedLap}`);
+        playheadLayer
+            .style('display', null)
+            .attr('transform', `translate(${xPos},0)`)
+            .raise();
+    };
 }
 
 /**
@@ -954,6 +1654,7 @@ function _renderScVscOverlayBadges(
  * @param {Object} stintGroups - D3 selection of stint bar groups.
  * @param {Object} driverLabels - D3 selection of Y-axis driver label nodes.
  * @param {Object} tooltip - D3 selection of `#tooltip`.
+ * @param {Map<string, Object>} tacticsByKey - Lookup map of `"${driver}-${lap}"` to tactical outcome.
  * @param {Function} onHoverChange - Callback invoked with hovered driver code or null.
  * @param {Function} onDriverClick - Callback invoked when a driver label is clicked.
  * @returns {void}
@@ -962,6 +1663,7 @@ function _bindStrategyInteractions(
     stintGroups,
     driverLabels,
     tooltip,
+    tacticsByKey,
     onHoverChange,
     onDriverClick
 ) {
@@ -978,7 +1680,7 @@ function _bindStrategyInteractions(
                 .attr('stroke', _BAR_HOVER_STROKE_COLOR)
                 .attr('stroke-width', _BAR_HOVER_STROKE_WIDTH_PX);
 
-            _populateStintTooltip(tooltip.node(), d);
+            _populateStintTooltip(tooltip.node(), d, tacticsByKey);
             tooltip
                 .classed('hidden', false)
                 .style('border-left-color', d.color || 'var(--accent)')
@@ -1028,6 +1730,7 @@ export function renderRaceStrategy(data) {
     );
     if (stints.length === 0) {
         _externalStrategyFocusHandler = null;
+        _strategyPlayheadHandler = null;
         _renderEmptyStrategyState(container);
         return;
     }
@@ -1073,7 +1776,8 @@ export function renderRaceStrategy(data) {
         .attr('transform', `translate(${_CHART_MARGIN.left},${_CHART_MARGIN.top})`);
 
     const scWindows = _extractScVscWindows(data, maxLap);
-    const pitTransitions = _extractPitTransitions(stints, yScale);
+    const { byKey: tacticsByKey } = analyzePitStopTactics(data);
+    const pitTransitions = _extractPitTransitions(stints, yScale, tacticsByKey);
     const tooltip = d3.select('#tooltip');
 
     _renderStrategyGridAndRowGuides(
@@ -1098,16 +1802,30 @@ export function renderRaceStrategy(data) {
         maxLap
     );
 
-    const stintGroups = _renderStintBars(svg, stints, xScale, yScale);
-    const pitTickGroups = _renderPitTransitionTicks(svg, pitTransitions, xScale, yScale);
-    _renderScVscOverlayBadges(svg, scWindows, pitTransitions, xScale, width, height, tooltip);
-
     let localFocusedDriver = null;
     let externalFocusedDriver = null;
     let hoveredDriver = null;
     const activeCompounds = new Set(_COMPOUND_ORDER);
 
-    const updateFocusStyles = () => {
+    const stintGroups = _renderStintBars(svg, stints, xScale, yScale);
+    const pitTickGroups = _renderPitTransitionTicks(
+        svg,
+        pitTransitions,
+        xScale,
+        yScale,
+        tooltip,
+        (nextHoveredDriver) => {
+            hoveredDriver = nextHoveredDriver;
+            updateFocusStyles();
+        }
+    );
+    _renderScVscOverlayBadges(svg, scWindows, pitTransitions, xScale, width, height, tooltip);
+    _strategyPlayheadHandler = _createStrategyPlayheadLayer(svg, xScale, height, maxLap);
+    if (_currentStrategyPlayheadLap !== null) {
+        _strategyPlayheadHandler(_currentStrategyPlayheadLap);
+    }
+
+    function updateFocusStyles() {
         const effectiveDriver =
             hoveredDriver !== null
                 ? hoveredDriver
@@ -1132,12 +1850,13 @@ export function renderRaceStrategy(data) {
                 ? _ACTIVE_OPACITY
                 : _DIMMED_OPACITY
         );
-    };
+    }
 
     _bindStrategyInteractions(
         stintGroups,
         driverLabels,
         tooltip,
+        tacticsByKey,
         (nextHoveredDriver) => {
             hoveredDriver = nextHoveredDriver;
             updateFocusStyles();

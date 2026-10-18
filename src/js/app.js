@@ -14,8 +14,9 @@ import { renderRaceStrategy } from './race_strategy.js';
 import { renderRaceWorm } from './race_worm.js';
 import { renderRacePitStops } from './race_pitstops.js';
 import { renderRaceStintPace } from './race_stint_pace.js';
+import { renderRaceScrubber, stopRaceScrubberPlayback } from './race_scrubber.js';
 
-const APP_VERSION = 'v1.18.6';
+const APP_VERSION = 'v1.18.7';
 
 const _DEFAULT_SESSION = 'race';
 const _PANEL_KEYS = ['practice', 'qualifying', 'race'];
@@ -284,6 +285,7 @@ function _bindSessionTabEvents() {
 
     const activateSession = (sessionKey) => {
         if (!sessionKey || !_VALID_SESSIONS.includes(sessionKey)) return;
+        stopRaceScrubberPlayback();
         _activeSession = sessionKey;
         _syncSessionTabUI(_activeSession);
 
@@ -458,6 +460,7 @@ function _renderSessionCharts(data, activeSession) {
         return;
     }
 
+    renderRaceScrubber(viewData);
     renderBeeswarm(viewData);
     renderRaceStrategy(viewData);
     renderRaceWorm(viewData);
@@ -486,6 +489,7 @@ function _renderActiveSession(data, activeSession) {
  * @returns {Promise<void>}
  */
 async function _loadGrandPrix(dataFile) {
+    stopRaceScrubberPlayback();
     _setLoaderVisibility(true);
     document.getElementById('race-title').textContent = 'Loading...';
 

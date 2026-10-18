@@ -13,6 +13,7 @@ import { setRaceStrategyExternalFocus } from './race_strategy.js';
 import { setRaceWormExternalFocus } from './race_worm.js';
 import { setRacePitStopsExternalFocus } from './race_pitstops.js';
 import { setRaceStintPaceExternalFocus } from './race_stint_pace.js';
+import { setRaceScrubberExternalFocus } from './race_scrubber.js';
 
 const _DNF_TIME_THRESHOLD_SECONDS = 180;
 const _SECONDS_PER_HOUR = 3600;
@@ -290,6 +291,7 @@ export function broadcastDashboardFocus(targetDriver, activeSession = 'race') {
         return;
     }
 
+    setRaceScrubberExternalFocus(driverCode);
     setBeeswarmExternalFocus(driverCode);
     setRaceStrategyExternalFocus(driverCode);
     setRaceWormExternalFocus(driverCode);
@@ -303,29 +305,64 @@ export function broadcastDashboardFocus(targetDriver, activeSession = 'race') {
  *
  * @param {Object} driver - Classified driver object (`{ code, team, color }`).
  * @param {number} index - Zero-based position index.
- * @param {string} gapHtml - Formatted primary gap/time HTML.
- * @param {string} detailHtml - Optional secondary subtitle HTML.
+ * @param {string} gapText - Formatted primary gap/time text.
+ * @param {string} detailText - Optional secondary subtitle text.
+ * @param {{color: string, title: string}|null} [compoundBadge=null] - Optional compound dot descriptor.
  * @returns {HTMLElement} Constructed `.standings-row` element.
  */
-function _createStandingsRowElement(driver, index, gapHtml, detailHtml) {
+function _createStandingsRowElement(driver, index, gapText, detailText, compoundBadge = null) {
     const row = document.createElement('div');
     row.className = 'standings-row';
     row.dataset.driverCode = driver.code;
-    const subHtml = detailHtml ? `<div class="standings-laps-dnf">${detailHtml}</div>` : '';
-    row.innerHTML = `
-        <div class="standings-row-left">
-            <div class="standings-pos">P${index + 1}</div>
-            <div class="standings-color-bar" style="background-color: ${driver.color}"></div>
-            <div class="standings-driver-info">
-                <span class="standings-code-team">${driver.code}</span>
-                <span class="standings-team-name">${driver.team}</span>
-            </div>
-        </div>
-        <div class="standings-row-right">
-            <div class="standings-gap">${gapHtml}</div>
-            ${subHtml}
-        </div>
-    `;
+
+    const leftDiv = document.createElement('div');
+    leftDiv.className = 'standings-row-left';
+
+    const posDiv = document.createElement('div');
+    posDiv.className = 'standings-pos';
+    posDiv.textContent = `P${index + 1}`;
+
+    const colorBar = document.createElement('div');
+    colorBar.className = 'standings-color-bar';
+    colorBar.style.backgroundColor = driver.color;
+
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'standings-driver-info';
+
+    const codeSpan = document.createElement('span');
+    codeSpan.className = 'standings-code-team';
+    codeSpan.textContent = driver.code;
+
+    const teamSpan = document.createElement('span');
+    teamSpan.className = 'standings-team-name';
+    teamSpan.textContent = driver.team;
+
+    infoDiv.append(codeSpan, teamSpan);
+    leftDiv.append(posDiv, colorBar, infoDiv);
+
+    const rightDiv = document.createElement('div');
+    rightDiv.className = 'standings-row-right';
+
+    const gapDiv = document.createElement('div');
+    gapDiv.className = 'standings-gap';
+    if (compoundBadge) {
+        const dotSpan = document.createElement('span');
+        dotSpan.className = 'standings-compound-badge';
+        dotSpan.style.backgroundColor = compoundBadge.color;
+        dotSpan.title = compoundBadge.title;
+        gapDiv.appendChild(dotSpan);
+    }
+    gapDiv.appendChild(document.createTextNode(gapText));
+    rightDiv.appendChild(gapDiv);
+
+    if (detailText) {
+        const subDiv = document.createElement('div');
+        subDiv.className = 'standings-laps-dnf';
+        subDiv.textContent = detailText;
+        rightDiv.appendChild(subDiv);
+    }
+
+    row.append(leftDiv, rightDiv);
     return row;
 }
 
@@ -339,7 +376,11 @@ function _createStandingsRowElement(driver, index, gapHtml, detailHtml) {
 function _createCutoffDividerElement(label, cutoffTimeText) {
     const divider = document.createElement('div');
     divider.className = 'standings-cutoff-divider';
-    divider.innerHTML = `<span>${label}</span><span>${cutoffTimeText}</span>`;
+    const labelSpan = document.createElement('span');
+    labelSpan.textContent = label;
+    const timeSpan = document.createElement('span');
+    timeSpan.textContent = cutoffTimeText;
+    divider.append(labelSpan, timeSpan);
     return divider;
 }
 
@@ -396,14 +437,16 @@ function _renderPracticeStandingsRows(container, classification) {
     classification.forEach((entry, index) => {
         const code = entry.driver;
         const compoundColor = _COMPOUND_COLORS[entry.compound] || _DEFAULT_COMPOUND_COLOR;
-        const dotHtml = `<span class="standings-compound-badge" style="background-color: ${compoundColor}" title="${entry.compound}"></span>`;
-        const gapHtml =
+        const gapText =
             index === 0
-                ? `${dotHtml}${formatSessionDuration(entry.best_lap)}`
-                : `${dotHtml}+${Number(entry.gap_to_p1).toFixed(3)}s`;
-        const detailHtml = `${entry.total_laps} Laps`;
+                ? formatSessionDuration(entry.best_lap)
+                : `+${Number(entry.gap_to_p1).toFixed(3)}s`;
+        const detailText = `${entry.total_laps} Laps`;
         const driverObj = { code, team: entry.team, color: entry.color };
-        const row = _createStandingsRowElement(driverObj, index, gapHtml, detailHtml);
+        const row = _createStandingsRowElement(driverObj, index, gapText, detailText, {
+            color: compoundColor,
+            title: entry.compound
+        });
         container.appendChild(row);
         rowBindings.push({ row, driver: driverObj });
     });
@@ -467,7 +510,10 @@ function _renderQualifyingStandingsRows(container, qualifyingData, activeSession
 function _renderRaceStandingsRows(container, data) {
     const { validLaps, maxLap, classification } = calculateDriverClassification(data);
     if (validLaps.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted)">No classification data available.</p>';
+        const emptyParagraph = document.createElement('p');
+        emptyParagraph.style.color = 'var(--text-muted)';
+        emptyParagraph.textContent = 'No classification data available.';
+        container.replaceChildren(emptyParagraph);
         return [];
     }
 
@@ -498,7 +544,7 @@ export function renderStandings(data, activeSession = 'race') {
         titleEl.textContent = _SESSION_TITLES[activeSession] || _SESSION_TITLES.race;
     }
     if (!container) return;
-    container.innerHTML = '';
+    container.replaceChildren();
 
     let rowBindings = [];
 
