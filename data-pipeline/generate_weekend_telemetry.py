@@ -79,7 +79,7 @@ _MAX_CLEAN_RACE_LAP_S: Final[float] = 165.0
 _LAP1_STANDING_START_OVERHEAD_S: Final[float] = 3.5
 _LAP1_DEFAULT_GRID_STEP_S: Final[float] = 0.42
 _LAP1_MIN_GRID_GAP_STEP_S: Final[float] = 0.28
-_LAP1_MAX_RAW_GAP_S: Final[float] = 16.0
+_LAP1_MAX_RAW_GAP_S: Final[float] = 24.0
 _LAP1_MAX_ADJACENT_GAP_JUMP_S: Final[float] = 4.5
 _LAP1_MIN_MONOTONIC_STEP_S: Final[float] = 0.12
 _LAP1_INITIAL_OFFSET_S: Final[float] = 0.15
@@ -112,7 +112,7 @@ _MAX_PRACTICE_PACE_RATIO_S: Final[float] = 4.2
 _MAX_CLEAN_PACE_MEDIAN_RATIO: Final[float] = 1.08
 _MIN_SPEED_TRAP_KMH: Final[float] = 220.0
 _MAX_SPEED_TRAP_KMH: Final[float] = 375.0
-_MAX_TRAP_OUTLIER_DROP_KMH: Final[float] = 15.0
+_MAX_TRAP_OUTLIER_DROP_KMH: Final[float] = 32.0
 _MIN_REAL_COMPOUND_LAPS_SUM: Final[int] = 12
 _PRACTICE_SAMPLE_LAP_LIMIT: Final[int] = 250
 _DEGRADATION_CURVE_MAX_AGE: Final[int] = 14
@@ -272,6 +272,7 @@ class _RealQualifyingMetrics:
     has_real_quali: bool
     real_s1_ratio: float | None = None
     real_s2_ratio: float | None = None
+    best_compound_by_code: Mapping[str, str] = None  # type: ignore[assignment]
 
 
 @dataclass(frozen=True)
@@ -784,6 +785,23 @@ def _reconstruct_driver_calibrated_laps(
                 rec["time"] = context.lap1_time_by_code.get(
                     code, context.leader_lap1_time
                 )
+        elif rec.get("interpolated"):
+            ts_curr = context.end_ts_by_code_lap.get((code, lap_no))
+            ts_prev = context.end_ts_by_code_lap.get((code, lap_no - 1))
+            ts_dur = (
+                round(ts_curr - ts_prev, _TIME_DECIMALS)
+                if ts_curr is not None and ts_prev is not None
+                else None
+            )
+            if (
+                ts_dur is not None
+                and context.min_valid_lap_time <= ts_dur <= max_valid_lap_time
+            ):
+                rec["time"] = ts_dur
+                rec["interpolated"] = False
+            else:
+                rec["time"] = round(drv_median, _TIME_DECIMALS)
+                rec["interpolated"] = True
         elif float(rec.get("time", 0)) < context.min_valid_lap_time:
             rec["time"] = round(drv_median, _TIME_DECIMALS)
             rec["interpolated"] = True
@@ -1349,8 +1367,9 @@ def _extract_sc_vsc_windows(
 ) -> list[dict[str, Any]]:
     """Extracts Safety Car (SC) and Virtual Safety Car (VSC) lap windows.
 
-    Uses OpenF1 ``/race_control`` SafetyCar messages when available, or detects
-    field-wide slow laps from ``laps`` when offline.
+    Uses OpenF1 ``/race_control`` SafetyCar messages when available, augmenting
+    them with any multi-car field-wide neutralized transition laps (`> 1.10x`
+    race median), or detects field-wide slow laps from ``laps`` when offline.
 
     Args:
         race_control_events: OpenF1 race control event records.
@@ -1363,7 +1382,50 @@ def _extract_sc_vsc_windows(
     """
     rc_windows = _parse_race_control_sc_windows(race_control_events, total_laps)
     if rc_windows:
-        return _merge_adjacent_sc_windows(rc_windows)
+        merged_rc = _merge_adjacent_sc_windows(rc_windows)
+        by_lap: dict[int, list[float]] = defaultdict(list)
+        valid_times: list[float] = []
+        for lap_rec in laps:
+            lap_no = int(lap_rec.get("lap", 0))
+            t_val = float(lap_rec.get("time", 0.0))
+            if lap_no > 1 and t_val > 0:
+                by_lap[lap_no].append(t_val)
+                valid_times.append(t_val)
+        if valid_times and any(len(v) >= 3 for v in by_lap.values()):
+            global_median = statistics.median(valid_times)
+            covered_type_by_lap: dict[int, str] = {}
+            for win in merged_rc:
+                for l_no in range(int(win["start_lap"]), int(win["end_lap"]) + 1):
+                    covered_type_by_lap[l_no] = str(win["type"])
+            extra_windows: list[dict[str, Any]] = []
+            for lap_no in sorted(by_lap.keys()):
+                if lap_no in covered_type_by_lap or len(by_lap[lap_no]) < 3:
+                    continue
+                lap_med = statistics.median(by_lap[lap_no])
+                if lap_med > global_median * 1.10:
+                    adj_type = covered_type_by_lap.get(
+                        lap_no - 1
+                    ) or covered_type_by_lap.get(lap_no + 1)
+                    if adj_type is not None:
+                        w_type = adj_type
+                    elif lap_med > global_median * _SC_LAP_TIME_RATIO_THRESHOLD:
+                        w_type = "SC"
+                    else:
+                        w_type = "VSC"
+                    covered_type_by_lap[lap_no] = w_type
+                    extra_windows.append(
+                        {
+                            "type": w_type,
+                            "start_lap": lap_no,
+                            "end_lap": lap_no,
+                            "label": _format_sc_window_label(
+                                w_type, lap_no, lap_no
+                            ),
+                        }
+                    )
+            if extra_windows:
+                return _merge_adjacent_sc_windows(merged_rc + extra_windows)
+        return merged_rc
     return _detect_fallback_sc_windows_from_laps(laps)
 
 
@@ -1472,6 +1534,7 @@ def _extract_real_practice_metrics(
     num_to_code: Mapping[int, str] | None,
     practice_pole_base: float = _DEFAULT_POLE_TIME_S,
     drivers: Sequence[Mapping[str, Any]] | None = None,
+    fallback_speed_trap_laps: Sequence[Mapping[str, Any]] | None = None,
 ) -> _RealPracticeMetrics:
     """Extracts per-driver best laps, speed traps, positions, stint counts, and real stint laps from OpenF1 practice data.
 
@@ -1482,6 +1545,7 @@ def _extract_real_practice_metrics(
         num_to_code: Mapping from driver number to three-letter code, or None.
         practice_pole_base: Expected practice pole baseline in seconds.
         drivers: Optional sequence of driver metadata dicts for team/color lookup.
+        fallback_speed_trap_laps: Optional qualifying/race lap records for real speed-trap fallback.
 
     Returns:
         Populated ``_RealPracticeMetrics`` instance.
@@ -1501,6 +1565,9 @@ def _extract_real_practice_metrics(
     lap_stint_map: dict[
         tuple[int, str, int], tuple[str, tuple[int, int], int]
     ] = {}
+    session_stints_by_sk_code: dict[
+        tuple[int, str], list[tuple[int, int, str]]
+    ] = defaultdict(list)
     driver_stint_lengths: dict[str, list[int]] = defaultdict(list)
     if openf1_practice_stints and num_to_code:
         for stint_rec in openf1_practice_stints:
@@ -1519,6 +1586,7 @@ def _extract_real_practice_metrics(
             count = max(1, l_end - l_start + 1)
             real_comp_counts[code][comp] += count
             driver_stint_lengths[code].append(count)
+            session_stints_by_sk_code[(sk, code)].append((l_start, l_end, comp))
             stint_num = int(stint_rec.get("stint_number") or 1)
             age_start = int(stint_rec.get("tyre_age_at_start") or 0)
             for l_num in range(l_start, l_end + 1):
@@ -1574,18 +1642,7 @@ def _extract_real_practice_metrics(
             sk = int(lap_rec.get("session_key") or 0)
             dur = lap_rec.get("lap_duration")
             lap_num = int(lap_rec.get("lap_number") or 0)
-            is_valid_flying = (
-                dur is not None
-                and not lap_rec.get("is_pit_out_lap")
-                and min_flying_prac_lap <= float(dur) <= max_flying_prac_lap
-            )
-            if is_valid_flying:
-                f_dur = float(dur)
-                if code not in real_best_lap or f_dur < real_best_lap[code]:
-                    real_best_lap[code] = f_dur
-                    stint_info = lap_stint_map.get((sk, code, lap_num))
-                    if stint_info is not None:
-                        real_best_compound[code] = stint_info[0]
+            if not lap_rec.get("is_pit_out_lap"):
                 for sp_key in ("st_speed", "i2_speed", "i1_speed"):
                     sp_val = lap_rec.get(sp_key)
                     if (
@@ -1599,6 +1656,26 @@ def _extract_real_practice_metrics(
                             or float(sp_val) > real_speed_trap[code]
                         ):
                             real_speed_trap[code] = float(sp_val)
+            is_valid_flying = (
+                dur is not None
+                and not lap_rec.get("is_pit_out_lap")
+                and min_flying_prac_lap <= float(dur) <= max_flying_prac_lap
+            )
+            if is_valid_flying:
+                f_dur = float(dur)
+                if code not in real_best_lap or f_dur < real_best_lap[code]:
+                    real_best_lap[code] = f_dur
+                    stint_info = lap_stint_map.get((sk, code, lap_num))
+                    if stint_info is not None:
+                        real_best_compound[code] = stint_info[0]
+                    elif (sk, code) in session_stints_by_sk_code:
+                        nearest_stint = min(
+                            session_stints_by_sk_code[(sk, code)],
+                            key=lambda s: min(
+                                abs(lap_num - s[0]), abs(lap_num - s[1])
+                            ),
+                        )
+                        real_best_compound[code] = nearest_stint[2]
 
     if len(real_speed_trap) >= 3:
         median_trap = statistics.median(real_speed_trap.values())
@@ -1607,6 +1684,42 @@ def _extract_real_practice_metrics(
             for code, trap in real_speed_trap.items()
             if trap >= median_trap - _MAX_TRAP_OUTLIER_DROP_KMH
         }
+
+    if fallback_speed_trap_laps and num_to_code:
+        ref_median_trap = (
+            statistics.median(real_speed_trap.values())
+            if real_speed_trap
+            else None
+        )
+        for lap_rec in fallback_speed_trap_laps:
+            d_num = lap_rec.get("driver_number")
+            code = num_to_code.get(int(d_num)) if d_num is not None else None
+            if not code or lap_rec.get("is_pit_out_lap"):
+                continue
+            for sp_key in ("st_speed", "i2_speed", "i1_speed"):
+                sp_val = lap_rec.get(sp_key)
+                if (
+                    sp_val is not None
+                    and _MIN_SPEED_TRAP_KMH
+                    < float(sp_val)
+                    < _MAX_SPEED_TRAP_KMH
+                ):
+                    f_sp = float(sp_val)
+                    if (
+                        ref_median_trap is not None
+                        and f_sp < ref_median_trap - _MAX_TRAP_OUTLIER_DROP_KMH
+                    ):
+                        continue
+                    if code not in real_speed_trap:
+                        real_speed_trap[code] = f_sp
+
+    for code in real_best_lap:
+        if code not in real_best_compound:
+            c_counts = real_comp_counts.get(code, {})
+            for comp in ("SOFT", "MEDIUM", "HARD"):
+                if c_counts.get(comp, 0) > 0:
+                    real_best_compound[code] = comp
+                    break
 
     if openf1_practice_results and num_to_code:
         if official_durations and max_flying_prac_lap == _MAX_PRACTICE_LAP_S:
@@ -1636,15 +1749,17 @@ def _extract_real_practice_metrics(
     real_long_run_by_code: dict[str, tuple[str, list[float]]] = {}
     if openf1_practice_laps and num_to_code and real_best_lap:
         ref_pole = min(real_best_lap.values())
-        min_long_run_s = ref_pole * 1.020
-        max_long_run_s = ref_pole * 1.085
+        min_long_run_s = ref_pole * 1.005
+        max_long_run_s = ref_pole * 1.135
 
         candidate_hf_laps: list[float] = [
             float(lap["lap_duration"])
             for lap in openf1_practice_laps
             if lap.get("lap_duration") is not None
             and not lap.get("is_pit_out_lap")
-            and min_long_run_s <= float(lap["lap_duration"]) <= max_long_run_s
+            and (ref_pole * 1.020)
+            <= float(lap["lap_duration"])
+            <= max_long_run_s
         ]
         if candidate_hf_laps:
             hf_min = min(candidate_hf_laps)
@@ -1696,12 +1811,22 @@ def _extract_real_practice_metrics(
                 stints_for_comp = comp_dict.get(comp, {})
                 if not stints_for_comp:
                     continue
-                best_stint = max(
-                    stints_for_comp.values(), key=lambda items: len(items)
-                )
+                cleaned_stints: list[list[tuple[int, int, float]]] = []
+                for s_items in stints_for_comp.values():
+                    if not s_items:
+                        continue
+                    s_min = min(t for _, _, t in s_items)
+                    filtered_items = [
+                        item for item in s_items if item[2] <= s_min + 4.0
+                    ]
+                    if filtered_items:
+                        cleaned_stints.append(filtered_items)
+                if not cleaned_stints:
+                    continue
+                best_stint = max(cleaned_stints, key=lambda items: len(items))
                 best_stint.sort(key=lambda item: item[0])
                 all_comp_times: list[float] = []
-                for s_items in stints_for_comp.values():
+                for s_items in cleaned_stints:
                     if len(s_items) >= 2:
                         all_comp_times.extend(t for _, _, t in s_items)
 
@@ -1969,6 +2094,15 @@ def _build_practice_driver_entry(
     if real_lr is not None and real_stint_list:
         long_run_compound, driver_long_run_times = real_lr
         driver_stint_laps = real_stint_list
+    elif metrics.has_real_practice and code in metrics.known_driver_codes:
+        driver_stint_laps = real_stint_list or []
+        driver_long_run_times = []
+        if c_counts and sum(c_counts.values()) > 0:
+            long_run_compound = (
+                "MEDIUM"
+                if c_counts.get("MEDIUM", 0) >= c_counts.get("HARD", 0)
+                else "HARD"
+            )
     else:
         stint_len = 10 + int(_seeded_unit_float(f"{seed_key}_lrlen") * 5)
         driver_stint_laps, driver_long_run_times = (
@@ -1983,9 +2117,19 @@ def _build_practice_driver_entry(
         if real_stint_list:
             driver_stint_laps = real_stint_list
 
-    sorted_lr = sorted(driver_long_run_times)
-    q25_idx = max(0, len(sorted_lr) // 4)
-    q75_idx = min(len(sorted_lr) - 1, (len(sorted_lr) * 3) // 4)
+    if driver_long_run_times:
+        sorted_lr = sorted(driver_long_run_times)
+        q25_idx = max(0, len(sorted_lr) // 4)
+        q75_idx = min(len(sorted_lr) - 1, (len(sorted_lr) * 3) // 4)
+        lr_avg: float | None = round(
+            statistics.mean(driver_long_run_times), _TIME_DECIMALS
+        )
+        lr_q25: float | None = round(sorted_lr[q25_idx], _TIME_DECIMALS)
+        lr_q75: float | None = round(sorted_lr[q75_idx], _TIME_DECIMALS)
+    else:
+        lr_avg = None
+        lr_q25 = None
+        lr_q75 = None
 
     entry = {
         "driver": code,
@@ -2005,11 +2149,9 @@ def _build_practice_driver_entry(
         "speed_trap_kmh": speed_trap_kmh,
         "mean_corner_kmh": mean_corner_kmh,
         "long_run_compound": long_run_compound,
-        "long_run_avg": round(
-            statistics.mean(driver_long_run_times), _TIME_DECIMALS
-        ),
-        "long_run_q25": round(sorted_lr[q25_idx], _TIME_DECIMALS),
-        "long_run_q75": round(sorted_lr[q75_idx], _TIME_DECIMALS),
+        "long_run_avg": lr_avg,
+        "long_run_q25": lr_q25,
+        "long_run_q75": lr_q75,
     }
     return entry, driver_stint_laps
 
@@ -2105,16 +2247,16 @@ def _build_degradation_slopes(
             ss_xy = sum((x - x_mean) * (y - y_mean) for x, y in zip(xs, ys))
             if ss_xx > 1e-6:
                 raw_slope = ss_xy / ss_xx
-                clamped_slope = max(0.015, min(0.280, raw_slope))
+                clamped_slope = max(0.005, min(0.350, raw_slope))
                 intercept = statistics.mean([float(p[1]) for p in pts]) - (
                     clamped_slope * x_mean
                 )
                 r2_val = (
-                    (ss_xy * ss_xy) / (ss_xx * ss_yy) if ss_yy > 1e-6 else 0.5
+                    (ss_xy * ss_xy) / (ss_xx * ss_yy) if ss_yy > 1e-6 else 0.0
                 )
                 slopes_list.append(clamped_slope)
                 bases_list.append(intercept)
-                r2_list.append(max(0.18, min(0.96, r2_val)))
+                r2_list.append(max(0.0, min(1.0, r2_val)))
 
         if slopes_list and bases_list:
             slope = round(statistics.median(slopes_list), _TIME_DECIMALS)
@@ -2155,6 +2297,7 @@ def _build_practice_telemetry(
     openf1_practice_results: Sequence[Mapping[str, Any]] | None = None,
     num_to_code: Mapping[int, str] | None = None,
     driver_corner_means: Mapping[str, float] | None = None,
+    fallback_speed_trap_laps: Sequence[Mapping[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Generates the ``practice`` telemetry block using real OpenF1 practice data when available.
 
@@ -2169,6 +2312,7 @@ def _build_practice_telemetry(
         openf1_practice_results: Optional OpenF1 practice session_result records.
         num_to_code: Optional driver number to code mapping.
         driver_corner_means: Optional per-driver mean corner speed in km/h from real telemetry.
+        fallback_speed_trap_laps: Optional qualifying/race lap records for real speed-trap fallback.
 
     Returns:
         Practice telemetry dictionary containing ``classification``,
@@ -2193,6 +2337,7 @@ def _build_practice_telemetry(
         num_to_code=num_to_code,
         practice_pole_base=practice_pole_base,
         drivers=drivers,
+        fallback_speed_trap_laps=fallback_speed_trap_laps,
     )
     if metrics.best_lap_by_code:
         practice_pole_base = min(metrics.best_lap_by_code.values())
@@ -2328,15 +2473,15 @@ def _fetch_openf1_car_data_window(
         f"{_OPENF1_BASE_URL}/car_data?session_key={session_key}"
         f"&driver_number={driver_number}&date>={start_iso}&date<={end_iso}"
     )
-    for attempt in range(_API_MAX_ATTEMPTS):
+    for attempt in range(8):
         try:
-            time.sleep(0.16)
+            time.sleep(0.26)
             response = requests.get(url, timeout=_API_TIMEOUT_SECONDS)
             if response.status_code == _HTTP_OK:
                 payload = response.json()
                 return payload if isinstance(payload, list) else []
             if response.status_code in _API_RETRY_STATUS_CODES:
-                time.sleep(_API_RATE_LIMIT_BACKOFF_BASE_S * (attempt + 1))
+                time.sleep(2.2 * (attempt + 1))
                 continue
         except Exception as err:
             print(f"  Warning: OpenF1 car_data request failed ({session_key}): {err}")
@@ -2344,11 +2489,52 @@ def _fetch_openf1_car_data_window(
     return []
 
 
+def _derive_qualifying_lap_duration(
+    lap_rec: Mapping[str, Any],
+    next_lap_rec: Mapping[str, Any] | None = None,
+) -> float | None:
+    """Derives a qualifying lap duration from ``lap_duration``, sector sum, or consecutive ``date_start`` timestamps.
+
+    Args:
+        lap_rec: Target OpenF1 qualifying lap dictionary.
+        next_lap_rec: Optional subsequent lap dictionary for the same driver.
+
+    Returns:
+        Resolved lap duration in seconds, or None if unavailable.
+    """
+    raw_dur = lap_rec.get("lap_duration")
+    if isinstance(raw_dur, (int, float)) and float(raw_dur) > 0:
+        return float(raw_dur)
+    s1 = lap_rec.get("duration_sector_1")
+    s2 = lap_rec.get("duration_sector_2")
+    s3 = lap_rec.get("duration_sector_3")
+    if (
+        isinstance(s1, (int, float))
+        and isinstance(s2, (int, float))
+        and isinstance(s3, (int, float))
+    ):
+        s_sum = float(s1) + float(s2) + float(s3)
+        if _MIN_QUALI_LAP_S < s_sum < _MAX_QUALI_RESULT_LAP_S:
+            return round(s_sum, _TIME_DECIMALS)
+    if next_lap_rec is not None:
+        ts_curr = _parse_iso_timestamp(lap_rec.get("date_start"))
+        ts_next = _parse_iso_timestamp(next_lap_rec.get("date_start"))
+        if ts_curr is not None and ts_next is not None:
+            dt_val = ts_next - ts_curr
+            if _MIN_QUALI_LAP_S < dt_val < _MAX_QUALI_RESULT_LAP_S:
+                return round(dt_val, _TIME_DECIMALS)
+    return None
+
+
 def _fetch_fastest_laps_car_data(
     session_key: int,
     results: Sequence[Mapping[str, Any]],
     openf1_quali_laps: Sequence[Mapping[str, Any]],
     num_to_code: Mapping[int, str],
+    existing_drivers_traces: (
+        Mapping[str, Mapping[str, Sequence[float]]] | None
+    ) = None,
+    refresh_existing: bool = False,
 ) -> dict[str, tuple[float, list[dict[str, Any]]]]:
     """Fetches real OpenF1 ``/v1/car_data`` samples for each driver's fastest qualifying lap.
 
@@ -2357,6 +2543,8 @@ def _fetch_fastest_laps_car_data(
         results: Ordered qualifying result rows.
         openf1_quali_laps: Raw OpenF1 lap records for the session.
         num_to_code: Mapping from driver number to three-letter code.
+        existing_drivers_traces: Optional map of already-fetched real driver traces.
+        refresh_existing: When False, only queries OpenF1 for drivers not in ``existing_drivers_traces``.
 
     Returns:
         Mapping ``driver_code -> (lap_duration_s, sorted_car_data_samples)``.
@@ -2370,35 +2558,61 @@ def _fetch_fastest_laps_car_data(
     min_flying = max(_MIN_QUALI_LAP_S, pole_time * _MIN_FLYING_POLE_RATIO)
     max_flying = pole_time * _QUALI_FLYING_LAP_RATIO
 
-    laps_by_code: dict[str, list[Mapping[str, Any]]] = defaultdict(list)
+    raw_by_code_lap: dict[tuple[str, int], Mapping[str, Any]] = {}
     for lap_rec in openf1_quali_laps:
         d_num = lap_rec.get("driver_number")
+        l_num = lap_rec.get("lap_number")
         code = num_to_code.get(int(d_num)) if d_num is not None else None
-        dur = lap_rec.get("lap_duration")
+        if code and l_num is not None:
+            raw_by_code_lap[(code, int(l_num))] = lap_rec
+
+    best_time_by_code = {
+        str(r["driver"]): float(r["best_time"]) for r in valid_results
+    }
+    laps_by_code: dict[str, list[tuple[float, Mapping[str, Any]]]] = defaultdict(
+        list
+    )
+    for lap_rec in openf1_quali_laps:
+        d_num = lap_rec.get("driver_number")
+        l_num = int(lap_rec.get("lap_number") or 0)
+        code = num_to_code.get(int(d_num)) if d_num is not None else None
         if (
             not code
-            or dur is None
             or lap_rec.get("is_pit_out_lap")
             or not lap_rec.get("date_start")
-            or not (min_flying <= float(dur) <= max_flying)
         ):
             continue
-        laps_by_code[code].append(lap_rec)
+        dur = _derive_qualifying_lap_duration(
+            lap_rec, raw_by_code_lap.get((code, l_num + 1))
+        )
+        if dur is None and code in best_time_by_code:
+            dur = best_time_by_code[code]
+        if dur is None or not (min_flying <= float(dur) <= max_flying):
+            continue
+        laps_by_code[code].append((float(dur), lap_rec))
 
     car_data_by_code: dict[str, tuple[float, list[dict[str, Any]]]] = {}
     for res in valid_results:
         code = str(res["driver"])
+        if (
+            not refresh_existing
+            and existing_drivers_traces
+            and code in existing_drivers_traces
+            and len(existing_drivers_traces[code].get("speed", []))
+            == _TRACE_POINTS_COUNT
+        ):
+            continue
         best_time = float(res["best_time"])
         d_num = code_to_num.get(code)
         cand_laps = laps_by_code.get(code, [])
         if d_num is None or not cand_laps:
             continue
 
-        chosen_lap = min(
+        chosen_dur, chosen_lap = min(
             cand_laps,
-            key=lambda l: abs(float(l["lap_duration"]) - best_time),
+            key=lambda item: abs(item[0] - best_time),
         )
-        lap_dur = float(chosen_lap["lap_duration"])
+        lap_dur = chosen_dur
         try:
             start_dt = datetime.fromisoformat(
                 str(chosen_lap["date_start"]).replace("Z", "+00:00")
@@ -2426,6 +2640,9 @@ def _build_real_telemetry_traces_and_corners(
     drivers: Sequence[Mapping[str, Any]],
     track_turns: Sequence[Mapping[str, Any]],
     car_data_by_code: Mapping[str, tuple[float, Sequence[Mapping[str, Any]]]],
+    existing_drivers_traces: (
+        Mapping[str, Mapping[str, Sequence[float]]] | None
+    ) = None,
 ) -> tuple[dict[str, Any], list[dict[str, Any]], dict[str, float]]:
     """Builds real 0-100% qualifying telemetry traces, constructor corner speeds, and driver corner means.
 
@@ -2506,6 +2723,46 @@ def _build_real_telemetry_traces_and_corners(
             "brake": brks,
         }
 
+    if existing_drivers_traces:
+        for res in results:
+            code = str(res["driver"])
+            if (
+                res.get("best_time") is not None
+                and code not in raw_profiles
+                and code in existing_drivers_traces
+            ):
+                ex = existing_drivers_traces[code]
+                ex_spd = [float(v) for v in ex.get("speed", [])]
+                ex_thr = [float(v) for v in ex.get("throttle", [])]
+                ex_brk = [float(v) for v in ex.get("brake", [])]
+                ex_t = [float(v) for v in ex.get("cum_time", [])]
+                if len(ex_spd) == _TRACE_POINTS_COUNT:
+                    raw_profiles[code] = {
+                        "best_time": float(res["best_time"]),
+                        "pct": [float(p) for p in distance_pct],
+                        "rel_t": (
+                            ex_t
+                            if len(ex_t) == _TRACE_POINTS_COUNT
+                            else [
+                                (i / (_TRACE_POINTS_COUNT - 1))
+                                * float(res["best_time"])
+                                for i in range(_TRACE_POINTS_COUNT)
+                            ]
+                        ),
+                        "speed": ex_spd,
+                        "throttle": (
+                            ex_thr
+                            if len(ex_thr) == _TRACE_POINTS_COUNT
+                            else [100.0] * _TRACE_POINTS_COUNT
+                        ),
+                        "brake": (
+                            ex_brk
+                            if len(ex_brk) == _TRACE_POINTS_COUNT
+                            else [0.0] * _TRACE_POINTS_COUNT
+                        ),
+                        "pre_aligned": True,
+                    }
+
     valid_results = [
         r
         for r in results
@@ -2528,7 +2785,12 @@ def _build_real_telemetry_traces_and_corners(
     aligned_profiles: dict[str, dict[str, Any]] = {}
     for code, prof in raw_profiles.items():
         best_shift = 0.0
-        if ref_code and code != ref_code and ref_grid_speeds:
+        if (
+            not prof.get("pre_aligned")
+            and ref_code
+            and code != ref_code
+            and ref_grid_speeds
+        ):
             best_err = float("inf")
             for shift_steps in range(-15, 16):
                 shift = shift_steps * 0.1
@@ -2568,7 +2830,7 @@ def _build_real_telemetry_traces_and_corners(
             if idx + 1 < len(turns_list)
             else 4.0
         )
-        half_w = max(0.45, min(1.5, 0.32 * min(prev_gap, next_gap)))
+        half_w = max(0.55, min(1.5, 0.35 * min(prev_gap, next_gap)))
         turn_windows.append((t_num, t_pct, half_w))
 
     driver_turn_speeds: dict[str, dict[int, float]] = defaultdict(dict)
@@ -2870,8 +3132,9 @@ def _extract_real_qualifying_metrics(
     openf1_quali_rc: Sequence[Mapping[str, Any]] | None,
     openf1_quali_results: Sequence[Mapping[str, Any]] | None,
     num_to_code: Mapping[int, str] | None,
+    openf1_quali_stints: Sequence[Mapping[str, Any]] | None = None,
 ) -> _RealQualifyingMetrics:
-    """Extracts Q1/Q2/Q3 times, official positions, and sector splits from OpenF1 qualifying data.
+    """Extracts Q1/Q2/Q3 times, official positions, tyre compounds, and sector splits from OpenF1 qualifying data.
 
     Args:
         drivers: Sequence of driver metadata dictionaries.
@@ -2880,6 +3143,7 @@ def _extract_real_qualifying_metrics(
         openf1_quali_rc: Raw OpenF1 qualifying race_control records, or None.
         openf1_quali_results: Official OpenF1 qualifying session_result records, or None.
         num_to_code: Mapping from driver number to three-letter code, or None.
+        openf1_quali_stints: Optional OpenF1 qualifying stint records for tyre compound lookup.
 
     Returns:
         Populated ``_RealQualifyingMetrics`` instance.
@@ -2894,6 +3158,34 @@ def _extract_real_qualifying_metrics(
     real_lap_sectors: dict[
         Any, tuple[float | None, float | None, float | None]
     ] = {}
+    quali_lap_compound: dict[tuple[str, int], str] = {}
+    quali_stints_by_code: dict[str, list[tuple[int, int, str]]] = defaultdict(
+        list
+    )
+    best_compound_by_code: dict[str, str] = {}
+    if openf1_quali_stints and num_to_code:
+        for stint_rec in openf1_quali_stints:
+            d_num = stint_rec.get("driver_number")
+            code = num_to_code.get(int(d_num)) if d_num is not None else None
+            if not code:
+                continue
+            comp = str(stint_rec.get("compound") or "SOFT").upper()
+            if comp not in (
+                "SOFT",
+                "MEDIUM",
+                "HARD",
+                "INTERMEDIATE",
+                "WET",
+            ):
+                comp = "SOFT"
+            l_start = int(stint_rec.get("lap_start") or 1)
+            l_end = int(stint_rec.get("lap_end") or l_start)
+            if l_end < l_start:
+                l_end = l_start
+            quali_stints_by_code[code].append((l_start, l_end, comp))
+            for l_num in range(l_start, l_end + 1):
+                quali_lap_compound[(code, l_num)] = comp
+
     min_anchor_quali_lap = max(
         _MIN_QUALI_LAP_S, pole_target * _MIN_POLE_ANCHOR_RATIO
     )
@@ -2924,6 +3216,14 @@ def _extract_real_qualifying_metrics(
     s2_ratios: list[float] = []
 
     if openf1_quali_laps and num_to_code:
+        raw_by_code_lap: dict[tuple[str, int], Mapping[str, Any]] = {}
+        for lap_rec in openf1_quali_laps:
+            d_num = lap_rec.get("driver_number")
+            l_num = lap_rec.get("lap_number")
+            code = num_to_code.get(int(d_num)) if d_num is not None else None
+            if code and l_num is not None:
+                raw_by_code_lap[(code, int(l_num))] = lap_rec
+
         phase_starts: dict[int, str] = {}
         for event in openf1_quali_rc or []:
             qp = event.get("qualifying_phase")
@@ -2951,11 +3251,14 @@ def _extract_real_qualifying_metrics(
 
         for lap_rec in openf1_quali_laps:
             d_num = lap_rec.get("driver_number")
+            l_num = int(lap_rec.get("lap_number") or 0)
             code = num_to_code.get(int(d_num)) if d_num is not None else None
             if not code or code not in real_q_times:
                 continue
 
-            dur = lap_rec.get("lap_duration")
+            dur = _derive_qualifying_lap_duration(
+                lap_rec, raw_by_code_lap.get((code, l_num + 1))
+            )
             ds = str(lap_rec.get("date_start") or "")
             if (
                 dur is None
@@ -2981,6 +3284,15 @@ def _extract_real_qualifying_metrics(
                 if lap_rec.get("duration_sector_3") is not None
                 else None
             )
+            if (
+                s1_raw is not None
+                and s2_raw is not None
+                and s3_raw is None
+                and _MIN_SECTOR_TIME_S
+                < (f_dur - s1_raw - s2_raw)
+                < _MAX_SECTOR_TIME_S
+            ):
+                s3_raw = round(f_dur - s1_raw - s2_raw, _TIME_DECIMALS)
             if (
                 s1_raw is not None
                 and s2_raw is not None
@@ -3024,6 +3336,21 @@ def _extract_real_qualifying_metrics(
                     )
                 ):
                     real_lap_sectors[code] = (s1_raw, s2_raw, s3_raw)
+                    lap_comp = quali_lap_compound.get((code, l_num))
+                    if lap_comp is None and code in quali_stints_by_code:
+                        nearest_stint = min(
+                            quali_stints_by_code[code],
+                            key=lambda s: min(
+                                abs(l_num - s[0]), abs(l_num - s[1])
+                            ),
+                        )
+                        lap_comp = nearest_stint[2]
+                    if lap_comp is not None:
+                        best_compound_by_code[code] = lap_comp
+
+    for code, stints_list in quali_stints_by_code.items():
+        if code not in best_compound_by_code and stints_list:
+            best_compound_by_code[code] = stints_list[-1][2]
 
     if openf1_quali_results and num_to_code:
         for res_row in openf1_quali_results:
@@ -3068,6 +3395,7 @@ def _extract_real_qualifying_metrics(
         has_real_quali=has_real_quali,
         real_s1_ratio=statistics.median(s1_ratios) if s1_ratios else None,
         real_s2_ratio=statistics.median(s2_ratios) if s2_ratios else None,
+        best_compound_by_code=best_compound_by_code,
     )
 
 
@@ -3265,6 +3593,7 @@ def _resolve_driver_sectors(
     ) or synth_ctx.metrics.lap_sectors_by_code.get(
         code, (None, None, None)
     )
+    pbs = synth_ctx.metrics.best_sectors_by_code.get(code, {})
     if (
         raw_s1 is not None
         and raw_s2 is not None
@@ -3274,14 +3603,26 @@ def _resolve_driver_sectors(
         s1 = round(raw_s1, _TIME_DECIMALS)
         s2 = round(raw_s2, _TIME_DECIMALS)
         s3 = round(best_time - s1 - s2, _TIME_DECIMALS)
+    elif (
+        synth_ctx.metrics.has_real_quali
+        and "s1" in pbs
+        and "s2" in pbs
+        and "s3" in pbs
+    ):
+        pbs_sum = max(1e-6, pbs["s1"] + pbs["s2"] + pbs["s3"])
+        s1 = round(best_time * (pbs["s1"] / pbs_sum), _TIME_DECIMALS)
+        s2 = round(best_time * (pbs["s2"] / pbs_sum), _TIME_DECIMALS)
+        s3 = round(best_time - s1 - s2, _TIME_DECIMALS)
+    elif synth_ctx.metrics.has_real_quali:
+        s1 = round(best_time * synth_ctx.s1_ratio, _TIME_DECIMALS)
+        s2 = round(best_time * synth_ctx.s2_ratio, _TIME_DECIMALS)
+        s3 = round(best_time - s1 - s2, _TIME_DECIMALS)
     else:
         s1_jitter = (_seeded_unit_float(f"{seed_base}_s1") - 0.5) * 0.08
         s2_jitter = (_seeded_unit_float(f"{seed_base}_s2") - 0.5) * 0.09
         s1 = round(best_time * synth_ctx.s1_ratio + s1_jitter, _TIME_DECIMALS)
         s2 = round(best_time * synth_ctx.s2_ratio + s2_jitter, _TIME_DECIMALS)
         s3 = round(best_time - s1 - s2, _TIME_DECIMALS)
-
-    pbs = synth_ctx.metrics.best_sectors_by_code.get(code, {})
     ideal_s1 = round(min(s1, pbs.get("s1", s1)), _TIME_DECIMALS)
     ideal_s2 = round(min(s2, pbs.get("s2", s2)), _TIME_DECIMALS)
     ideal_s3 = round(min(s3, pbs.get("s3", s3)), _TIME_DECIMALS)
@@ -3341,6 +3682,9 @@ def _build_qualifying_results_rows(
                 synth_ctx=synth_ctx,
             )
         )
+        resolved_comp = (
+            synth_ctx.metrics.best_compound_by_code or {}
+        ).get(code, "SOFT")
         if best_time is None:
             results.append(
                 {
@@ -3355,7 +3699,7 @@ def _build_qualifying_results_rows(
                     "q3_time": q3_time,
                     "best_time": None,
                     "gap_to_pole": None,
-                    "compound": "SOFT",
+                    "compound": resolved_comp,
                     "s1": None,
                     "s2": None,
                     "s3": None,
@@ -3394,7 +3738,7 @@ def _build_qualifying_results_rows(
                 "q3_time": q3_time,
                 "best_time": best_time,
                 "gap_to_pole": 0.0,
-                "compound": "SOFT",
+                "compound": resolved_comp,
                 "s1": s1,
                 "s2": s2,
                 "s3": s3,
@@ -3588,6 +3932,11 @@ def _build_qualifying_telemetry(
     session_key: int | None = None,
     track_turns: Sequence[Mapping[str, Any]] | None = None,
     fetch_live: bool = False,
+    openf1_quali_stints: Sequence[Mapping[str, Any]] | None = None,
+    existing_drivers_traces: (
+        Mapping[str, Mapping[str, Sequence[float]]] | None
+    ) = None,
+    refresh_existing_traces: bool = False,
 ) -> dict[str, Any]:
     """Generates Qualifying or Sprint Qualifying telemetry using official OpenF1 results, laps, and car_data.
 
@@ -3605,6 +3954,7 @@ def _build_qualifying_telemetry(
         session_key: Optional OpenF1 session key for fetching ``/v1/car_data``.
         track_turns: Optional turn apex metadata from ``track_map.turns``.
         fetch_live: Whether live OpenF1 ``/v1/car_data`` requests are enabled.
+        openf1_quali_stints: Optional OpenF1 qualifying stint records for tyre compound lookup.
 
     Returns:
         Qualifying telemetry block containing ``stage_prefix``, ``results``,
@@ -3626,6 +3976,7 @@ def _build_qualifying_telemetry(
         openf1_quali_rc=openf1_quali_rc,
         openf1_quali_results=openf1_quali_results,
         num_to_code=num_to_code,
+        openf1_quali_stints=openf1_quali_stints,
     )
     ordered_drivers = _order_qualifying_drivers(
         drivers=drivers,
@@ -3672,16 +4023,19 @@ def _build_qualifying_telemetry(
             results=results,
             openf1_quali_laps=openf1_quali_laps,
             num_to_code=num_to_code,
+            existing_drivers_traces=existing_drivers_traces,
+            refresh_existing=refresh_existing_traces,
         )
 
     driver_corner_means: dict[str, float] = {}
-    if car_data_by_code:
+    if car_data_by_code or existing_drivers_traces:
         traces, quali_corners, driver_corner_means = (
             _build_real_telemetry_traces_and_corners(
                 results=results,
                 drivers=drivers,
                 track_turns=resolved_turns,
                 car_data_by_code=car_data_by_code,
+                existing_drivers_traces=existing_drivers_traces,
             )
         )
     else:
@@ -3739,6 +4093,7 @@ def _index_openf1_stints_and_pits(
     """
     real_pits_by_driver_lap: dict[tuple[str, int], Mapping[str, Any]] = {}
     valid_pit_lane_durations: list[float] = []
+    valid_transit_deltas: list[float] = []
     if openf1_pits and num_to_code:
         for pit_rec in openf1_pits:
             d_num = pit_rec.get("driver_number")
@@ -3747,6 +4102,7 @@ def _index_openf1_stints_and_pits(
             if code and l_num is not None:
                 real_pits_by_driver_lap[(code, int(l_num))] = pit_rec
             raw_pd = pit_rec.get("pit_duration") or pit_rec.get("lane_duration")
+            raw_sd = pit_rec.get("stop_duration")
             if (
                 raw_pd is not None
                 and _MIN_PIT_LANE_DURATION_S
@@ -3754,12 +4110,22 @@ def _index_openf1_stints_and_pits(
                 <= _MAX_PIT_LANE_DURATION_S
             ):
                 valid_pit_lane_durations.append(float(raw_pd))
+                if (
+                    raw_sd is not None
+                    and _MIN_DERIVED_STATIONARY_S
+                    <= float(raw_sd)
+                    <= _MAX_DERIVED_STATIONARY_S
+                ):
+                    valid_transit_deltas.append(float(raw_pd) - float(raw_sd))
 
-    circuit_pit_transit_s = (
-        (min(valid_pit_lane_durations) - _MIN_STATIONARY_STOP_S)
-        if valid_pit_lane_durations
-        else _DEFAULT_PIT_TRANSIT_S
-    )
+    if valid_transit_deltas:
+        circuit_pit_transit_s = statistics.median(valid_transit_deltas)
+    elif valid_pit_lane_durations:
+        circuit_pit_transit_s = (
+            min(valid_pit_lane_durations) - _MIN_STATIONARY_STOP_S
+        )
+    else:
+        circuit_pit_transit_s = _DEFAULT_PIT_TRANSIT_S
     return _IndexedPitAndStintContext(
         real_pits_by_driver_lap=real_pits_by_driver_lap,
         circuit_pit_transit_s=circuit_pit_transit_s,
@@ -3901,6 +4267,8 @@ def _build_pit_stop_entry(
         pit_ctx.real_pits_by_driver_lap.get((code, pit_lap))
         or pit_ctx.real_pits_by_driver_lap.get((code, pit_lap + 1))
         or pit_ctx.real_pits_by_driver_lap.get((code, pit_lap - 1))
+        or pit_ctx.real_pits_by_driver_lap.get((code, pit_lap + 2))
+        or pit_ctx.real_pits_by_driver_lap.get((code, pit_lap - 2))
     )
 
     seed_stop = f"{gp_name}_{code}_stop_{s_idx}"
@@ -4342,6 +4710,7 @@ def _enrich_live_sprint_sessions(
     sq_key = session_map["Sprint Qualifying"]
     sp_key = session_map["Sprint"]
     sq_laps_raw = _fetch_openf1_json("laps", {"session_key": sq_key})
+    sq_stints_raw = _fetch_openf1_json("stints", {"session_key": sq_key})
     sq_rc_raw = _fetch_openf1_json("race_control", {"session_key": sq_key})
     sq_results_raw = _fetch_openf1_json(
         "session_result", {"session_key": sq_key}
@@ -4388,6 +4757,11 @@ def _enrich_live_sprint_sessions(
     has_real_gps = (
         (race_data.get("track_map") or {}).get("source") == "openf1_gps"
     )
+    existing_sq_traces = (
+        (race_data.get("sprint_qualifying") or {})
+        .get("traces", {})
+        .get("drivers")
+    )
     sq_block = _build_qualifying_telemetry(
         gp_name=f"{gp_name} Sprint",
         drivers=drivers,
@@ -4397,11 +4771,13 @@ def _enrich_live_sprint_sessions(
         openf1_quali_laps=sq_laps_raw,
         openf1_quali_rc=sq_rc_raw,
         openf1_quali_results=sq_results_raw,
+        openf1_quali_stints=sq_stints_raw,
         num_to_code=num_to_code,
         stage_prefix="SQ",
         session_key=sq_key if has_real_gps else None,
         track_turns=track_turns,
         fetch_live=has_real_gps,
+        existing_drivers_traces=existing_sq_traces,
     )
     sq_block.pop("driver_corner_means", None)
     race_data["sprint_qualifying"] = sq_block
@@ -4715,9 +5091,11 @@ def _locate_turn_apexes_on_track(
 ) -> list[dict[str, Any]]:
     """Identifies the ``1..turns_count`` corner apexes around the resampled track loop.
 
-    Finds local curvature peaks around the closed loop so each turn ``T1..TN`` sits on
-    a genuine bend of the circuit in ascending track-distance order, with an outward
-    normal offset for its ``T{k}`` callout badge.
+    Finds signed local curvature peaks around the closed loop and merges adjacent
+    same-direction curve lobes that lack a genuine straight/valley between them
+    (so continuous sweeping/banked curves like Madring's La Monumental are not
+    assigned multiple duplicate turn markers), while preserving closely spaced
+    opposite-direction chicane apexes.
 
     Args:
         points: Normalized ``(x, y)`` loop points of length ``M``.
@@ -4730,45 +5108,117 @@ def _locate_turn_apexes_on_track(
     cx = sum(pt[0] for pt in points) / num_pts
     cy = sum(pt[1] for pt in points) / num_pts
 
-    curvatures: list[float] = []
-    step = 3
+    s1: list[float] = []
+    s2: list[float] = []
     for idx in range(num_pts):
-        p_prev = points[(idx - step) % num_pts]
-        p_curr = points[idx]
-        p_next = points[(idx + step) % num_pts]
-        v1x, v1y = p_curr[0] - p_prev[0], p_curr[1] - p_prev[1]
-        v2x, v2y = p_next[0] - p_curr[0], p_next[1] - p_curr[1]
-        ang1 = math.atan2(v1y, v1x)
-        ang2 = math.atan2(v2y, v2x)
-        diff = abs((ang2 - ang1 + math.pi) % math.tau - math.pi)
-        curvatures.append(diff)
+        for step, arr in ((1, s1), (2, s2)):
+            p_prev = points[(idx - step) % num_pts]
+            p_curr = points[idx]
+            p_next = points[(idx + step) % num_pts]
+            ang1 = math.atan2(p_curr[1] - p_prev[1], p_curr[0] - p_prev[0])
+            ang2 = math.atan2(p_next[1] - p_curr[1], p_next[0] - p_curr[0])
+            arr.append(math.degrees((ang2 - ang1 + math.pi) % math.tau - math.pi))
 
-    min_sep = max(3, num_pts // (turns_count * 2 + 2))
-    ranked_indices = sorted(
-        range(4, num_pts - 3),
-        key=lambda i: curvatures[i],
-        reverse=True,
-    )
-    selected_indices: list[int] = []
-    for candidate_idx in ranked_indices:
-        if len(selected_indices) >= turns_count:
-            break
-        if all(
-            min(
-                abs(candidate_idx - existing),
-                num_pts - abs(candidate_idx - existing),
-            )
-            >= min_sep
-            for existing in selected_indices
-        ):
-            selected_indices.append(candidate_idx)
+    s1_clean = [
+        0.15 * s1[(idx - 1) % num_pts]
+        + 0.70 * s1[idx]
+        + 0.15 * s1[(idx + 1) % num_pts]
+        for idx in range(num_pts)
+    ]
+
+    raw_candidates: list[list[float]] = []
+    for idx in range(4, max(5, num_pts - 3)):
+        val = s1_clean[idx]
+        aval = abs(val)
+        if aval < 0.8:
+            continue
+        sgn = 1.0 if val > 0 else -1.0
+        prev_v = abs(s1_clean[idx - 1]) if s1_clean[idx - 1] * sgn > 0 else 0.0
+        next_v = abs(s1_clean[idx + 1]) if s1_clean[idx + 1] * sgn > 0 else 0.0
+        if aval >= prev_v and aval >= next_v:
+            score = 0.6 * aval + 0.4 * (abs(s2[idx]) / 2.0)
+            raw_candidates.append([float(idx), sgn, aval, score])
+
+    candidates = [list(c) for c in raw_candidates]
+    changed = True
+    while changed:
+        changed = False
+        new_cands: list[list[float]] = []
+        c_idx = 0
+        while c_idx < len(candidates):
+            if c_idx + 1 < len(candidates):
+                i1, sgn1, av1, sc1 = candidates[c_idx]
+                i2, sgn2, av2, sc2 = candidates[c_idx + 1]
+                dist = int(i2) - int(i1)
+                if sgn1 == sgn2 and dist <= 15:
+                    valley = min(
+                        abs(s1_clean[k]) if s1_clean[k] * sgn1 > 0 else 0.0
+                        for k in range(int(i1), int(i2) + 1)
+                    )
+                    smaller = min(av1, av2)
+                    if dist < 3 or valley > 0.68 * smaller:
+                        best = (
+                            candidates[c_idx]
+                            if sc1 >= sc2
+                            else candidates[c_idx + 1]
+                        )
+                        new_cands.append(best)
+                        c_idx += 2
+                        changed = True
+                        continue
+                elif sgn1 != sgn2 and dist < 2:
+                    best = (
+                        candidates[c_idx]
+                        if sc1 >= sc2
+                        else candidates[c_idx + 1]
+                    )
+                    new_cands.append(best)
+                    c_idx += 2
+                    changed = True
+                    continue
+            new_cands.append(candidates[c_idx])
+            c_idx += 1
+        candidates = new_cands
+
+    top_merged = sorted(candidates, key=lambda item: item[3], reverse=True)[
+        :turns_count
+    ]
+    selected_indices: list[int] = [int(item[0]) for item in top_merged]
+
+    if len(selected_indices) < turns_count:
+        min_sep = max(3, num_pts // (turns_count * 2 + 2))
+        for raw_c in sorted(raw_candidates, key=lambda item: item[3], reverse=True):
+            if len(selected_indices) >= turns_count:
+                break
+            cand_i = int(raw_c[0])
+            if cand_i not in selected_indices and all(
+                min(abs(cand_i - ex), num_pts - abs(cand_i - ex)) >= min_sep
+                for ex in selected_indices
+            ):
+                selected_indices.append(cand_i)
+
+    if len(selected_indices) < turns_count:
+        min_sep = max(2, num_pts // (turns_count * 2 + 2))
+        ranked_all = sorted(
+            range(4, max(5, num_pts - 3)),
+            key=lambda i: abs(s2[i]),
+            reverse=True,
+        )
+        for cand_i in ranked_all:
+            if len(selected_indices) >= turns_count:
+                break
+            if cand_i not in selected_indices and all(
+                min(abs(cand_i - ex), num_pts - abs(cand_i - ex)) >= min_sep
+                for ex in selected_indices
+            ):
+                selected_indices.append(cand_i)
 
     while len(selected_indices) < turns_count:
         fallback_idx = int(
-            round(((len(selected_indices) + 0.5) / turns_count) * (num_pts - 8))
+            round(((len(selected_indices) + 0.5) / turns_count) * max(1, num_pts - 8))
         ) + 4
         if fallback_idx not in selected_indices:
-            selected_indices.append(fallback_idx)
+            selected_indices.append(fallback_idx % num_pts)
         else:
             selected_indices.append((fallback_idx + 2) % num_pts)
 
@@ -4823,6 +5273,7 @@ def _build_circuit_track_map(
     session_key: int | None = None,
     openf1_laps: Sequence[Mapping[str, Any]] | None = None,
     fetch_live: bool = False,
+    existing_track_map: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Builds the ``track_map`` block with circuit loop geometry, sector splits, and turn apexes.
 
@@ -4835,10 +5286,58 @@ def _build_circuit_track_map(
         session_key: Optional OpenF1 session key for querying ``/v1/location``.
         openf1_laps: Optional OpenF1 lap records for selecting a clean flying lap.
         fetch_live: Whether live OpenF1 queries are enabled.
+        existing_track_map: Optional existing ``track_map`` block from the JSON file.
 
     Returns:
         Dictionary containing ``viewBox``, ``points``, ``s1_end_idx``, ``s2_end_idx``, and ``turns``.
     """
+    existing_pts = (existing_track_map or {}).get("points", [])
+    if (
+        existing_track_map
+        and existing_track_map.get("source") == "openf1_gps"
+        and len(existing_pts) == _TRACK_MAP_POINTS_COUNT
+    ):
+        normalized_points = [(float(pt[0]), float(pt[1])) for pt in existing_pts]
+        turns_meta = _locate_turn_apexes_on_track(normalized_points, turns_count)
+        num_pts = len(normalized_points)
+        s1_end_idx = int(
+            existing_track_map.get(
+                "s1_end_idx",
+                max(
+                    10,
+                    min(
+                        num_pts - 20,
+                        int(round((_DEFAULT_S1_SPLIT_PCT / 100.0) * num_pts)),
+                    ),
+                ),
+            )
+        )
+        s2_end_idx = int(
+            existing_track_map.get(
+                "s2_end_idx",
+                max(
+                    s1_end_idx + 10,
+                    min(
+                        num_pts - 8,
+                        int(round((_DEFAULT_S2_SPLIT_PCT / 100.0) * num_pts)),
+                    ),
+                ),
+            )
+        )
+        return {
+            "viewBox": [
+                0,
+                0,
+                int(_TRACK_MAP_VIEWBOX_WIDTH),
+                int(_TRACK_MAP_VIEWBOX_HEIGHT),
+            ],
+            "source": "openf1_gps",
+            "s1_end_idx": s1_end_idx,
+            "s2_end_idx": s2_end_idx,
+            "points": [[pt[0], pt[1]] for pt in normalized_points],
+            "turns": turns_meta,
+        }
+
     raw_xy: list[tuple[float, float]] = []
     s1_pct = _DEFAULT_S1_SPLIT_PCT
     s2_pct = _DEFAULT_S2_SPLIT_PCT
@@ -4999,6 +5498,11 @@ def generate_weekend_telemetry(
         if fetch_live and "Qualifying" in session_map
         else None
     )
+    quali_stints_raw = (
+        _fetch_openf1_json("stints", {"session_key": session_map["Qualifying"]})
+        if fetch_live and "Qualifying" in session_map
+        else None
+    )
     quali_rc_raw = (
         _fetch_openf1_json(
             "race_control", {"session_key": session_map["Qualifying"]}
@@ -5024,14 +5528,19 @@ def generate_weekend_telemetry(
             }
         ),
     )
+    existing_track_map = race_data.get("track_map")
     race_data["track_map"] = _build_circuit_track_map(
         gp_name=gp_name,
         turns_count=turns_count,
         session_key=session_map.get("Qualifying") or session_map.get("Race"),
         openf1_laps=quali_laps_raw,
         fetch_live=fetch_live,
+        existing_track_map=existing_track_map,
     )
     has_real_gps = race_data["track_map"].get("source") == "openf1_gps"
+    existing_q_traces = (
+        (race_data.get("qualifying") or {}).get("traces", {}).get("drivers")
+    )
 
     qualifying_block = _build_qualifying_telemetry(
         gp_name=gp_name,
@@ -5042,6 +5551,7 @@ def generate_weekend_telemetry(
         openf1_quali_laps=quali_laps_raw,
         openf1_quali_rc=quali_rc_raw,
         openf1_quali_results=quali_results_raw,
+        openf1_quali_stints=quali_stints_raw,
         num_to_code=num_to_code,
         stage_prefix="Q",
         session_key=(
@@ -5049,6 +5559,7 @@ def generate_weekend_telemetry(
         ),
         track_turns=race_data["track_map"]["turns"],
         fetch_live=has_real_gps,
+        existing_drivers_traces=existing_q_traces,
     )
     driver_corner_means = qualifying_block.pop("driver_corner_means", None)
     race_data["qualifying"] = qualifying_block
@@ -5059,6 +5570,11 @@ def generate_weekend_telemetry(
         _fetch_practice_session_inputs(session_map)
         if fetch_live
         else (None, None, None)
+    )
+    fallback_trap_laps = (
+        list(quali_laps_raw or []) + list(race_laps_raw or [])
+        if fetch_live
+        else None
     )
     race_data["practice"] = _build_practice_telemetry(
         gp_name=gp_name,
@@ -5071,6 +5587,7 @@ def generate_weekend_telemetry(
         openf1_practice_results=prac_results_raw,
         num_to_code=num_to_code or None,
         driver_corner_means=driver_corner_means,
+        fallback_speed_trap_laps=fallback_trap_laps,
     )
 
     race_pits_raw = (

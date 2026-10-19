@@ -1255,12 +1255,40 @@ function _bindTraceHoverCrosshair(mainGroup, config) {
             const isDriverAAhead = point.delta >= 0;
             const leadingColor = isDriverAAhead ? strokeStyles.colorA : strokeStyles.colorB;
 
+            let pctB = point.pct;
+            if (Number.isFinite(point.cumTimeA) && series.length >= 2) {
+                const targetTime = point.cumTimeA;
+                const lastSample = series[series.length - 1];
+                if (targetTime <= 0) {
+                    pctB = 0;
+                } else if (
+                    Number.isFinite(lastSample.cumTimeB) &&
+                    targetTime >= lastSample.cumTimeB &&
+                    lastSample.cumTimeB > 0
+                ) {
+                    pctB = (targetTime / lastSample.cumTimeB) * 100;
+                } else {
+                    for (let i = 1; i < series.length; i += 1) {
+                        const s0 = series[i - 1];
+                        const s1 = series[i];
+                        if (targetTime >= s0.cumTimeB && targetTime <= s1.cumTimeB) {
+                            const span = s1.cumTimeB - s0.cumTimeB;
+                            const frac = span > 1e-6 ? (targetTime - s0.cumTimeB) / span : 0;
+                            pctB = s0.pct + frac * (s1.pct - s0.pct);
+                            break;
+                        }
+                    }
+                }
+                pctB = ((pctB % 100) + 100) % 100;
+            }
+
             _applyTurnMarkerHighlight(mainGroup, nearestTurn);
             setCornerSpeedHighlightedTurn(nearestTurn);
             setCircuitMapTraceState({
                 ...baseTraceState,
                 hoverSample: {
                     pct: point.pct,
+                    pctB,
                     speedA: point.speedA,
                     speedB: point.speedB,
                     throttleA: point.throttleA,

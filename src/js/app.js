@@ -16,7 +16,7 @@ import { renderRacePitStops } from './race_pitstops.js';
 import { renderRaceStintPace } from './race_stint_pace.js';
 import { renderRaceScrubber, stopRaceScrubberPlayback } from './race_scrubber.js';
 
-const APP_VERSION = 'v1.18.13';
+const APP_VERSION = 'v1.18.14';
 
 const _DEFAULT_SESSION = 'race';
 const _PANEL_KEYS = ['practice', 'qualifying', 'race'];
@@ -410,7 +410,9 @@ function _resolveSessionViewData(data, activeSession) {
                 winner: data.sprint.winner || data.race_info.winner
             },
             laps: data.sprint.laps || data.laps,
-            race_telemetry: data.sprint.race_telemetry || data.race_telemetry
+            race_telemetry: data.sprint.race_telemetry || data.race_telemetry,
+            session_events:
+                (data.sprint.race_telemetry && data.sprint.race_telemetry.sc_vsc_windows) || []
         };
     }
 

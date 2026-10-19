@@ -557,18 +557,17 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
                 };
             }
 
-            // Lapped finisher still circulating while the leader completes final lap(s)
+            // Lapped finisher: hold final recorded telemetry position after their checkered flag lap
             const lappedPos = entry.rank || prev.pos;
             const lapsDown = Math.max(1, maxLap - entry.lapsCompleted);
-            const advancedPct =
-                ((prev.pct + 82 + ((entry.rank || 1) % 5) * 3) % 100 + 100) % 100;
+            const finalRecordedPct = prev.pct;
 
             lastKnownStateByDriver.set(code, {
-                pct: advancedPct,
+                pct: finalRecordedPct,
                 normalOffset: 0,
                 compound: prev.compound,
-                tyreAge: prev.tyreAge + 1,
-                sessionTime: prev.sessionTime + refLapTime,
+                tyreAge: prev.tyreAge,
+                sessionTime: prev.sessionTime,
                 pos: lappedPos
             });
 
@@ -581,12 +580,12 @@ function _buildLapSnapshots(data, classification, validLaps, maxLap, sampleTrack
                 gridPos,
                 gridDelta: gridPos - lappedPos,
                 compound: prev.compound,
-                tyreAge: prev.tyreAge + 1,
+                tyreAge: prev.tyreAge,
                 gapSeconds: lapsDown * refLapTime,
                 gapLabel: `+${lapsDown}L`,
                 isRetired: false,
                 isPitting: false,
-                pct: advancedPct,
+                pct: finalRecordedPct,
                 normalOffset: 0,
                 x: 0,
                 y: 0

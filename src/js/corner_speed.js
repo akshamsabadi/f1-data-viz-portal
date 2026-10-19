@@ -1025,10 +1025,11 @@ function _createTrackGhostCarsLayer(svg, points) {
         const driverB = traceState.driverB || 'DRV B';
 
         const pctA = hoverSample.pct;
-        const pctB =
-            (((hoverSample.pct - (hoverSample.delta || 0) * _GHOST_CAR_DELTA_PCT_SCALE) % 100) +
-                100) %
-            100;
+        const pctB = Number.isFinite(hoverSample.pctB)
+            ? hoverSample.pctB
+            : (((hoverSample.pct - (hoverSample.delta || 0) * _GHOST_CAR_DELTA_PCT_SCALE) % 100) +
+                  100) %
+              100;
 
         const posA = _interpolatePointOnTrack(points, pctA);
         const posB = _interpolatePointOnTrack(points, pctB);

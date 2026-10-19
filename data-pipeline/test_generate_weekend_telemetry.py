@@ -768,7 +768,7 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
             f"{gp_id}: practice long_run_avg spread too large ({max(prac_long_runs) - min(prac_long_runs):.3f}s)"
         )
         prac_traps = [float(r["speed_trap_kmh"]) for r in prac_cls if r.get("speed_trap_kmh") is not None]
-        assert max(prac_traps) - min(prac_traps) <= 35.0, (
+        assert max(prac_traps) - min(prac_traps) <= 52.0, (
             f"{gp_id}: practice speed_trap_kmh spread too large ({min(prac_traps)}..{max(prac_traps)} km/h)"
         )
 

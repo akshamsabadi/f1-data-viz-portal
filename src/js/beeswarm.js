@@ -10,6 +10,7 @@ const _Q1_QUANTILE = 0.25;
 const _MEDIAN_QUANTILE = 0.5;
 const _Q3_QUANTILE = 0.75;
 const _IQR_OUTLIER_MULTIPLIER = 1.5;
+const _NEUTRALIZED_LAP_MEDIAN_RATIO = 1.08;
 const _TIME_AXIS_PADDING_RATIO = 0.05;
 
 const _SIMULATION_TICKS = 120;
@@ -143,21 +144,102 @@ function _buildCompoundLegend(legendContainer, laps, colorScale, activeCompounds
 }
 
 /**
- * Filters out slow outlier laps using the 1.5x IQR rule when requested and returns cloned lap records.
+ * Builds a lookup map of lap numbers neutralized by Safety Car (SC) or Virtual Safety Car (VSC)
+ * from `data.race_telemetry.sc_vsc_windows` and `data.session_events`.
+ *
+ * @param {Object} data - Race or Sprint telemetry payload.
+ * @returns {Map<number, string>} Map of neutralized lap number to status ('SC' | 'VSC').
+ */
+function _buildScVscLapMap(data) {
+    const lapMap = new Map();
+    const windows = [
+        ...((data.race_telemetry && data.race_telemetry.sc_vsc_windows) || []),
+        ...(data.session_events || [])
+    ];
+    windows.forEach((win) => {
+        const start = Number(win.start_lap);
+        const end = Number(win.end_lap);
+        const status = String(win.type || win.status || 'SC').toUpperCase();
+        if (Number.isFinite(start) && Number.isFinite(end)) {
+            for (let lap = start; lap <= end; lap += 1) {
+                if (!lapMap.has(lap) || status === 'SC') {
+                    lapMap.set(lap, status);
+                }
+            }
+        }
+    });
+    return lapMap;
+}
+
+/**
+ * Filters out SC/VSC neutralized laps, standing-start/transition slow laps, and slow pit/incident
+ * outlier laps using the 1.5x IQR rule on green-flag race-pace laps when `showOutliers` is false.
  *
  * @param {Array<Object>} laps - Raw lap objects from the dataset.
- * @param {boolean} showOutliers - Whether to include slow outlier laps.
+ * @param {boolean} showOutliers - Whether to include SC/VSC and slow outlier laps.
+ * @param {Map<number, string>} scVscLapMap - Map of lap number to 'SC' or 'VSC' status.
  * @returns {Array<Object>} Cloned lap records ready for D3 simulation without mutating caller data.
  */
-function _filterOutlierLaps(laps, showOutliers) {
-    const sortedTimes = laps.map((d) => d.time).sort(d3.ascending);
-    const q1 = d3.quantile(sortedTimes, _Q1_QUANTILE);
-    const q3 = d3.quantile(sortedTimes, _Q3_QUANTILE);
+function _filterOutlierLaps(laps, showOutliers, scVscLapMap = new Map()) {
+    const allSortedTimes = laps
+        .map((d) => Number(d.time))
+        .filter((t) => Number.isFinite(t) && t > 0)
+        .sort(d3.ascending);
+    const globalMedian =
+        allSortedTimes.length > 0 ? d3.quantile(allSortedTimes, _MEDIAN_QUANTILE) : Infinity;
+
+    const timesByLapNum = new Map();
+    laps.forEach((d) => {
+        const lapNum = Number(d.lap);
+        const t = Number(d.time);
+        if (!Number.isFinite(lapNum) || !Number.isFinite(t) || t <= 0) return;
+        if (!timesByLapNum.has(lapNum)) {
+            timesByLapNum.set(lapNum, []);
+        }
+        timesByLapNum.get(lapNum).push(t);
+    });
+
+    const slowNeutralizedLapNums = new Set();
+    timesByLapNum.forEach((times, lapNum) => {
+        const sorted = times.slice().sort(d3.ascending);
+        const lapMedian = d3.quantile(sorted, _MEDIAN_QUANTILE);
+        if (
+            Number.isFinite(lapMedian) &&
+            Number.isFinite(globalMedian) &&
+            lapMedian > globalMedian * _NEUTRALIZED_LAP_MEDIAN_RATIO
+        ) {
+            slowNeutralizedLapNums.add(lapNum);
+        }
+    });
+
+    if (showOutliers) {
+        return laps.map((lap) => {
+            const lapNum = Number(lap.lap);
+            return {
+                ...lap,
+                sc_vsc_status: scVscLapMap.get(lapNum) || null
+            };
+        });
+    }
+
+    const greenFlagLaps = laps.filter((d) => {
+        const lapNum = Number(d.lap);
+        return !scVscLapMap.has(lapNum) && !slowNeutralizedLapNums.has(lapNum);
+    });
+
+    const referenceLaps = greenFlagLaps.length > 0 ? greenFlagLaps : laps;
+    const sortedGreenTimes = referenceLaps.map((d) => d.time).sort(d3.ascending);
+    const q1 = d3.quantile(sortedGreenTimes, _Q1_QUANTILE);
+    const q3 = d3.quantile(sortedGreenTimes, _Q3_QUANTILE);
     const iqr = q3 - q1;
     const maxAllowedTime = q3 + _IQR_OUTLIER_MULTIPLIER * iqr;
 
-    const filteredLaps = showOutliers ? laps : laps.filter((d) => d.time <= maxAllowedTime);
-    return filteredLaps.map((lap) => ({ ...lap }));
+    const filteredLaps = referenceLaps.filter((d) => d.time <= maxAllowedTime);
+    const resultLaps = filteredLaps.length > 0 ? filteredLaps : referenceLaps;
+    return resultLaps.map((lap) => ({
+        ...lap,
+        sc_vsc_status: null
+    }));
 }
 
 /**
@@ -353,13 +435,16 @@ function _renderPoints(pointsGroup, simulationNodes, colorScale, driverColorMap,
         .on('mouseover', (event, d) => {
             const compoundColor = colorScale(d.compound.toUpperCase());
             const teamColor = driverColorMap[d.driver] || 'var(--accent)';
+            const scBadge = d.sc_vsc_status
+                ? ` <span style="color: #eab308; font-weight: 700; font-size: 0.7rem;">[${d.sc_vsc_status}]</span>`
+                : '';
 
             tooltip
                 .classed('hidden', false)
                 .style('border-left-color', teamColor)
                 .html(`
                     <div style="font-family: Montserrat, sans-serif; font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">
-                        ${d.driver} <span style="color: var(--text-muted); font-weight: 600; font-size: 0.75rem;">LAP ${d.lap}</span>
+                        ${d.driver} <span style="color: var(--text-muted); font-weight: 600; font-size: 0.75rem;">LAP ${d.lap}</span>${scBadge}
                     </div>
                     <div style="font-size: 1rem; font-weight: 600; margin-bottom: 4px;">
                         ${d.time.toFixed(3)}s
@@ -439,6 +524,7 @@ export function renderBeeswarm(data) {
 
     const orderedDrivers = _getOrderedDrivers(data);
     const driverColorMap = _buildDriverColorMap(data.drivers);
+    const scVscLapMap = _buildScVscLapMap(data);
     const tooltip = d3.select('#tooltip');
 
     const colorScale = d3
@@ -493,7 +579,7 @@ export function renderBeeswarm(data) {
         pointsGroup.selectAll('*').remove();
         axesGroup.selectAll('*').remove();
 
-        const lapsToUse = _filterOutlierLaps(data.laps, showOutliers);
+        const lapsToUse = _filterOutlierLaps(data.laps, showOutliers, scVscLapMap);
         const { xScale, yScale } = _createBeeswarmScales(orderedDrivers, lapsToUse, width, height);
 
         currentDriverLabels = _renderAxesAndGrid(

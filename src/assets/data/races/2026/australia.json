@@ -142,15 +142,15 @@
   "session_events": [
     {
       "type": "VSC",
-      "start_lap": 12,
+      "start_lap": 10,
       "end_lap": 14,
-      "label": "VSC \u00b7 L12\u2013L14"
+      "label": "VSC \u00b7 L10\u2013L14"
     },
     {
       "type": "VSC",
-      "start_lap": 18,
+      "start_lap": 17,
       "end_lap": 20,
-      "label": "VSC \u00b7 L18\u2013L20"
+      "label": "VSC \u00b7 L17\u2013L20"
     },
     {
       "type": "VSC",
@@ -367,7 +367,7 @@
       "compound": "MEDIUM",
       "tyre_life": 2,
       "session_time": 173.17,
-      "interpolated": true,
+      "interpolated": false,
       "position": 1
     },
     {
@@ -377,7 +377,7 @@
       "compound": "MEDIUM",
       "tyre_life": 4,
       "session_time": 173.733,
-      "interpolated": true,
+      "interpolated": false,
       "position": 2
     },
     {
@@ -387,7 +387,7 @@
       "compound": "MEDIUM",
       "tyre_life": 2,
       "session_time": 174.408,
-      "interpolated": true,
+      "interpolated": false,
       "position": 3
     },
     {
@@ -3073,10 +3073,10 @@
     {
       "driver": "BOT",
       "lap": 15,
-      "time": 91.33,
+      "time": 88.057,
       "compound": "HARD",
       "tyre_life": 16,
-      "session_time": 1398.275,
+      "session_time": 1395.002,
       "interpolated": true,
       "position": 16
     },
@@ -4153,10 +4153,10 @@
     {
       "driver": "ALO",
       "lap": 21,
-      "time": 88.082,
+      "time": 87.876,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 1951.391,
+      "session_time": 1951.185,
       "interpolated": true,
       "position": 15
     },
@@ -7923,10 +7923,10 @@
     {
       "driver": "STR",
       "lap": 43,
-      "time": 85.919,
+      "time": 87.915,
       "compound": "SOFT",
       "tyre_life": 5,
-      "session_time": 4012.7,
+      "session_time": 4014.696,
       "interpolated": true,
       "position": 17
     },
@@ -9843,10 +9843,10 @@
     {
       "driver": "PER",
       "lap": 55,
-      "time": 88.957,
+      "time": 88.059,
       "compound": "SOFT",
       "tyre_life": 13,
-      "session_time": 4993.305,
+      "session_time": 4992.407,
       "interpolated": true,
       "position": 16
     },
@@ -9983,20 +9983,20 @@
     {
       "driver": "COL",
       "lap": 56,
-      "time": 83.621,
+      "time": 85.911,
       "compound": "SOFT",
       "tyre_life": 11,
-      "session_time": 4988.548,
+      "session_time": 4990.838,
       "interpolated": true,
       "position": 14
     },
     {
       "driver": "SAI",
       "lap": 56,
-      "time": 84.823,
+      "time": 86.122,
       "compound": "SOFT",
       "tyre_life": 12,
-      "session_time": 5018.1,
+      "session_time": 5019.399,
       "interpolated": true,
       "position": 15
     },
@@ -10063,20 +10063,20 @@
     {
       "driver": "BEA",
       "lap": 57,
-      "time": 86.649,
+      "time": 84.784,
       "compound": "HARD",
       "tyre_life": 40,
-      "session_time": 4987.656,
+      "session_time": 4985.791,
       "interpolated": true,
       "position": 7
     },
     {
       "driver": "LIN",
       "lap": 57,
-      "time": 84.689,
+      "time": 84.893,
       "compound": "HARD",
       "tyre_life": 40,
-      "session_time": 4992.986,
+      "session_time": 4993.19,
       "interpolated": true,
       "position": 8
     },
@@ -10093,60 +10093,60 @@
     {
       "driver": "GAS",
       "lap": 57,
-      "time": 84.837,
+      "time": 85.254,
       "compound": "HARD",
       "tyre_life": 47,
-      "session_time": 5010.294,
+      "session_time": 5010.711,
       "interpolated": true,
       "position": 10
     },
     {
       "driver": "OCO",
       "lap": 57,
-      "time": 84.573,
+      "time": 85.305,
       "compound": "HARD",
       "tyre_life": 47,
-      "session_time": 5010.89,
+      "session_time": 5011.622,
       "interpolated": true,
       "position": 11
     },
     {
       "driver": "ALB",
       "lap": 57,
-      "time": 86.268,
+      "time": 85.615,
       "compound": "SOFT",
       "tyre_life": 25,
-      "session_time": 5038.916,
+      "session_time": 5038.263,
       "interpolated": true,
       "position": 12
     },
     {
       "driver": "LAW",
       "lap": 57,
-      "time": 86.317,
+      "time": 85.316,
       "compound": "SOFT",
       "tyre_life": 25,
-      "session_time": 5039.896,
+      "session_time": 5038.895,
       "interpolated": true,
       "position": 13
     },
     {
       "driver": "RUS",
       "lap": 58,
-      "time": 83.351,
+      "time": 83.147,
       "compound": "HARD",
       "tyre_life": 47,
-      "session_time": 4979.74,
+      "session_time": 4979.536,
       "interpolated": true,
       "position": 1
     },
     {
       "driver": "ANT",
       "lap": 58,
-      "time": 82.653,
+      "time": 83.066,
       "compound": "HARD",
       "tyre_life": 47,
-      "session_time": 4982.714,
+      "session_time": 4982.51,
       "interpolated": true,
       "position": 2
     },
@@ -10156,37 +10156,37 @@
       "time": 83.317,
       "compound": "HARD",
       "tyre_life": 34,
-      "session_time": 4995.259,
+      "session_time": 4995.055,
       "interpolated": true,
       "position": 3
     },
     {
       "driver": "HAM",
       "lap": 58,
-      "time": 82.637,
+      "time": 83.412,
       "compound": "HARD",
       "tyre_life": 31,
-      "session_time": 4995.884,
+      "session_time": 4995.68,
       "interpolated": true,
       "position": 4
     },
     {
       "driver": "NOR",
       "lap": 58,
-      "time": 83.046,
+      "time": 83.784,
       "compound": "MEDIUM",
       "tyre_life": 25,
-      "session_time": 5031.481,
+      "session_time": 5031.277,
       "interpolated": true,
       "position": 5
     },
     {
       "driver": "VER",
       "lap": 58,
-      "time": 83.533,
+      "time": 83.587,
       "compound": "HARD",
       "tyre_life": 18,
-      "session_time": 5034.357,
+      "session_time": 5034.153,
       "interpolated": true,
       "position": 6
     }
@@ -10261,67 +10261,67 @@
     {
       "turn": 2,
       "team": "Mercedes",
-      "speed": 216.0,
+      "speed": 205.1,
       "color": "#00D7B6"
     },
     {
       "turn": 2,
       "team": "Ferrari",
-      "speed": 210.0,
+      "speed": 201.6,
       "color": "#ED1131"
     },
     {
       "turn": 2,
       "team": "McLaren",
-      "speed": 213.0,
+      "speed": 206.2,
       "color": "#F47600"
     },
     {
       "turn": 2,
       "team": "Red Bull Racing",
-      "speed": 208.0,
+      "speed": 199.8,
       "color": "#4781D7"
     },
     {
       "turn": 2,
       "team": "Haas F1 Team",
-      "speed": 209.5,
+      "speed": 200.8,
       "color": "#9C9FA2"
     },
     {
       "turn": 2,
       "team": "Racing Bulls",
-      "speed": 210.5,
+      "speed": 201.8,
       "color": "#6C98FF"
     },
     {
       "turn": 2,
       "team": "Audi",
-      "speed": 203.0,
+      "speed": 196.7,
       "color": "#F50537"
     },
     {
       "turn": 2,
       "team": "Alpine",
-      "speed": 202.0,
+      "speed": 193.8,
       "color": "#00A1E8"
     },
     {
       "turn": 2,
       "team": "Williams",
-      "speed": 205.0,
+      "speed": 196.0,
       "color": "#1868DB"
     },
     {
       "turn": 2,
       "team": "Cadillac",
-      "speed": 196.0,
+      "speed": 189.6,
       "color": "#909090"
     },
     {
       "turn": 2,
       "team": "Aston Martin",
-      "speed": 206.0,
+      "speed": 200.8,
       "color": "#229971"
     },
     {
@@ -10459,67 +10459,67 @@
     {
       "turn": 5,
       "team": "Mercedes",
-      "speed": 240.5,
+      "speed": 233.5,
       "color": "#00D7B6"
     },
     {
       "turn": 5,
       "team": "Ferrari",
-      "speed": 235.0,
+      "speed": 229.3,
       "color": "#ED1131"
     },
     {
       "turn": 5,
       "team": "McLaren",
-      "speed": 237.0,
+      "speed": 230.5,
       "color": "#F47600"
     },
     {
       "turn": 5,
       "team": "Red Bull Racing",
-      "speed": 229.0,
+      "speed": 228.6,
       "color": "#4781D7"
     },
     {
       "turn": 5,
       "team": "Haas F1 Team",
-      "speed": 230.0,
+      "speed": 224.9,
       "color": "#9C9FA2"
     },
     {
       "turn": 5,
       "team": "Racing Bulls",
-      "speed": 229.5,
+      "speed": 221.2,
       "color": "#6C98FF"
     },
     {
       "turn": 5,
       "team": "Audi",
-      "speed": 229.0,
+      "speed": 223.1,
       "color": "#F50537"
     },
     {
       "turn": 5,
       "team": "Alpine",
-      "speed": 243.0,
+      "speed": 229.4,
       "color": "#00A1E8"
     },
     {
       "turn": 5,
       "team": "Williams",
-      "speed": 236.0,
+      "speed": 228.5,
       "color": "#1868DB"
     },
     {
       "turn": 5,
       "team": "Cadillac",
-      "speed": 221.0,
+      "speed": 217.9,
       "color": "#909090"
     },
     {
       "turn": 5,
       "team": "Aston Martin",
-      "speed": 224.0,
+      "speed": 214.5,
       "color": "#229971"
     },
     {
@@ -11135,7 +11135,7 @@
           "HARD": 18
         },
         "speed_trap_kmh": 303.0,
-        "mean_corner_kmh": 201.5,
+        "mean_corner_kmh": 200.3,
         "long_run_compound": "HARD",
         "long_run_avg": 83.318,
         "long_run_q25": 83.208,
@@ -11159,7 +11159,7 @@
           "HARD": 23
         },
         "speed_trap_kmh": 309.0,
-        "mean_corner_kmh": 198.6,
+        "mean_corner_kmh": 197.8,
         "long_run_compound": "HARD",
         "long_run_avg": 82.736,
         "long_run_q25": 80.903,
@@ -11182,11 +11182,11 @@
           "MEDIUM": 13,
           "HARD": 14
         },
-        "speed_trap_kmh": 310.0,
-        "mean_corner_kmh": 197.7,
+        "speed_trap_kmh": 316.0,
+        "mean_corner_kmh": 196.5,
         "long_run_compound": "SOFT",
-        "long_run_avg": 83.161,
-        "long_run_q25": 81.428,
+        "long_run_avg": 82.674,
+        "long_run_q25": 81.342,
         "long_run_q75": 84.884,
         "rank": 3,
         "gap_to_p1": 0.676
@@ -11206,12 +11206,12 @@
           "MEDIUM": 16,
           "HARD": 15
         },
-        "speed_trap_kmh": 304.0,
-        "mean_corner_kmh": 199.8,
-        "long_run_compound": "HARD",
-        "long_run_avg": 82.865,
-        "long_run_q25": 81.814,
-        "long_run_q75": 84.394,
+        "speed_trap_kmh": 314.0,
+        "mean_corner_kmh": 198.6,
+        "long_run_compound": "SOFT",
+        "long_run_avg": 80.538,
+        "long_run_q25": 80.267,
+        "long_run_q75": 80.979,
         "rank": 4,
         "gap_to_p1": 0.774
       },
@@ -11231,7 +11231,7 @@
           "HARD": 22
         },
         "speed_trap_kmh": 303.0,
-        "mean_corner_kmh": 199.9,
+        "mean_corner_kmh": 198.5,
         "long_run_compound": "HARD",
         "long_run_avg": 83.74,
         "long_run_q25": 83.712,
@@ -11255,9 +11255,9 @@
           "HARD": 0
         },
         "speed_trap_kmh": 322.0,
-        "mean_corner_kmh": 196.3,
+        "mean_corner_kmh": 195.7,
         "long_run_compound": "MEDIUM",
-        "long_run_avg": 83.914,
+        "long_run_avg": 84.031,
         "long_run_q25": 82.9,
         "long_run_q75": 85.112,
         "rank": 6,
@@ -11279,7 +11279,7 @@
           "HARD": 0
         },
         "speed_trap_kmh": 316.0,
-        "mean_corner_kmh": 195.9,
+        "mean_corner_kmh": 195.3,
         "long_run_compound": "MEDIUM",
         "long_run_avg": 83.774,
         "long_run_q25": 82.307,
@@ -11303,11 +11303,11 @@
           "HARD": 13
         },
         "speed_trap_kmh": 309.0,
-        "mean_corner_kmh": 198.2,
+        "mean_corner_kmh": 197.5,
         "long_run_compound": "SOFT",
-        "long_run_avg": 82.456,
+        "long_run_avg": 81.869,
         "long_run_q25": 81.039,
-        "long_run_q75": 83.604,
+        "long_run_q75": 82.989,
         "rank": 8,
         "gap_to_p1": 1.39
       },
@@ -11327,11 +11327,11 @@
           "HARD": 0
         },
         "speed_trap_kmh": 304.0,
-        "mean_corner_kmh": 196.0,
+        "mean_corner_kmh": 194.9,
         "long_run_compound": "MEDIUM",
-        "long_run_avg": 84.572,
-        "long_run_q25": 84.332,
-        "long_run_q75": 85.242,
+        "long_run_avg": 85.148,
+        "long_run_q25": 85.102,
+        "long_run_q75": 85.884,
         "rank": 9,
         "gap_to_p1": 1.406
       },
@@ -11351,11 +11351,11 @@
           "HARD": 26
         },
         "speed_trap_kmh": 311.0,
-        "mean_corner_kmh": 195.0,
-        "long_run_compound": "MEDIUM",
-        "long_run_avg": 83.165,
-        "long_run_q25": 81.53,
-        "long_run_q75": 84.506,
+        "mean_corner_kmh": 194.0,
+        "long_run_compound": "HARD",
+        "long_run_avg": 85.009,
+        "long_run_q25": 83.738,
+        "long_run_q75": 86.0,
         "rank": 10,
         "gap_to_p1": 1.725
       },
@@ -11375,11 +11375,11 @@
           "HARD": 9
         },
         "speed_trap_kmh": 319.0,
-        "mean_corner_kmh": 188.7,
+        "mean_corner_kmh": 187.6,
         "long_run_compound": "SOFT",
-        "long_run_avg": 83.306,
-        "long_run_q25": 81.372,
-        "long_run_q75": 85.518,
+        "long_run_avg": 84.077,
+        "long_run_q25": 81.838,
+        "long_run_q75": 85.975,
         "rank": 11,
         "gap_to_p1": 1.785
       },
@@ -11399,11 +11399,11 @@
           "HARD": 10
         },
         "speed_trap_kmh": 308.0,
-        "mean_corner_kmh": 193.2,
+        "mean_corner_kmh": 191.9,
         "long_run_compound": "MEDIUM",
-        "long_run_avg": 84.115,
-        "long_run_q25": 82.637,
-        "long_run_q75": 85.538,
+        "long_run_avg": 84.718,
+        "long_run_q25": 83.153,
+        "long_run_q75": 85.981,
         "rank": 12,
         "gap_to_p1": 1.837
       },
@@ -11423,7 +11423,7 @@
           "HARD": 23
         },
         "speed_trap_kmh": 307.0,
-        "mean_corner_kmh": 194.9,
+        "mean_corner_kmh": 193.9,
         "long_run_compound": "MEDIUM",
         "long_run_avg": 83.275,
         "long_run_q25": 82.556,
@@ -11447,9 +11447,9 @@
           "HARD": 0
         },
         "speed_trap_kmh": 314.0,
-        "mean_corner_kmh": 193.7,
+        "mean_corner_kmh": 193.1,
         "long_run_compound": "MEDIUM",
-        "long_run_avg": 83.896,
+        "long_run_avg": 84.052,
         "long_run_q25": 83.014,
         "long_run_q75": 85.323,
         "rank": 14,
@@ -11471,11 +11471,11 @@
           "HARD": 20
         },
         "speed_trap_kmh": 313.0,
-        "mean_corner_kmh": 194.3,
+        "mean_corner_kmh": 193.1,
         "long_run_compound": "HARD",
-        "long_run_avg": 83.638,
-        "long_run_q25": 83.046,
-        "long_run_q75": 84.437,
+        "long_run_avg": 83.962,
+        "long_run_q25": 83.473,
+        "long_run_q75": 84.539,
         "rank": 15,
         "gap_to_p1": 2.018
       },
@@ -11495,11 +11495,11 @@
           "HARD": 17
         },
         "speed_trap_kmh": 304.0,
-        "mean_corner_kmh": 190.9,
+        "mean_corner_kmh": 189.0,
         "long_run_compound": "MEDIUM",
-        "long_run_avg": 84.542,
-        "long_run_q25": 83.617,
-        "long_run_q75": 85.609,
+        "long_run_avg": 84.997,
+        "long_run_q25": 83.976,
+        "long_run_q75": 85.941,
         "rank": 16,
         "gap_to_p1": 2.36
       },
@@ -11519,7 +11519,7 @@
           "HARD": 21
         },
         "speed_trap_kmh": 299.0,
-        "mean_corner_kmh": 192.1,
+        "mean_corner_kmh": 191.0,
         "long_run_compound": "MEDIUM",
         "long_run_avg": 83.315,
         "long_run_q25": 82.309,
@@ -11542,12 +11542,12 @@
           "MEDIUM": 10,
           "HARD": 15
         },
-        "speed_trap_kmh": 308.1,
-        "mean_corner_kmh": 192.5,
-        "long_run_compound": "HARD",
-        "long_run_avg": 83.816,
-        "long_run_q25": 83.141,
-        "long_run_q75": 83.808,
+        "speed_trap_kmh": 290.0,
+        "mean_corner_kmh": 191.3,
+        "long_run_compound": "SOFT",
+        "long_run_avg": 84.726,
+        "long_run_q25": 82.638,
+        "long_run_q75": 85.811,
         "rank": 18,
         "gap_to_p1": 3.2
       },
@@ -11566,12 +11566,12 @@
           "MEDIUM": 6,
           "HARD": 0
         },
-        "speed_trap_kmh": 298.0,
-        "mean_corner_kmh": 189.1,
+        "speed_trap_kmh": 299.0,
+        "mean_corner_kmh": 188.0,
         "long_run_compound": "SOFT",
-        "long_run_avg": 83.845,
+        "long_run_avg": 84.136,
         "long_run_q25": 82.972,
-        "long_run_q75": 84.939,
+        "long_run_q75": 85.552,
         "rank": 19,
         "gap_to_p1": 3.667
       },
@@ -11591,7 +11591,7 @@
           "HARD": 0
         },
         "speed_trap_kmh": 310.0,
-        "mean_corner_kmh": 183.1,
+        "mean_corner_kmh": 182.4,
         "long_run_compound": "SOFT",
         "long_run_avg": 84.599,
         "long_run_q25": 84.022,
@@ -11615,11 +11615,11 @@
           "HARD": 0
         },
         "speed_trap_kmh": 304.0,
-        "mean_corner_kmh": 183.9,
+        "mean_corner_kmh": 183.3,
         "long_run_compound": "MEDIUM",
-        "long_run_avg": 85.059,
-        "long_run_q25": 84.397,
-        "long_run_q75": 85.722,
+        "long_run_avg": 85.909,
+        "long_run_q25": 85.722,
+        "long_run_q75": 86.259,
         "rank": 21,
         "gap_to_p1": 5.344
       },
@@ -11638,12 +11638,12 @@
           "MEDIUM": 0,
           "HARD": 3
         },
-        "speed_trap_kmh": 305.6,
-        "mean_corner_kmh": 189.3,
-        "long_run_compound": "MEDIUM",
-        "long_run_avg": 86.444,
-        "long_run_q25": 86.233,
-        "long_run_q75": 86.662,
+        "speed_trap_kmh": 285.0,
+        "mean_corner_kmh": 188.2,
+        "long_run_compound": "SOFT",
+        "long_run_avg": 85.839,
+        "long_run_q25": 85.816,
+        "long_run_q75": 85.861,
         "rank": 22,
         "gap_to_p1": 6.763
       }
@@ -11997,6 +11997,22 @@
         "driver": "LEC",
         "team": "Ferrari",
         "color": "#ED1131",
+        "compound": "SOFT",
+        "tyre_life": 1,
+        "time": 80.291
+      },
+      {
+        "driver": "LEC",
+        "team": "Ferrari",
+        "color": "#ED1131",
+        "compound": "SOFT",
+        "tyre_life": 2,
+        "time": 80.346
+      },
+      {
+        "driver": "LEC",
+        "team": "Ferrari",
+        "color": "#ED1131",
         "compound": "MEDIUM",
         "tyre_life": 1,
         "time": 84.176
@@ -12183,14 +12199,6 @@
         "color": "#F47600",
         "compound": "SOFT",
         "tyre_life": 3,
-        "time": 84.917
-      },
-      {
-        "driver": "NOR",
-        "team": "McLaren",
-        "color": "#F47600",
-        "compound": "SOFT",
-        "tyre_life": 4,
         "time": 83.385
       },
       {
@@ -12198,7 +12206,7 @@
         "team": "McLaren",
         "color": "#F47600",
         "compound": "SOFT",
-        "tyre_life": 5,
+        "tyre_life": 4,
         "time": 82.989
       },
       {
@@ -12206,16 +12214,8 @@
         "team": "McLaren",
         "color": "#F47600",
         "compound": "SOFT",
-        "tyre_life": 6,
+        "tyre_life": 5,
         "time": 83.604
-      },
-      {
-        "driver": "NOR",
-        "team": "McLaren",
-        "color": "#F47600",
-        "compound": "SOFT",
-        "tyre_life": 7,
-        "time": 85.274
       },
       {
         "driver": "NOR",
@@ -12255,7 +12255,7 @@
         "color": "#4781D7",
         "compound": "SOFT",
         "tyre_life": 1,
-        "time": 82.062
+        "time": 80.508
       },
       {
         "driver": "VER",
@@ -12263,7 +12263,7 @@
         "color": "#4781D7",
         "compound": "SOFT",
         "tyre_life": 2,
-        "time": 84.351
+        "time": 82.062
       },
       {
         "driver": "VER",
@@ -12271,7 +12271,7 @@
         "color": "#4781D7",
         "compound": "SOFT",
         "tyre_life": 3,
-        "time": 81.973
+        "time": 84.351
       },
       {
         "driver": "VER",
@@ -12279,6 +12279,14 @@
         "color": "#4781D7",
         "compound": "SOFT",
         "tyre_life": 4,
+        "time": 81.973
+      },
+      {
+        "driver": "VER",
+        "team": "Red Bull Racing",
+        "color": "#4781D7",
+        "compound": "SOFT",
+        "tyre_life": 5,
         "time": 82.186
       },
       {
@@ -12367,7 +12375,7 @@
         "color": "#9C9FA2",
         "compound": "HARD",
         "tyre_life": 1,
-        "time": 83.86
+        "time": 86.419
       },
       {
         "driver": "BEA",
@@ -12375,7 +12383,7 @@
         "color": "#9C9FA2",
         "compound": "HARD",
         "tyre_life": 2,
-        "time": 83.738
+        "time": 85.957
       },
       {
         "driver": "BEA",
@@ -12383,7 +12391,7 @@
         "color": "#9C9FA2",
         "compound": "HARD",
         "tyre_life": 3,
-        "time": 82.778
+        "time": 86.101
       },
       {
         "driver": "BEA",
@@ -12391,7 +12399,31 @@
         "color": "#9C9FA2",
         "compound": "HARD",
         "tyre_life": 4,
-        "time": 82.607
+        "time": 85.862
+      },
+      {
+        "driver": "BEA",
+        "team": "Haas F1 Team",
+        "color": "#9C9FA2",
+        "compound": "HARD",
+        "tyre_life": 5,
+        "time": 86.0
+      },
+      {
+        "driver": "BEA",
+        "team": "Haas F1 Team",
+        "color": "#9C9FA2",
+        "compound": "HARD",
+        "tyre_life": 6,
+        "time": 85.907
+      },
+      {
+        "driver": "BEA",
+        "team": "Haas F1 Team",
+        "color": "#9C9FA2",
+        "compound": "HARD",
+        "tyre_life": 7,
+        "time": 85.869
       },
       {
         "driver": "LIN",
@@ -12399,7 +12431,7 @@
         "color": "#6C98FF",
         "compound": "SOFT",
         "tyre_life": 1,
-        "time": 84.823
+        "time": 86.097
       },
       {
         "driver": "LIN",
@@ -12407,7 +12439,7 @@
         "color": "#6C98FF",
         "compound": "SOFT",
         "tyre_life": 2,
-        "time": 83.667
+        "time": 85.664
       },
       {
         "driver": "LIN",
@@ -12415,7 +12447,7 @@
         "color": "#6C98FF",
         "compound": "SOFT",
         "tyre_life": 3,
-        "time": 82.799
+        "time": 86.079
       },
       {
         "driver": "LIN",
@@ -12423,7 +12455,7 @@
         "color": "#6C98FF",
         "compound": "SOFT",
         "tyre_life": 4,
-        "time": 82.587
+        "time": 85.975
       },
       {
         "driver": "LIN",
@@ -12431,7 +12463,7 @@
         "color": "#6C98FF",
         "compound": "SOFT",
         "tyre_life": 5,
-        "time": 81.372
+        "time": 86.205
       },
       {
         "driver": "LIN",
@@ -12439,7 +12471,31 @@
         "color": "#6C98FF",
         "compound": "SOFT",
         "tyre_life": 6,
-        "time": 81.313
+        "time": 85.518
+      },
+      {
+        "driver": "LIN",
+        "team": "Racing Bulls",
+        "color": "#6C98FF",
+        "compound": "SOFT",
+        "tyre_life": 7,
+        "time": 86.056
+      },
+      {
+        "driver": "LIN",
+        "team": "Racing Bulls",
+        "color": "#6C98FF",
+        "compound": "SOFT",
+        "tyre_life": 8,
+        "time": 85.742
+      },
+      {
+        "driver": "LIN",
+        "team": "Racing Bulls",
+        "color": "#6C98FF",
+        "compound": "SOFT",
+        "tyre_life": 9,
+        "time": 85.619
       },
       {
         "driver": "LIN",
@@ -12487,7 +12543,7 @@
         "color": "#F50537",
         "compound": "MEDIUM",
         "tyre_life": 1,
-        "time": 85.242
+        "time": 86.275
       },
       {
         "driver": "BOR",
@@ -12495,7 +12551,7 @@
         "color": "#F50537",
         "compound": "MEDIUM",
         "tyre_life": 2,
-        "time": 85.384
+        "time": 85.915
       },
       {
         "driver": "BOR",
@@ -12503,7 +12559,15 @@
         "color": "#F50537",
         "compound": "MEDIUM",
         "tyre_life": 3,
-        "time": 85.102
+        "time": 85.397
+      },
+      {
+        "driver": "BOR",
+        "team": "Audi",
+        "color": "#F50537",
+        "compound": "MEDIUM",
+        "tyre_life": 4,
+        "time": 85.884
       },
       {
         "driver": "GAS",
@@ -12591,7 +12655,7 @@
         "color": "#00A1E8",
         "compound": "HARD",
         "tyre_life": 2,
-        "time": 84.539
+        "time": 86.225
       },
       {
         "driver": "GAS",
@@ -12599,7 +12663,7 @@
         "color": "#00A1E8",
         "compound": "HARD",
         "tyre_life": 3,
-        "time": 84.437
+        "time": 84.539
       },
       {
         "driver": "GAS",
@@ -12607,7 +12671,7 @@
         "color": "#00A1E8",
         "compound": "HARD",
         "tyre_life": 4,
-        "time": 83.782
+        "time": 84.437
       },
       {
         "driver": "GAS",
@@ -12615,6 +12679,14 @@
         "color": "#00A1E8",
         "compound": "HARD",
         "tyre_life": 5,
+        "time": 83.782
+      },
+      {
+        "driver": "GAS",
+        "team": "Alpine",
+        "color": "#00A1E8",
+        "compound": "HARD",
+        "tyre_life": 6,
         "time": 83.528
       },
       {
@@ -12831,7 +12903,7 @@
         "color": "#6C98FF",
         "compound": "MEDIUM",
         "tyre_life": 2,
-        "time": 85.51
+        "time": 85.803
       },
       {
         "driver": "LAW",
@@ -12839,7 +12911,7 @@
         "color": "#6C98FF",
         "compound": "MEDIUM",
         "tyre_life": 3,
-        "time": 85.73
+        "time": 86.033
       },
       {
         "driver": "LAW",
@@ -12847,7 +12919,7 @@
         "color": "#6C98FF",
         "compound": "MEDIUM",
         "tyre_life": 4,
-        "time": 85.604
+        "time": 85.51
       },
       {
         "driver": "LAW",
@@ -12855,6 +12927,38 @@
         "color": "#6C98FF",
         "compound": "MEDIUM",
         "tyre_life": 5,
+        "time": 85.73
+      },
+      {
+        "driver": "LAW",
+        "team": "Racing Bulls",
+        "color": "#6C98FF",
+        "compound": "MEDIUM",
+        "tyre_life": 6,
+        "time": 86.062
+      },
+      {
+        "driver": "LAW",
+        "team": "Racing Bulls",
+        "color": "#6C98FF",
+        "compound": "MEDIUM",
+        "tyre_life": 7,
+        "time": 85.981
+      },
+      {
+        "driver": "LAW",
+        "team": "Racing Bulls",
+        "color": "#6C98FF",
+        "compound": "MEDIUM",
+        "tyre_life": 8,
+        "time": 85.604
+      },
+      {
+        "driver": "LAW",
+        "team": "Racing Bulls",
+        "color": "#6C98FF",
+        "compound": "MEDIUM",
+        "tyre_life": 9,
         "time": 85.424
       },
       {
@@ -12911,7 +13015,7 @@
         "color": "#00A1E8",
         "compound": "MEDIUM",
         "tyre_life": 1,
-        "time": 83.976
+        "time": 85.772
       },
       {
         "driver": "COL",
@@ -12919,7 +13023,7 @@
         "color": "#00A1E8",
         "compound": "MEDIUM",
         "tyre_life": 2,
-        "time": 83.199
+        "time": 86.103
       },
       {
         "driver": "COL",
@@ -12927,7 +13031,7 @@
         "color": "#00A1E8",
         "compound": "MEDIUM",
         "tyre_life": 3,
-        "time": 83.139
+        "time": 85.609
       },
       {
         "driver": "COL",
@@ -12935,7 +13039,31 @@
         "color": "#00A1E8",
         "compound": "MEDIUM",
         "tyre_life": 4,
-        "time": 83.617
+        "time": 85.941
+      },
+      {
+        "driver": "COL",
+        "team": "Alpine",
+        "color": "#00A1E8",
+        "compound": "MEDIUM",
+        "tyre_life": 5,
+        "time": 86.098
+      },
+      {
+        "driver": "COL",
+        "team": "Alpine",
+        "color": "#00A1E8",
+        "compound": "MEDIUM",
+        "tyre_life": 6,
+        "time": 85.943
+      },
+      {
+        "driver": "COL",
+        "team": "Alpine",
+        "color": "#00A1E8",
+        "compound": "MEDIUM",
+        "tyre_life": 7,
+        "time": 85.462
       },
       {
         "driver": "COL",
@@ -12967,7 +13095,7 @@
         "color": "#1868DB",
         "compound": "SOFT",
         "tyre_life": 1,
-        "time": 82.638
+        "time": 86.258
       },
       {
         "driver": "SAI",
@@ -12975,7 +13103,23 @@
         "color": "#1868DB",
         "compound": "SOFT",
         "tyre_life": 2,
-        "time": 82.323
+        "time": 85.76
+      },
+      {
+        "driver": "SAI",
+        "team": "Williams",
+        "color": "#1868DB",
+        "compound": "SOFT",
+        "tyre_life": 3,
+        "time": 85.566
+      },
+      {
+        "driver": "SAI",
+        "team": "Williams",
+        "color": "#1868DB",
+        "compound": "SOFT",
+        "tyre_life": 4,
+        "time": 85.811
       },
       {
         "driver": "SAI",
@@ -13023,7 +13167,7 @@
         "color": "#909090",
         "compound": "MEDIUM",
         "tyre_life": 1,
-        "time": 85.722
+        "time": 86.259
       },
       {
         "driver": "PER",
@@ -13031,103 +13175,47 @@
         "color": "#909090",
         "compound": "MEDIUM",
         "tyre_life": 2,
-        "time": 84.397
+        "time": 86.335
       },
       {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
-        "compound": "MEDIUM",
-        "tyre_life": 1,
-        "time": 85.934
-      },
-      {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
-        "compound": "MEDIUM",
-        "tyre_life": 2,
-        "time": 86.178
-      },
-      {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
+        "driver": "PER",
+        "team": "Cadillac",
+        "color": "#909090",
         "compound": "MEDIUM",
         "tyre_life": 3,
-        "time": 86.381
+        "time": 86.378
       },
       {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
+        "driver": "PER",
+        "team": "Cadillac",
+        "color": "#909090",
         "compound": "MEDIUM",
         "tyre_life": 4,
-        "time": 86.233
+        "time": 86.129
       },
       {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
+        "driver": "PER",
+        "team": "Cadillac",
+        "color": "#909090",
         "compound": "MEDIUM",
         "tyre_life": 5,
-        "time": 86.217
+        "time": 85.54
       },
       {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
+        "driver": "PER",
+        "team": "Cadillac",
+        "color": "#909090",
         "compound": "MEDIUM",
         "tyre_life": 6,
-        "time": 86.518
+        "time": 86.181
       },
       {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
+        "driver": "PER",
+        "team": "Cadillac",
+        "color": "#909090",
         "compound": "MEDIUM",
         "tyre_life": 7,
-        "time": 86.605
-      },
-      {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
-        "compound": "MEDIUM",
-        "tyre_life": 8,
-        "time": 86.431
-      },
-      {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
-        "compound": "MEDIUM",
-        "tyre_life": 9,
-        "time": 86.538
-      },
-      {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
-        "compound": "MEDIUM",
-        "tyre_life": 10,
-        "time": 86.834
-      },
-      {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
-        "compound": "MEDIUM",
-        "tyre_life": 11,
-        "time": 86.799
-      },
-      {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
-        "compound": "MEDIUM",
-        "tyre_life": 12,
-        "time": 86.662
+        "time": 86.24
       },
       {
         "driver": "STR",
@@ -13135,7 +13223,7 @@
         "color": "#229971",
         "compound": "SOFT",
         "tyre_life": 1,
-        "time": 85.055
+        "time": 85.816
       },
       {
         "driver": "STR",
@@ -13143,47 +13231,7 @@
         "color": "#229971",
         "compound": "SOFT",
         "tyre_life": 2,
-        "time": 85.212
-      },
-      {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
-        "compound": "SOFT",
-        "tyre_life": 3,
-        "time": 85.175
-      },
-      {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
-        "compound": "SOFT",
-        "tyre_life": 4,
-        "time": 85.147
-      },
-      {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
-        "compound": "SOFT",
-        "tyre_life": 5,
-        "time": 85.319
-      },
-      {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
-        "compound": "SOFT",
-        "tyre_life": 6,
-        "time": 85.588
-      },
-      {
-        "driver": "STR",
-        "team": "Aston Martin",
-        "color": "#229971",
-        "compound": "SOFT",
-        "tyre_life": 7,
-        "time": 85.71
+        "time": 85.861
       },
       {
         "driver": "ALO",
@@ -13191,6 +13239,14 @@
         "color": "#229971",
         "compound": "SOFT",
         "tyre_life": 1,
+        "time": 85.883
+      },
+      {
+        "driver": "ALO",
+        "team": "Aston Martin",
+        "color": "#229971",
+        "compound": "SOFT",
+        "tyre_life": 2,
         "time": 85.552
       },
       {
@@ -13198,7 +13254,7 @@
         "team": "Aston Martin",
         "color": "#229971",
         "compound": "SOFT",
-        "tyre_life": 2,
+        "tyre_life": 3,
         "time": 84.939
       },
       {
@@ -13327,7 +13383,7 @@
         "color": "#4781D7",
         "compound": "MEDIUM",
         "tyre_life": 5,
-        "time": 85.188
+        "time": 85.909
       },
       {
         "driver": "HAD",
@@ -13335,6 +13391,14 @@
         "color": "#4781D7",
         "compound": "MEDIUM",
         "tyre_life": 6,
+        "time": 85.188
+      },
+      {
+        "driver": "HAD",
+        "team": "Red Bull Racing",
+        "color": "#4781D7",
+        "compound": "MEDIUM",
+        "tyre_life": 7,
         "time": 84.617
       },
       {
@@ -13485,193 +13549,193 @@
     "degradation_slopes": [
       {
         "compound": "SOFT",
-        "slope_sec_per_lap": 0.015,
-        "base_time": 82.421,
-        "r2": 0.63,
+        "slope_sec_per_lap": 0.005,
+        "base_time": 82.276,
+        "r2": 0.26,
         "curve_points": [
           {
             "tyre_life": 1,
-            "predicted_time": 82.436
+            "predicted_time": 82.281
           },
           {
             "tyre_life": 2,
-            "predicted_time": 82.451
+            "predicted_time": 82.286
           },
           {
             "tyre_life": 3,
-            "predicted_time": 82.466
+            "predicted_time": 82.291
           },
           {
             "tyre_life": 4,
-            "predicted_time": 82.481
+            "predicted_time": 82.296
           },
           {
             "tyre_life": 5,
-            "predicted_time": 82.496
+            "predicted_time": 82.301
           },
           {
             "tyre_life": 6,
-            "predicted_time": 82.511
+            "predicted_time": 82.306
           },
           {
             "tyre_life": 7,
-            "predicted_time": 82.526
+            "predicted_time": 82.311
           },
           {
             "tyre_life": 8,
-            "predicted_time": 82.541
+            "predicted_time": 82.316
           },
           {
             "tyre_life": 9,
-            "predicted_time": 82.556
+            "predicted_time": 82.321
           },
           {
             "tyre_life": 10,
-            "predicted_time": 82.571
+            "predicted_time": 82.326
           },
           {
             "tyre_life": 11,
-            "predicted_time": 82.586
+            "predicted_time": 82.331
           },
           {
             "tyre_life": 12,
-            "predicted_time": 82.601
+            "predicted_time": 82.336
           },
           {
             "tyre_life": 13,
-            "predicted_time": 82.616
+            "predicted_time": 82.341
           },
           {
             "tyre_life": 14,
-            "predicted_time": 82.631
+            "predicted_time": 82.346
           }
         ]
       },
       {
         "compound": "MEDIUM",
-        "slope_sec_per_lap": 0.015,
-        "base_time": 83.891,
-        "r2": 0.76,
+        "slope_sec_per_lap": 0.005,
+        "base_time": 84.004,
+        "r2": 0.54,
         "curve_points": [
           {
             "tyre_life": 1,
-            "predicted_time": 83.906
+            "predicted_time": 84.009
           },
           {
             "tyre_life": 2,
-            "predicted_time": 83.921
+            "predicted_time": 84.014
           },
           {
             "tyre_life": 3,
-            "predicted_time": 83.936
+            "predicted_time": 84.019
           },
           {
             "tyre_life": 4,
-            "predicted_time": 83.951
+            "predicted_time": 84.024
           },
           {
             "tyre_life": 5,
-            "predicted_time": 83.966
+            "predicted_time": 84.029
           },
           {
             "tyre_life": 6,
-            "predicted_time": 83.981
+            "predicted_time": 84.034
           },
           {
             "tyre_life": 7,
-            "predicted_time": 83.996
+            "predicted_time": 84.039
           },
           {
             "tyre_life": 8,
-            "predicted_time": 84.011
+            "predicted_time": 84.044
           },
           {
             "tyre_life": 9,
-            "predicted_time": 84.026
+            "predicted_time": 84.049
           },
           {
             "tyre_life": 10,
-            "predicted_time": 84.041
+            "predicted_time": 84.054
           },
           {
             "tyre_life": 11,
-            "predicted_time": 84.056
+            "predicted_time": 84.059
           },
           {
             "tyre_life": 12,
-            "predicted_time": 84.071
+            "predicted_time": 84.064
           },
           {
             "tyre_life": 13,
-            "predicted_time": 84.086
+            "predicted_time": 84.069
           },
           {
             "tyre_life": 14,
-            "predicted_time": 84.101
+            "predicted_time": 84.074
           }
         ]
       },
       {
         "compound": "HARD",
-        "slope_sec_per_lap": 0.015,
-        "base_time": 83.203,
-        "r2": 0.51,
+        "slope_sec_per_lap": 0.005,
+        "base_time": 83.362,
+        "r2": 0.36,
         "curve_points": [
           {
             "tyre_life": 1,
-            "predicted_time": 83.218
+            "predicted_time": 83.367
           },
           {
             "tyre_life": 2,
-            "predicted_time": 83.233
+            "predicted_time": 83.372
           },
           {
             "tyre_life": 3,
-            "predicted_time": 83.248
+            "predicted_time": 83.377
           },
           {
             "tyre_life": 4,
-            "predicted_time": 83.263
+            "predicted_time": 83.382
           },
           {
             "tyre_life": 5,
-            "predicted_time": 83.278
+            "predicted_time": 83.387
           },
           {
             "tyre_life": 6,
-            "predicted_time": 83.293
+            "predicted_time": 83.392
           },
           {
             "tyre_life": 7,
-            "predicted_time": 83.308
+            "predicted_time": 83.397
           },
           {
             "tyre_life": 8,
-            "predicted_time": 83.323
+            "predicted_time": 83.402
           },
           {
             "tyre_life": 9,
-            "predicted_time": 83.338
+            "predicted_time": 83.407
           },
           {
             "tyre_life": 10,
-            "predicted_time": 83.353
+            "predicted_time": 83.412
           },
           {
             "tyre_life": 11,
-            "predicted_time": 83.368
+            "predicted_time": 83.417
           },
           {
             "tyre_life": 12,
-            "predicted_time": 83.383
+            "predicted_time": 83.422
           },
           {
             "tyre_life": 13,
-            "predicted_time": 83.398
+            "predicted_time": 83.427
           },
           {
             "tyre_life": 14,
-            "predicted_time": 83.413
+            "predicted_time": 83.432
           }
         ]
       }
@@ -14429,67 +14493,67 @@
       {
         "turn": 2,
         "team": "Mercedes",
-        "speed": 216.0,
+        "speed": 205.1,
         "color": "#00D7B6"
       },
       {
         "turn": 2,
         "team": "Ferrari",
-        "speed": 210.0,
+        "speed": 201.6,
         "color": "#ED1131"
       },
       {
         "turn": 2,
         "team": "McLaren",
-        "speed": 213.0,
+        "speed": 206.2,
         "color": "#F47600"
       },
       {
         "turn": 2,
         "team": "Red Bull Racing",
-        "speed": 208.0,
+        "speed": 199.8,
         "color": "#4781D7"
       },
       {
         "turn": 2,
         "team": "Haas F1 Team",
-        "speed": 209.5,
+        "speed": 200.8,
         "color": "#9C9FA2"
       },
       {
         "turn": 2,
         "team": "Racing Bulls",
-        "speed": 210.5,
+        "speed": 201.8,
         "color": "#6C98FF"
       },
       {
         "turn": 2,
         "team": "Audi",
-        "speed": 203.0,
+        "speed": 196.7,
         "color": "#F50537"
       },
       {
         "turn": 2,
         "team": "Alpine",
-        "speed": 202.0,
+        "speed": 193.8,
         "color": "#00A1E8"
       },
       {
         "turn": 2,
         "team": "Williams",
-        "speed": 205.0,
+        "speed": 196.0,
         "color": "#1868DB"
       },
       {
         "turn": 2,
         "team": "Cadillac",
-        "speed": 196.0,
+        "speed": 189.6,
         "color": "#909090"
       },
       {
         "turn": 2,
         "team": "Aston Martin",
-        "speed": 206.0,
+        "speed": 200.8,
         "color": "#229971"
       },
       {
@@ -14627,67 +14691,67 @@
       {
         "turn": 5,
         "team": "Mercedes",
-        "speed": 240.5,
+        "speed": 233.5,
         "color": "#00D7B6"
       },
       {
         "turn": 5,
         "team": "Ferrari",
-        "speed": 235.0,
+        "speed": 229.3,
         "color": "#ED1131"
       },
       {
         "turn": 5,
         "team": "McLaren",
-        "speed": 237.0,
+        "speed": 230.5,
         "color": "#F47600"
       },
       {
         "turn": 5,
         "team": "Red Bull Racing",
-        "speed": 229.0,
+        "speed": 228.6,
         "color": "#4781D7"
       },
       {
         "turn": 5,
         "team": "Haas F1 Team",
-        "speed": 230.0,
+        "speed": 224.9,
         "color": "#9C9FA2"
       },
       {
         "turn": 5,
         "team": "Racing Bulls",
-        "speed": 229.5,
+        "speed": 221.2,
         "color": "#6C98FF"
       },
       {
         "turn": 5,
         "team": "Audi",
-        "speed": 229.0,
+        "speed": 223.1,
         "color": "#F50537"
       },
       {
         "turn": 5,
         "team": "Alpine",
-        "speed": 243.0,
+        "speed": 229.4,
         "color": "#00A1E8"
       },
       {
         "turn": 5,
         "team": "Williams",
-        "speed": 236.0,
+        "speed": 228.5,
         "color": "#1868DB"
       },
       {
         "turn": 5,
         "team": "Cadillac",
-        "speed": 221.0,
+        "speed": 217.9,
         "color": "#909090"
       },
       {
         "turn": 5,
         "team": "Aston Martin",
-        "speed": 224.0,
+        "speed": 214.5,
         "color": "#229971"
       },
       {
@@ -15342,11 +15406,11 @@
       "turns": [
         {
           "turn": 1,
-          "pct": 6.1
+          "pct": 6.7
         },
         {
           "turn": 2,
-          "pct": 9.4
+          "pct": 8.9
         },
         {
           "turn": 3,
@@ -15354,7 +15418,7 @@
         },
         {
           "turn": 4,
-          "pct": 23.9
+          "pct": 23.3
         },
         {
           "turn": 5,
@@ -15366,7 +15430,7 @@
         },
         {
           "turn": 7,
-          "pct": 40.6
+          "pct": 40.0
         },
         {
           "turn": 8,
@@ -15374,7 +15438,7 @@
         },
         {
           "turn": 9,
-          "pct": 61.1
+          "pct": 62.2
         },
         {
           "turn": 10,
@@ -15394,7 +15458,7 @@
         },
         {
           "turn": 14,
-          "pct": 90.6
+          "pct": 90.0
         }
       ],
       "drivers": {
@@ -15404,7 +15468,7 @@
             292.0,
             298.0,
             176.0,
-            197.1,
+            205.2,
             215.0,
             274.3,
             293.2,
@@ -15414,7 +15478,7 @@
             151.8,
             162.0,
             233.7,
-            240.0,
+            233.7,
             260.0,
             269.0,
             257.0,
@@ -15618,7 +15682,7 @@
             287.9,
             292.9,
             167.0,
-            195.0,
+            204.9,
             217.0,
             272.4,
             293.1,
@@ -15628,7 +15692,7 @@
             147.3,
             163.0,
             233.3,
-            241.0,
+            233.3,
             262.1,
             271.5,
             259.3,
@@ -15832,7 +15896,7 @@
             299.1,
             305.0,
             168.0,
-            193.1,
+            199.8,
             208.0,
             275.6,
             293.8,
@@ -15842,7 +15906,7 @@
             154.8,
             151.0,
             228.6,
-            229.0,
+            228.6,
             258.0,
             263.7,
             254.4,
@@ -16046,7 +16110,7 @@
             295.0,
             297.0,
             172.0,
-            197.0,
+            204.7,
             214.0,
             269.6,
             287.0,
@@ -16056,7 +16120,7 @@
             156.1,
             155.0,
             231.1,
-            238.0,
+            231.1,
             257.5,
             267.7,
             248.2,
@@ -16260,7 +16324,7 @@
             299.0,
             296.8,
             172.0,
-            202.4,
+            209.9,
             219.0,
             271.6,
             286.2,
@@ -16270,7 +16334,7 @@
             143.2,
             153.0,
             228.7,
-            236.0,
+            228.7,
             261.1,
             273.7,
             241.1,
@@ -16474,7 +16538,7 @@
             301.6,
             292.1,
             171.0,
-            198.9,
+            202.5,
             207.0,
             269.2,
             286.7,
@@ -16484,7 +16548,7 @@
             161.3,
             151.0,
             232.3,
-            238.0,
+            232.3,
             263.8,
             272.6,
             242.8,
@@ -16688,7 +16752,7 @@
             294.8,
             298.0,
             175.0,
-            192.3,
+            198.5,
             206.0,
             267.2,
             284.2,
@@ -16698,7 +16762,7 @@
             157.7,
             152.0,
             227.5,
-            232.0,
+            227.5,
             261.7,
             273.6,
             263.6,
@@ -16902,7 +16966,7 @@
             303.5,
             298.6,
             160.0,
-            201.5,
+            209.4,
             219.0,
             278.6,
             297.2,
@@ -16912,7 +16976,7 @@
             150.5,
             144.0,
             222.4,
-            231.0,
+            222.4,
             248.9,
             260.0,
             250.4,
@@ -17116,7 +17180,7 @@
             301.8,
             315.8,
             162.0,
-            187.9,
+            194.2,
             202.0,
             267.7,
             292.0,
@@ -17126,7 +17190,7 @@
             154.8,
             152.0,
             220.0,
-            228.0,
+            220.0,
             257.4,
             280.1,
             255.8,
@@ -17330,7 +17394,7 @@
             288.0,
             292.0,
             169.0,
-            189.9,
+            195.8,
             203.0,
             269.0,
             288.8,
@@ -17340,7 +17404,7 @@
             145.4,
             148.0,
             221.7,
-            230.0,
+            221.7,
             254.3,
             254.7,
             245.0,
@@ -17544,7 +17608,7 @@
             290.9,
             293.0,
             161.0,
-            193.2,
+            197.6,
             203.0,
             267.3,
             284.8,
@@ -17554,7 +17618,7 @@
             149.1,
             147.0,
             224.6,
-            228.0,
+            224.6,
             252.6,
             260.6,
             249.1,
@@ -17758,7 +17822,7 @@
             292.5,
             290.4,
             156.0,
-            192.0,
+            199.2,
             208.0,
             267.2,
             284.5,
@@ -17768,7 +17832,7 @@
             154.3,
             149.0,
             226.4,
-            232.0,
+            226.4,
             254.3,
             256.0,
             238.7,
@@ -17972,7 +18036,7 @@
             284.0,
             282.0,
             159.0,
-            195.1,
+            202.3,
             211.0,
             270.4,
             288.0,
@@ -17982,7 +18046,7 @@
             149.6,
             149.0,
             223.4,
-            228.0,
+            223.4,
             254.3,
             258.0,
             232.9,
@@ -18186,7 +18250,7 @@
             299.1,
             303.0,
             163.0,
-            190.8,
+            197.6,
             206.0,
             267.7,
             285.0,
@@ -18196,7 +18260,7 @@
             147.2,
             149.0,
             231.3,
-            240.0,
+            231.3,
             264.9,
             275.8,
             238.9,
@@ -18400,7 +18464,7 @@
             295.0,
             292.9,
             166.0,
-            188.6,
+            196.0,
             205.0,
             262.5,
             285.5,
@@ -18410,7 +18474,7 @@
             148.9,
             143.0,
             228.5,
-            236.0,
+            228.5,
             261.1,
             274.9,
             245.1,
@@ -18614,7 +18678,7 @@
             293.5,
             301.0,
             156.0,
-            183.5,
+            190.0,
             198.0,
             266.1,
             281.0,
@@ -18624,7 +18688,7 @@
             145.4,
             144.0,
             227.5,
-            246.0,
+            227.5,
             263.3,
             280.0,
             256.8,
@@ -18828,7 +18892,7 @@
             285.0,
             294.3,
             165.0,
-            196.6,
+            200.8,
             206.0,
             257.2,
             273.0,
@@ -18838,7 +18902,7 @@
             153.2,
             144.0,
             214.5,
-            224.0,
+            214.5,
             249.8,
             249.6,
             239.8,
@@ -19042,7 +19106,7 @@
             300.3,
             304.0,
             156.0,
-            174.2,
+            175.9,
             178.0,
             256.9,
             279.3,
@@ -19052,7 +19116,7 @@
             153.8,
             147.0,
             217.9,
-            224.0,
+            217.9,
             254.0,
             263.0,
             252.2,
@@ -19256,7 +19320,7 @@
             298.0,
             299.4,
             145.0,
-            194.5,
+            203.3,
             214.0,
             267.8,
             282.9,
@@ -19479,8 +19543,8 @@
         "start_lap": 1,
         "end_lap": 11,
         "laps_count": 11,
-        "avg_pace": 85.052,
-        "fuel_corrected_pace": 82.192
+        "avg_pace": 85.173,
+        "fuel_corrected_pace": 82.313
       },
       {
         "driver": "RUS",
@@ -19492,8 +19556,8 @@
         "start_lap": 12,
         "end_lap": 58,
         "laps_count": 47,
-        "avg_pace": 83.237,
-        "fuel_corrected_pace": 81.972
+        "avg_pace": 83.08,
+        "fuel_corrected_pace": 81.815
       },
       {
         "driver": "ANT",
@@ -19505,8 +19569,8 @@
         "start_lap": 1,
         "end_lap": 11,
         "laps_count": 11,
-        "avg_pace": 84.306,
-        "fuel_corrected_pace": 81.446
+        "avg_pace": 84.358,
+        "fuel_corrected_pace": 81.498
       },
       {
         "driver": "ANT",
@@ -19518,8 +19582,8 @@
         "start_lap": 12,
         "end_lap": 58,
         "laps_count": 47,
-        "avg_pace": 82.973,
-        "fuel_corrected_pace": 81.708
+        "avg_pace": 82.984,
+        "fuel_corrected_pace": 81.719
       },
       {
         "driver": "LEC",
@@ -19531,8 +19595,8 @@
         "start_lap": 1,
         "end_lap": 24,
         "laps_count": 24,
-        "avg_pace": 84.845,
-        "fuel_corrected_pace": 82.343
+        "avg_pace": 84.58,
+        "fuel_corrected_pace": 82.078
       },
       {
         "driver": "LEC",
@@ -19557,8 +19621,8 @@
         "start_lap": 1,
         "end_lap": 27,
         "laps_count": 27,
-        "avg_pace": 84.545,
-        "fuel_corrected_pace": 82.125
+        "avg_pace": 84.573,
+        "fuel_corrected_pace": 82.153
       },
       {
         "driver": "HAM",
@@ -19570,8 +19634,8 @@
         "start_lap": 28,
         "end_lap": 58,
         "laps_count": 31,
-        "avg_pace": 83.068,
-        "fuel_corrected_pace": 82.243
+        "avg_pace": 83.094,
+        "fuel_corrected_pace": 82.269
       },
       {
         "driver": "NOR",
@@ -19609,8 +19673,8 @@
         "start_lap": 34,
         "end_lap": 58,
         "laps_count": 25,
-        "avg_pace": 83.084,
-        "fuel_corrected_pace": 82.424
+        "avg_pace": 83.115,
+        "fuel_corrected_pace": 82.455
       },
       {
         "driver": "VER",
@@ -19648,8 +19712,8 @@
         "start_lap": 41,
         "end_lap": 58,
         "laps_count": 18,
-        "avg_pace": 83.187,
-        "fuel_corrected_pace": 82.719
+        "avg_pace": 83.19,
+        "fuel_corrected_pace": 82.722
       },
       {
         "driver": "BEA",
@@ -19674,8 +19738,8 @@
         "start_lap": 18,
         "end_lap": 57,
         "laps_count": 40,
-        "avg_pace": 84.963,
-        "fuel_corrected_pace": 83.835
+        "avg_pace": 84.909,
+        "fuel_corrected_pace": 83.782
       },
       {
         "driver": "LIN",
@@ -19700,8 +19764,8 @@
         "start_lap": 18,
         "end_lap": 57,
         "laps_count": 40,
-        "avg_pace": 85.112,
-        "fuel_corrected_pace": 83.984
+        "avg_pace": 85.117,
+        "fuel_corrected_pace": 83.99
       },
       {
         "driver": "BOR",
@@ -19765,8 +19829,8 @@
         "start_lap": 11,
         "end_lap": 57,
         "laps_count": 47,
-        "avg_pace": 85.382,
-        "fuel_corrected_pace": 84.062
+        "avg_pace": 85.393,
+        "fuel_corrected_pace": 84.073
       },
       {
         "driver": "OCO",
@@ -19791,8 +19855,8 @@
         "start_lap": 11,
         "end_lap": 57,
         "laps_count": 47,
-        "avg_pace": 85.383,
-        "fuel_corrected_pace": 84.063
+        "avg_pace": 85.403,
+        "fuel_corrected_pace": 84.083
       },
       {
         "driver": "ALB",
@@ -19830,8 +19894,8 @@
         "start_lap": 33,
         "end_lap": 57,
         "laps_count": 25,
-        "avg_pace": 85.407,
-        "fuel_corrected_pace": 84.692
+        "avg_pace": 85.38,
+        "fuel_corrected_pace": 84.665
       },
       {
         "driver": "LAW",
@@ -19869,8 +19933,8 @@
         "start_lap": 33,
         "end_lap": 57,
         "laps_count": 25,
-        "avg_pace": 84.997,
-        "fuel_corrected_pace": 84.282
+        "avg_pace": 84.956,
+        "fuel_corrected_pace": 84.241
       },
       {
         "driver": "COL",
@@ -19895,8 +19959,8 @@
         "start_lap": 46,
         "end_lap": 56,
         "laps_count": 11,
-        "avg_pace": 84.842,
-        "fuel_corrected_pace": 84.457
+        "avg_pace": 85.05,
+        "fuel_corrected_pace": 84.665
       },
       {
         "driver": "SAI",
@@ -19947,8 +20011,8 @@
         "start_lap": 45,
         "end_lap": 56,
         "laps_count": 12,
-        "avg_pace": 85.203,
-        "fuel_corrected_pace": 84.791
+        "avg_pace": 85.321,
+        "fuel_corrected_pace": 84.909
       },
       {
         "driver": "PER",
@@ -19986,8 +20050,8 @@
         "start_lap": 43,
         "end_lap": 55,
         "laps_count": 13,
-        "avg_pace": 87.612,
-        "fuel_corrected_pace": 87.117
+        "avg_pace": 87.543,
+        "fuel_corrected_pace": 87.048
       },
       {
         "driver": "STR",
@@ -20051,8 +20115,8 @@
         "start_lap": 39,
         "end_lap": 43,
         "laps_count": 5,
-        "avg_pace": 87.192,
-        "fuel_corrected_pace": 86.257
+        "avg_pace": 87.591,
+        "fuel_corrected_pace": 86.656
       },
       {
         "driver": "ALO",
@@ -20077,8 +20141,8 @@
         "start_lap": 11,
         "end_lap": 21,
         "laps_count": 11,
-        "avg_pace": 86.624,
-        "fuel_corrected_pace": 84.314
+        "avg_pace": 86.794,
+        "fuel_corrected_pace": 84.484
       },
       {
         "driver": "BOT",
@@ -20090,8 +20154,8 @@
         "start_lap": 1,
         "end_lap": 15,
         "laps_count": 15,
-        "avg_pace": 88.257,
-        "fuel_corrected_pace": 85.507
+        "avg_pace": 87.893,
+        "fuel_corrected_pace": 85.143
       },
       {
         "driver": "HAD",
@@ -20103,8 +20167,8 @@
         "start_lap": 1,
         "end_lap": 10,
         "laps_count": 10,
-        "avg_pace": 86.058,
-        "fuel_corrected_pace": 83.171
+        "avg_pace": 86.135,
+        "fuel_corrected_pace": 83.248
       }
     ],
     "pit_stops": [
@@ -20117,7 +20181,7 @@
         "stop_number": 1,
         "from_compound": "MEDIUM",
         "to_compound": "HARD",
-        "stationary_s": 2.0,
+        "stationary_s": 1.85,
         "pit_loss_s": 17.6
       },
       {
@@ -20129,7 +20193,7 @@
         "stop_number": 2,
         "from_compound": "HARD",
         "to_compound": "MEDIUM",
-        "stationary_s": 2.0,
+        "stationary_s": 1.85,
         "pit_loss_s": 17.6
       },
       {
@@ -20141,8 +20205,20 @@
         "stop_number": 1,
         "from_compound": "MEDIUM",
         "to_compound": "HARD",
-        "stationary_s": 2.1,
+        "stationary_s": 1.89,
         "pit_loss_s": 17.7
+      },
+      {
+        "driver": "VER",
+        "name": "Max Verstappen",
+        "team": "Red Bull Racing",
+        "color": "#4781D7",
+        "lap": 40,
+        "stop_number": 2,
+        "from_compound": "MEDIUM",
+        "to_compound": "HARD",
+        "stationary_s": 2.19,
+        "pit_loss_s": 18.0
       },
       {
         "driver": "RUS",
@@ -20157,16 +20233,16 @@
         "pit_loss_s": 17.79
       },
       {
-        "driver": "VER",
-        "name": "Max Verstappen",
-        "team": "Red Bull Racing",
-        "color": "#4781D7",
-        "lap": 40,
-        "stop_number": 2,
+        "driver": "NOR",
+        "name": "Lando Norris",
+        "team": "McLaren",
+        "color": "#F47600",
+        "lap": 10,
+        "stop_number": 1,
         "from_compound": "MEDIUM",
         "to_compound": "HARD",
-        "stationary_s": 2.4,
-        "pit_loss_s": 18.0
+        "stationary_s": 2.39,
+        "pit_loss_s": 18.2
       },
       {
         "driver": "LIN",
@@ -20205,16 +20281,16 @@
         "pit_loss_s": 20.98
       },
       {
-        "driver": "NOR",
-        "name": "Lando Norris",
-        "team": "McLaren",
-        "color": "#F47600",
+        "driver": "OCO",
+        "name": "Esteban Ocon",
+        "team": "Haas F1 Team",
+        "color": "#9C9FA2",
         "lap": 10,
         "stop_number": 1,
         "from_compound": "MEDIUM",
         "to_compound": "HARD",
-        "stationary_s": 2.6,
-        "pit_loss_s": 18.2
+        "stationary_s": 2.69,
+        "pit_loss_s": 18.5
       },
       {
         "driver": "ALB",
@@ -20229,6 +20305,18 @@
         "pit_loss_s": 18.12
       },
       {
+        "driver": "GAS",
+        "name": "Pierre Gasly",
+        "team": "Alpine",
+        "color": "#00A1E8",
+        "lap": 10,
+        "stop_number": 1,
+        "from_compound": "MEDIUM",
+        "to_compound": "HARD",
+        "stationary_s": 2.79,
+        "pit_loss_s": 18.6
+      },
+      {
         "driver": "LAW",
         "name": "Liam Lawson",
         "team": "Racing Bulls",
@@ -20239,18 +20327,6 @@
         "to_compound": "SOFT",
         "stationary_s": 2.8,
         "pit_loss_s": 18.19
-      },
-      {
-        "driver": "OCO",
-        "name": "Esteban Ocon",
-        "team": "Haas F1 Team",
-        "color": "#9C9FA2",
-        "lap": 10,
-        "stop_number": 1,
-        "from_compound": "MEDIUM",
-        "to_compound": "HARD",
-        "stationary_s": 2.9,
-        "pit_loss_s": 18.5
       },
       {
         "driver": "COL",
@@ -20265,18 +20341,6 @@
         "pit_loss_s": 18.56
       },
       {
-        "driver": "GAS",
-        "name": "Pierre Gasly",
-        "team": "Alpine",
-        "color": "#00A1E8",
-        "lap": 10,
-        "stop_number": 1,
-        "from_compound": "MEDIUM",
-        "to_compound": "HARD",
-        "stationary_s": 3.0,
-        "pit_loss_s": 18.6
-      },
-      {
         "driver": "PER",
         "name": "Sergio Perez",
         "team": "Cadillac",
@@ -20287,6 +20351,30 @@
         "to_compound": "SOFT",
         "stationary_s": 3.2,
         "pit_loss_s": 18.95
+      },
+      {
+        "driver": "VER",
+        "name": "Max Verstappen",
+        "team": "Red Bull Racing",
+        "color": "#4781D7",
+        "lap": 17,
+        "stop_number": 1,
+        "from_compound": "HARD",
+        "to_compound": "MEDIUM",
+        "stationary_s": 3.26,
+        "pit_loss_s": 19.07
+      },
+      {
+        "driver": "LAW",
+        "name": "Liam Lawson",
+        "team": "Racing Bulls",
+        "color": "#6C98FF",
+        "lap": 10,
+        "stop_number": 1,
+        "from_compound": "MEDIUM",
+        "to_compound": "HARD",
+        "stationary_s": 3.29,
+        "pit_loss_s": 19.1
       },
       {
         "driver": "BEA",
@@ -20301,30 +20389,6 @@
         "pit_loss_s": 18.77
       },
       {
-        "driver": "VER",
-        "name": "Max Verstappen",
-        "team": "Red Bull Racing",
-        "color": "#4781D7",
-        "lap": 17,
-        "stop_number": 1,
-        "from_compound": "HARD",
-        "to_compound": "MEDIUM",
-        "stationary_s": 3.47,
-        "pit_loss_s": 19.07
-      },
-      {
-        "driver": "LAW",
-        "name": "Liam Lawson",
-        "team": "Racing Bulls",
-        "color": "#6C98FF",
-        "lap": 10,
-        "stop_number": 1,
-        "from_compound": "MEDIUM",
-        "to_compound": "HARD",
-        "stationary_s": 3.5,
-        "pit_loss_s": 19.1
-      },
-      {
         "driver": "SAI",
         "name": "Carlos Sainz",
         "team": "Williams",
@@ -20333,7 +20397,7 @@
         "stop_number": 1,
         "from_compound": "SOFT",
         "to_compound": "HARD",
-        "stationary_s": 4.2,
+        "stationary_s": 3.99,
         "pit_loss_s": 19.8
       },
       {
@@ -20369,7 +20433,7 @@
         "stop_number": 4,
         "from_compound": "SOFT",
         "to_compound": "SOFT",
-        "stationary_s": 6.8,
+        "stationary_s": 6.59,
         "pit_loss_s": 22.4
       },
       {
@@ -20381,7 +20445,7 @@
         "stop_number": 2,
         "from_compound": "HARD",
         "to_compound": "HARD",
-        "stationary_s": 7.0,
+        "stationary_s": 6.79,
         "pit_loss_s": 22.6
       },
       {
@@ -20460,15 +20524,15 @@
     "sc_vsc_windows": [
       {
         "type": "VSC",
-        "start_lap": 12,
+        "start_lap": 10,
         "end_lap": 14,
-        "label": "VSC \u00b7 L12\u2013L14"
+        "label": "VSC \u00b7 L10\u2013L14"
       },
       {
         "type": "VSC",
-        "start_lap": 18,
+        "start_lap": 17,
         "end_lap": 20,
-        "label": "VSC \u00b7 L18\u2013L20"
+        "label": "VSC \u00b7 L17\u2013L20"
       },
       {
         "type": "VSC",
@@ -20487,7 +20551,7 @@
         "rank": 1,
         "laps_completed": 58,
         "status": "FINISHER",
-        "duration": 4979.74,
+        "duration": 4979.536,
         "gap_to_leader": 0.0,
         "is_dnf": false,
         "is_dns": false
@@ -20501,7 +20565,7 @@
         "rank": 2,
         "laps_completed": 58,
         "status": "FINISHER",
-        "duration": 4982.714,
+        "duration": 4982.51,
         "gap_to_leader": 2.974,
         "is_dnf": false,
         "is_dns": false
@@ -20515,7 +20579,7 @@
         "rank": 3,
         "laps_completed": 58,
         "status": "FINISHER",
-        "duration": 4995.259,
+        "duration": 4995.055,
         "gap_to_leader": 15.519,
         "is_dnf": false,
         "is_dns": false
@@ -20529,7 +20593,7 @@
         "rank": 4,
         "laps_completed": 58,
         "status": "FINISHER",
-        "duration": 4995.884,
+        "duration": 4995.68,
         "gap_to_leader": 16.144,
         "is_dnf": false,
         "is_dns": false
@@ -20543,7 +20607,7 @@
         "rank": 5,
         "laps_completed": 58,
         "status": "FINISHER",
-        "duration": 5031.481,
+        "duration": 5031.277,
         "gap_to_leader": 51.741,
         "is_dnf": false,
         "is_dns": false
@@ -20557,7 +20621,7 @@
         "rank": 6,
         "laps_completed": 58,
         "status": "FINISHER",
-        "duration": 5034.357,
+        "duration": 5034.153,
         "gap_to_leader": 54.617,
         "is_dnf": false,
         "is_dns": false
@@ -20571,7 +20635,7 @@
         "rank": 7,
         "laps_completed": 57,
         "status": "LAPPED",
-        "duration": 4987.656,
+        "duration": 4985.791,
         "gap_to_leader": "+1 Lap",
         "is_dnf": false,
         "is_dns": false
@@ -20585,7 +20649,7 @@
         "rank": 8,
         "laps_completed": 57,
         "status": "LAPPED",
-        "duration": 4992.986,
+        "duration": 4993.19,
         "gap_to_leader": "+1 Lap",
         "is_dnf": false,
         "is_dns": false
@@ -20613,7 +20677,7 @@
         "rank": 10,
         "laps_completed": 57,
         "status": "LAPPED",
-        "duration": 5010.294,
+        "duration": 5010.711,
         "gap_to_leader": "+1 Lap",
         "is_dnf": false,
         "is_dns": false
@@ -20627,7 +20691,7 @@
         "rank": 11,
         "laps_completed": 57,
         "status": "LAPPED",
-        "duration": 5010.89,
+        "duration": 5011.622,
         "gap_to_leader": "+1 Lap",
         "is_dnf": false,
         "is_dns": false
@@ -20641,7 +20705,7 @@
         "rank": 12,
         "laps_completed": 57,
         "status": "LAPPED",
-        "duration": 5038.916,
+        "duration": 5038.263,
         "gap_to_leader": "+1 Lap",
         "is_dnf": false,
         "is_dns": false
@@ -20655,7 +20719,7 @@
         "rank": 13,
         "laps_completed": 57,
         "status": "LAPPED",
-        "duration": 5039.896,
+        "duration": 5038.895,
         "gap_to_leader": "+1 Lap",
         "is_dnf": false,
         "is_dns": false
@@ -20669,7 +20733,7 @@
         "rank": 14,
         "laps_completed": 56,
         "status": "LAPPED",
-        "duration": 4988.548,
+        "duration": 4990.838,
         "gap_to_leader": "+2 Laps",
         "is_dnf": false,
         "is_dns": false
@@ -20683,7 +20747,7 @@
         "rank": 15,
         "laps_completed": 56,
         "status": "LAPPED",
-        "duration": 5018.1,
+        "duration": 5019.399,
         "gap_to_leader": "+2 Laps",
         "is_dnf": false,
         "is_dns": false
@@ -20697,7 +20761,7 @@
         "rank": 16,
         "laps_completed": 55,
         "status": "LAPPED",
-        "duration": 4993.305,
+        "duration": 4992.407,
         "gap_to_leader": "+3 Laps",
         "is_dnf": false,
         "is_dns": false
@@ -20711,7 +20775,7 @@
         "rank": 17,
         "laps_completed": 43,
         "status": "LAPPED",
-        "duration": 4987.39,
+        "duration": 4987.186,
         "gap_to_leader": "+15 Laps",
         "is_dnf": false,
         "is_dns": false
@@ -20725,7 +20789,7 @@
         "rank": 18,
         "laps_completed": 21,
         "status": "DNF",
-        "duration": 1951.391,
+        "duration": 1951.185,
         "gap_to_leader": "DNF",
         "is_dnf": true,
         "is_dns": false
@@ -20739,7 +20803,7 @@
         "rank": 19,
         "laps_completed": 15,
         "status": "DNF",
-        "duration": 1398.275,
+        "duration": 1395.002,
         "gap_to_leader": "DNF",
         "is_dnf": true,
         "is_dns": false
@@ -21524,25 +21588,25 @@
     "turns": [
       {
         "turn": 1,
-        "idx": 11,
-        "pct": 6.1,
-        "x": 443.7,
-        "y": 472.0,
-        "label_x": 438.8,
-        "label_y": 499.6,
-        "arc_start_idx": 8,
-        "arc_end_idx": 14
+        "idx": 12,
+        "pct": 6.7,
+        "x": 432.1,
+        "y": 468.8,
+        "label_x": 420.7,
+        "label_y": 494.4,
+        "arc_start_idx": 9,
+        "arc_end_idx": 15
       },
       {
         "turn": 2,
-        "idx": 17,
-        "pct": 9.4,
-        "x": 380.9,
-        "y": 436.4,
-        "label_x": 376.9,
-        "label_y": 464.1,
-        "arc_start_idx": 14,
-        "arc_end_idx": 20
+        "idx": 16,
+        "pct": 8.9,
+        "x": 393.0,
+        "y": 439.2,
+        "label_x": 383.4,
+        "label_y": 465.5,
+        "arc_start_idx": 13,
+        "arc_end_idx": 19
       },
       {
         "turn": 3,
@@ -21557,14 +21621,14 @@
       },
       {
         "turn": 4,
-        "idx": 43,
-        "pct": 23.9,
-        "x": 140.5,
-        "y": 372.3,
-        "label_x": 120.2,
-        "label_y": 391.6,
-        "arc_start_idx": 40,
-        "arc_end_idx": 46
+        "idx": 42,
+        "pct": 23.3,
+        "x": 148.3,
+        "y": 381.5,
+        "label_x": 123.0,
+        "label_y": 393.4,
+        "arc_start_idx": 39,
+        "arc_end_idx": 45
       },
       {
         "turn": 5,
@@ -21590,14 +21654,14 @@
       },
       {
         "turn": 7,
-        "idx": 73,
-        "pct": 40.6,
-        "x": 199.5,
-        "y": 89.5,
-        "label_x": 193.6,
-        "label_y": 62.1,
-        "arc_start_idx": 70,
-        "arc_end_idx": 76
+        "idx": 72,
+        "pct": 40.0,
+        "x": 187.5,
+        "y": 93.0,
+        "label_x": 177.7,
+        "label_y": 66.8,
+        "arc_start_idx": 69,
+        "arc_end_idx": 75
       },
       {
         "turn": 8,
@@ -21612,14 +21676,14 @@
       },
       {
         "turn": 9,
-        "idx": 110,
-        "pct": 61.1,
-        "x": 589.0,
-        "y": 265.3,
-        "label_x": 599.2,
-        "label_y": 291.4,
-        "arc_start_idx": 107,
-        "arc_end_idx": 113
+        "idx": 112,
+        "pct": 62.2,
+        "x": 610.6,
+        "y": 253.8,
+        "label_x": 629.2,
+        "label_y": 274.8,
+        "arc_start_idx": 109,
+        "arc_end_idx": 115
       },
       {
         "turn": 10,
@@ -21667,14 +21731,14 @@
       },
       {
         "turn": 14,
-        "idx": 163,
-        "pct": 90.6,
-        "x": 777.8,
-        "y": 408.0,
-        "label_x": 797.8,
-        "label_y": 427.6,
-        "arc_start_idx": 160,
-        "arc_end_idx": 166
+        "idx": 162,
+        "pct": 90.0,
+        "x": 784.9,
+        "y": 398.2,
+        "label_x": 810.2,
+        "label_y": 410.2,
+        "arc_start_idx": 159,
+        "arc_end_idx": 165
       }
     ]
   }

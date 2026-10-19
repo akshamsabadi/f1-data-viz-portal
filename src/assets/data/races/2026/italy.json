@@ -143,8 +143,8 @@
     {
       "type": "SC",
       "start_lap": 3,
-      "end_lap": 4,
-      "label": "SC \u00b7 L3\u2013L4"
+      "end_lap": 6,
+      "label": "SC \u00b7 L3\u2013L6"
     },
     {
       "type": "VSC",
@@ -10679,199 +10679,199 @@
     {
       "turn": 1,
       "team": "McLaren",
-      "speed": 70.5,
+      "speed": 169.1,
       "color": "#F47600"
     },
     {
       "turn": 1,
       "team": "Red Bull Racing",
-      "speed": 73.5,
+      "speed": 167.6,
       "color": "#4781D7"
     },
     {
       "turn": 1,
       "team": "Audi",
-      "speed": 73.5,
+      "speed": 163.1,
       "color": "#F50537"
     },
     {
       "turn": 1,
+      "team": "Alpine",
+      "speed": 119.0,
+      "color": "#00A1E8"
+    },
+    {
+      "turn": 1,
+      "team": "Cadillac",
+      "speed": 160.9,
+      "color": "#909090"
+    },
+    {
+      "turn": 1,
+      "team": "Mercedes",
+      "speed": 166.4,
+      "color": "#00D7B6"
+    },
+    {
+      "turn": 1,
+      "team": "Aston Martin",
+      "speed": 163.6,
+      "color": "#229971"
+    },
+    {
+      "turn": 1,
+      "team": "Ferrari",
+      "speed": 169.5,
+      "color": "#ED1131"
+    },
+    {
+      "turn": 1,
+      "team": "Racing Bulls",
+      "speed": 168.1,
+      "color": "#6C98FF"
+    },
+    {
+      "turn": 1,
+      "team": "Williams",
+      "speed": 94.5,
+      "color": "#1868DB"
+    },
+    {
+      "turn": 1,
+      "team": "Haas F1 Team",
+      "speed": 162.2,
+      "color": "#9C9FA2"
+    },
+    {
+      "turn": 2,
+      "team": "McLaren",
+      "speed": 70.5,
+      "color": "#F47600"
+    },
+    {
+      "turn": 2,
+      "team": "Red Bull Racing",
+      "speed": 73.5,
+      "color": "#4781D7"
+    },
+    {
+      "turn": 2,
+      "team": "Audi",
+      "speed": 73.5,
+      "color": "#F50537"
+    },
+    {
+      "turn": 2,
       "team": "Alpine",
       "speed": 72.5,
       "color": "#00A1E8"
     },
     {
-      "turn": 1,
+      "turn": 2,
       "team": "Cadillac",
       "speed": 71.5,
       "color": "#909090"
     },
     {
-      "turn": 1,
+      "turn": 2,
       "team": "Mercedes",
       "speed": 69.0,
       "color": "#00D7B6"
     },
     {
-      "turn": 1,
+      "turn": 2,
       "team": "Aston Martin",
       "speed": 69.5,
       "color": "#229971"
     },
     {
-      "turn": 1,
+      "turn": 2,
       "team": "Ferrari",
       "speed": 71.5,
       "color": "#ED1131"
     },
     {
-      "turn": 1,
+      "turn": 2,
       "team": "Racing Bulls",
       "speed": 71.0,
       "color": "#6C98FF"
     },
     {
-      "turn": 1,
+      "turn": 2,
       "team": "Williams",
-      "speed": 69.0,
+      "speed": 80.5,
       "color": "#1868DB"
     },
     {
-      "turn": 1,
+      "turn": 2,
       "team": "Haas F1 Team",
       "speed": 68.5,
       "color": "#9C9FA2"
     },
     {
-      "turn": 2,
+      "turn": 3,
       "team": "McLaren",
       "speed": 292.0,
       "color": "#F47600"
     },
     {
-      "turn": 2,
+      "turn": 3,
       "team": "Red Bull Racing",
       "speed": 288.0,
       "color": "#4781D7"
     },
     {
-      "turn": 2,
+      "turn": 3,
       "team": "Audi",
       "speed": 288.0,
       "color": "#F50537"
     },
     {
-      "turn": 2,
+      "turn": 3,
       "team": "Alpine",
       "speed": 297.5,
       "color": "#00A1E8"
     },
     {
-      "turn": 2,
+      "turn": 3,
       "team": "Cadillac",
       "speed": 286.0,
       "color": "#909090"
     },
     {
-      "turn": 2,
+      "turn": 3,
       "team": "Mercedes",
       "speed": 290.0,
       "color": "#00D7B6"
     },
     {
-      "turn": 2,
+      "turn": 3,
       "team": "Aston Martin",
       "speed": 279.0,
       "color": "#229971"
     },
     {
-      "turn": 2,
+      "turn": 3,
       "team": "Ferrari",
       "speed": 286.0,
       "color": "#ED1131"
     },
     {
-      "turn": 2,
+      "turn": 3,
       "team": "Racing Bulls",
       "speed": 286.5,
       "color": "#6C98FF"
     },
     {
-      "turn": 2,
+      "turn": 3,
       "team": "Williams",
-      "speed": 295.0,
+      "speed": 296.5,
       "color": "#1868DB"
     },
     {
-      "turn": 2,
+      "turn": 3,
       "team": "Haas F1 Team",
       "speed": 287.5,
-      "color": "#9C9FA2"
-    },
-    {
-      "turn": 3,
-      "team": "McLaren",
-      "speed": 304.0,
-      "color": "#F47600"
-    },
-    {
-      "turn": 3,
-      "team": "Red Bull Racing",
-      "speed": 296.5,
-      "color": "#4781D7"
-    },
-    {
-      "turn": 3,
-      "team": "Audi",
-      "speed": 297.0,
-      "color": "#F50537"
-    },
-    {
-      "turn": 3,
-      "team": "Alpine",
-      "speed": 303.0,
-      "color": "#00A1E8"
-    },
-    {
-      "turn": 3,
-      "team": "Cadillac",
-      "speed": 292.0,
-      "color": "#909090"
-    },
-    {
-      "turn": 3,
-      "team": "Mercedes",
-      "speed": 299.5,
-      "color": "#00D7B6"
-    },
-    {
-      "turn": 3,
-      "team": "Aston Martin",
-      "speed": 283.0,
-      "color": "#229971"
-    },
-    {
-      "turn": 3,
-      "team": "Ferrari",
-      "speed": 293.0,
-      "color": "#ED1131"
-    },
-    {
-      "turn": 3,
-      "team": "Racing Bulls",
-      "speed": 295.5,
-      "color": "#6C98FF"
-    },
-    {
-      "turn": 3,
-      "team": "Williams",
-      "speed": 301.0,
-      "color": "#1868DB"
-    },
-    {
-      "turn": 3,
-      "team": "Haas F1 Team",
-      "speed": 295.0,
       "color": "#9C9FA2"
     },
     {
@@ -10931,7 +10931,7 @@
     {
       "turn": 4,
       "team": "Williams",
-      "speed": 307.0,
+      "speed": 306.0,
       "color": "#1868DB"
     },
     {
@@ -10943,463 +10943,463 @@
     {
       "turn": 5,
       "team": "McLaren",
-      "speed": 204.0,
+      "speed": 133.1,
       "color": "#F47600"
     },
     {
       "turn": 5,
+      "team": "Red Bull Racing",
+      "speed": 133.6,
+      "color": "#4781D7"
+    },
+    {
+      "turn": 5,
+      "team": "Audi",
+      "speed": 133.3,
+      "color": "#F50537"
+    },
+    {
+      "turn": 5,
+      "team": "Alpine",
+      "speed": 240.3,
+      "color": "#00A1E8"
+    },
+    {
+      "turn": 5,
+      "team": "Cadillac",
+      "speed": 127.8,
+      "color": "#909090"
+    },
+    {
+      "turn": 5,
+      "team": "Mercedes",
+      "speed": 136.1,
+      "color": "#00D7B6"
+    },
+    {
+      "turn": 5,
+      "team": "Aston Martin",
+      "speed": 129.2,
+      "color": "#229971"
+    },
+    {
+      "turn": 5,
+      "team": "Ferrari",
+      "speed": 134.0,
+      "color": "#ED1131"
+    },
+    {
+      "turn": 5,
+      "team": "Racing Bulls",
+      "speed": 131.4,
+      "color": "#6C98FF"
+    },
+    {
+      "turn": 5,
+      "team": "Williams",
+      "speed": 306.0,
+      "color": "#1868DB"
+    },
+    {
+      "turn": 5,
+      "team": "Haas F1 Team",
+      "speed": 130.1,
+      "color": "#9C9FA2"
+    },
+    {
+      "turn": 6,
+      "team": "McLaren",
+      "speed": 204.0,
+      "color": "#F47600"
+    },
+    {
+      "turn": 6,
       "team": "Red Bull Racing",
       "speed": 196.5,
       "color": "#4781D7"
     },
     {
-      "turn": 5,
+      "turn": 6,
       "team": "Audi",
       "speed": 202.0,
       "color": "#F50537"
     },
     {
-      "turn": 5,
+      "turn": 6,
       "team": "Alpine",
       "speed": 203.0,
       "color": "#00A1E8"
     },
     {
-      "turn": 5,
+      "turn": 6,
       "team": "Cadillac",
       "speed": 186.0,
       "color": "#909090"
     },
     {
-      "turn": 5,
+      "turn": 6,
       "team": "Mercedes",
       "speed": 207.0,
       "color": "#00D7B6"
     },
     {
-      "turn": 5,
+      "turn": 6,
       "team": "Aston Martin",
       "speed": 197.0,
       "color": "#229971"
     },
     {
-      "turn": 5,
+      "turn": 6,
       "team": "Ferrari",
       "speed": 207.5,
       "color": "#ED1131"
     },
     {
-      "turn": 5,
+      "turn": 6,
       "team": "Racing Bulls",
       "speed": 201.5,
       "color": "#6C98FF"
     },
     {
-      "turn": 5,
+      "turn": 6,
       "team": "Williams",
-      "speed": 206.0,
+      "speed": 198.3,
       "color": "#1868DB"
     },
     {
-      "turn": 5,
+      "turn": 6,
       "team": "Haas F1 Team",
       "speed": 197.0,
       "color": "#9C9FA2"
     },
     {
-      "turn": 6,
+      "turn": 7,
       "team": "McLaren",
       "speed": 189.0,
       "color": "#F47600"
     },
     {
-      "turn": 6,
+      "turn": 7,
       "team": "Red Bull Racing",
       "speed": 183.0,
       "color": "#4781D7"
     },
     {
-      "turn": 6,
+      "turn": 7,
       "team": "Audi",
       "speed": 189.5,
       "color": "#F50537"
     },
     {
-      "turn": 6,
+      "turn": 7,
       "team": "Alpine",
       "speed": 184.5,
       "color": "#00A1E8"
     },
     {
-      "turn": 6,
+      "turn": 7,
       "team": "Cadillac",
       "speed": 179.0,
       "color": "#909090"
     },
     {
-      "turn": 6,
+      "turn": 7,
       "team": "Mercedes",
       "speed": 189.0,
       "color": "#00D7B6"
     },
     {
-      "turn": 6,
+      "turn": 7,
       "team": "Aston Martin",
       "speed": 180.0,
       "color": "#229971"
     },
     {
-      "turn": 6,
+      "turn": 7,
       "team": "Ferrari",
       "speed": 186.0,
       "color": "#ED1131"
     },
     {
-      "turn": 6,
+      "turn": 7,
       "team": "Racing Bulls",
       "speed": 179.5,
       "color": "#6C98FF"
     },
     {
-      "turn": 6,
+      "turn": 7,
       "team": "Williams",
-      "speed": 206.0,
+      "speed": 190.0,
       "color": "#1868DB"
     },
     {
-      "turn": 6,
+      "turn": 7,
       "team": "Haas F1 Team",
       "speed": 178.0,
       "color": "#9C9FA2"
     },
     {
-      "turn": 7,
-      "team": "McLaren",
-      "speed": 300.5,
-      "color": "#F47600"
-    },
-    {
-      "turn": 7,
-      "team": "Red Bull Racing",
-      "speed": 294.5,
-      "color": "#4781D7"
-    },
-    {
-      "turn": 7,
-      "team": "Audi",
-      "speed": 295.0,
-      "color": "#F50537"
-    },
-    {
-      "turn": 7,
-      "team": "Alpine",
-      "speed": 294.5,
-      "color": "#00A1E8"
-    },
-    {
-      "turn": 7,
-      "team": "Cadillac",
-      "speed": 291.0,
-      "color": "#909090"
-    },
-    {
-      "turn": 7,
-      "team": "Mercedes",
-      "speed": 299.5,
-      "color": "#00D7B6"
-    },
-    {
-      "turn": 7,
-      "team": "Aston Martin",
-      "speed": 286.0,
-      "color": "#229971"
-    },
-    {
-      "turn": 7,
-      "team": "Ferrari",
-      "speed": 293.5,
-      "color": "#ED1131"
-    },
-    {
-      "turn": 7,
-      "team": "Racing Bulls",
-      "speed": 295.0,
-      "color": "#6C98FF"
-    },
-    {
-      "turn": 7,
-      "team": "Williams",
-      "speed": 267.0,
-      "color": "#1868DB"
-    },
-    {
-      "turn": 7,
-      "team": "Haas F1 Team",
-      "speed": 285.5,
-      "color": "#9C9FA2"
-    },
-    {
       "turn": 8,
       "team": "McLaren",
-      "speed": 190.5,
+      "speed": 238.1,
       "color": "#F47600"
     },
     {
       "turn": 8,
       "team": "Red Bull Racing",
-      "speed": 184.0,
+      "speed": 233.2,
       "color": "#4781D7"
     },
     {
       "turn": 8,
       "team": "Audi",
-      "speed": 185.5,
+      "speed": 234.4,
       "color": "#F50537"
     },
     {
       "turn": 8,
       "team": "Alpine",
-      "speed": 185.0,
+      "speed": 239.8,
       "color": "#00A1E8"
     },
     {
       "turn": 8,
       "team": "Cadillac",
-      "speed": 173.0,
+      "speed": 227.3,
       "color": "#909090"
     },
     {
       "turn": 8,
       "team": "Mercedes",
-      "speed": 190.0,
+      "speed": 235.3,
       "color": "#00D7B6"
     },
     {
       "turn": 8,
       "team": "Aston Martin",
-      "speed": 182.5,
+      "speed": 225.6,
       "color": "#229971"
     },
     {
       "turn": 8,
       "team": "Ferrari",
-      "speed": 195.0,
+      "speed": 241.7,
       "color": "#ED1131"
     },
     {
       "turn": 8,
       "team": "Racing Bulls",
-      "speed": 184.5,
+      "speed": 233.6,
       "color": "#6C98FF"
     },
     {
       "turn": 8,
       "team": "Williams",
-      "speed": 234.0,
+      "speed": 229.9,
       "color": "#1868DB"
     },
     {
       "turn": 8,
       "team": "Haas F1 Team",
-      "speed": 184.5,
+      "speed": 234.2,
       "color": "#9C9FA2"
     },
     {
       "turn": 9,
       "team": "McLaren",
-      "speed": 228.0,
+      "speed": 208.2,
       "color": "#F47600"
     },
     {
       "turn": 9,
       "team": "Red Bull Racing",
-      "speed": 234.0,
+      "speed": 205.5,
       "color": "#4781D7"
     },
     {
       "turn": 9,
       "team": "Audi",
-      "speed": 228.0,
+      "speed": 204.3,
       "color": "#F50537"
     },
     {
       "turn": 9,
       "team": "Alpine",
-      "speed": 225.0,
+      "speed": 203.6,
       "color": "#00A1E8"
     },
     {
       "turn": 9,
       "team": "Cadillac",
-      "speed": 216.5,
+      "speed": 191.2,
       "color": "#909090"
     },
     {
       "turn": 9,
       "team": "Mercedes",
-      "speed": 238.0,
+      "speed": 211.4,
       "color": "#00D7B6"
     },
     {
       "turn": 9,
       "team": "Aston Martin",
-      "speed": 225.0,
+      "speed": 201.6,
       "color": "#229971"
     },
     {
       "turn": 9,
       "team": "Ferrari",
-      "speed": 232.5,
+      "speed": 212.2,
       "color": "#ED1131"
     },
     {
       "turn": 9,
       "team": "Racing Bulls",
-      "speed": 225.0,
+      "speed": 202.5,
       "color": "#6C98FF"
     },
     {
       "turn": 9,
       "team": "Williams",
-      "speed": 194.0,
+      "speed": 200.7,
       "color": "#1868DB"
     },
     {
       "turn": 9,
       "team": "Haas F1 Team",
-      "speed": 236.0,
+      "speed": 203.6,
       "color": "#9C9FA2"
     },
     {
       "turn": 10,
+      "team": "McLaren",
+      "speed": 228.8,
+      "color": "#F47600"
+    },
+    {
+      "turn": 10,
+      "team": "Red Bull Racing",
+      "speed": 233.0,
+      "color": "#4781D7"
+    },
+    {
+      "turn": 10,
+      "team": "Audi",
+      "speed": 227.7,
+      "color": "#F50537"
+    },
+    {
+      "turn": 10,
+      "team": "Alpine",
+      "speed": 225.6,
+      "color": "#00A1E8"
+    },
+    {
+      "turn": 10,
+      "team": "Cadillac",
+      "speed": 215.1,
+      "color": "#909090"
+    },
+    {
+      "turn": 10,
+      "team": "Mercedes",
+      "speed": 237.8,
+      "color": "#00D7B6"
+    },
+    {
+      "turn": 10,
+      "team": "Aston Martin",
+      "speed": 224.9,
+      "color": "#229971"
+    },
+    {
+      "turn": 10,
+      "team": "Ferrari",
+      "speed": 232.8,
+      "color": "#ED1131"
+    },
+    {
+      "turn": 10,
+      "team": "Racing Bulls",
+      "speed": 224.8,
+      "color": "#6C98FF"
+    },
+    {
+      "turn": 10,
+      "team": "Williams",
+      "speed": 215.2,
+      "color": "#1868DB"
+    },
+    {
+      "turn": 10,
+      "team": "Haas F1 Team",
+      "speed": 232.0,
+      "color": "#9C9FA2"
+    },
+    {
+      "turn": 11,
       "team": "McLaren",
       "speed": 206.0,
       "color": "#F47600"
     },
     {
-      "turn": 10,
+      "turn": 11,
       "team": "Red Bull Racing",
       "speed": 201.0,
       "color": "#4781D7"
     },
     {
-      "turn": 10,
+      "turn": 11,
       "team": "Audi",
       "speed": 210.5,
       "color": "#F50537"
     },
     {
-      "turn": 10,
+      "turn": 11,
       "team": "Alpine",
       "speed": 211.0,
       "color": "#00A1E8"
     },
     {
-      "turn": 10,
+      "turn": 11,
       "team": "Cadillac",
       "speed": 194.5,
       "color": "#909090"
     },
     {
-      "turn": 10,
+      "turn": 11,
       "team": "Mercedes",
       "speed": 210.0,
       "color": "#00D7B6"
     },
     {
-      "turn": 10,
+      "turn": 11,
       "team": "Aston Martin",
       "speed": 200.0,
       "color": "#229971"
     },
     {
-      "turn": 10,
+      "turn": 11,
       "team": "Ferrari",
       "speed": 210.0,
       "color": "#ED1131"
     },
     {
-      "turn": 10,
+      "turn": 11,
       "team": "Racing Bulls",
       "speed": 201.5,
       "color": "#6C98FF"
     },
     {
-      "turn": 10,
+      "turn": 11,
       "team": "Williams",
-      "speed": 189.0,
+      "speed": 191.0,
       "color": "#1868DB"
     },
     {
-      "turn": 10,
+      "turn": 11,
       "team": "Haas F1 Team",
       "speed": 202.5,
-      "color": "#9C9FA2"
-    },
-    {
-      "turn": 11,
-      "team": "McLaren",
-      "speed": 235.0,
-      "color": "#F47600"
-    },
-    {
-      "turn": 11,
-      "team": "Red Bull Racing",
-      "speed": 239.5,
-      "color": "#4781D7"
-    },
-    {
-      "turn": 11,
-      "team": "Audi",
-      "speed": 241.5,
-      "color": "#F50537"
-    },
-    {
-      "turn": 11,
-      "team": "Alpine",
-      "speed": 244.5,
-      "color": "#00A1E8"
-    },
-    {
-      "turn": 11,
-      "team": "Cadillac",
-      "speed": 230.5,
-      "color": "#909090"
-    },
-    {
-      "turn": 11,
-      "team": "Mercedes",
-      "speed": 244.0,
-      "color": "#00D7B6"
-    },
-    {
-      "turn": 11,
-      "team": "Aston Martin",
-      "speed": 233.5,
-      "color": "#229971"
-    },
-    {
-      "turn": 11,
-      "team": "Ferrari",
-      "speed": 238.5,
-      "color": "#ED1131"
-    },
-    {
-      "turn": 11,
-      "team": "Racing Bulls",
-      "speed": 244.5,
-      "color": "#6C98FF"
-    },
-    {
-      "turn": 11,
-      "team": "Williams",
-      "speed": 226.0,
-      "color": "#1868DB"
-    },
-    {
-      "turn": 11,
-      "team": "Haas F1 Team",
-      "speed": 235.5,
       "color": "#9C9FA2"
     }
   ],
@@ -11421,10 +11421,10 @@
           "HARD": 20
         },
         "speed_trap_kmh": 334.0,
-        "mean_corner_kmh": 212.1,
+        "mean_corner_kmh": 185.0,
         "long_run_compound": "HARD",
-        "long_run_avg": 86.208,
-        "long_run_q25": 85.975,
+        "long_run_avg": 85.762,
+        "long_run_q25": 85.943,
         "long_run_q75": 86.304,
         "rank": 1,
         "gap_to_p1": 0.0
@@ -11444,12 +11444,12 @@
           "MEDIUM": 25,
           "HARD": 9
         },
-        "speed_trap_kmh": 331.0,
-        "mean_corner_kmh": 211.8,
+        "speed_trap_kmh": 336.0,
+        "mean_corner_kmh": 188.5,
         "long_run_compound": "SOFT",
-        "long_run_avg": 86.24,
-        "long_run_q25": 86.022,
-        "long_run_q75": 86.419,
+        "long_run_avg": 85.454,
+        "long_run_q25": 84.912,
+        "long_run_q75": 86.373,
         "rank": 2,
         "gap_to_p1": 0.226
       },
@@ -11469,11 +11469,11 @@
           "HARD": 0
         },
         "speed_trap_kmh": 328.0,
-        "mean_corner_kmh": 210.5,
+        "mean_corner_kmh": 185.4,
         "long_run_compound": "MEDIUM",
-        "long_run_avg": 86.096,
-        "long_run_q25": 85.841,
-        "long_run_q75": 86.605,
+        "long_run_avg": 85.26,
+        "long_run_q25": 83.749,
+        "long_run_q75": 86.486,
         "rank": 3,
         "gap_to_p1": 0.35
       },
@@ -11493,7 +11493,7 @@
           "HARD": 23
         },
         "speed_trap_kmh": 329.0,
-        "mean_corner_kmh": 214.3,
+        "mean_corner_kmh": 189.7,
         "long_run_compound": "HARD",
         "long_run_avg": 86.156,
         "long_run_q25": 85.815,
@@ -11517,11 +11517,11 @@
           "HARD": 15
         },
         "speed_trap_kmh": 329.0,
-        "mean_corner_kmh": 211.1,
+        "mean_corner_kmh": 185.7,
         "long_run_compound": "MEDIUM",
-        "long_run_avg": 86.252,
-        "long_run_q25": 86.21,
-        "long_run_q75": 86.954,
+        "long_run_avg": 85.489,
+        "long_run_q25": 84.194,
+        "long_run_q75": 86.744,
         "rank": 5,
         "gap_to_p1": 0.406
       },
@@ -11540,12 +11540,12 @@
           "MEDIUM": 29,
           "HARD": 10
         },
-        "speed_trap_kmh": 331.0,
-        "mean_corner_kmh": 210.4,
-        "long_run_compound": "MEDIUM",
-        "long_run_avg": 86.486,
-        "long_run_q25": 86.282,
-        "long_run_q75": 86.705,
+        "speed_trap_kmh": 339.0,
+        "mean_corner_kmh": 185.9,
+        "long_run_compound": "SOFT",
+        "long_run_avg": 85.808,
+        "long_run_q25": 85.708,
+        "long_run_q75": 86.323,
         "rank": 6,
         "gap_to_p1": 0.46
       },
@@ -11565,11 +11565,11 @@
           "HARD": 17
         },
         "speed_trap_kmh": 326.0,
-        "mean_corner_kmh": 211.3,
+        "mean_corner_kmh": 185.7,
         "long_run_compound": "MEDIUM",
-        "long_run_avg": 87.064,
-        "long_run_q25": 86.817,
-        "long_run_q75": 87.295,
+        "long_run_avg": 86.141,
+        "long_run_q25": 84.299,
+        "long_run_q75": 87.121,
         "rank": 7,
         "gap_to_p1": 0.505
       },
@@ -11588,8 +11588,8 @@
           "MEDIUM": 31,
           "HARD": 13
         },
-        "speed_trap_kmh": 331.0,
-        "mean_corner_kmh": 212.7,
+        "speed_trap_kmh": 337.0,
+        "mean_corner_kmh": 187.0,
         "long_run_compound": "MEDIUM",
         "long_run_avg": 86.168,
         "long_run_q25": 85.333,
@@ -11613,7 +11613,7 @@
           "HARD": 21
         },
         "speed_trap_kmh": 330.0,
-        "mean_corner_kmh": 229.4,
+        "mean_corner_kmh": 209.1,
         "long_run_compound": "HARD",
         "long_run_avg": 86.316,
         "long_run_q25": 85.595,
@@ -11637,10 +11637,10 @@
           "HARD": 14
         },
         "speed_trap_kmh": 330.0,
-        "mean_corner_kmh": 230.1,
+        "mean_corner_kmh": 209.7,
         "long_run_compound": "MEDIUM",
-        "long_run_avg": 86.09,
-        "long_run_q25": 85.083,
+        "long_run_avg": 85.989,
+        "long_run_q25": 85.061,
         "long_run_q75": 86.92,
         "rank": 10,
         "gap_to_p1": 0.882
@@ -11661,7 +11661,7 @@
           "HARD": 20
         },
         "speed_trap_kmh": 324.0,
-        "mean_corner_kmh": 209.5,
+        "mean_corner_kmh": 184.4,
         "long_run_compound": "HARD",
         "long_run_avg": 87.151,
         "long_run_q25": 87.089,
@@ -11685,11 +11685,11 @@
           "HARD": 16
         },
         "speed_trap_kmh": 324.0,
-        "mean_corner_kmh": 207.8,
+        "mean_corner_kmh": 182.9,
         "long_run_compound": "SOFT",
-        "long_run_avg": 86.455,
-        "long_run_q25": 86.361,
-        "long_run_q75": 87.167,
+        "long_run_avg": 85.64,
+        "long_run_q25": 84.105,
+        "long_run_q75": 87.069,
         "rank": 12,
         "gap_to_p1": 0.984
       },
@@ -11709,7 +11709,7 @@
           "HARD": 16
         },
         "speed_trap_kmh": 324.0,
-        "mean_corner_kmh": 211.8,
+        "mean_corner_kmh": 185.2,
         "long_run_compound": "SOFT",
         "long_run_avg": 85.585,
         "long_run_q25": 85.27,
@@ -11733,7 +11733,7 @@
           "HARD": 21
         },
         "speed_trap_kmh": 328.0,
-        "mean_corner_kmh": 210.3,
+        "mean_corner_kmh": 184.4,
         "long_run_compound": "MEDIUM",
         "long_run_avg": 86.843,
         "long_run_q25": 86.827,
@@ -11757,7 +11757,7 @@
           "HARD": 14
         },
         "speed_trap_kmh": 323.0,
-        "mean_corner_kmh": 205.5,
+        "mean_corner_kmh": 179.4,
         "long_run_compound": "MEDIUM",
         "long_run_avg": 86.478,
         "long_run_q25": 84.636,
@@ -11780,8 +11780,8 @@
           "MEDIUM": 23,
           "HARD": 0
         },
-        "speed_trap_kmh": 326.0,
-        "mean_corner_kmh": 226.7,
+        "speed_trap_kmh": 327.0,
+        "mean_corner_kmh": 215.7,
         "long_run_compound": "SOFT",
         "long_run_avg": 86.064,
         "long_run_q25": 85.858,
@@ -11804,8 +11804,8 @@
           "MEDIUM": 25,
           "HARD": 10
         },
-        "speed_trap_kmh": 328.0,
-        "mean_corner_kmh": 226.6,
+        "speed_trap_kmh": 334.0,
+        "mean_corner_kmh": 204.1,
         "long_run_compound": "SOFT",
         "long_run_avg": 86.476,
         "long_run_q25": 85.482,
@@ -11828,8 +11828,8 @@
           "MEDIUM": 27,
           "HARD": 19
         },
-        "speed_trap_kmh": 324.0,
-        "mean_corner_kmh": 203.8,
+        "speed_trap_kmh": 325.0,
+        "mean_corner_kmh": 179.9,
         "long_run_compound": "SOFT",
         "long_run_avg": 87.798,
         "long_run_q25": 87.507,
@@ -11853,7 +11853,7 @@
           "HARD": 12
         },
         "speed_trap_kmh": 318.0,
-        "mean_corner_kmh": 203.0,
+        "mean_corner_kmh": 178.9,
         "long_run_compound": "SOFT",
         "long_run_avg": 85.565,
         "long_run_q25": 85.06,
@@ -11877,7 +11877,7 @@
           "HARD": 10
         },
         "speed_trap_kmh": 325.0,
-        "mean_corner_kmh": 203.3,
+        "mean_corner_kmh": 177.1,
         "long_run_compound": "SOFT",
         "long_run_avg": 87.424,
         "long_run_q25": 85.216,
@@ -11901,7 +11901,7 @@
           "HARD": 0
         },
         "speed_trap_kmh": 323.0,
-        "mean_corner_kmh": 201.1,
+        "mean_corner_kmh": 176.2,
         "long_run_compound": "SOFT",
         "long_run_avg": 87.738,
         "long_run_q25": 87.892,
@@ -11925,11 +11925,11 @@
           "HARD": 9
         },
         "speed_trap_kmh": 314.0,
-        "mean_corner_kmh": 204.8,
+        "mean_corner_kmh": 180.7,
         "long_run_compound": "SOFT",
-        "long_run_avg": 86.284,
-        "long_run_q25": 85.765,
-        "long_run_q75": 86.506,
+        "long_run_avg": 87.104,
+        "long_run_q25": 86.045,
+        "long_run_q75": 89.504,
         "rank": 22,
         "gap_to_p1": 3.034
       }
@@ -11941,7 +11941,7 @@
         "color": "#F47600",
         "compound": "SOFT",
         "tyre_life": 1,
-        "time": 84.621
+        "time": 82.943
       },
       {
         "driver": "NOR",
@@ -11949,7 +11949,7 @@
         "color": "#F47600",
         "compound": "SOFT",
         "tyre_life": 2,
-        "time": 84.024
+        "time": 82.99
       },
       {
         "driver": "NOR",
@@ -12045,7 +12045,31 @@
         "color": "#F47600",
         "compound": "HARD",
         "tyre_life": 5,
+        "time": 89.487
+      },
+      {
+        "driver": "NOR",
+        "team": "McLaren",
+        "color": "#F47600",
+        "compound": "HARD",
+        "tyre_life": 6,
         "time": 86.887
+      },
+      {
+        "driver": "VER",
+        "team": "Red Bull Racing",
+        "color": "#4781D7",
+        "compound": "SOFT",
+        "tyre_life": 1,
+        "time": 83.487
+      },
+      {
+        "driver": "VER",
+        "team": "Red Bull Racing",
+        "color": "#4781D7",
+        "compound": "SOFT",
+        "tyre_life": 2,
+        "time": 83.377
       },
       {
         "driver": "VER",
@@ -12163,9 +12187,25 @@
         "driver": "GAS",
         "team": "Alpine",
         "color": "#00A1E8",
+        "compound": "SOFT",
+        "tyre_life": 1,
+        "time": 83.803
+      },
+      {
+        "driver": "GAS",
+        "team": "Alpine",
+        "color": "#00A1E8",
+        "compound": "SOFT",
+        "tyre_life": 2,
+        "time": 83.773
+      },
+      {
+        "driver": "GAS",
+        "team": "Alpine",
+        "color": "#00A1E8",
         "compound": "MEDIUM",
         "tyre_life": 1,
-        "time": 85.143
+        "time": 83.416
       },
       {
         "driver": "GAS",
@@ -12173,7 +12213,7 @@
         "color": "#00A1E8",
         "compound": "MEDIUM",
         "tyre_life": 2,
-        "time": 85.056
+        "time": 85.143
       },
       {
         "driver": "GAS",
@@ -12181,7 +12221,7 @@
         "color": "#00A1E8",
         "compound": "MEDIUM",
         "tyre_life": 3,
-        "time": 84.991
+        "time": 85.056
       },
       {
         "driver": "GAS",
@@ -12189,7 +12229,7 @@
         "color": "#00A1E8",
         "compound": "MEDIUM",
         "tyre_life": 4,
-        "time": 84.843
+        "time": 84.991
       },
       {
         "driver": "GAS",
@@ -12197,7 +12237,7 @@
         "color": "#00A1E8",
         "compound": "MEDIUM",
         "tyre_life": 5,
-        "time": 84.716
+        "time": 84.843
       },
       {
         "driver": "GAS",
@@ -12205,6 +12245,14 @@
         "color": "#00A1E8",
         "compound": "MEDIUM",
         "tyre_life": 6,
+        "time": 84.716
+      },
+      {
+        "driver": "GAS",
+        "team": "Alpine",
+        "color": "#00A1E8",
+        "compound": "MEDIUM",
+        "tyre_life": 7,
         "time": 84.581
       },
       {
@@ -12845,7 +12893,7 @@
         "color": "#229971",
         "compound": "HARD",
         "tyre_life": 1,
-        "time": 87.309
+        "time": 89.365
       },
       {
         "driver": "STR",
@@ -12853,7 +12901,7 @@
         "color": "#229971",
         "compound": "HARD",
         "tyre_life": 2,
-        "time": 87.329
+        "time": 87.309
       },
       {
         "driver": "STR",
@@ -12861,6 +12909,14 @@
         "color": "#229971",
         "compound": "HARD",
         "tyre_life": 3,
+        "time": 87.329
+      },
+      {
+        "driver": "STR",
+        "team": "Aston Martin",
+        "color": "#229971",
+        "compound": "HARD",
+        "tyre_life": 4,
         "time": 86.812
       },
       {
@@ -12869,7 +12925,7 @@
         "color": "#6C98FF",
         "compound": "SOFT",
         "tyre_life": 1,
-        "time": 85.118
+        "time": 83.817
       },
       {
         "driver": "TSU",
@@ -12877,6 +12933,14 @@
         "color": "#6C98FF",
         "compound": "SOFT",
         "tyre_life": 2,
+        "time": 85.118
+      },
+      {
+        "driver": "TSU",
+        "team": "Racing Bulls",
+        "color": "#6C98FF",
+        "compound": "SOFT",
+        "tyre_life": 3,
         "time": 85.435
       },
       {
@@ -14365,7 +14429,7 @@
         "color": "#909090",
         "compound": "MEDIUM",
         "tyre_life": 3,
-        "time": 89.194
+        "time": 89.219
       },
       {
         "driver": "BOT",
@@ -14373,7 +14437,7 @@
         "color": "#909090",
         "compound": "MEDIUM",
         "tyre_life": 4,
-        "time": 89.137
+        "time": 89.194
       },
       {
         "driver": "BOT",
@@ -14381,7 +14445,23 @@
         "color": "#909090",
         "compound": "MEDIUM",
         "tyre_life": 5,
+        "time": 89.137
+      },
+      {
+        "driver": "BOT",
+        "team": "Cadillac",
+        "color": "#909090",
+        "compound": "MEDIUM",
+        "tyre_life": 6,
         "time": 88.91
+      },
+      {
+        "driver": "BOT",
+        "team": "Cadillac",
+        "color": "#909090",
+        "compound": "MEDIUM",
+        "tyre_life": 7,
+        "time": 89.337
       },
       {
         "driver": "BOT",
@@ -14389,7 +14469,7 @@
         "color": "#909090",
         "compound": "HARD",
         "tyre_life": 1,
-        "time": 87.67
+        "time": 89.576
       },
       {
         "driver": "BOT",
@@ -14397,7 +14477,7 @@
         "color": "#909090",
         "compound": "HARD",
         "tyre_life": 2,
-        "time": 87.218
+        "time": 87.67
       },
       {
         "driver": "BOT",
@@ -14405,7 +14485,31 @@
         "color": "#909090",
         "compound": "HARD",
         "tyre_life": 3,
+        "time": 87.218
+      },
+      {
+        "driver": "BOT",
+        "team": "Cadillac",
+        "color": "#909090",
+        "compound": "HARD",
+        "tyre_life": 4,
         "time": 86.483
+      },
+      {
+        "driver": "PIA",
+        "team": "McLaren",
+        "color": "#F47600",
+        "compound": "SOFT",
+        "tyre_life": 1,
+        "time": 83.028
+      },
+      {
+        "driver": "PIA",
+        "team": "McLaren",
+        "color": "#F47600",
+        "compound": "SOFT",
+        "tyre_life": 2,
+        "time": 83.219
       },
       {
         "driver": "PIA",
@@ -14587,193 +14691,193 @@
     "degradation_slopes": [
       {
         "compound": "SOFT",
-        "slope_sec_per_lap": 0.015,
-        "base_time": 86.616,
-        "r2": 0.18,
+        "slope_sec_per_lap": 0.035,
+        "base_time": 86.513,
+        "r2": 0.19,
         "curve_points": [
           {
             "tyre_life": 1,
-            "predicted_time": 86.631
+            "predicted_time": 86.548
           },
           {
             "tyre_life": 2,
-            "predicted_time": 86.646
+            "predicted_time": 86.583
           },
           {
             "tyre_life": 3,
-            "predicted_time": 86.661
+            "predicted_time": 86.618
           },
           {
             "tyre_life": 4,
-            "predicted_time": 86.676
+            "predicted_time": 86.653
           },
           {
             "tyre_life": 5,
-            "predicted_time": 86.691
+            "predicted_time": 86.688
           },
           {
             "tyre_life": 6,
-            "predicted_time": 86.706
+            "predicted_time": 86.723
           },
           {
             "tyre_life": 7,
-            "predicted_time": 86.721
+            "predicted_time": 86.758
           },
           {
             "tyre_life": 8,
-            "predicted_time": 86.736
+            "predicted_time": 86.793
           },
           {
             "tyre_life": 9,
-            "predicted_time": 86.751
+            "predicted_time": 86.828
           },
           {
             "tyre_life": 10,
-            "predicted_time": 86.766
+            "predicted_time": 86.863
           },
           {
             "tyre_life": 11,
-            "predicted_time": 86.781
+            "predicted_time": 86.898
           },
           {
             "tyre_life": 12,
-            "predicted_time": 86.796
+            "predicted_time": 86.933
           },
           {
             "tyre_life": 13,
-            "predicted_time": 86.811
+            "predicted_time": 86.968
           },
           {
             "tyre_life": 14,
-            "predicted_time": 86.826
+            "predicted_time": 87.003
           }
         ]
       },
       {
         "compound": "MEDIUM",
-        "slope_sec_per_lap": 0.015,
-        "base_time": 86.467,
-        "r2": 0.33,
+        "slope_sec_per_lap": 0.005,
+        "base_time": 86.484,
+        "r2": 0.23,
         "curve_points": [
           {
             "tyre_life": 1,
-            "predicted_time": 86.482
+            "predicted_time": 86.489
           },
           {
             "tyre_life": 2,
-            "predicted_time": 86.497
+            "predicted_time": 86.494
           },
           {
             "tyre_life": 3,
-            "predicted_time": 86.512
+            "predicted_time": 86.499
           },
           {
             "tyre_life": 4,
-            "predicted_time": 86.527
+            "predicted_time": 86.504
           },
           {
             "tyre_life": 5,
-            "predicted_time": 86.542
+            "predicted_time": 86.509
           },
           {
             "tyre_life": 6,
-            "predicted_time": 86.557
+            "predicted_time": 86.514
           },
           {
             "tyre_life": 7,
-            "predicted_time": 86.572
+            "predicted_time": 86.519
           },
           {
             "tyre_life": 8,
-            "predicted_time": 86.587
+            "predicted_time": 86.524
           },
           {
             "tyre_life": 9,
-            "predicted_time": 86.602
+            "predicted_time": 86.529
           },
           {
             "tyre_life": 10,
-            "predicted_time": 86.617
+            "predicted_time": 86.534
           },
           {
             "tyre_life": 11,
-            "predicted_time": 86.632
+            "predicted_time": 86.539
           },
           {
             "tyre_life": 12,
-            "predicted_time": 86.647
+            "predicted_time": 86.544
           },
           {
             "tyre_life": 13,
-            "predicted_time": 86.662
+            "predicted_time": 86.549
           },
           {
             "tyre_life": 14,
-            "predicted_time": 86.677
+            "predicted_time": 86.554
           }
         ]
       },
       {
         "compound": "HARD",
-        "slope_sec_per_lap": 0.015,
-        "base_time": 86.491,
-        "r2": 0.58,
+        "slope_sec_per_lap": 0.005,
+        "base_time": 86.369,
+        "r2": 0.53,
         "curve_points": [
           {
             "tyre_life": 1,
-            "predicted_time": 86.506
+            "predicted_time": 86.374
           },
           {
             "tyre_life": 2,
-            "predicted_time": 86.521
+            "predicted_time": 86.379
           },
           {
             "tyre_life": 3,
-            "predicted_time": 86.536
+            "predicted_time": 86.384
           },
           {
             "tyre_life": 4,
-            "predicted_time": 86.551
+            "predicted_time": 86.389
           },
           {
             "tyre_life": 5,
-            "predicted_time": 86.566
+            "predicted_time": 86.394
           },
           {
             "tyre_life": 6,
-            "predicted_time": 86.581
+            "predicted_time": 86.399
           },
           {
             "tyre_life": 7,
-            "predicted_time": 86.596
+            "predicted_time": 86.404
           },
           {
             "tyre_life": 8,
-            "predicted_time": 86.611
+            "predicted_time": 86.409
           },
           {
             "tyre_life": 9,
-            "predicted_time": 86.626
+            "predicted_time": 86.414
           },
           {
             "tyre_life": 10,
-            "predicted_time": 86.641
+            "predicted_time": 86.419
           },
           {
             "tyre_life": 11,
-            "predicted_time": 86.656
+            "predicted_time": 86.424
           },
           {
             "tyre_life": 12,
-            "predicted_time": 86.671
+            "predicted_time": 86.429
           },
           {
             "tyre_life": 13,
-            "predicted_time": 86.686
+            "predicted_time": 86.434
           },
           {
             "tyre_life": 14,
-            "predicted_time": 86.701
+            "predicted_time": 86.439
           }
         ]
       }
@@ -15465,199 +15569,199 @@
       {
         "turn": 1,
         "team": "McLaren",
-        "speed": 70.5,
+        "speed": 169.1,
         "color": "#F47600"
       },
       {
         "turn": 1,
         "team": "Red Bull Racing",
-        "speed": 73.5,
+        "speed": 167.6,
         "color": "#4781D7"
       },
       {
         "turn": 1,
         "team": "Audi",
-        "speed": 73.5,
+        "speed": 163.1,
         "color": "#F50537"
       },
       {
         "turn": 1,
+        "team": "Alpine",
+        "speed": 119.0,
+        "color": "#00A1E8"
+      },
+      {
+        "turn": 1,
+        "team": "Cadillac",
+        "speed": 160.9,
+        "color": "#909090"
+      },
+      {
+        "turn": 1,
+        "team": "Mercedes",
+        "speed": 166.4,
+        "color": "#00D7B6"
+      },
+      {
+        "turn": 1,
+        "team": "Aston Martin",
+        "speed": 163.6,
+        "color": "#229971"
+      },
+      {
+        "turn": 1,
+        "team": "Ferrari",
+        "speed": 169.5,
+        "color": "#ED1131"
+      },
+      {
+        "turn": 1,
+        "team": "Racing Bulls",
+        "speed": 168.1,
+        "color": "#6C98FF"
+      },
+      {
+        "turn": 1,
+        "team": "Williams",
+        "speed": 94.5,
+        "color": "#1868DB"
+      },
+      {
+        "turn": 1,
+        "team": "Haas F1 Team",
+        "speed": 162.2,
+        "color": "#9C9FA2"
+      },
+      {
+        "turn": 2,
+        "team": "McLaren",
+        "speed": 70.5,
+        "color": "#F47600"
+      },
+      {
+        "turn": 2,
+        "team": "Red Bull Racing",
+        "speed": 73.5,
+        "color": "#4781D7"
+      },
+      {
+        "turn": 2,
+        "team": "Audi",
+        "speed": 73.5,
+        "color": "#F50537"
+      },
+      {
+        "turn": 2,
         "team": "Alpine",
         "speed": 72.5,
         "color": "#00A1E8"
       },
       {
-        "turn": 1,
+        "turn": 2,
         "team": "Cadillac",
         "speed": 71.5,
         "color": "#909090"
       },
       {
-        "turn": 1,
+        "turn": 2,
         "team": "Mercedes",
         "speed": 69.0,
         "color": "#00D7B6"
       },
       {
-        "turn": 1,
+        "turn": 2,
         "team": "Aston Martin",
         "speed": 69.5,
         "color": "#229971"
       },
       {
-        "turn": 1,
+        "turn": 2,
         "team": "Ferrari",
         "speed": 71.5,
         "color": "#ED1131"
       },
       {
-        "turn": 1,
+        "turn": 2,
         "team": "Racing Bulls",
         "speed": 71.0,
         "color": "#6C98FF"
       },
       {
-        "turn": 1,
+        "turn": 2,
         "team": "Williams",
-        "speed": 69.0,
+        "speed": 80.5,
         "color": "#1868DB"
       },
       {
-        "turn": 1,
+        "turn": 2,
         "team": "Haas F1 Team",
         "speed": 68.5,
         "color": "#9C9FA2"
       },
       {
-        "turn": 2,
+        "turn": 3,
         "team": "McLaren",
         "speed": 292.0,
         "color": "#F47600"
       },
       {
-        "turn": 2,
+        "turn": 3,
         "team": "Red Bull Racing",
         "speed": 288.0,
         "color": "#4781D7"
       },
       {
-        "turn": 2,
+        "turn": 3,
         "team": "Audi",
         "speed": 288.0,
         "color": "#F50537"
       },
       {
-        "turn": 2,
+        "turn": 3,
         "team": "Alpine",
         "speed": 297.5,
         "color": "#00A1E8"
       },
       {
-        "turn": 2,
+        "turn": 3,
         "team": "Cadillac",
         "speed": 286.0,
         "color": "#909090"
       },
       {
-        "turn": 2,
+        "turn": 3,
         "team": "Mercedes",
         "speed": 290.0,
         "color": "#00D7B6"
       },
       {
-        "turn": 2,
+        "turn": 3,
         "team": "Aston Martin",
         "speed": 279.0,
         "color": "#229971"
       },
       {
-        "turn": 2,
+        "turn": 3,
         "team": "Ferrari",
         "speed": 286.0,
         "color": "#ED1131"
       },
       {
-        "turn": 2,
+        "turn": 3,
         "team": "Racing Bulls",
         "speed": 286.5,
         "color": "#6C98FF"
       },
       {
-        "turn": 2,
+        "turn": 3,
         "team": "Williams",
-        "speed": 295.0,
+        "speed": 296.5,
         "color": "#1868DB"
       },
       {
-        "turn": 2,
+        "turn": 3,
         "team": "Haas F1 Team",
         "speed": 287.5,
-        "color": "#9C9FA2"
-      },
-      {
-        "turn": 3,
-        "team": "McLaren",
-        "speed": 304.0,
-        "color": "#F47600"
-      },
-      {
-        "turn": 3,
-        "team": "Red Bull Racing",
-        "speed": 296.5,
-        "color": "#4781D7"
-      },
-      {
-        "turn": 3,
-        "team": "Audi",
-        "speed": 297.0,
-        "color": "#F50537"
-      },
-      {
-        "turn": 3,
-        "team": "Alpine",
-        "speed": 303.0,
-        "color": "#00A1E8"
-      },
-      {
-        "turn": 3,
-        "team": "Cadillac",
-        "speed": 292.0,
-        "color": "#909090"
-      },
-      {
-        "turn": 3,
-        "team": "Mercedes",
-        "speed": 299.5,
-        "color": "#00D7B6"
-      },
-      {
-        "turn": 3,
-        "team": "Aston Martin",
-        "speed": 283.0,
-        "color": "#229971"
-      },
-      {
-        "turn": 3,
-        "team": "Ferrari",
-        "speed": 293.0,
-        "color": "#ED1131"
-      },
-      {
-        "turn": 3,
-        "team": "Racing Bulls",
-        "speed": 295.5,
-        "color": "#6C98FF"
-      },
-      {
-        "turn": 3,
-        "team": "Williams",
-        "speed": 301.0,
-        "color": "#1868DB"
-      },
-      {
-        "turn": 3,
-        "team": "Haas F1 Team",
-        "speed": 295.0,
         "color": "#9C9FA2"
       },
       {
@@ -15717,7 +15821,7 @@
       {
         "turn": 4,
         "team": "Williams",
-        "speed": 307.0,
+        "speed": 306.0,
         "color": "#1868DB"
       },
       {
@@ -15729,463 +15833,463 @@
       {
         "turn": 5,
         "team": "McLaren",
-        "speed": 204.0,
+        "speed": 133.1,
         "color": "#F47600"
       },
       {
         "turn": 5,
+        "team": "Red Bull Racing",
+        "speed": 133.6,
+        "color": "#4781D7"
+      },
+      {
+        "turn": 5,
+        "team": "Audi",
+        "speed": 133.3,
+        "color": "#F50537"
+      },
+      {
+        "turn": 5,
+        "team": "Alpine",
+        "speed": 240.3,
+        "color": "#00A1E8"
+      },
+      {
+        "turn": 5,
+        "team": "Cadillac",
+        "speed": 127.8,
+        "color": "#909090"
+      },
+      {
+        "turn": 5,
+        "team": "Mercedes",
+        "speed": 136.1,
+        "color": "#00D7B6"
+      },
+      {
+        "turn": 5,
+        "team": "Aston Martin",
+        "speed": 129.2,
+        "color": "#229971"
+      },
+      {
+        "turn": 5,
+        "team": "Ferrari",
+        "speed": 134.0,
+        "color": "#ED1131"
+      },
+      {
+        "turn": 5,
+        "team": "Racing Bulls",
+        "speed": 131.4,
+        "color": "#6C98FF"
+      },
+      {
+        "turn": 5,
+        "team": "Williams",
+        "speed": 306.0,
+        "color": "#1868DB"
+      },
+      {
+        "turn": 5,
+        "team": "Haas F1 Team",
+        "speed": 130.1,
+        "color": "#9C9FA2"
+      },
+      {
+        "turn": 6,
+        "team": "McLaren",
+        "speed": 204.0,
+        "color": "#F47600"
+      },
+      {
+        "turn": 6,
         "team": "Red Bull Racing",
         "speed": 196.5,
         "color": "#4781D7"
       },
       {
-        "turn": 5,
+        "turn": 6,
         "team": "Audi",
         "speed": 202.0,
         "color": "#F50537"
       },
       {
-        "turn": 5,
+        "turn": 6,
         "team": "Alpine",
         "speed": 203.0,
         "color": "#00A1E8"
       },
       {
-        "turn": 5,
+        "turn": 6,
         "team": "Cadillac",
         "speed": 186.0,
         "color": "#909090"
       },
       {
-        "turn": 5,
+        "turn": 6,
         "team": "Mercedes",
         "speed": 207.0,
         "color": "#00D7B6"
       },
       {
-        "turn": 5,
+        "turn": 6,
         "team": "Aston Martin",
         "speed": 197.0,
         "color": "#229971"
       },
       {
-        "turn": 5,
+        "turn": 6,
         "team": "Ferrari",
         "speed": 207.5,
         "color": "#ED1131"
       },
       {
-        "turn": 5,
+        "turn": 6,
         "team": "Racing Bulls",
         "speed": 201.5,
         "color": "#6C98FF"
       },
       {
-        "turn": 5,
+        "turn": 6,
         "team": "Williams",
-        "speed": 206.0,
+        "speed": 198.3,
         "color": "#1868DB"
       },
       {
-        "turn": 5,
+        "turn": 6,
         "team": "Haas F1 Team",
         "speed": 197.0,
         "color": "#9C9FA2"
       },
       {
-        "turn": 6,
+        "turn": 7,
         "team": "McLaren",
         "speed": 189.0,
         "color": "#F47600"
       },
       {
-        "turn": 6,
+        "turn": 7,
         "team": "Red Bull Racing",
         "speed": 183.0,
         "color": "#4781D7"
       },
       {
-        "turn": 6,
+        "turn": 7,
         "team": "Audi",
         "speed": 189.5,
         "color": "#F50537"
       },
       {
-        "turn": 6,
+        "turn": 7,
         "team": "Alpine",
         "speed": 184.5,
         "color": "#00A1E8"
       },
       {
-        "turn": 6,
+        "turn": 7,
         "team": "Cadillac",
         "speed": 179.0,
         "color": "#909090"
       },
       {
-        "turn": 6,
+        "turn": 7,
         "team": "Mercedes",
         "speed": 189.0,
         "color": "#00D7B6"
       },
       {
-        "turn": 6,
+        "turn": 7,
         "team": "Aston Martin",
         "speed": 180.0,
         "color": "#229971"
       },
       {
-        "turn": 6,
+        "turn": 7,
         "team": "Ferrari",
         "speed": 186.0,
         "color": "#ED1131"
       },
       {
-        "turn": 6,
+        "turn": 7,
         "team": "Racing Bulls",
         "speed": 179.5,
         "color": "#6C98FF"
       },
       {
-        "turn": 6,
+        "turn": 7,
         "team": "Williams",
-        "speed": 206.0,
+        "speed": 190.0,
         "color": "#1868DB"
       },
       {
-        "turn": 6,
+        "turn": 7,
         "team": "Haas F1 Team",
         "speed": 178.0,
         "color": "#9C9FA2"
       },
       {
-        "turn": 7,
-        "team": "McLaren",
-        "speed": 300.5,
-        "color": "#F47600"
-      },
-      {
-        "turn": 7,
-        "team": "Red Bull Racing",
-        "speed": 294.5,
-        "color": "#4781D7"
-      },
-      {
-        "turn": 7,
-        "team": "Audi",
-        "speed": 295.0,
-        "color": "#F50537"
-      },
-      {
-        "turn": 7,
-        "team": "Alpine",
-        "speed": 294.5,
-        "color": "#00A1E8"
-      },
-      {
-        "turn": 7,
-        "team": "Cadillac",
-        "speed": 291.0,
-        "color": "#909090"
-      },
-      {
-        "turn": 7,
-        "team": "Mercedes",
-        "speed": 299.5,
-        "color": "#00D7B6"
-      },
-      {
-        "turn": 7,
-        "team": "Aston Martin",
-        "speed": 286.0,
-        "color": "#229971"
-      },
-      {
-        "turn": 7,
-        "team": "Ferrari",
-        "speed": 293.5,
-        "color": "#ED1131"
-      },
-      {
-        "turn": 7,
-        "team": "Racing Bulls",
-        "speed": 295.0,
-        "color": "#6C98FF"
-      },
-      {
-        "turn": 7,
-        "team": "Williams",
-        "speed": 267.0,
-        "color": "#1868DB"
-      },
-      {
-        "turn": 7,
-        "team": "Haas F1 Team",
-        "speed": 285.5,
-        "color": "#9C9FA2"
-      },
-      {
         "turn": 8,
         "team": "McLaren",
-        "speed": 190.5,
+        "speed": 238.1,
         "color": "#F47600"
       },
       {
         "turn": 8,
         "team": "Red Bull Racing",
-        "speed": 184.0,
+        "speed": 233.2,
         "color": "#4781D7"
       },
       {
         "turn": 8,
         "team": "Audi",
-        "speed": 185.5,
+        "speed": 234.4,
         "color": "#F50537"
       },
       {
         "turn": 8,
         "team": "Alpine",
-        "speed": 185.0,
+        "speed": 239.8,
         "color": "#00A1E8"
       },
       {
         "turn": 8,
         "team": "Cadillac",
-        "speed": 173.0,
+        "speed": 227.3,
         "color": "#909090"
       },
       {
         "turn": 8,
         "team": "Mercedes",
-        "speed": 190.0,
+        "speed": 235.3,
         "color": "#00D7B6"
       },
       {
         "turn": 8,
         "team": "Aston Martin",
-        "speed": 182.5,
+        "speed": 225.6,
         "color": "#229971"
       },
       {
         "turn": 8,
         "team": "Ferrari",
-        "speed": 195.0,
+        "speed": 241.7,
         "color": "#ED1131"
       },
       {
         "turn": 8,
         "team": "Racing Bulls",
-        "speed": 184.5,
+        "speed": 233.6,
         "color": "#6C98FF"
       },
       {
         "turn": 8,
         "team": "Williams",
-        "speed": 234.0,
+        "speed": 229.9,
         "color": "#1868DB"
       },
       {
         "turn": 8,
         "team": "Haas F1 Team",
-        "speed": 184.5,
+        "speed": 234.2,
         "color": "#9C9FA2"
       },
       {
         "turn": 9,
         "team": "McLaren",
-        "speed": 228.0,
+        "speed": 208.2,
         "color": "#F47600"
       },
       {
         "turn": 9,
         "team": "Red Bull Racing",
-        "speed": 234.0,
+        "speed": 205.5,
         "color": "#4781D7"
       },
       {
         "turn": 9,
         "team": "Audi",
-        "speed": 228.0,
+        "speed": 204.3,
         "color": "#F50537"
       },
       {
         "turn": 9,
         "team": "Alpine",
-        "speed": 225.0,
+        "speed": 203.6,
         "color": "#00A1E8"
       },
       {
         "turn": 9,
         "team": "Cadillac",
-        "speed": 216.5,
+        "speed": 191.2,
         "color": "#909090"
       },
       {
         "turn": 9,
         "team": "Mercedes",
-        "speed": 238.0,
+        "speed": 211.4,
         "color": "#00D7B6"
       },
       {
         "turn": 9,
         "team": "Aston Martin",
-        "speed": 225.0,
+        "speed": 201.6,
         "color": "#229971"
       },
       {
         "turn": 9,
         "team": "Ferrari",
-        "speed": 232.5,
+        "speed": 212.2,
         "color": "#ED1131"
       },
       {
         "turn": 9,
         "team": "Racing Bulls",
-        "speed": 225.0,
+        "speed": 202.5,
         "color": "#6C98FF"
       },
       {
         "turn": 9,
         "team": "Williams",
-        "speed": 194.0,
+        "speed": 200.7,
         "color": "#1868DB"
       },
       {
         "turn": 9,
         "team": "Haas F1 Team",
-        "speed": 236.0,
+        "speed": 203.6,
         "color": "#9C9FA2"
       },
       {
         "turn": 10,
+        "team": "McLaren",
+        "speed": 228.8,
+        "color": "#F47600"
+      },
+      {
+        "turn": 10,
+        "team": "Red Bull Racing",
+        "speed": 233.0,
+        "color": "#4781D7"
+      },
+      {
+        "turn": 10,
+        "team": "Audi",
+        "speed": 227.7,
+        "color": "#F50537"
+      },
+      {
+        "turn": 10,
+        "team": "Alpine",
+        "speed": 225.6,
+        "color": "#00A1E8"
+      },
+      {
+        "turn": 10,
+        "team": "Cadillac",
+        "speed": 215.1,
+        "color": "#909090"
+      },
+      {
+        "turn": 10,
+        "team": "Mercedes",
+        "speed": 237.8,
+        "color": "#00D7B6"
+      },
+      {
+        "turn": 10,
+        "team": "Aston Martin",
+        "speed": 224.9,
+        "color": "#229971"
+      },
+      {
+        "turn": 10,
+        "team": "Ferrari",
+        "speed": 232.8,
+        "color": "#ED1131"
+      },
+      {
+        "turn": 10,
+        "team": "Racing Bulls",
+        "speed": 224.8,
+        "color": "#6C98FF"
+      },
+      {
+        "turn": 10,
+        "team": "Williams",
+        "speed": 215.2,
+        "color": "#1868DB"
+      },
+      {
+        "turn": 10,
+        "team": "Haas F1 Team",
+        "speed": 232.0,
+        "color": "#9C9FA2"
+      },
+      {
+        "turn": 11,
         "team": "McLaren",
         "speed": 206.0,
         "color": "#F47600"
       },
       {
-        "turn": 10,
+        "turn": 11,
         "team": "Red Bull Racing",
         "speed": 201.0,
         "color": "#4781D7"
       },
       {
-        "turn": 10,
+        "turn": 11,
         "team": "Audi",
         "speed": 210.5,
         "color": "#F50537"
       },
       {
-        "turn": 10,
+        "turn": 11,
         "team": "Alpine",
         "speed": 211.0,
         "color": "#00A1E8"
       },
       {
-        "turn": 10,
+        "turn": 11,
         "team": "Cadillac",
         "speed": 194.5,
         "color": "#909090"
       },
       {
-        "turn": 10,
+        "turn": 11,
         "team": "Mercedes",
         "speed": 210.0,
         "color": "#00D7B6"
       },
       {
-        "turn": 10,
+        "turn": 11,
         "team": "Aston Martin",
         "speed": 200.0,
         "color": "#229971"
       },
       {
-        "turn": 10,
+        "turn": 11,
         "team": "Ferrari",
         "speed": 210.0,
         "color": "#ED1131"
       },
       {
-        "turn": 10,
+        "turn": 11,
         "team": "Racing Bulls",
         "speed": 201.5,
         "color": "#6C98FF"
       },
       {
-        "turn": 10,
+        "turn": 11,
         "team": "Williams",
-        "speed": 189.0,
+        "speed": 191.0,
         "color": "#1868DB"
       },
       {
-        "turn": 10,
+        "turn": 11,
         "team": "Haas F1 Team",
         "speed": 202.5,
-        "color": "#9C9FA2"
-      },
-      {
-        "turn": 11,
-        "team": "McLaren",
-        "speed": 235.0,
-        "color": "#F47600"
-      },
-      {
-        "turn": 11,
-        "team": "Red Bull Racing",
-        "speed": 239.5,
-        "color": "#4781D7"
-      },
-      {
-        "turn": 11,
-        "team": "Audi",
-        "speed": 241.5,
-        "color": "#F50537"
-      },
-      {
-        "turn": 11,
-        "team": "Alpine",
-        "speed": 244.5,
-        "color": "#00A1E8"
-      },
-      {
-        "turn": 11,
-        "team": "Cadillac",
-        "speed": 230.5,
-        "color": "#909090"
-      },
-      {
-        "turn": 11,
-        "team": "Mercedes",
-        "speed": 244.0,
-        "color": "#00D7B6"
-      },
-      {
-        "turn": 11,
-        "team": "Aston Martin",
-        "speed": 233.5,
-        "color": "#229971"
-      },
-      {
-        "turn": 11,
-        "team": "Ferrari",
-        "speed": 238.5,
-        "color": "#ED1131"
-      },
-      {
-        "turn": 11,
-        "team": "Racing Bulls",
-        "speed": 244.5,
-        "color": "#6C98FF"
-      },
-      {
-        "turn": 11,
-        "team": "Williams",
-        "speed": 226.0,
-        "color": "#1868DB"
-      },
-      {
-        "turn": 11,
-        "team": "Haas F1 Team",
-        "speed": 235.5,
         "color": "#9C9FA2"
       }
     ],
@@ -16246,31 +16350,31 @@
       "turns": [
         {
           "turn": 1,
-          "pct": 16.7
+          "pct": 15.0
         },
         {
           "turn": 2,
-          "pct": 23.9
+          "pct": 16.1
         },
         {
           "turn": 3,
-          "pct": 27.8
+          "pct": 23.9
         },
         {
           "turn": 4,
-          "pct": 35.6
+          "pct": 36.1
         },
         {
           "turn": 5,
-          "pct": 43.3
+          "pct": 37.2
         },
         {
           "turn": 6,
-          "pct": 48.9
+          "pct": 43.3
         },
         {
           "turn": 7,
-          "pct": 56.1
+          "pct": 48.9
         },
         {
           "turn": 8,
@@ -16278,15 +16382,15 @@
         },
         {
           "turn": 9,
-          "pct": 71.1
+          "pct": 68.9
         },
         {
           "turn": 10,
-          "pct": 88.9
+          "pct": 71.1
         },
         {
           "turn": 11,
-          "pct": 92.8
+          "pct": 88.9
         }
       ],
       "drivers": {
@@ -16311,7 +16415,7 @@
             308.0,
             308.0,
             308.0,
-            166.9,
+            223.3,
             188.6,
             223.4,
             205.0,
@@ -16326,9 +16430,9 @@
             329.3,
             327.5,
             325.9,
-            186.0,
+            203.0,
             223.8,
-            223.0,
+            223.4,
             281.9,
             299.7,
             310.9,
@@ -16525,7 +16629,7 @@
             305.6,
             305.5,
             109.0,
-            159.2,
+            139.1,
             218.3,
             237.6,
             205.0,
@@ -16540,9 +16644,9 @@
             329.0,
             328.0,
             307.4,
-            185.0,
+            206.9,
             233.6,
-            235.0,
+            234.4,
             291.1,
             310.3,
             319.0,
@@ -16739,7 +16843,7 @@
             306.0,
             299.1,
             111.0,
-            141.6,
+            129.4,
             204.4,
             230.9,
             207.0,
@@ -16754,9 +16858,9 @@
             326.0,
             322.2,
             310.6,
-            193.0,
+            209.2,
             228.9,
-            228.0,
+            228.4,
             285.3,
             304.0,
             314.1,
@@ -16953,7 +17057,7 @@
             298.0,
             299.1,
             107.0,
-            148.4,
+            131.8,
             215.5,
             235.7,
             207.0,
@@ -16968,9 +17072,9 @@
             318.0,
             316.9,
             312.7,
-            194.0,
+            210.8,
             231.4,
-            230.0,
+            230.6,
             288.9,
             308.1,
             319.5,
@@ -17167,7 +17271,7 @@
             299.9,
             301.0,
             110.0,
-            153.6,
+            136.2,
             217.0,
             235.9,
             208.0,
@@ -17182,9 +17286,9 @@
             318.2,
             318.7,
             310.8,
-            196.0,
+            213.5,
             234.8,
-            235.0,
+            234.9,
             291.7,
             308.0,
             319.2,
@@ -17381,7 +17485,7 @@
             303.1,
             305.8,
             111.0,
-            151.8,
+            135.5,
             214.9,
             236.5,
             197.0,
@@ -17396,9 +17500,9 @@
             318.6,
             317.0,
             308.9,
-            184.0,
+            205.9,
             232.6,
-            236.0,
+            234.5,
             286.5,
             308.7,
             318.5,
@@ -17595,7 +17699,7 @@
             301.0,
             300.5,
             109.0,
-            149.4,
+            133.2,
             216.5,
             235.6,
             209.0,
@@ -17610,9 +17714,9 @@
             316.1,
             313.0,
             298.9,
-            195.0,
+            215.8,
             241.3,
-            241.0,
+            241.1,
             288.4,
             305.2,
             313.5,
@@ -17809,7 +17913,7 @@
             305.0,
             305.0,
             305.0,
-            225.7,
+            257.4,
             190.8,
             223.9,
             201.0,
@@ -17824,9 +17928,9 @@
             331.0,
             328.1,
             318.0,
-            184.0,
+            204.1,
             228.6,
-            227.0,
+            227.7,
             281.5,
             299.5,
             307.4,
@@ -18023,7 +18127,7 @@
             304.1,
             294.3,
             112.0,
-            153.3,
+            136.8,
             208.1,
             233.6,
             201.0,
@@ -18038,9 +18142,9 @@
             324.4,
             320.0,
             308.5,
-            188.0,
+            207.2,
             230.6,
-            228.0,
+            229.2,
             284.8,
             302.1,
             310.9,
@@ -18237,7 +18341,7 @@
             302.1,
             303.6,
             110.0,
-            157.1,
+            138.3,
             217.1,
             234.0,
             203.0,
@@ -18252,7 +18356,7 @@
             316.1,
             316.0,
             308.6,
-            182.0,
+            205.9,
             235.1,
             235.0,
             285.5,
@@ -18451,7 +18555,7 @@
             303.2,
             306.0,
             108.0,
-            152.0,
+            134.4,
             212.1,
             234.1,
             205.0,
@@ -18466,9 +18570,9 @@
             320.4,
             320.0,
             299.0,
-            188.0,
+            205.5,
             226.8,
-            226.0,
+            226.4,
             284.5,
             303.6,
             314.1,
@@ -18665,7 +18769,7 @@
             299.0,
             302.0,
             107.0,
-            149.9,
+            132.7,
             216.1,
             235.2,
             200.0,
@@ -18680,9 +18784,9 @@
             314.3,
             314.0,
             308.6,
-            189.0,
+            208.1,
             231.4,
-            249.0,
+            241.1,
             286.9,
             306.7,
             314.8,
@@ -18879,7 +18983,7 @@
             302.1,
             303.8,
             106.0,
-            149.6,
+            132.2,
             211.4,
             233.7,
             199.0,
@@ -18894,9 +18998,9 @@
             320.0,
             320.0,
             316.6,
-            183.0,
+            203.1,
             227.7,
-            230.0,
+            229.0,
             279.7,
             298.3,
             306.6,
@@ -19093,7 +19197,7 @@
             302.1,
             302.8,
             110.0,
-            146.0,
+            131.6,
             212.5,
             235.9,
             196.0,
@@ -19108,9 +19212,9 @@
             319.5,
             320.0,
             305.1,
-            184.0,
+            205.1,
             230.8,
-            232.0,
+            231.5,
             290.5,
             307.5,
             317.6,
@@ -19286,6 +19390,220 @@
             82.821
           ]
         },
+        "SAI": {
+          "speed": [
+            312.0,
+            327.2,
+            334.0,
+            334.0,
+            331.9,
+            329.0,
+            325.0,
+            114.6,
+            92.0,
+            232.7,
+            275.1,
+            294.4,
+            298.0,
+            303.0,
+            300.0,
+            302.8,
+            305.0,
+            305.0,
+            305.0,
+            305.0,
+            181.2,
+            221.1,
+            195.0,
+            203.3,
+            174.0,
+            182.2,
+            229.1,
+            273.8,
+            301.0,
+            315.2,
+            323.4,
+            323.0,
+            321.0,
+            320.0,
+            185.0,
+            216.6,
+            236.0,
+            281.2,
+            299.3,
+            309.3,
+            311.9,
+            313.0,
+            314.7,
+            310.0,
+            193.0,
+            209.5,
+            240.2,
+            258.1,
+            270.6,
+            280.6,
+            288.0
+          ],
+          "throttle": [
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            54.7,
+            0.0,
+            90.6,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            0.0,
+            100.0,
+            100.0,
+            0.2,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            13.2,
+            98.7,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            91.9,
+            0.0,
+            91.7,
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0
+          ],
+          "brake": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            50.4,
+            100.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            100.0,
+            100.0,
+            100.0,
+            0.0,
+            0.0,
+            100.0,
+            0.0,
+            0.0,
+            100.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            8.1,
+            100.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "cum_time": [
+            0.0,
+            1.611,
+            2.904,
+            4.183,
+            5.468,
+            6.765,
+            8.07,
+            10.114,
+            14.964,
+            17.224,
+            18.907,
+            20.406,
+            21.841,
+            23.257,
+            24.678,
+            26.099,
+            27.506,
+            28.91,
+            30.314,
+            31.717,
+            33.736,
+            35.84,
+            37.755,
+            39.91,
+            41.894,
+            43.888,
+            46.094,
+            47.789,
+            49.273,
+            50.659,
+            51.997,
+            53.319,
+            54.646,
+            55.982,
+            57.768,
+            59.939,
+            61.723,
+            63.312,
+            64.783,
+            66.188,
+            67.566,
+            68.935,
+            70.299,
+            71.663,
+            73.342,
+            75.472,
+            77.365,
+            79.081,
+            80.698,
+            82.249,
+            83.453
+          ]
+        },
         "OCO": {
           "speed": [
             305.0,
@@ -19307,7 +19625,7 @@
             297.6,
             300.8,
             108.0,
-            140.5,
+            127.5,
             214.1,
             234.7,
             194.0,
@@ -19322,9 +19640,9 @@
             309.6,
             309.0,
             309.0,
-            180.0,
+            199.2,
             222.7,
-            223.0,
+            222.9,
             283.9,
             303.3,
             314.4,
@@ -19521,7 +19839,7 @@
             298.5,
             300.1,
             106.0,
-            136.9,
+            124.5,
             208.3,
             232.8,
             200.0,
@@ -19536,9 +19854,9 @@
             312.0,
             311.0,
             305.9,
-            187.0,
+            199.1,
             213.9,
-            215.0,
+            214.5,
             285.4,
             307.6,
             318.0,
@@ -19738,7 +20056,7 @@
             307.0,
             307.0,
             201.6,
-            206.0,
+            201.6,
             187.4,
             206.0,
             224.3,
@@ -19750,9 +20068,9 @@
             322.0,
             322.3,
             321.1,
-            234.0,
+            216.4,
             195.0,
-            194.0,
+            194.4,
             265.5,
             288.0,
             301.7,
@@ -19949,7 +20267,7 @@
             297.9,
             299.0,
             105.0,
-            141.4,
+            126.8,
             216.5,
             235.7,
             186.0,
@@ -19964,9 +20282,9 @@
             315.4,
             314.8,
             308.0,
-            175.0,
+            191.8,
             212.3,
-            216.0,
+            214.3,
             275.6,
             293.8,
             303.9,
@@ -20163,7 +20481,7 @@
             290.8,
             293.0,
             103.0,
-            145.8,
+            128.7,
             215.3,
             233.8,
             186.0,
@@ -20178,9 +20496,9 @@
             311.5,
             310.0,
             309.8,
-            171.0,
+            190.5,
             214.4,
-            217.0,
+            215.8,
             282.3,
             302.4,
             312.7,
@@ -20377,7 +20695,7 @@
             287.0,
             286.1,
             109.0,
-            138.4,
+            126.6,
             203.7,
             225.9,
             196.0,
@@ -20392,9 +20710,9 @@
             299.0,
             297.2,
             290.3,
-            183.0,
+            200.6,
             222.2,
-            223.0,
+            222.6,
             261.0,
             290.7,
             299.0,
@@ -20591,7 +20909,7 @@
             286.7,
             277.3,
             106.0,
-            149.0,
+            131.8,
             208.2,
             227.0,
             198.0,
@@ -20606,9 +20924,9 @@
             305.8,
             304.5,
             289.9,
-            182.0,
+            202.5,
             227.5,
-            227.0,
+            227.2,
             276.4,
             293.6,
             299.0,
@@ -21832,8 +22150,8 @@
       {
         "type": "SC",
         "start_lap": 3,
-        "end_lap": 4,
-        "label": "SC \u00b7 L3\u2013L4"
+        "end_lap": 6,
+        "label": "SC \u00b7 L3\u2013L6"
       },
       {
         "type": "VSC",
@@ -22889,17 +23207,28 @@
     "turns": [
       {
         "turn": 1,
-        "idx": 30,
-        "pct": 16.7,
-        "x": 535.1,
-        "y": 162.1,
-        "label_x": 523.6,
-        "label_y": 136.6,
-        "arc_start_idx": 27,
-        "arc_end_idx": 33
+        "idx": 27,
+        "pct": 15.0,
+        "x": 505.9,
+        "y": 162.0,
+        "label_x": 504.3,
+        "label_y": 134.0,
+        "arc_start_idx": 24,
+        "arc_end_idx": 30
       },
       {
         "turn": 2,
+        "idx": 29,
+        "pct": 16.1,
+        "x": 525.8,
+        "y": 165.9,
+        "label_x": 531.7,
+        "label_y": 197.4,
+        "arc_start_idx": 26,
+        "arc_end_idx": 32
+      },
+      {
+        "turn": 3,
         "idx": 43,
         "pct": 23.9,
         "x": 668.2,
@@ -22910,29 +23239,29 @@
         "arc_end_idx": 46
       },
       {
-        "turn": 3,
-        "idx": 50,
-        "pct": 27.8,
-        "x": 737.2,
-        "y": 145.3,
-        "label_x": 757.1,
-        "label_y": 125.6,
-        "arc_start_idx": 47,
-        "arc_end_idx": 53
-      },
-      {
         "turn": 4,
-        "idx": 64,
-        "pct": 35.6,
-        "x": 823.2,
-        "y": 278.6,
-        "label_x": 843.5,
-        "label_y": 259.4,
-        "arc_start_idx": 61,
-        "arc_end_idx": 67
+        "idx": 65,
+        "pct": 36.1,
+        "x": 830.8,
+        "y": 286.2,
+        "label_x": 847.9,
+        "label_y": 264.0,
+        "arc_start_idx": 62,
+        "arc_end_idx": 68
       },
       {
         "turn": 5,
+        "idx": 67,
+        "pct": 37.2,
+        "x": 850.6,
+        "y": 295.0,
+        "label_x": 832.2,
+        "label_y": 321.2,
+        "arc_start_idx": 64,
+        "arc_end_idx": 70
+      },
+      {
+        "turn": 6,
         "idx": 78,
         "pct": 43.3,
         "x": 926.0,
@@ -22943,7 +23272,7 @@
         "arc_end_idx": 81
       },
       {
-        "turn": 6,
+        "turn": 7,
         "idx": 88,
         "pct": 48.9,
         "x": 837.4,
@@ -22952,17 +23281,6 @@
         "label_y": 479.5,
         "arc_start_idx": 85,
         "arc_end_idx": 91
-      },
-      {
-        "turn": 7,
-        "idx": 101,
-        "pct": 56.1,
-        "x": 712.6,
-        "y": 375.1,
-        "label_x": 725.2,
-        "label_y": 350.1,
-        "arc_start_idx": 98,
-        "arc_end_idx": 104
       },
       {
         "turn": 8,
@@ -22977,6 +23295,17 @@
       },
       {
         "turn": 9,
+        "idx": 124,
+        "pct": 68.9,
+        "x": 470.0,
+        "y": 301.6,
+        "label_x": 465.5,
+        "label_y": 274.0,
+        "arc_start_idx": 121,
+        "arc_end_idx": 127
+      },
+      {
+        "turn": 10,
         "idx": 128,
         "pct": 71.1,
         "x": 425.5,
@@ -22987,7 +23316,7 @@
         "arc_end_idx": 131
       },
       {
-        "turn": 10,
+        "turn": 11,
         "idx": 160,
         "pct": 88.9,
         "x": 86.3,
@@ -22996,17 +23325,6 @@
         "label_y": 435.8,
         "arc_start_idx": 157,
         "arc_end_idx": 163
-      },
-      {
-        "turn": 11,
-        "idx": 167,
-        "pct": 92.8,
-        "x": 92.6,
-        "y": 343.7,
-        "label_x": 71.7,
-        "label_y": 325.1,
-        "arc_start_idx": 164,
-        "arc_end_idx": 170
       }
     ]
   }
