@@ -909,4 +909,113 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
         assert turns_in_map == turns_in_corners, (
             f"{gp_id}: track_map.turns ({turns_in_map}) != corners turns ({turns_in_corners})"
         )
+        traces_turns = [
+            int(t["turn"])
+            for t in data.get("qualifying", {}).get("traces", {}).get("turns", [])
+        ]
+        assert traces_turns == turns_in_map, (
+            f"{gp_id}: qualifying.traces.turns ({traces_turns}) != track_map.turns ({turns_in_map})"
+        )
+
+
+def test_real_car_data_telemetry_traces_corners_and_practice_stints() -> None:
+    """Verifies real OpenF1 /v1/car_data traces, corner speeds, and practice stint laps are extracted."""
+    drivers = [
+        {"code": "VER", "name": "Max Verstappen", "team": "Red Bull Racing", "color": "#3671c6"},
+        {"code": "NOR", "name": "Lando Norris", "team": "McLaren", "color": "#fe7b04"},
+    ]
+    num_to_code = {1: "VER", 4: "NOR"}
+    track_turns = [
+        {"turn": 1, "pct": 18.0},
+        {"turn": 2, "pct": 48.0},
+        {"turn": 3, "pct": 80.0},
+    ]
+    openf1_quali_laps = [
+        {
+            "driver_number": 1,
+            "lap_number": 4,
+            "lap_duration": 90.000,
+            "duration_sector_1": 28.000,
+            "duration_sector_2": 31.000,
+            "duration_sector_3": 31.000,
+            "is_pit_out_lap": False,
+            "date_start": "2026-10-10T13:50:00.000Z",
+        },
+        {
+            "driver_number": 4,
+            "lap_number": 4,
+            "lap_duration": 90.400,
+            "duration_sector_1": 28.100,
+            "duration_sector_2": 31.150,
+            "duration_sector_3": 31.150,
+            "is_pit_out_lap": False,
+            "date_start": "2026-10-10T13:50:10.000Z",
+        },
+    ]
+
+    def _mock_car_data(
+        session_key: int, driver_number: int, start_iso: str, end_iso: str
+    ) -> list[dict[str, Any]]:
+        samples: list[dict[str, Any]] = []
+        base_spd = 240.0 if driver_number == 1 else 234.0
+        for i in range(100):
+            t_sec = i * 0.9
+            frac = i / 99.0
+            # Dip speed around 18%, 48%, 80%
+            dip = 0.0
+            for t_pct, drop in ((0.18, 110.0), (0.48, 85.0), (0.80, 125.0)):
+                if abs(frac - t_pct) < 0.04:
+                    dip = max(dip, drop * (1.0 - abs(frac - t_pct) / 0.04))
+            spd = round(base_spd - dip, 1)
+            thr = 25.0 if dip > 40.0 else 100.0
+            brk = 100.0 if dip > 40.0 else 0.0
+            mm = int(t_sec) // 60
+            ss = t_sec - (mm * 60)
+            samples.append(
+                {
+                    "date": f"2026-10-10T13:{50 + mm:02d}:{ss:06.3f}Z",
+                    "speed": spd,
+                    "throttle": thr,
+                    "brake": brk,
+                }
+            )
+        return samples
+
+    with patch(
+        "generate_weekend_telemetry._fetch_openf1_car_data_window",
+        side_effect=_mock_car_data,
+    ):
+        quali = _build_qualifying_telemetry(
+            gp_name="Singapore Grand Prix",
+            drivers=drivers,
+            driver_pace={"VER": 92.0, "NOR": 92.4},
+            track_profile={"turns": 3, "base_speed": 150, "variation": 50},
+            race_laps=[],
+            openf1_quali_laps=openf1_quali_laps,
+            num_to_code=num_to_code,
+            session_key=9999,
+            track_turns=track_turns,
+            fetch_live=True,
+        )
+
+    assert [t["pct"] for t in quali["traces"]["turns"]] == [18.0, 48.0, 80.0]
+    ver_t1 = next(
+        c["speed"]
+        for c in quali["corners"]
+        if c["turn"] == 1 and c["team"] == "Red Bull Racing"
+    )
+    nor_t1 = next(
+        c["speed"]
+        for c in quali["corners"]
+        if c["turn"] == 1 and c["team"] == "McLaren"
+    )
+    assert ver_t1 > nor_t1
+    # Verify trace speed at turn 1 (18% -> index 9) matches extracted corner speed
+    assert quali["traces"]["drivers"]["VER"]["speed"][9] == ver_t1
+    assert quali["driver_corner_means"]["VER"] > quali["driver_corner_means"]["NOR"]
+    # Verify real sectors are not synthetically reduced when has_real_quali is True
+    ver_res = next(r for r in quali["results"] if r["driver"] == "VER")
+    assert ver_res["ideal_lap"] == ver_res["best_time"]
+    assert ver_res["time_left_on_table"] == 0.0
+
 
