@@ -101,6 +101,12 @@
       "id": "singapore",
       "name": "Singapore Grand Prix",
       "file": "races/2026/singapore.json"
+    },
+    {
+      "year": 2026,
+      "id": "united_states",
+      "name": "United States Grand Prix",
+      "file": "races/2026/united_states.json"
     }
   ]
 }
