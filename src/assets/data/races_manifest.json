@@ -107,6 +107,12 @@
       "id": "united_states",
       "name": "United States Grand Prix",
       "file": "races/2026/united_states.json"
+    },
+    {
+      "year": 2026,
+      "id": "mexico",
+      "name": "Mexico Grand Prix",
+      "file": "races/2026/mexico.json"
     }
   ]
 }
