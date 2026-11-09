@@ -12,6 +12,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: auto-update-races
+  cancel-in-progress: false
+
 jobs:
   update-race-data:
     runs-on: ubuntu-latest

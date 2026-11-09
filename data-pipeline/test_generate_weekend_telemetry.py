@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch
@@ -1026,8 +1027,6 @@ def test_upgrade_procedural_race_file_replaces_traces_and_strips_stale_sprint(
     tmp_path: Path,
 ) -> None:
     """Upgrading a procedural GP JSON with fetch_live=True discards synthetic traces and stale sprint blocks."""
-    import math
-
     race_path = tmp_path / "united_states.json"
     payload = _create_sample_gp_payload()
     payload["race_info"]["gp"] = "United States Grand Prix"
@@ -1144,6 +1143,136 @@ def test_upgrade_procedural_race_file_replaces_traces_and_strips_stale_sprint(
     assert updated["is_sprint_weekend"] is False
     assert "sprint" not in updated
     assert "sprint_qualifying" not in updated
+
+
+def test_upgrade_procedural_sprint_weekend_refreshes_sprint_qualifying_traces(
+    tmp_path: Path,
+) -> None:
+    """Upgrading a procedural sprint weekend with fetch_live=True replaces synthetic sprint_qualifying traces."""
+    race_path = tmp_path / "singapore.json"
+    payload = _create_sample_gp_payload()
+    payload["race_info"]["gp"] = "Singapore Grand Prix"
+    payload["track_map"] = {
+        "viewBox": [0, 0, 1000, 560],
+        "source": "procedural",
+        "s1_end_idx": 58,
+        "s2_end_idx": 120,
+        "points": [[100.0, 100.0]] * 180,
+        "turns": [{"turn": 1, "pct": 10.0}],
+    }
+    stale_speed = [111.1] * 51
+    stale_traces = {
+        "drivers": {
+            "NOR": {
+                "speed": list(stale_speed),
+                "throttle": [50.0] * 51,
+                "brake": [0.0] * 51,
+                "cum_time": [float(i) for i in range(51)],
+            }
+        }
+    }
+    payload["is_sprint_weekend"] = True
+    payload["qualifying"] = {"traces": stale_traces}
+    payload["sprint_qualifying"] = {"traces": stale_traces}
+    race_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    sessions_cache = [
+        {"meeting_key": 1296, "session_key": 9101, "session_name": "Sprint Qualifying"},
+        {"meeting_key": 1296, "session_key": 9102, "session_name": "Sprint"},
+        {"meeting_key": 1296, "session_key": 9103, "session_name": "Qualifying"},
+        {"meeting_key": 1296, "session_key": 9104, "session_name": "Race"},
+    ]
+
+    def _mock_fetch_json(
+        endpoint: str, params: dict[str, Any] | None = None
+    ) -> list[dict[str, Any]]:
+        params = params or {}
+        sk = params.get("session_key")
+        if endpoint == "drivers":
+            return [
+                {"driver_number": 4, "name_acronym": "NOR", "full_name": "Lando Norris", "team_name": "McLaren", "team_colour": "fe7b04"},
+                {"driver_number": 1, "name_acronym": "VER", "full_name": "Max Verstappen", "team_name": "Red Bull Racing", "team_colour": "3671c6"},
+            ]
+        if endpoint == "laps" and sk in (9101, 9103):
+            return [
+                {
+                    "driver_number": 4,
+                    "lap_number": 3,
+                    "lap_duration": 90.0,
+                    "duration_sector_1": 25.0,
+                    "duration_sector_2": 35.0,
+                    "duration_sector_3": 30.0,
+                    "is_pit_out_lap": False,
+                    "date_start": "2026-10-10T10:10:00.000Z",
+                },
+                {
+                    "driver_number": 1,
+                    "lap_number": 3,
+                    "lap_duration": 90.3,
+                    "duration_sector_1": 25.1,
+                    "duration_sector_2": 35.1,
+                    "duration_sector_3": 30.1,
+                    "is_pit_out_lap": False,
+                    "date_start": "2026-10-10T10:11:00.000Z",
+                },
+            ]
+        if endpoint == "laps" and sk == 9102:
+            return [
+                {"driver_number": 4, "lap_number": 1, "lap_duration": 95.0},
+                {"driver_number": 1, "lap_number": 1, "lap_duration": 95.5},
+            ]
+        if endpoint == "session_result" and sk in (9101, 9103):
+            return [
+                {"driver_number": 4, "position": 1, "duration": [90.8, 90.4, 90.0]},
+                {"driver_number": 1, "position": 2, "duration": [91.0, 90.6, 90.3]},
+            ]
+        if endpoint == "session_result" and sk == 9102:
+            return [
+                {"driver_number": 4, "position": 1, "number_of_laps": 1, "duration": 95.0},
+                {"driver_number": 1, "position": 2, "number_of_laps": 1, "duration": 95.5},
+            ]
+        return []
+
+    location_samples = [
+        {"x": 1000.0 * math.cos((i / 120) * math.tau), "y": 600.0 * math.sin((i / 120) * math.tau)}
+        for i in range(120)
+    ]
+
+    def _mock_car_data(
+        session_key: int, driver_number: int, start_iso: str, end_iso: str
+    ) -> list[dict[str, Any]]:
+        samples: list[dict[str, Any]] = []
+        speed = 272.0 if session_key == 9101 else 265.0
+        for i in range(100):
+            t_sec = i * 0.9
+            mm = int(t_sec) // 60
+            ss = t_sec - (mm * 60)
+            samples.append(
+                {
+                    "date": f"2026-10-10T10:{10 + mm:02d}:{ss:06.3f}Z",
+                    "speed": speed if driver_number == 4 else speed - 4.0,
+                    "throttle": 100.0,
+                    "brake": 0.0,
+                }
+            )
+        return samples
+
+    with (
+        patch("generate_weekend_telemetry._fetch_openf1_json", side_effect=_mock_fetch_json),
+        patch("generate_weekend_telemetry._fetch_openf1_location_window", return_value=location_samples),
+        patch("generate_weekend_telemetry._fetch_openf1_car_data_window", side_effect=_mock_car_data),
+    ):
+        updated = generate_weekend_telemetry(
+            str(race_path),
+            fetch_live=True,
+            all_sessions_cache=sessions_cache,
+        )
+
+    assert updated["track_map"]["source"] == "openf1_gps"
+    assert updated["is_sprint_weekend"] is True
+    assert updated["sprint_qualifying"]["traces"]["drivers"]["NOR"]["speed"] != stale_speed
+    assert updated["sprint_qualifying"]["traces"]["drivers"]["NOR"]["speed"][0] == pytest.approx(272.0, abs=0.1)
+
 
 
 
