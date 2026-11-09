@@ -2,8 +2,10 @@ name: Automated Race Data Update
 
 on:
   schedule:
-    # Run every Monday morning at 08:00 UTC (after GP weekend)
-    - cron: '0 8 * * 1'
+    # Run Sunday night (23:00 UTC) and Monday early/mid-morning (02:00 & 08:00 UTC)
+    # to catch late Americas/Vegas races quickly even with GitHub cron dispatch jitter.
+    - cron: '0 23 * * 0'
+    - cron: '0 2,8 * * 1'
   workflow_dispatch:
     # Allow manual execution via GitHub UI
 

@@ -4706,6 +4706,9 @@ def _enrich_live_sprint_sessions(
         session_map: OpenF1 session key mapping.
         num_to_code: Mapping from driver number to three-letter code.
         drivers_dict_by_num: Mapping from driver number to driver metadata.
+        had_real_gps: Whether ``track_map`` already used real OpenF1 GPS data
+            prior to this run; when False, existing synthetic sprint qualifying
+            traces are discarded rather than reused.
     """
     sq_key = session_map["Sprint Qualifying"]
     sp_key = session_map["Sprint"]
