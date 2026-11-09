@@ -113,6 +113,12 @@
       "id": "mexico",
       "name": "Mexico Grand Prix",
       "file": "races/2026/mexico.json"
+    },
+    {
+      "year": 2026,
+      "id": "brazil",
+      "name": "Brazil Grand Prix",
+      "file": "races/2026/brazil.json"
     }
   ]
 }
