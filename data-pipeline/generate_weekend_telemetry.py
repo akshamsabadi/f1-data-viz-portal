@@ -173,7 +173,6 @@ _SPRINT_WEEKEND_STEMS: Final[frozenset[str]] = frozenset(
     {
         "china",
         "miami",
-        "united_states",
         "canada",
         "united_kingdom",
         "netherlands",
@@ -4693,6 +4692,7 @@ def _enrich_live_sprint_sessions(
     session_map: Mapping[str, int],
     num_to_code: Mapping[int, str],
     drivers_dict_by_num: Mapping[int, Mapping[str, Any]],
+    had_real_gps: bool = True,
 ) -> None:
     """Enriches ``race_data`` in place with live OpenF1 Sprint Qualifying and Sprint telemetry.
 
@@ -4761,6 +4761,8 @@ def _enrich_live_sprint_sessions(
         (race_data.get("sprint_qualifying") or {})
         .get("traces", {})
         .get("drivers")
+        if had_real_gps
+        else None
     )
     sq_block = _build_qualifying_telemetry(
         gp_name=f"{gp_name} Sprint",
@@ -4778,6 +4780,7 @@ def _enrich_live_sprint_sessions(
         track_turns=track_turns,
         fetch_live=has_real_gps,
         existing_drivers_traces=existing_sq_traces,
+        refresh_existing_traces=(has_real_gps and not had_real_gps),
     )
     sq_block.pop("driver_corner_means", None)
     race_data["sprint_qualifying"] = sq_block
@@ -5529,6 +5532,10 @@ def generate_weekend_telemetry(
         ),
     )
     existing_track_map = race_data.get("track_map")
+    had_real_gps = bool(
+        existing_track_map
+        and existing_track_map.get("source") == "openf1_gps"
+    )
     race_data["track_map"] = _build_circuit_track_map(
         gp_name=gp_name,
         turns_count=turns_count,
@@ -5540,6 +5547,8 @@ def generate_weekend_telemetry(
     has_real_gps = race_data["track_map"].get("source") == "openf1_gps"
     existing_q_traces = (
         (race_data.get("qualifying") or {}).get("traces", {}).get("drivers")
+        if had_real_gps
+        else None
     )
 
     qualifying_block = _build_qualifying_telemetry(
@@ -5560,6 +5569,7 @@ def generate_weekend_telemetry(
         track_turns=race_data["track_map"]["turns"],
         fetch_live=has_real_gps,
         existing_drivers_traces=existing_q_traces,
+        refresh_existing_traces=(has_real_gps and not had_real_gps),
     )
     driver_corner_means = qualifying_block.pop("driver_corner_means", None)
     race_data["qualifying"] = qualifying_block
@@ -5632,7 +5642,11 @@ def generate_weekend_telemetry(
             session_map=session_map,
             num_to_code=num_to_code,
             drivers_dict_by_num=drivers_dict_by_num,
+            had_real_gps=had_real_gps,
         )
+    elif fetch_live and session_map and not is_sprint:
+        race_data.pop("sprint", None)
+        race_data.pop("sprint_qualifying", None)
     elif (
         race_data.get("is_sprint_weekend")
         and "sprint_qualifying" not in race_data

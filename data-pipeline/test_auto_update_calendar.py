@@ -251,6 +251,11 @@ class TestAutoUpdateCalendarNormalCases:
         result = auto_update_calendar.main(str(tmp_path))
 
         assert result is True
+        assert mock_gen_weekend.call_count == 5
+        assert all(
+            call.kwargs.get("fetch_live") is True
+            for call in mock_gen_weekend.call_args_list
+        )
         updated_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         races = updated_manifest["races"]
         assert [(r["id"], r["name"]) for r in races] == [

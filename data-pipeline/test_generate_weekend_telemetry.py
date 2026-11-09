@@ -901,6 +901,9 @@ def test_production_2026_dataset_and_manifest_guardrails() -> None:
 
         # Guardrail for circuit track_map geometry and turn apexes
         track_map = data.get("track_map", {})
+        assert track_map.get("source") == "openf1_gps", (
+            f"{gp_id}: track_map.source ({track_map.get('source')}) must be 'openf1_gps'"
+        )
         assert len(track_map.get("points", [])) >= 100, (
             f"{gp_id}: missing or incomplete track_map.points"
         )

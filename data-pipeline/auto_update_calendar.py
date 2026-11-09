@@ -244,7 +244,7 @@ def _ingest_new_race_session(
     print(f"Executing calculate_corner_speeds on {out_path}...")
     try:
         calculate_corner_speeds(out_path)
-        generate_weekend_telemetry(out_path)
+        generate_weekend_telemetry(out_path, fetch_live=True)
     except Exception as error:
         print(f"Error calculating corner speeds: {error}")
 
